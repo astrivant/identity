@@ -52,6 +52,10 @@ def write_plots(inventory: Inventory, events: Sequence[Use], destination: Path) 
         axis.xaxis.set_major_locator(MaxNLocator(integer=True))
         axis.set_xlabel("Distinct recorded tasks (latest observation per task)")
         axis.spines[["top", "right"]].set_visible(False)
+
+        if not ordered:
+            axis.text(0.5, 0.5, "No tools recorded", transform=axis.transAxes, ha="center", va="center")
+            axis.set_axis_off()
         figures = [("toolbox-use", figure)]
 
         graph: nx.DiGraph[str, dict[str, object], dict[str, object]] = nx.DiGraph()
@@ -73,7 +77,7 @@ def write_plots(inventory: Inventory, events: Sequence[Use], destination: Path) 
             nx.draw_networkx_nodes(graph, positions, ax=axis, node_size=2800, node_color="#E2EFEA", edgecolors="#327B69")
             nx.draw_networkx_labels(graph, positions, labels, ax=axis, font_size=9)
         else:
-            axis.text(0.5, 0.5, "No problem categories recorded", ha="center", va="center")
+            axis.text(0.5, 0.5, "No problem categories recorded", transform=axis.transAxes, ha="center", va="center")
 
         axis.margins(0.2)
         axis.set_axis_off()
