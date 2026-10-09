@@ -32,7 +32,7 @@ def test_render_exports_only_selected_figures(tmp_path: Path) -> None:
     """
     root = tmp_path / "collection"
     assert initialize([str(root)]) == 0
-    selected = ("knowledge-usage", "toolbox-use", "checkpoint-transitions")
+    selected = ("knowledge-usage", "decision-influences", "toolbox-use", "checkpoint-transitions")
     content = render(root, selected)
     data = json.loads(content)
     assert set(data) == {"figures", "version"}

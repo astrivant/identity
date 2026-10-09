@@ -56,7 +56,11 @@ An empty selection publishes nothing and exits with an actionable error.
 
 Supported figures are `knowledge-usage`, `knowledge-map`, `knowledge-hierarchy`,
 `toolbox-use`, `problem-repertoire`, `checkpoint-transitions`, and
-`checkpoint-comparisons`. Include all figures enabled in the receiver, including
+`checkpoint-comparisons`, plus `decision-influences` in the `life` group.
+`knowledge-map` is titled "How my skills connect"; `decision-influences` is titled
+"What informs my decisions" and counts direct skill and lesson references in
+current accepted decisions. Revisions replace earlier counts; retired decisions
+contribute none. These captions also appear in the resume appendix. Include all figures enabled in the receiver, including
 employer-specific variants. Recorded counts are evidence of usage, not mastery.
 
 ## Contract and recovery

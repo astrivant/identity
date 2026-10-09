@@ -186,8 +186,8 @@ def _map_plot(identity: Identity, applications: Sequence[Application]) -> Figure
     axis.set_xlim(-4.1, 4.1)
     axis.set_ylim(-3.9, 3.9)
     axis.axis("off")
-    figure.text(0.04, 0.96, "Connections across disciplines", fontsize=23, color=_INK, weight="bold")
-    figure.text(0.04, 0.925, "Skills form local subgraphs. Verified reuse strengthens bridges between them.", fontsize=11, color=_MUTED)
+    figure.text(0.04, 0.96, "How my skills connect", fontsize=23, color=_INK, weight="bold")
+    figure.text(0.04, 0.925, "Where do my skills connect across areas of work?", fontsize=11, color=_MUTED)
 
     for edge in edges:
         a, b = positions[edge.source], positions[edge.target]

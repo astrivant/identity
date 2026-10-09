@@ -19,6 +19,8 @@ from witful.knowledge.contracts import as_data, structure
 from witful.knowledge.models import Catalog
 from witful.knowledge.plotting import write_plots as knowledge_plots
 from witful.lessons import read_journal
+from witful.life.journal import read_archive
+from witful.life.plotting import write_influences
 from witful.privacy.scanner import scan_text
 from witful.repertoire.journal import validate
 from witful.repertoire.models import Inventory, Use
@@ -61,6 +63,9 @@ def render(root: Path, selected: tuple[str, ...]) -> bytes:
                 events = [structure(json.loads(line), Use) for line in (journal.read_text() if journal.exists() else "").splitlines()]
                 validate(inventory, events, set(index(identity)[0]))
                 repertoire_plots(inventory, events, destination)
+
+        if "life" in groups:
+            write_influences(read_archive(root), destination)
 
         if "checkpoints" in groups:
             checkpoint_plots(read_checkpoints(root / "knowledge/checkpoints.jsonl"), destination)

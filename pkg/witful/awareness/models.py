@@ -10,7 +10,8 @@ from attrs import frozen
 
 FIGURES = {
     "knowledge-usage": ("knowledge", "Recorded skill use"),
-    "knowledge-map": ("knowledge", "Concept relationships"),
+    "knowledge-map": ("knowledge", "How my skills connect"),
+    "decision-influences": ("life", "What informs my decisions"),
     "knowledge-hierarchy": ("knowledge", "Knowledge hierarchy"),
     "toolbox-use": ("repertoire", "Recorded tool use"),
     "problem-repertoire": ("repertoire", "Problem repertoire"),
@@ -45,7 +46,7 @@ class Figure:
 
     Attributes:
         id (str): Stable catalog key.
-        group (str): Knowledge, repertoire, or checkpoints category.
+        group (str): Knowledge, life, repertoire, or checkpoints category.
         title (str): Public caption, separate from labels already visible in the image.
         sha256 (str): Hexadecimal SHA-256 of decoded PNG bytes.
         png (str): Strict base64-encoded PNG.
