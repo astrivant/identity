@@ -48,6 +48,12 @@ repos:
         entry: shfmt -d -i 4 -ci
         language: system
         types: [shell]
+      - id: chart-documentation
+        name: Helm documentation and schema
+        entry: npm --prefix scripts/chart run generate
+        language: system
+        pass_filenames: false
+        files: '^(deploy/helm/|scripts/chart/)'
       - id: documentation-contents
         name: README contents
         entry: python scripts/documentation/update-contents.py
