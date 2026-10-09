@@ -256,10 +256,14 @@ def _hierarchy_plot(identity: Identity) -> Figure:
         Figure: One panel per discipline, with compact nodes instead of unreadable full lesson text.
     """
     panels = max(1, len(identity.disciplines))
-    figure = Figure(figsize=(15, max(6, math.ceil(panels / 2) * 3.5 + 1.5)), facecolor="white")
-    axes = figure.subplots(math.ceil(panels / 2), 2, squeeze=False)
-    figure.subplots_adjust(left=0.06, right=0.94, top=0.9, bottom=0.08, wspace=0.18, hspace=0.65)
-    figure.suptitle(identity.name, fontsize=24, color=_INK, x=0.04, ha="left")
+    height = max(6, math.ceil(panels / 2) * 3.5 + 1.5)
+    figure = Figure(figsize=(15, height), facecolor="white")
+    axes = figure.subplots(math.ceil(panels / 2), min(2, panels), squeeze=False)
+
+    # Reserve physical space for the title, question, panel labels, and footer at every collection size.
+    figure.subplots_adjust(left=0.06, right=0.94, top=1 - 1.15 / height, bottom=0.75 / height, wspace=0.18, hspace=0.65)
+    figure.suptitle(identity.name, fontsize=24, color=_INK, x=0.04, y=1 - 0.15 / height, ha="left")
+    figure.text(0.04, 1 - 0.58 / height, "How are disciplines, skills, and lessons organized?", fontsize=11, color=_MUTED)
 
     for axis in axes.flat:
         axis.axis("off")
@@ -300,7 +304,7 @@ def _hierarchy_plot(identity: Identity) -> Figure:
 
     figure.text(
         0.04,
-        0.025,
+        0.18 / height,
         "Each lesson has one canonical home. Reuse edges live in the connection map; "
         "inspect a concept ID for its full teaching and evidence.",
         fontsize=10,

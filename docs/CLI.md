@@ -30,6 +30,9 @@ sources and schema drift.
 | `checkpoints [--repo PATH] record --project PATH --project-id ALIAS` | Record a Git boundary and update its local checkpoint mirror |
 | `checkpoints check/diff/build/schemas/sync` | Validate, compare, render, or explicitly mirror checkpoint history |
 | `privacy scan [--repo PATH] [--staged] [--terms-file PATH]` | Scan publishable source; redacted findings, exit 1 for matches, 2 for incomplete scans |
+| `awareness [--repo PATH] [--config PATH] [--output PATH] build/push/schema` | Render selected figures, explicitly dispatch a resume rebuild, or print wire schemas |
+| `sapience [--repo PATH] export/sync/propose/schema` | Optional MCP projection, stable readback-verified synchronization, and pending review briefs |
+| `collection setup/seal/restore/refresh/schema` | Private-copy installation, authenticated encryption, and CI figure refresh |
 | `registry NAME... [--stdin] [--refresh] [--offline]` | Batched PyPI observations, cached for six hours; exit 2 for unknown results |
 
 Life decisions contain `key`, `title`, `task`, `choice`, `rationale`, `source`,
@@ -63,3 +66,35 @@ saved lesson/knowledge inputs and does not implicitly archive this separate cata
 
 See [project checkpoints](checkpoints.md) for visit ordering, evidence semantics,
 database mirroring, and main-branch rendering.
+
+## Awareness publication
+
+`witful awareness --repo COLLECTION build` regenerates selected figures locally.
+`witful awareness --repo COLLECTION push` publishes them and requests an authenticated
+GitHub rebuild. Both use `knowledge/awareness.json` by default; `--config` and
+`--output` override collection-relative paths. `schema` prints the generated
+configuration and bundle contracts without reading a collection. See
+[setup, authorization, and data boundaries](awareness.md).
+
+
+## Encrypted private collections
+
+`witful collection setup --repo OWNER/REPO` configures an existing private copy;
+`--create` explicitly creates one from a fresh public clone. `--restore` recovers
+an existing encrypted collection into an empty local collection directory using saved keys. `--checkout`, `--home`,
+and `--key-dir` select the working checkout, local Codex home, and reusable key backup.
+`seal` takes `--checkout`, `--source`, and `--key-dir`; it writes encrypted files but
+never commits or pushes. `restore` takes `--checkout`, `--key-dir`, and a new
+`--output`, with optional `--figures`. `refresh` is reserved for the trusted private
+main workflow. `schema` prints the closed configuration and envelope contracts.
+See [private collection operations](private-collections.md).
+
+## Sapience projection
+
+See [the Sapience guide](sapience.md) for installation, provider configuration,
+examples, and recovery. `export` and `sync` require `--collection-id` and `--namespace`.
+`sync` and `propose` require `--server`, with repeated `--server-arg` values for its
+arguments. Use `--server-arg=-m` for arguments starting with a dash. `propose` requires
+`--topic` and `--namespace`; it never appends to the lesson journal. `--output` overrides
+the collection-relative export or proposal destination. `schema` prints the projection
+contract without reading a collection or contacting a server.

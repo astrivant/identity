@@ -52,6 +52,8 @@ def test_explicit_literals_and_safe_examples() -> None:
         None: Literal checks are case-insensitive and regex syntax is not interpreted.
     """
     assert scan_text("sample@example.org /home/runner/work") == ()
+    assert scan_text("git@github.com:example/repository.git") == ()
+    assert scan_text("member" + "@github.com") == ((1, "email"),)
     assert scan_text("Some Private Literal", ["private literal"]) == ((1, "deny-term"),)
     assert scan_text("abc", ["a.*"]) == ()
 
