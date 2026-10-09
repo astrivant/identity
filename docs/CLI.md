@@ -93,8 +93,11 @@ See [private collection operations](private-collections.md).
 
 See [the Sapience guide](sapience.md) for installation, provider configuration,
 examples, and recovery. `export` and `sync` require `--collection-id` and `--namespace`.
-`sync` and `propose` require `--server`, with repeated `--server-arg` values for its
-arguments. Use `--server-arg=-m` for arguments starting with a dash. `propose` requires
+`sync` and `propose` require either `--server` or `--url`. Stdio uses repeated
+`--server-arg` values; use `--server-arg=-m` for arguments starting with a dash.
+HTTP takes `--token-env NAME` (default `WITFUL_SAPIENCE_TOKEN`) and permits HTTPS
+or loopback HTTP. `--allow-insecure-http` explicitly permits other HTTP endpoints.
+`propose` requires
 `--topic` and `--namespace`; it never appends to the lesson journal. `--output` overrides
 the collection-relative export or proposal destination. `schema` prints the projection
 contract without reading a collection or contacting a server.

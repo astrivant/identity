@@ -25,10 +25,10 @@ Install the fork in a separate Python environment at the tested commit:
 
 ```bash
 python3 -m venv .venv-sapience
-.venv-sapience/bin/python -m pip install 'sapience-mcp @ git+https://github.com/astrivant/sapience.git@d9d38b115d54b73a70bf7c769ff1bd3a5af54b22'
+.venv-sapience/bin/python -m pip install 'sapience-mcp @ git+https://github.com/astrivant/sapience.git@aa17a2d25fb2f11435ad4e003277940b2182a8e7'
 ```
 
-See its [integration guide](https://github.com/astrivant/sapience/blob/d9d38b115d54b73a70bf7c769ff1bd3a5af54b22/docs/witful.md).
+See its [integration guide](https://github.com/astrivant/sapience/blob/aa17a2d25fb2f11435ad4e003277940b2182a8e7/docs/witful.md).
 The upstream PyPI release does not yet provide the required structured upsert contract.
 Select the resulting `sapience` executable explicitly; no shell interprets it.
 
@@ -95,3 +95,39 @@ environment. Trust the chosen executable and Python import path. Requests have a
 Sapience's local database and these review artifacts are plaintext. Encrypted Git
 transport for a private Identity collection does not encrypt the MCP server's storage.
 See [SECURITY.md](../SECURITY.md) before synchronization.
+
+## Shared Kubernetes replicas
+
+The Sapience fork's [Helm chart and CRDs](https://github.com/astrivant/sapience/blob/aa17a2d25fb2f11435ad4e003277940b2182a8e7/docs/kubernetes.md)
+deploy a namespace-scoped controller and stateless MCP workers. An `IdentityProfile`
+references existing authentication and PostgreSQL Secrets; an `IdentityReplica`
+sets worker count and resource budgets. Every worker uses the same writable
+PostgreSQL memory store and judgment ledger. Local ChromaDB and SQLite directories
+must not be shared between workers.
+
+After deploying the reviewed fork, supply the service bearer credential through
+`WITFUL_SAPIENCE_TOKEN` and select an explicit endpoint:
+
+```bash
+witful sapience --repo ./collection sync --collection-id my-collection \
+  --namespace reviewed --url https://mcp.example.org/mcp
+witful sapience --repo ./collection propose --namespace reviewed \
+  --topic "release review" --url https://mcp.example.org/mcp
+```
+
+`--token-env NAME` selects another credential variable. URLs cannot contain user
+information, query strings, or fragments. HTTPS is required except for loopback
+port forwarding. `--allow-insecure-http` explicitly permits other HTTP endpoints
+for protected in-cluster networks. The token is never accepted as a CLI argument.
+HTTP uses the same structured-contract validation and readback as stdio, and closes
+its connection pool on exit. Do not use an untrusted endpoint.
+
+All credential holders can call the service's tools; memory namespaces are not
+separate tenants. This is pre-shared bearer authentication, not OAuth discovery.
+Server/database retention and provider disclosure are unchanged by transport.
+Kubernetes deployment, Secret provisioning, and existing local-data migration are
+separate explicit operations; `sync` does not perform them.
+
+Repository layout: Identity's own journal-worker chart is `helm/witful/`; generated
+Compose configuration is `services/`. The MCP service chart belongs to Sapience,
+where its controller, transport, and storage implementation are maintained.

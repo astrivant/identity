@@ -1,5 +1,5 @@
 """
-Validate MCP responses and synchronize one explicit local Sapience server process.
+Validate MCP responses and synchronize an explicit local or authenticated remote Sapience server.
 """
 
 from __future__ import annotations
@@ -141,3 +141,49 @@ async def synchronize(session: ClientSession, projection: Projection) -> int:
             raise ValueError("Sapience readback differs from the projected source; retry the same projection")
 
     return len(projection.memories)
+
+
+@asynccontextmanager
+async def connect_http(url: str, token_env: str, *, allow_insecure_http: bool = False) -> AsyncIterator[ClientSession]:
+    """
+    Connect to a shared MCP service without putting its credential in CLI arguments.
+
+    Args:
+        url (str): Explicit MCP endpoint without user information, query, or fragment.
+        token_env (str): Environment variable containing the service bearer token.
+        allow_insecure_http (bool): Explicitly permit plaintext HTTP beyond loopback.
+
+    Yields:
+        ClientSession: Initialized network session, closed with its HTTP connection pool.
+
+    Raises:
+        ValueError: Endpoint or credential configuration violates the connection contract.
+    """
+    from urllib.parse import urlsplit
+
+    import httpx2
+    from mcp.client.streamable_http import streamable_http_client
+
+    endpoint = urlsplit(url)
+    loopback = endpoint.hostname in {"localhost", "127.0.0.1", "::1"}
+    permitted_scheme = endpoint.scheme == "https" or (endpoint.scheme == "http" and (loopback or allow_insecure_http))
+    token = os.environ.get(token_env, "")
+
+    if (
+        not permitted_scheme
+        or not endpoint.hostname
+        or endpoint.username
+        or endpoint.password
+        or endpoint.query
+        or endpoint.fragment
+        or not token
+        or not token.isascii()
+        or any(char.isspace() for char in token)
+    ):
+        raise ValueError("Provide an HTTPS MCP endpoint and bearer token environment variable; HTTP requires loopback or explicit opt-in")
+
+    async with httpx2.AsyncClient(headers={"Authorization": f"Bearer {token}"}, timeout=120, trust_env=False) as client:
+        async with streamable_http_client(url, http_client=client) as (reader, writer):
+            async with ClientSession(reader, writer, read_timeout_seconds=120) as session:
+                await session.initialize()
+                yield session

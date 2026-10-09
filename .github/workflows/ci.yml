@@ -116,25 +116,25 @@ jobs:
               npm --prefix scripts/chart ci --ignore-scripts
           fi
           npm --prefix scripts/chart run generate
-          git diff --exit-code -- deploy/helm/witful/README.md deploy/helm/witful/values.schema.json
+          git diff --exit-code -- helm/witful/README.md helm/witful/values.schema.json
       - name: Generate Compose from the reviewed chart
         uses: astrivant/composer@4ee8ce8507e10b6cbbac607d7bda01e22740cd37
         with:
           watch-directory: '.'
-          chart: deploy/helm/witful
-          values: deploy/compose.values.yaml
-          profile: deploy/compose.profile.yaml
+          chart: helm/witful
+          values: services/compose.values.yaml
+          profile: services/compose.profile.yaml
           release: witful
-          output: deploy/compose.yaml
+          output: services/compose.yaml
           commit: 'false'
       - name: Validate orchestration contracts and generated output
         env:
           WITFUL_DATABASE_URL: postgresql://witful:fixture@postgres/witful?sslmode=disable
           WITFUL_POSTGRES_PASSWORD: fixture
         run: |
-          helm lint deploy/helm/witful --strict
-          git diff --exit-code -- deploy/compose.yaml
-          docker compose -f deploy/compose.yaml config --quiet
+          helm lint helm/witful --strict
+          git diff --exit-code -- services/compose.yaml
+          docker compose -f services/compose.yaml config --quiet
           "$RUNNER_TEMP/composer-action-venv/bin/python" -m unittest discover -s scripts/chart/tests
       - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
       - name: Build the runtime

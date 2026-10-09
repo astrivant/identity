@@ -51,9 +51,16 @@ async def _remote(args: argparse.Namespace, projection: Projection | None) -> di
     Raises:
         ValueError: Required capabilities or proposal provenance do not match the request.
     """
-    from witful.sapience.client import connect, contracts, decode, synchronize
+    from witful.sapience.client import connect, connect_http, contracts, decode, synchronize
 
-    async with connect([args.server, *args.server_arg]) as session:
+    if args.url and args.server_arg:
+        raise ValueError("--server-arg applies only to stdio servers")
+    connection = (
+        connect_http(args.url, args.token_env, allow_insecure_http=args.allow_insecure_http)
+        if args.url
+        else connect([args.server, *args.server_arg])
+    )
+    async with connection as session:
         if projection is not None:
             return {"confirmed": await synchronize(session, projection)}
 
@@ -103,7 +110,11 @@ def main(argv: Sequence[str] | None = None) -> int:
             command.add_argument("--collection-id", required=True)
 
         if name != "export":
-            command.add_argument("--server", required=True, help="Trusted executable path, launched without a shell")
+            transport = command.add_mutually_exclusive_group(required=True)
+            transport.add_argument("--server", help="Trusted executable path, launched without a shell")
+            transport.add_argument("--url", help="Authenticated MCP endpoint for a shared identity service")
+            command.add_argument("--token-env", default="WITFUL_SAPIENCE_TOKEN", help="Bearer token environment variable name")
+            command.add_argument("--allow-insecure-http", action="store_true", help="Explicitly permit non-loopback plaintext HTTP")
             command.add_argument("--server-arg", action="append", default=[])
 
         if name == "propose":

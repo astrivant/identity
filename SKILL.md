@@ -90,3 +90,10 @@ then use ordinary lesson commands for an explicitly accepted teaching. Never rew
 journals with generated summaries. Awareness figures serve an optional professional
 signature and personal reflection; preserve disabled defaults and record evidence
 rather than inventing measures of capability.
+
+For a shared MCP deployment, use the Sapience guide's authenticated `--url` transport
+and bearer-token environment variable. Keep PostgreSQL memory and ledger ownership
+in the Sapience service; do not share local SQLite/Chroma files between replicas.
+Identity owns its journal-worker chart under `helm/witful/` and generated service
+configuration under `services/`. Regenerate Compose from the chart/profile and
+validate moved paths in CI and pre-commit when changing this layout.

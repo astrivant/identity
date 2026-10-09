@@ -53,7 +53,7 @@ repos:
         entry: npm --prefix scripts/chart run generate
         language: system
         pass_filenames: false
-        files: '^(deploy/helm/|scripts/chart/)'
+        files: '^(helm/|scripts/chart/)'
       - id: documentation-contents
         name: README contents
         entry: python scripts/documentation/update-contents.py
@@ -64,6 +64,6 @@ repos:
     rev: 4ee8ce8507e10b6cbbac607d7bda01e22740cd37
     hooks:
       - id: helm-composer
-        files: '^deploy/'
-        args: [--chart=deploy/helm/witful, --values=deploy/compose.values.yaml, --profile=deploy/compose.profile.yaml,
-               --release=witful, --output=deploy/compose.yaml]
+        files: '^(helm/|services/)'
+        args: [--chart=helm/witful, --values=services/compose.values.yaml, --profile=services/compose.profile.yaml,
+               --release=witful, --output=services/compose.yaml]
