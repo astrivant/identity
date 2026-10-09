@@ -1,0 +1,48 @@
+schemaVersion: 1
+name: sapience-local
+services:
+  sapience:
+    source:
+      kind: Job
+      name: sapience-sync-1
+    container: sapience
+    remove: [/volumes, /environment, /restart, /container_name]
+    set:
+      read_only: true
+      cap_drop: [ALL]
+      security_opt: [no-new-privileges:true]
+      build:
+        context: ..
+        target: production
+      environment:
+        SAPIENCE_DATABASE_URL: "${SAPIENCE_DATABASE_URL:?Set the local PostgreSQL URI}"
+        SAPIENCE_DATABASE_NAMESPACE: "${SAPIENCE_DATABASE_NAMESPACE:-default}"
+      volumes:
+        - "../lessons.jsonl:/source/lessons.jsonl:ro"
+      depends_on:
+        postgres:
+          condition: service_healthy
+      restart: "no"
+      deploy:
+        replicas: {$values: /workers}
+  postgres:
+    source:
+      kind: StatefulSet
+      name: sapience-postgres
+    container: postgres
+    remove: [/volumes, /environment, /ports, /container_name]
+    set:
+      environment:
+        POSTGRES_DB: sapience
+        POSTGRES_USER: sapience
+        POSTGRES_PASSWORD: "${SAPIENCE_POSTGRES_PASSWORD:?Set the local database password}"
+      volumes:
+        - postgres-data:/var/lib/postgresql
+      healthcheck:
+        test: [CMD, pg_isready, -U, sapience, -d, sapience]
+        interval: 5s
+        timeout: 3s
+        retries: 12
+      restart: unless-stopped
+volumes:
+  postgres-data: {}

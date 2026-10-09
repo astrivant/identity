@@ -1,0 +1,5 @@
+[sqlfluff]
+dialect = postgres
+[sqlfluff:templater:placeholder]
+param_style = pyformat
+namespace = 'test'

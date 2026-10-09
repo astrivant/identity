@@ -1,0 +1,8 @@
+- id: sapience-pii
+  name: Sapience PII scan
+  description: Scan the complete Git index without printing sensitive matches.
+  entry: sapience-pii scan --staged
+  language: python
+  pass_filenames: false
+  always_run: true
+  minimum_pre_commit_version: '4.0.0'

@@ -1,0 +1,14 @@
+{
+  "private": true,
+  "scripts": {
+    "generate": "readme-generator --values ../../deploy/helm/sapience/values.yaml --readme ../../deploy/helm/sapience/README.md --schema ../../deploy/helm/sapience/values.schema.json"
+  },
+  "devDependencies": {
+    "@bitnami/readme-generator-for-helm": "2.7.2"
+  },
+  "overrides": {
+    "dot-object": {
+      "glob": "13.0.6"
+    }
+  }
+}

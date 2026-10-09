@@ -1,0 +1,13 @@
+# An allowlist excludes credentials, journals, runtime state, and the surrounding client home.
+**
+!Dockerfile
+!pyproject.toml
+!poetry.lock
+!README.md
+!pkg/
+!pkg/**
+pkg/**/tests/
+pkg/**/__pycache__/
+pkg/**/*.pyc
+
+!LICENSE

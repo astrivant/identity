@@ -1,0 +1,82 @@
+{{- if or (lt (int .Values.workers) 1) (gt (int .Values.workers) 16) (ne (float64 .Values.workers) (float64 (int .Values.workers))) }}
+{{- fail "workers must be an integer from 1 through 16" }}
+{{- end }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Release.Name }}-sync-{{ .Release.Revision }}
+  labels:
+    app.kubernetes.io/name: sapience
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  parallelism: {{ .Values.workers }}
+  completions: {{ .Values.workers }}
+  backoffLimit: {{ .Values.job.backoffLimit }}
+  activeDeadlineSeconds: {{ .Values.job.activeDeadlineSeconds }}
+  ttlSecondsAfterFinished: {{ .Values.job.ttlSecondsAfterFinished }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: sapience
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      restartPolicy: Never
+      automountServiceAccountToken: false
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- range . }}
+        - name: {{ . | quote }}
+        {{- end }}
+      {{- end }}
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: sapience
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: [sapience]
+          args: [lessons, --repo, /source, sync]
+          env:
+            - name: SAPIENCE_DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.database.existingSecret | quote }}
+                  key: {{ .Values.database.urlKey | quote }}
+            - name: SAPIENCE_DATABASE_NAMESPACE
+              value: {{ .Values.database.namespace | quote }}
+            {{- if .Values.database.caSecret }}
+            - name: PGSSLROOTCERT
+              value: /etc/postgres/root.crt
+            {{- end }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: source
+              mountPath: /source
+              readOnly: true
+            {{- if .Values.database.caSecret }}
+            - name: ca
+              mountPath: /etc/postgres
+              readOnly: true
+            {{- end }}
+      volumes:
+        - name: source
+          secret:
+            secretName: {{ .Values.source.existingSecret | quote }}
+            defaultMode: 0440
+        {{- if .Values.database.caSecret }}
+        - name: ca
+          secret:
+            secretName: {{ .Values.database.caSecret | quote }}
+            defaultMode: 0440
+        {{- end }}

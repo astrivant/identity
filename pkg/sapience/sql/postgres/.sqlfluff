@@ -1,0 +1,20 @@
+[sqlfluff]
+dialect = postgres
+templater = placeholder
+max_line_length = 140
+
+[sqlfluff:templater:placeholder]
+param_style = pyformat
+id = 'fixture'
+topic = 'fixture'
+lesson = 'fixture'
+source = 'fixture'
+observed_at = '2026-01-01T00:00:00Z'
+supersedes = NULL
+namespace = 'test'
+query = 'fixture'
+history = FALSE
+limit = 10
+payload = '{}'
+ordinal = 1
+snapshot_id = 'fixture'

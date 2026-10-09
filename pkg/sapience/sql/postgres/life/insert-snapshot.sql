@@ -1,0 +1,3 @@
+INSERT INTO sapience_life_snapshots (namespace, id, payload)
+VALUES (%(namespace)s, %(id)s, %(payload)s)
+ON CONFLICT (namespace, id) DO NOTHING;

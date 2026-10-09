@@ -1,0 +1,63 @@
+repos:
+  - repo: local
+    hooks:
+      - id: sapience-pii
+        name: PII scan
+        entry: sapience-pii scan --staged
+        language: system
+        pass_filenames: false
+        always_run: true
+      - id: ruff
+        name: Ruff lint
+        entry: ruff check
+        language: system
+        types: [python]
+      - id: ruff-format
+        name: Ruff format
+        entry: ruff format --check
+        language: system
+        types: [python]
+      - id: mypy
+        name: Strict mypy
+        entry: mypy
+        language: system
+        pass_filenames: false
+        types: [python]
+      - id: docstrings
+        name: Google docstrings
+        entry: pydocstyle
+        language: system
+        types: [python]
+      - id: typed-docstrings
+        name: Typed docstring contracts
+        entry: pydoclint
+        language: system
+        types: [python]
+      - id: sql
+        name: SQLFluff
+        entry: sqlfluff lint
+        language: system
+        types: [sql]
+      - id: shellcheck
+        name: ShellCheck
+        entry: shellcheck -x
+        language: system
+        types: [shell]
+      - id: shfmt
+        name: Shell format
+        entry: shfmt -d -i 4 -ci
+        language: system
+        types: [shell]
+      - id: documentation-contents
+        name: README contents
+        entry: python scripts/documentation/update-contents.py
+        language: system
+        pass_filenames: false
+        always_run: true
+  - repo: https://github.com/astrivant/composer
+    rev: 0f342a53ed8fd21b7957a55f36f912081db96d4d
+    hooks:
+      - id: helm-composer
+        files: '^deploy/'
+        args: [--chart=deploy/helm/sapience, --values=deploy/compose.values.yaml, --profile=deploy/compose.profile.yaml,
+               --release=sapience, --output=deploy/compose.yaml]

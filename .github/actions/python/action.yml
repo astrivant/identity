@@ -1,0 +1,31 @@
+name: Locked Python environment
+description: Cache locked development dependencies and install only the current package on a cache hit
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+      id: python
+      with:
+        python-version: '3.14'
+    - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      id: cache
+      with:
+        path: |
+          .venv
+          .cache/poetry-cli
+        key: sapience-v1-${{ runner.os }}-${{ runner.arch }}-${{ steps.python.outputs.python-version }}-${{ hashFiles('pyproject.toml', 'poetry.lock') }}
+    - name: Install locked dependencies on cache miss
+      if: steps.cache.outputs.cache-hit != 'true'
+      shell: bash
+      run: |
+        python -m venv .cache/poetry-cli
+        .cache/poetry-cli/bin/python -m pip install poetry==2.5.1
+        python -m venv .venv
+        VIRTUAL_ENV="$PWD/.venv" .cache/poetry-cli/bin/poetry install --no-root --extras postgres --no-interaction
+    - name: Install current entry points
+      shell: bash
+      run: |
+        VIRTUAL_ENV="$PWD/.venv" .cache/poetry-cli/bin/poetry install --only-root --no-interaction
+        echo "$PWD/.venv/bin" >> "$GITHUB_PATH"
+        echo "$PWD/.cache/poetry-cli/bin" >> "$GITHUB_PATH"
+        echo "VIRTUAL_ENV=$PWD/.venv" >> "$GITHUB_ENV"

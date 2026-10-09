@@ -1,0 +1,118 @@
+[project]
+name = "sapience"
+version = "0.1.0"
+description = "Typed knowledge, reusable lessons, and evidence-based decision replay"
+readme = "README.md"
+license = "GPL-3.0-only"
+license-files = ["LICENSE"]
+keywords = ["knowledge", "lessons", "audit", "privacy", "replay"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Operating System :: POSIX",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
+]
+requires-python = ">=3.12,!=3.14.1,<4"
+dependencies = [
+    "attrs>=26.1.0,<26.2",
+    "cattrs>=26.2.1,<26.3",
+    "matplotlib>=3.11.2,<3.12",
+    "networkx>=3.7,<3.8",
+    "jsonschema>=4.26,<5",
+]
+
+[project.urls]
+Homepage = "https://github.com/astrivant/identity"
+Documentation = "https://github.com/astrivant/identity/tree/main/docs"
+Issues = "https://github.com/astrivant/identity/issues"
+
+[project.optional-dependencies]
+postgres = ["psycopg[binary]>=3.3.6,<3.4"]
+
+[project.scripts]
+sapience = "sapience.cli:main"
+sapience-pii = "sapience.privacy.cli:main"
+
+[tool.poetry]
+packages = [{include = "sapience", from = "pkg"}]
+include = [{path = "pkg/sapience/sql/**/*.sql", format = ["sdist", "wheel"]}]
+exclude = ["pkg/sapience/**/tests"]
+
+[tool.poetry.group.dev.dependencies]
+sqlfluff = "4.4.0"
+PyYAML = "6.0.3"
+types-PyYAML = "6.0.12.20260906"
+ruff = "0.16.10"
+mypy = "2.4.0"
+pydocstyle = "6.3.0"
+pydoclint = "0.11.0"
+pre-commit = "4.6.2"
+pytest = "9.1.1"
+pytest-xdist = "3.8.0"
+shellcheck-py = "0.11.0.1"
+shfmt-py = "4.2.0"
+types-networkx = "3.6.1.20261006"
+types-jsonschema = ">=4.26,<5"
+
+[build-system]
+requires = ["poetry-core==2.5.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+line-length = 140
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "D", "TC"]
+ignore = ["D200", "D202", "D212"]
+extend-select = ["D213"]
+
+# Pydocstyle 6.3 cannot parse PEP 695 generic signatures. Retain TypeVar here
+# so typed docstrings remain checked rather than suppressing documentation rules.
+[tool.ruff.per-file-target-version]
+"pkg/sapience/knowledge/contracts.py" = "py311"
+
+[tool.ruff.lint.isort]
+required-imports = ["from __future__ import annotations"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+files = ["scripts", "pkg"]
+disallow_any_explicit = true
+disallow_any_unimported = true
+
+[tool.pydocstyle]
+convention = "google"
+add-ignore = ["D200", "D202", "D212"]
+add-select = ["D213"]
+match = ".*\\.py"
+
+[tool.pydoclint]
+style = "google"
+skip-checking-short-docstrings = false
+arg-type-hints-in-docstring = true
+arg-type-hints-in-signature = true
+check-return-types = true
+check-arg-order = true
+require-return-section-when-returning-nothing = true
+skip-checking-raises = true
+
+[tool.pytest.ini_options]
+testpaths = ["pkg/sapience"]
+pythonpath = ["scripts", "pkg"]
+addopts = "-ra -n auto --import-mode=importlib"
+
+markers = ["postgres: live PostgreSQL contract tests (SAPIENCE_TEST_DATABASE_URL required)"]
+
+[tool.sqlfluff.core]
+templater = "placeholder"
+max_line_length = 140

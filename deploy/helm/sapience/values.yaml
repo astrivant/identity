@@ -1,0 +1,53 @@
+## @section Synchronization workers
+## @param workers Number of concurrent one-shot sync workers, from 1 through 16
+workers: 1
+## @param image.repository Image built from this checkout; publish to a private registry before cluster use
+## @param image.tag Immutable application release or source tag
+## @param image.pullPolicy Kubernetes image pull policy
+image:
+  repository: sapience
+  tag: "0.1.0"
+  pullPolicy: IfNotPresent
+## @param imagePullSecrets [array] Existing registry credential Secret names
+imagePullSecrets: []
+## @param source.existingSecret Secret containing the reviewed lessons.jsonl, mounted read-only
+source:
+  existingSecret: sapience-source
+## @param database.existingSecret Secret containing the PostgreSQL URI; never place credentials in values
+## @param database.urlKey Key holding the PostgreSQL URI in that Secret
+## @param database.namespace Shared identity partition; all cooperating workers must use the same value
+## @param database.caSecret Optional Secret containing root.crt for a private PostgreSQL CA
+database:
+  existingSecret: sapience-database
+  urlKey: url
+  namespace: default
+  caSecret: ""
+## @param job.backoffLimit Number of failed pod retries
+## @param job.activeDeadlineSeconds Maximum total job duration
+## @param job.ttlSecondsAfterFinished Retain completed job status for this many seconds
+job:
+  backoffLimit: 2
+  activeDeadlineSeconds: 300
+  ttlSecondsAfterFinished: 3600
+## @param resources.requests.cpu Requested worker CPU
+## @param resources.requests.memory Requested worker memory
+## @param resources.limits.cpu Maximum worker CPU
+## @param resources.limits.memory Maximum worker memory
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: "1"
+    memory: 512Mi
+
+## @section Development PostgreSQL
+## @param postgresql.enabled Deploy a single-node development database; production should use a managed endpoint
+## @param postgresql.image Pinned PostgreSQL development and test image
+## @param postgresql.existingSecret Secret with a password key for the development database
+## @param postgresql.storageSize Persistent data volume capacity
+postgresql:
+  enabled: false
+  image: postgres:18.6-alpine@sha256:77f585114c32fbca283dc835b0596f4e52b51b4c6662d7810b2f4084f60a1873
+  existingSecret: sapience-postgres
+  storageSize: 1Gi
