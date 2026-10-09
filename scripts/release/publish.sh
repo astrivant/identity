@@ -37,7 +37,7 @@ done
 
 notes="$RUNNER_TEMP/release-notes.md"
 cat >"$notes" <<'NOTES'
-Install the package with `pip install sapience` or `pip install 'sapience[postgres]'`.
+Install the package with `pip install witful` or `pip install 'witful[postgres]'`.
 
 Download the distributions, public key, fingerprint, manifest, and Sigstore bundles.
 Compare the fingerprint with a trusted source, then verify:
@@ -57,7 +57,7 @@ if gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --json isDraft --j
         exit 1
     fi
 else
-    gh release create "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --verify-tag --draft --title "Sapience $RELEASE_TAG" --notes-file "$notes"
+    gh release create "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --verify-tag --draft --title "Witful $RELEASE_TAG" --notes-file "$notes"
 fi
 
 gh release upload "$RELEASE_TAG" "$artifact_dir"/* --repo "$GITHUB_REPOSITORY" --clobber

@@ -12,7 +12,7 @@ Usage: bash scripts/release/setup-signing.sh --repo OWNER/REPO [--key-dir DIRECT
 
 Requires OpenSSL, Cosign 3.x, and an authenticated GitHub CLI on macOS or Linux.
 Without --key-dir, generate a new signing identity and save its encrypted key,
-public key, and password under ${XDG_DATA_HOME:-$HOME/.local/share}/sapience/signing/.
+public key, and password under ${XDG_DATA_HOME:-$HOME/.local/share}/witful/signing/.
 With --key-dir, upload the existing cosign.key and cosign.password from that directory.
 Both modes replace COSIGN_PRIVATE_KEY and COSIGN_PASSWORD in the selected repository.
 USAGE
@@ -73,7 +73,7 @@ if [[ -n "$signing_dir" ]]; then
         fi
     done
 else
-    signing_root="${XDG_DATA_HOME:-$HOME/.local/share}/sapience/signing"
+    signing_root="${XDG_DATA_HOME:-$HOME/.local/share}/witful/signing"
     mkdir -p "$signing_root"
     signing_dir="$(mktemp -d "$signing_root/key.XXXXXX")"
     printf 'Local signing-key backup: %s\n' "$signing_dir"

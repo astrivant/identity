@@ -1,7 +1,7 @@
-- id: sapience-pii
-  name: Sapience PII scan
+- id: witful-pii
+  name: Witful PII scan
   description: Scan the complete Git index without printing sensitive matches.
-  entry: sapience-pii scan --staged
+  entry: witful-pii scan --staged
   language: python
   pass_filenames: false
   always_run: true

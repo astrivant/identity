@@ -1,0 +1,116 @@
+"""
+Record, compare, mirror, and render explicit project checkpoints.
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import subprocess
+from pathlib import Path
+from typing import TYPE_CHECKING
+
+from jsonschema import ValidationError
+
+from witful.checkpoints.diff import compare
+from witful.checkpoints.journal import read, record
+from witful.checkpoints.models import Checkpoint
+from witful.checkpoints.plotting import build
+from witful.checkpoints.storage import SQLiteCheckpointStore, open_store
+from witful.files import replace_file
+from witful.knowledge.contracts import as_data, schema
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
+
+__all__ = ["main"]
+
+
+def main(argv: Sequence[str] | None = None) -> int:
+    """
+    Execute one bounded operation, keeping remote writes explicit and plots out of recording.
+
+    Args:
+        argv (Sequence[str] | None): Explicit arguments or process command line.
+
+    Returns:
+        int: Zero on success; parser exit two for invalid data, references, or unavailable storage.
+    """
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--repo", type=Path, default=Path.cwd())
+    parser.add_argument("--namespace", default=os.environ.get("WITFUL_DATABASE_NAMESPACE", "default"))
+    parser.add_argument("--database", type=Path, help="Local SQLite mirror, default .witful/checkpoints.sqlite3")
+    commands = parser.add_subparsers(dest="command", required=True)
+    capture = commands.add_parser("record", help="Snapshot reviewed evidence at a project's committed HEAD")
+    capture.add_argument("--project", type=Path, required=True)
+    capture.add_argument("--project-id", required=True, help="Stable chosen alias; remote URLs and machine paths are never inferred")
+    commands.add_parser("check", help="Validate the journal without creating data or plots")
+    commands.add_parser("schemas", help="Generate the authoritative checkpoint schema")
+    commands.add_parser("sync", help="Seed the SQLite mirror, or explicitly selected WITFUL_DATABASE_URL")
+    difference = commands.add_parser("diff", help="Compare two snapshots, defaulting to the last two checkpoints")
+    difference.add_argument("--before")
+    difference.add_argument("--after")
+    difference.add_argument("--from-database", action="store_true")
+    render = commands.add_parser("build", help="Compute all differences and refresh recent-project plots")
+    render.add_argument("--from-database", action="store_true")
+    render.add_argument("--output-dir", type=Path, default=Path("docs/assets"))
+    render.add_argument("--limit", type=int, default=8)
+    args = parser.parse_args(argv)
+    root = args.repo.resolve()
+    database = args.database or root / ".witful/checkpoints.sqlite3"
+
+    try:
+        if args.command == "schemas":
+            path = root / "knowledge/schemas/checkpoint.schema.json"
+            path.parent.mkdir(parents=True, exist_ok=True)
+            content = (json.dumps(schema(Checkpoint), indent=2, sort_keys=True) + "\n").encode()
+            replace_file(path, content, expected=path.read_bytes() if path.exists() else None)
+            return 0
+
+        if args.command == "record":
+            event = record(root, args.project, args.project_id)
+
+            # Journal persistence precedes the disposable local mirror; an interrupted sync is safe to retry.
+            SQLiteCheckpointStore(database, args.namespace).seed(read(root / "knowledge/checkpoints.jsonl"))
+            print(event.id)
+            return 0
+
+        stored = args.command in {"build", "diff"} and args.from_database
+        events = (
+            open_store(database, os.environ.get("WITFUL_DATABASE_URL"), args.namespace).load()
+            if stored
+            else read(root / "knowledge/checkpoints.jsonl")
+        )
+
+        if args.command == "check":
+            print(f"Validated {len(events)} project checkpoints")
+        elif args.command == "sync":
+            print(
+                json.dumps({"added_checkpoints": open_store(database, os.environ.get("WITFUL_DATABASE_URL"), args.namespace).seed(events)})
+            )
+        elif args.command == "diff":
+            if len(events) < 2 and (not args.before or not args.after):
+                raise ValueError("Record two checkpoints or supply two existing checkpoint IDs")
+
+            indexed = {event.id: event for event in events}
+            before = indexed.get(args.before) if args.before else events[-2]
+            after = indexed.get(args.after) if args.after else events[-1]
+
+            if before is None or after is None:
+                raise ValueError("Unknown checkpoint ID")
+
+            print(json.dumps([as_data(item) for item in compare(before, after)], indent=2))
+        else:
+            output = args.output_dir if args.output_dir.is_absolute() else root / args.output_dir
+
+            for path in build(events, output, args.limit):
+                print(path)
+    except (OSError, ValueError, RuntimeError, ValidationError, subprocess.TimeoutExpired):
+        parser.exit(
+            2,
+            "Checkpoint operation failed; validate source records, project HEAD, requested IDs, and storage access. "
+            "No source text or credentials were logged.\n",
+        )
+
+    return 0

@@ -1,6 +1,6 @@
 [project]
-name = "sapience"
-version = "0.1.1"
+name = "witful"
+version = "0.1.2"
 description = "Typed knowledge, reusable lessons, and evidence-based decision replay"
 readme = "README.md"
 license = "GPL-3.0-only"
@@ -35,13 +35,13 @@ Issues = "https://github.com/astrivant/identity/issues"
 postgres = ["psycopg[binary]>=3.3.6,<3.4"]
 
 [project.scripts]
-sapience = "sapience.cli:main"
-sapience-pii = "sapience.privacy.cli:main"
+witful = "witful.cli:main"
+witful-pii = "witful.privacy.cli:main"
 
 [tool.poetry]
-packages = [{include = "sapience", from = "pkg"}]
-include = [{path = "pkg/sapience/sql/**/*.sql", format = ["sdist", "wheel"]}]
-exclude = ["pkg/sapience/**/tests"]
+packages = [{include = "witful", from = "pkg"}]
+include = [{path = "pkg/witful/sql/**/*.sql", format = ["sdist", "wheel"]}]
+exclude = ["pkg/witful/**/tests"]
 
 [tool.poetry.group.dev.dependencies]
 sqlfluff = "4.4.0"
@@ -75,7 +75,7 @@ extend-select = ["D213"]
 # Pydocstyle 6.3 cannot parse PEP 695 generic signatures. Retain TypeVar here
 # so typed docstrings remain checked rather than suppressing documentation rules.
 [tool.ruff.per-file-target-version]
-"pkg/sapience/knowledge/contracts.py" = "py311"
+"pkg/witful/knowledge/contracts.py" = "py311"
 
 [tool.ruff.lint.isort]
 required-imports = ["from __future__ import annotations"]
@@ -107,11 +107,11 @@ require-return-section-when-returning-nothing = true
 skip-checking-raises = true
 
 [tool.pytest.ini_options]
-testpaths = ["pkg/sapience"]
+testpaths = ["pkg/witful"]
 pythonpath = ["scripts", "pkg"]
 addopts = "-ra -n auto --import-mode=importlib"
 
-markers = ["postgres: live PostgreSQL contract tests (SAPIENCE_TEST_DATABASE_URL required)"]
+markers = ["postgres: live PostgreSQL contract tests (WITFUL_TEST_DATABASE_URL required)"]
 
 [tool.sqlfluff.core]
 templater = "placeholder"

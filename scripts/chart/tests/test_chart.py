@@ -12,7 +12,7 @@ import yaml
 from jsonschema import validate
 
 _ROOT = Path(__file__).resolve().parents[3]
-_CHART = _ROOT / "deploy/helm/sapience"
+_CHART = _ROOT / "deploy/helm/witful"
 
 
 class ChartContracts(unittest.TestCase):
@@ -28,7 +28,7 @@ class ChartContracts(unittest.TestCase):
             None: The chart preserves the non-root, read-only, and bounded-worker contract.
         """
         result = subprocess.run(
-            ["helm", "template", "sapience", str(_CHART), "--set", "workers=3,database.caSecret=ca,imagePullSecrets[0]=registry"],
+            ["helm", "template", "witful", str(_CHART), "--set", "workers=3,database.caSecret=ca,imagePullSecrets[0]=registry"],
             check=True,
             capture_output=True,
             text=True,
@@ -68,7 +68,7 @@ class ChartContracts(unittest.TestCase):
         container = pod["containers"][0]
         assert container["securityContext"]["readOnlyRootFilesystem"] is True
         assert pod["securityContext"]["runAsNonRoot"] is True
-        assert container["env"][0]["valueFrom"]["secretKeyRef"] == {"name": "sapience-database", "key": "url"}
+        assert container["env"][0]["valueFrom"]["secretKeyRef"] == {"name": "witful-database", "key": "url"}
         assert container["env"][2] == {"name": "PGSSLROOTCERT", "value": "/etc/postgres/root.crt"}
         assert all(mount["readOnly"] for mount in container["volumeMounts"])
 
@@ -82,7 +82,7 @@ class ChartContracts(unittest.TestCase):
         for value in ("0", "-1", "17", "1.5"):
             with self.subTest(workers=value):
                 result = subprocess.run(
-                    ["helm", "template", "sapience", str(_CHART), "--set", f"workers={value}"],
+                    ["helm", "template", "witful", str(_CHART), "--set", f"workers={value}"],
                     check=False,
                     capture_output=True,
                     text=True,
@@ -100,10 +100,10 @@ class ChartContracts(unittest.TestCase):
         compose = yaml.safe_load((_ROOT / "deploy/compose.yaml").read_text())
         services = compose["services"]
         assert all("container_name" not in item for item in services.values())
-        assert services["sapience"]["environment"]["SAPIENCE_DATABASE_URL"].startswith("${SAPIENCE_DATABASE_URL:?")
-        assert services["sapience"]["depends_on"]["postgres"]["condition"] == "service_healthy"
-        assert services["sapience"]["volumes"] == ["../lessons.jsonl:/source/lessons.jsonl:ro"]
-        assert services["sapience"]["read_only"] is True
+        assert services["witful"]["environment"]["WITFUL_DATABASE_URL"].startswith("${WITFUL_DATABASE_URL:?")
+        assert services["witful"]["depends_on"]["postgres"]["condition"] == "service_healthy"
+        assert services["witful"]["volumes"] == ["../lessons.jsonl:/source/lessons.jsonl:ro"]
+        assert services["witful"]["read_only"] is True
         assert "ports" not in services["postgres"]
 
 

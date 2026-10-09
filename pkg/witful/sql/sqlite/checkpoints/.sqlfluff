@@ -1,0 +1,5 @@
+[sqlfluff:templater:placeholder]
+project = 'example/project'
+revision = '0000000000000000000000000000000000000000'
+payload = '{}'
+ordinal = 1

@@ -4,15 +4,15 @@ All commands accept `--help`. Commands act on an explicitly selected local
 collection and never infer a need to publish it.
 
 ```bash
-sapience init ./my-knowledge
-sapience lessons --repo ./my-knowledge add --topic Testing --lesson 'Use explicit inputs.' --source 'Team review'
-sapience lessons --repo ./my-knowledge search explicit
-sapience --repo ./my-knowledge build
+witful init ./my-knowledge
+witful lessons --repo ./my-knowledge add --topic Testing --lesson 'Use explicit inputs.' --source 'Team review'
+witful lessons --repo ./my-knowledge search explicit
+witful --repo ./my-knowledge build
 ```
 
 Unassigned topics remain visible as Unclassified. Edit `knowledge/catalog.json`
 to group exact topic names under disciplines and skills. Generated JSON Schemas
-live under `knowledge/schemas/`; `sapience --repo PATH check` validates the
+live under `knowledge/schemas/`; `witful --repo PATH check` validates the
 sources and schema drift.
 
 | Command | Purpose |
@@ -27,6 +27,8 @@ sources and schema drift.
 | `life [--repo PATH] replay --output-dir PATH` | Reconstruct saved inputs; toolchain drift fails unless explicitly acknowledged |
 | `life [--repo PATH] seed` | Transactionally seed an explicitly configured PostgreSQL archive |
 | `repertoire [--repo PATH] check/build/record --input use.json` | Validate the toolbox/problem taxonomy, record actual use, and plot task frequency |
+| `checkpoints [--repo PATH] record --project PATH --project-id ALIAS` | Record a Git boundary and update its local checkpoint mirror |
+| `checkpoints check/diff/build/schemas/sync` | Validate, compare, render, or explicitly mirror checkpoint history |
 | `privacy scan [--repo PATH] [--staged] [--terms-file PATH]` | Scan publishable source; redacted findings, exit 1 for matches, 2 for incomplete scans |
 | `registry NAME... [--stdin] [--refresh] [--offline]` | Batched PyPI observations, cached for six hours; exit 2 for unknown results |
 
@@ -58,3 +60,6 @@ observation is a no-op. Later observations of the same task replace its current
 counts while retaining previous evidence. Ancestor counts deduplicate each task.
 These repertoire plots have their own exported inputs; Life replay covers its
 saved lesson/knowledge inputs and does not implicitly archive this separate catalog.
+
+See [project checkpoints](checkpoints.md) for visit ordering, evidence semantics,
+database mirroring, and main-branch rendering.

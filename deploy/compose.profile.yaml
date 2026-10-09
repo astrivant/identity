@@ -1,11 +1,11 @@
 schemaVersion: 1
-name: sapience-local
+name: witful-local
 services:
-  sapience:
+  witful:
     source:
       kind: Job
-      name: sapience-sync-1
-    container: sapience
+      name: witful-sync-1
+    container: witful
     remove: [/volumes, /environment, /restart, /container_name]
     set:
       read_only: true
@@ -15,8 +15,8 @@ services:
         context: ..
         target: production
       environment:
-        SAPIENCE_DATABASE_URL: "${SAPIENCE_DATABASE_URL:?Set the local PostgreSQL URI}"
-        SAPIENCE_DATABASE_NAMESPACE: "${SAPIENCE_DATABASE_NAMESPACE:-default}"
+        WITFUL_DATABASE_URL: "${WITFUL_DATABASE_URL:?Set the local PostgreSQL URI}"
+        WITFUL_DATABASE_NAMESPACE: "${WITFUL_DATABASE_NAMESPACE:-default}"
       volumes:
         - "../lessons.jsonl:/source/lessons.jsonl:ro"
       depends_on:
@@ -28,18 +28,18 @@ services:
   postgres:
     source:
       kind: StatefulSet
-      name: sapience-postgres
+      name: witful-postgres
     container: postgres
     remove: [/volumes, /environment, /ports, /container_name]
     set:
       environment:
-        POSTGRES_DB: sapience
-        POSTGRES_USER: sapience
-        POSTGRES_PASSWORD: "${SAPIENCE_POSTGRES_PASSWORD:?Set the local database password}"
+        POSTGRES_DB: witful
+        POSTGRES_USER: witful
+        POSTGRES_PASSWORD: "${WITFUL_POSTGRES_PASSWORD:?Set the local database password}"
       volumes:
         - postgres-data:/var/lib/postgresql
       healthcheck:
-        test: [CMD, pg_isready, -U, sapience, -d, sapience]
+        test: [CMD, pg_isready, -U, witful, -d, witful]
         interval: 5s
         timeout: 3s
         retries: 12

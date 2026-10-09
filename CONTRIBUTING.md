@@ -9,11 +9,11 @@ poetry run pytest -n 4
 poetry run pre-commit run --all-files
 ```
 
-Keep Python implementation and tests under `pkg/sapience/`. Use strict types,
+Keep Python implementation and tests under `pkg/witful/`. Use strict types,
 attrs/cattrs contracts, multiline Google docstrings, and pure transformations
 with explicit inputs. Add focused regressions for behavior changes. Tests use
 synthetic data; never copy personal records into fixtures. Live PostgreSQL tests
-use `SAPIENCE_TEST_DATABASE_URL` and skip when it is not configured locally.
+use `WITFUL_TEST_DATABASE_URL` and skip when it is not configured locally.
 
 Independent CI checks start in parallel: Python tests, lint, PII, distributions,
 and orchestration. Tag publication consumes the verified distributions after

@@ -1,6 +1,6 @@
 .venv/
 .cache/
-.sapience/
+.witful/
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/

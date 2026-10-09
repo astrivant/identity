@@ -1,7 +1,7 @@
 repository:
   name: identity
-  description: Typed lessons, observed reuse, and replayable engineering decisions with Sapience
-  homepage: https://pypi.org/project/sapience/
+  description: Typed lessons, observed reuse, and replayable engineering decisions with Witful
+  homepage: https://pypi.org/project/witful/
   private: false
   has_issues: true
   has_wiki: false

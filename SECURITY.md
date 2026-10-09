@@ -9,14 +9,14 @@ The current release line receives security fixes; update before reporting a defe
 This project contains code, schemas, and synthetic fixtures. Keep actual lessons,
 decisions, prompts, tool-use records, model configuration, and generated personal
 graphs in a separately controlled collection. Application users own access and
-retention decisions for that collection. Sapience does not upload records to a
+retention decisions for that collection. Witful does not upload records to a
 model or telemetry service.
 
-`sapience privacy scan` scans tracked and nonignored untracked UTF-8 sources.
+`witful privacy scan` scans tracked and nonignored untracked UTF-8 sources.
 `--staged` inspects the complete Git index, so unstaged clean files cannot hide
 staged sensitive content. `.git` history and ignored files are outside its scope.
 The CI job scans every checked-out source file and must pass before merge/release;
-pre-commit exports the same gate as `sapience-pii`. Hooks can be bypassed locally,
+pre-commit exports the same gate as `witful-pii`. Hooks can be bypassed locally,
 so repository branch protection must require **PII scan**.
 
 ## What the scanner detects
@@ -25,7 +25,7 @@ so repository branch protection must require **PII scan**.
 - Personal Unix/macOS/Windows home paths; generic runner/container homes are permitted.
 - Common North American phone and US government-ID shapes.
 - LinkedIn member profile URLs and PEM/OpenSSH private-key headers.
-- Additional case-insensitive literals from `--terms-file` or `SAPIENCE_PII_TERMS_FILE`.
+- Additional case-insensitive literals from `--terms-file` or `WITFUL_PII_TERMS_FILE`.
 
 Keep the terms file outside public source control. Logs contain only relative
 file location, line number, and detector ID. A sensitive filename becomes a
@@ -65,3 +65,13 @@ Avoid confidential names; the cache is disposable. It does not reserve names.
 CI runs on synthetic fixtures. PyPI and signing credentials are supplied only
 to tag publication jobs. Signing happens after artifact bytes are final; use
 the published fingerprint through an independently trusted channel.
+
+## Project checkpoints
+
+Checkpoint JSONL and database mirrors contain project aliases, commit IDs, times,
+skill labels, and evidence fingerprints. Generated plots expose those aliases and
+counts. They can identify private work even without source text. Do not copy a
+private collection into this public repository or cache its database in shared CI
+caches. The additive checkpoint table uses the same database trust boundary and
+TLS policy as other stores; namespaces are not tenant authorization. The hash
+chain checks integrity but is not a signature. See [retention and recovery](docs/checkpoints.md).

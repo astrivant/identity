@@ -8,7 +8,7 @@ on:
 permissions:
   contents: read
 concurrency:
-  group: sapience-${{ github.ref }}
+  group: witful-${{ github.ref }}
   cancel-in-progress: false
 env:
   MPLBACKEND: Agg
@@ -30,7 +30,7 @@ jobs:
           --health-timeout 3s
           --health-retries 12
     env:
-      SAPIENCE_TEST_DATABASE_URL: postgresql://postgres:fixture@localhost:5432/postgres?sslmode=disable
+      WITFUL_TEST_DATABASE_URL: postgresql://postgres:fixture@localhost:5432/postgres?sslmode=disable
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -53,7 +53,7 @@ jobs:
           mypy
           pydocstyle pkg scripts
           pydoclint pkg scripts
-          sqlfluff lint pkg/sapience/sql pkg/sapience/storage/tests pkg/sapience/life/tests
+          sqlfluff lint pkg/witful/sql pkg/witful/storage/tests pkg/witful/life/tests pkg/witful/checkpoints/tests
           git ls-files -z 'scripts/*.sh' | xargs -0 shellcheck -x
           git ls-files -z 'scripts/*.sh' | xargs -0 shfmt -d -i 4 -ci
           python scripts/documentation/update-contents.py --check
@@ -67,7 +67,7 @@ jobs:
         with:
           persist-credentials: false
       - uses: ./.github/actions/python
-      - run: sapience privacy scan
+      - run: witful privacy scan
 
   distributions:
     name: Build distributions
@@ -113,23 +113,23 @@ jobs:
               npm --prefix scripts/chart ci --ignore-scripts
           fi
           npm --prefix scripts/chart run generate
-          git diff --exit-code -- deploy/helm/sapience/README.md deploy/helm/sapience/values.schema.json
+          git diff --exit-code -- deploy/helm/witful/README.md deploy/helm/witful/values.schema.json
       - name: Generate Compose from the reviewed chart
         uses: astrivant/composer@4ee8ce8507e10b6cbbac607d7bda01e22740cd37
         with:
           watch-directory: '.'
-          chart: deploy/helm/sapience
+          chart: deploy/helm/witful
           values: deploy/compose.values.yaml
           profile: deploy/compose.profile.yaml
-          release: sapience
+          release: witful
           output: deploy/compose.yaml
           commit: 'false'
       - name: Validate orchestration contracts and generated output
         env:
-          SAPIENCE_DATABASE_URL: postgresql://sapience:fixture@postgres/sapience?sslmode=disable
-          SAPIENCE_POSTGRES_PASSWORD: fixture
+          WITFUL_DATABASE_URL: postgresql://witful:fixture@postgres/witful?sslmode=disable
+          WITFUL_POSTGRES_PASSWORD: fixture
         run: |
-          helm lint deploy/helm/sapience --strict
+          helm lint deploy/helm/witful --strict
           git diff --exit-code -- deploy/compose.yaml
           docker compose -f deploy/compose.yaml config --quiet
           "$RUNNER_TEMP/composer-action-venv/bin/python" -m unittest discover -s scripts/chart/tests
@@ -141,13 +141,13 @@ jobs:
           target: production
           load: true
           push: false
-          tags: sapience:0.1.0
-          cache-from: type=gha,scope=sapience-runtime
-          cache-to: type=gha,scope=sapience-runtime,mode=max
+          tags: witful:0.1.0
+          cache-from: type=gha,scope=witful-runtime
+          cache-to: type=gha,scope=witful-runtime,mode=max
       - name: Verify packaged CLI and SQL resources
         run: |
-          docker run --rm sapience:0.1.0 lessons --help
-          docker run --rm --entrypoint python sapience:0.1.0 -c             'from importlib.resources import files; assert files("sapience").joinpath("sql/postgres/life/schema.sql").is_file()'
+          docker run --rm witful:0.1.0 lessons --help
+          docker run --rm --entrypoint python witful:0.1.0 -c             'from importlib.resources import files; assert files("witful").joinpath("sql/postgres/life/schema.sql").is_file()'
 
   publish:
     name: Publish signed release
