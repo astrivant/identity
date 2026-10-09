@@ -12,7 +12,6 @@ from textwrap import fill
 from typing import TYPE_CHECKING
 
 import matplotlib as mpl
-import networkx as nx
 from matplotlib.figure import Figure
 from matplotlib.patches import Circle
 
@@ -20,6 +19,7 @@ from witful.files import replace_file
 from witful.knowledge.applications import effective_applications
 from witful.knowledge.compiler import index
 from witful.knowledge.contracts import as_data
+from witful.knowledge.emphasis import emphasis_layout
 from witful.knowledge.metrics import graph_edges, usage
 from witful.knowledge.models import Discipline, Identity, Lemma, Lesson, Skill
 
@@ -37,7 +37,7 @@ _MUTED = "#697783"
 _LAYERS = (Identity, Discipline, Skill, Lesson, Lemma)
 
 
-def save_figure(figure: Figure, destination: Path, name: str) -> list[Path]:
+def save_figure(figure: Figure, destination: Path, name: str, *, projection: bool = False) -> list[Path]:
     """
     Preserve unchanged SVG and PNG bytes and modification times.
 
@@ -45,16 +45,23 @@ def save_figure(figure: Figure, destination: Path, name: str) -> list[Path]:
         figure (Figure): Completed headless plot.
         destination (Path): Artifact directory.
         name (str): Stable filename stem.
+        projection (bool): Remove marked outer titles and crop unused space for a containing document.
 
     Returns:
         list[Path]: Generated or unchanged image paths.
     """
+    if projection:
+        for artist in figure.texts:
+            if artist.get_gid() == "plot-heading":
+                artist.set_visible(False)
+                artist.set_in_layout(False)
+
     paths: list[Path] = []
 
     for extension in ("svg", "png"):
         buffer = BytesIO()
         metadata = {"Date": None, "Creator": "identity knowledge"} if extension == "svg" else {"Software": "identity knowledge"}
-        figure.savefig(buffer, format=extension, dpi=130, metadata=metadata)
+        figure.savefig(buffer, format=extension, dpi=130, metadata=metadata, bbox_inches="tight" if projection else None)
         content = buffer.getvalue()
 
         if extension == "svg":
@@ -88,7 +95,7 @@ def _usage_plot(identity: Identity, applications: Sequence[Application]) -> Figu
     figure = Figure(figsize=(15, max(6, len(skills) * 0.32 + 2)), facecolor="white")
     left, right = figure.subplots(1, 2, gridspec_kw={"width_ratios": [1, 1.6]})
     figure.subplots_adjust(left=0.14, right=0.95, top=0.85, bottom=0.14, wspace=0.95)
-    figure.suptitle("Which building blocks are being used?", fontsize=21, color=_INK, x=0.04, ha="left")
+    figure.suptitle("Which building blocks are being used?", fontsize=21, color=_INK, x=0.04, ha="left", gid="plot-heading")
     direct = [sum(any(isinstance(nodes[identifier], kind) for identifier in event.concept_ids) for event in events) for kind in _LAYERS]
     left.barh([kind.__name__ for kind in _LAYERS], direct, color=_COLORS[:5])
     left.invert_yaxis()
@@ -127,118 +134,104 @@ def _usage_plot(identity: Identity, applications: Sequence[Application]) -> Figu
 
 def _map_plot(identity: Identity, applications: Sequence[Application]) -> Figure:
     """
-    Group skills by discipline while weighted reuse links adjust their positions and widths.
+    Draw bounded discipline bubbles containing skills while retaining evidence-typed reuse links.
 
     Args:
         identity (Identity): Complete hierarchy and curated relationships.
-        applications (Sequence[Application]): Explicit evidence for observed reuse strength.
+        applications (Sequence[Application]): Explicit applications used to rank current working emphasis.
 
     Returns:
-        Figure: Skill-level overview with separate proposed and observed links.
+        Figure: Nonoverlapping bubbles with peripheral fading and a separate complete hierarchy export.
     """
-    counts = usage(identity, applications)
-    nodes, _ = index(identity)
-    selected = {key: node for key, node in nodes.items() if isinstance(node, (Discipline, Skill))}
-    graph: nx.Graph[str, dict[str, object], dict[str, float]] = nx.Graph()
-    graph.add_nodes_from(sorted(selected))
-    edges = [edge for edge in graph_edges(identity, applications) if edge.source in selected and edge.target in selected]
-
-    for edge in edges:
-        weight = 2.0 if edge.kind == "contains" else 0.2 + edge.strength * 2
-        existing = graph.get_edge_data(edge.source, edge.target, default={}).get("weight", 0.0)
-        graph.add_edge(edge.source, edge.target, weight=max(weight, existing))
-
-    # Fix discipline anchors, seed every child deterministically, and bound relaxation within each organizational cluster.
-    anchors: dict[str, tuple[float, float]] = {}
+    bubbles = emphasis_layout(identity, applications)
+    disciplines = {discipline.id: discipline for discipline in identity.disciplines}
+    colors = {discipline.id: _COLORS[index % len(_COLORS)] for index, discipline in enumerate(identity.disciplines)}
     positions: dict[str, tuple[float, float]] = {}
-    owners: dict[str, str] = {}
-    discipline_count = max(1, len(identity.disciplines))
-
-    for ordinal, discipline in enumerate(identity.disciplines):
-        angle = math.pi / 2 - 2 * math.pi * ordinal / discipline_count
-        center = (2.6 * math.cos(angle), 2.6 * math.sin(angle))
-        anchors[discipline.id] = center
-        positions[discipline.id] = center
-
-        for number, skill in enumerate(discipline.skills):
-            theta = 2 * math.pi * number / max(1, len(discipline.skills))
-            positions[skill.id] = (center[0] + 0.68 * math.cos(theta), center[1] + 0.68 * math.sin(theta))
-            owners[skill.id] = discipline.id
-
-    if graph and anchors:
-        relaxed = nx.spring_layout(graph, pos=positions, fixed=sorted(anchors), seed=17, iterations=80, k=0.55, method="force")
-
-        for identifier, owner in owners.items():
-            start, center = positions[identifier], anchors[owner]
-            point = (0.75 * start[0] + 0.25 * float(relaxed[identifier][0]), 0.75 * start[1] + 0.25 * float(relaxed[identifier][1]))
-
-            # Limit movement from each readable seed slot so a strong bridge cannot collapse neighboring labels.
-            displacement = math.dist(point, start)
-            adjustment = min(1.0, 0.15 / max(displacement, 0.001))
-            point = (start[0] + (point[0] - start[0]) * adjustment, start[1] + (point[1] - start[1]) * adjustment)
-            distance = math.dist(point, center)
-            ratio = min(1.0, 0.83 / max(distance, 0.001))
-            positions[identifier] = (center[0] + (point[0] - center[0]) * ratio, center[1] + (point[1] - center[1]) * ratio)
-
-    figure = Figure(figsize=(14, 13), facecolor="white")
-    axis = figure.add_axes((0.03, 0.09, 0.94, 0.8))
+    opacity: dict[str, float] = {}
+    figure = Figure(figsize=(12, 12), facecolor="white")
+    axis = figure.add_axes((0.035, 0.11, 0.93, 0.78))
     axis.set_aspect("equal")
-    axis.set_xlim(-4.1, 4.1)
-    axis.set_ylim(-3.9, 3.9)
+    axis.set_xlim(-1.05, 1.05)
+    axis.set_ylim(-1.05, 1.05)
     axis.axis("off")
-    figure.text(0.04, 0.96, "How my skills connect", fontsize=23, color=_INK, weight="bold")
-    figure.text(0.04, 0.925, "Where do my skills connect across areas of work?", fontsize=11, color=_MUTED)
+    figure.text(0.04, 0.96, "How my skills connect", fontsize=23, color=_INK, weight="bold", gid="plot-heading")
+    figure.text(0.04, 0.925, "Which areas of work are in focus, and how do they connect?", fontsize=11, color=_MUTED, gid="plot-heading")
 
-    for edge in edges:
+    # Discipline bubbles replace the old square anchors; skill dots remain their nested subgraphs.
+    for bubble in bubbles:
+        discipline = disciplines[bubble.id]
+        positions[bubble.id] = (bubble.x, bubble.y)
+        opacity[bubble.id] = bubble.opacity
+        skills = sorted(discipline.skills, key=lambda item: item.id)
+        axis.add_patch(
+            Circle(
+                (bubble.x, bubble.y),
+                bubble.radius,
+                facecolor=colors[bubble.id],
+                edgecolor=colors[bubble.id],
+                alpha=0.09 * bubble.opacity,
+                linewidth=1.2,
+                zorder=2,
+            )
+        )
+        axis.text(
+            bubble.x,
+            bubble.y + bubble.radius * 0.13,
+            fill(discipline.name, 16, break_on_hyphens=False),
+            ha="center",
+            va="center",
+            color=colors[bubble.id],
+            alpha=bubble.opacity,
+            fontsize=8 + 15 * bubble.radius,
+            bbox={"facecolor": "white", "edgecolor": "none", "alpha": 0.80, "pad": 1.5},
+            weight="bold",
+            zorder=4,
+        )
+
+        for ordinal, skill in enumerate(skills):
+            angle = math.pi * (1.15 + 0.70 * (ordinal + 0.5) / max(1, len(skills)))
+            point = (bubble.x + bubble.radius * 0.73 * math.cos(angle), bubble.y + bubble.radius * 0.73 * math.sin(angle))
+            positions[skill.id] = point
+            opacity[skill.id] = bubble.opacity
+            axis.scatter(*point, s=13 + 40 * bubble.radius, color=colors[bubble.id], alpha=bubble.opacity, zorder=4)
+
+    # Only the viewport is filtered. Preserve link kinds and full-graph weights instead of recomputing evidence on a subset.
+    for edge in graph_edges(identity, applications):
+        if edge.source not in positions or edge.target not in positions:
+            continue
+
         a, b = positions[edge.source], positions[edge.target]
         observed = edge.kind in {"co-use", "observed-transfer"}
-        color = "#407D61" if observed and edge.verified else "#BAC4CD"
         axis.plot(
             [a[0], b[0]],
             [a[1], b[1]],
-            color=color,
-            linewidth=0.6 + 3 * edge.strength,
+            color="#407D61" if observed and edge.verified else "#BAC4CD",
+            linewidth=0.5 + 2.5 * edge.strength,
             linestyle="-" if observed or edge.kind == "contains" else "--",
-            alpha=0.65,
+            alpha=0.55 * min(opacity[edge.source], opacity[edge.target]),
             zorder=1,
         )
 
-    for number, discipline in enumerate(identity.disciplines):
-        center = anchors[discipline.id]
-        color = _COLORS[number % len(_COLORS)]
-        axis.add_patch(Circle(center, 1.05, facecolor=color, alpha=0.055, edgecolor="none", zorder=0))
-        axis.scatter(*center, s=130, marker="s", color=color, zorder=3)
-        axis.text(center[0], center[1] + 1.04, fill(discipline.name, 25), ha="center", va="bottom", color=color, fontsize=11, weight="bold")
-
-        for skill in discipline.skills:
-            x, y = positions[skill.id]
-            axis.scatter(x, y, s=55 + 45 * math.log1p(counts[skill.id].applications), color=color, zorder=3)
-            axis.text(
-                x,
-                y - 0.09,
-                fill(skill.name, 18),
-                ha="center",
-                va="top",
-                color=_INK,
-                fontsize=8,
-                bbox={"facecolor": "white", "alpha": 0.82, "edgecolor": "none", "pad": 1},
-                zorder=4,
-            )
-
-    if not selected:
+    if not bubbles:
         axis.text(0, 0, "No disciplines recorded", ha="center", color=_MUTED)
 
+    elif not any(bubble.score for bubble in bubbles):
+        figure.text(0.04, 0.09, "No applications recorded; placement does not imply use.", color=_MUTED, fontsize=10)
+
+    figure.text(
+        0.04, 0.065, "Bubbles: areas of work   Dots: skills   Dashed: curated links   Green: verified reuse", fontsize=9, color=_MUTED
+    )
     figure.text(
         0.04,
-        0.048,
-        "Squares: disciplines   Circles: skills   Dashed: curated bridges   Green: reported verified reuse",
-        fontsize=10,
+        0.043,
+        "Size and position: recent recorded use. Peripheral fading shows emphasis, not lost knowledge.",
+        fontsize=9,
         color=_MUTED,
     )
     figure.text(
         0.04,
-        0.026,
-        "Edge strength is normalized co-use or transfer share, not a probability of correctness. Layout uses fixed seeds and anchors.",
+        0.021,
+        f"Showing {len(bubbles)} of {len(identity.disciplines)} areas. Complete hierarchy and history remain available.",
         fontsize=9,
         color=_MUTED,
     )
@@ -262,8 +255,10 @@ def _hierarchy_plot(identity: Identity) -> Figure:
 
     # Reserve physical space for the title, question, panel labels, and footer at every collection size.
     figure.subplots_adjust(left=0.06, right=0.94, top=1 - 1.15 / height, bottom=0.75 / height, wspace=0.18, hspace=0.65)
-    figure.suptitle(identity.name, fontsize=24, color=_INK, x=0.04, y=1 - 0.15 / height, ha="left")
-    figure.text(0.04, 1 - 0.58 / height, "How are disciplines, skills, and lessons organized?", fontsize=11, color=_MUTED)
+    figure.suptitle(identity.name, fontsize=24, color=_INK, x=0.04, y=1 - 0.15 / height, ha="left", gid="plot-heading")
+    figure.text(
+        0.04, 1 - 0.58 / height, "How are disciplines, skills, and lessons organized?", fontsize=11, color=_MUTED, gid="plot-heading"
+    )
 
     for axis in axes.flat:
         axis.axis("off")
@@ -313,7 +308,7 @@ def _hierarchy_plot(identity: Identity) -> Figure:
     return figure
 
 
-def write_plots(identity: Identity, applications: Sequence[Application], destination: Path) -> list[Path]:
+def write_plots(identity: Identity, applications: Sequence[Application], destination: Path, *, projection: bool = False) -> list[Path]:
     """
     Generate the README's three complementary views with explicit, repeatable inputs.
 
@@ -321,6 +316,7 @@ def write_plots(identity: Identity, applications: Sequence[Application], destina
         identity (Identity): Validated model.
         applications (Sequence[Application]): Validated application history.
         destination (Path): Directory receiving SVG and PNG versions of each view.
+        projection (bool): Export without outer titles for captions owned by a containing document.
 
     Returns:
         list[Path]: All six deterministic artifacts for this toolchain and input ordering.
@@ -332,7 +328,7 @@ def write_plots(identity: Identity, applications: Sequence[Application], destina
     with mpl.rc_context(mpl.rcParamsDefault):
         mpl.rcParams.update({"font.family": "DejaVu Sans", "svg.fonttype": "none", "svg.hashsalt": digest})
         return [
-            *save_figure(_usage_plot(identity, applications), destination, "knowledge-usage"),
-            *save_figure(_map_plot(identity, applications), destination, "knowledge-map"),
-            *save_figure(_hierarchy_plot(identity), destination, "knowledge-hierarchy"),
+            *save_figure(_usage_plot(identity, applications), destination, "knowledge-usage", projection=projection),
+            *save_figure(_map_plot(identity, applications), destination, "knowledge-map", projection=projection),
+            *save_figure(_hierarchy_plot(identity), destination, "knowledge-hierarchy", projection=projection),
         ]

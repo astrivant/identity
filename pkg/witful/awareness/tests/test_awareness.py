@@ -12,7 +12,9 @@ from typing import TYPE_CHECKING
 
 import pytest
 from witful.awareness.github import _api, push
+from witful.awareness.models import FIGURES
 from witful.awareness.rendering import render
+from witful.privacy.scanner import scan_text
 from witful.project import main as initialize
 
 if TYPE_CHECKING:
@@ -21,19 +23,36 @@ if TYPE_CHECKING:
     from pytest import MonkeyPatch
 
 
-def test_render_exports_only_selected_figures(tmp_path: Path) -> None:
+def test_render_exports_only_selected_figures(tmp_path: Path, monkeypatch: MonkeyPatch) -> None:
     """
     Exercise real renderers on a minimal collection while keeping journals out of transport.
 
     Args:
         tmp_path (Path): Temporary parent for a newly requested fixture collection.
+        monkeypatch (MonkeyPatch): Inspect vector labels at the existing publication scan boundary.
 
     Returns:
         None: Repeated exports are deterministic and contain only the selected PNG projections.
     """
     root = tmp_path / "collection"
     assert initialize([str(root)]) == 0
-    selected = ("knowledge-usage", "decision-influences", "toolbox-use", "checkpoint-transitions")
+    selected = tuple(FIGURES)
+    labels: list[str] = []
+
+    def inspect_labels(text: str) -> tuple[tuple[int, str], ...]:
+        """
+        Retain the real privacy check while observing exported vector labels.
+
+        Args:
+            text (str): SVG about to be validated for publication.
+
+        Returns:
+            tuple[tuple[int, str], ...]: The real scanner's detected personal-data patterns.
+        """
+        labels.append(text)
+        return scan_text(text)
+
+    monkeypatch.setattr("witful.awareness.rendering.scan_text", inspect_labels)
     content = render(root, selected)
     data = json.loads(content)
     assert set(data) == {"figures", "version"}
@@ -43,6 +62,10 @@ def test_render_exports_only_selected_figures(tmp_path: Path) -> None:
         assert png.startswith(b"\x89PNG\r\n\x1a\n")
         assert hashlib.sha256(png).hexdigest() == item["sha256"]
     assert render(root, selected) == content
+    assert all('id="plot-heading"' not in text for text in labels)
+    assert "Distinct task/context observations" in labels[0]
+    assert "No disciplines recorded" in labels[1]
+    assert "No accepted decisions recorded" in labels[2]
     assert not (root / "docs").exists()
     with pytest.raises(ValueError, match="disabled"):
         render(root, ())
@@ -142,7 +165,7 @@ def test_render_blocks_detected_personal_labels(tmp_path: Path) -> None:
     initialize([str(root)])
     path = root / "knowledge/catalog.json"
     catalog = json.loads(path.read_text())
-    catalog["name"] = "owner" + "@" + "fixture-mail.dev"
+    catalog["disciplines"] = [{"id": "d", "name": "owner" + "@" + "fixture-mail.dev", "skills": []}]
     path.write_text(json.dumps(catalog))
 
     with pytest.raises(ValueError, match="Personal-data pattern"):

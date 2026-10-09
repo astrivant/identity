@@ -41,7 +41,7 @@ def _figure(pairs: Sequence[tuple[Checkpoint, Checkpoint]], title: str, question
     names = {item.id: item.name for group in reversed(differences) for item in group}
     keys = sorted(names, key=lambda key: (names[key].casefold(), key))
     figure = Figure(figsize=(max(10, min(30, 5 + 2 * len(pairs))), max(4.5, 2.7 + len(keys) * 0.65)), layout="constrained")
-    figure.suptitle(title + "\n" + question, fontsize=16)
+    figure.suptitle(title + "\n" + question, fontsize=16, gid="plot-heading")
     axis = figure.subplots()
 
     if not keys or not pairs:
@@ -87,7 +87,7 @@ def _figure(pairs: Sequence[tuple[Checkpoint, Checkpoint]], title: str, question
     return figure
 
 
-def build(events: Sequence[Checkpoint], destination: Path, limit: int = 8) -> tuple[Path, ...]:
+def build(events: Sequence[Checkpoint], destination: Path, limit: int = 8, *, projection: bool = False) -> tuple[Path, ...]:
     """
     Export full comparisons and bounded plots ordered by recorded project visits.
 
@@ -95,6 +95,7 @@ def build(events: Sequence[Checkpoint], destination: Path, limit: int = 8) -> tu
         events (Sequence[Checkpoint]): Validated complete checkpoint history.
         destination (Path): Generated artifact directory.
         limit (int): Maximum recent comparisons shown in each plot, from one through twenty.
+        projection (bool): Omit outer titles when another document supplies figure headings.
 
     Returns:
         tuple[Path, ...]: Complete JSON export and two SVG/PNG views.
@@ -141,6 +142,6 @@ def build(events: Sequence[Checkpoint], destination: Path, limit: int = 8) -> tu
             ),
         ):
             figure = _figure(pairs[:limit], title, question)
-            outputs.extend(save_figure(figure, destination, name))
+            outputs.extend(save_figure(figure, destination, name, projection=projection))
 
     return tuple(outputs)

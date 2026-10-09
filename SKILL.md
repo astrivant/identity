@@ -42,6 +42,9 @@ CLI's `awareness --help`; configuration, output paths, and schemas are described
 Use `witful awareness --repo COLLECTION build` to regenerate a local bundle from
 current evidence. Inspect selected plot labels before sharing: PNGs can expose
 project names and relationships even though the bundle omits source journals.
+Awareness generation omits outer titles and subtitles so the receiving document
+owns its headings; retain axis labels and legends. Check the [working-emphasis map](docs/knowledge-map.md)
+for the distinction between a bounded current view and the full retained hierarchy.
 An empty selection publishes nothing. The receiver separately controls its allowed
 GitHub actors and enabled appendix figures; preserve all disabled defaults.
 

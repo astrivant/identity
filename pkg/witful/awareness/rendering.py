@@ -54,7 +54,7 @@ def render(root: Path, selected: tuple[str, ...]) -> bytes:
             identity = compile_identity(read_journal(root / "lessons.jsonl"), catalog)
 
             if "knowledge" in groups:
-                knowledge_plots(identity, read_applications(root / "knowledge/applications.jsonl"), destination)
+                knowledge_plots(identity, read_applications(root / "knowledge/applications.jsonl"), destination, projection=True)
 
             if "repertoire" in groups:
                 inventory_path = root / "knowledge/repertoire.json"
@@ -62,13 +62,13 @@ def render(root: Path, selected: tuple[str, ...]) -> bytes:
                 journal = root / "knowledge/tool-uses.jsonl"
                 events = [structure(json.loads(line), Use) for line in (journal.read_text() if journal.exists() else "").splitlines()]
                 validate(inventory, events, set(index(identity)[0]))
-                repertoire_plots(inventory, events, destination)
+                repertoire_plots(inventory, events, destination, projection=True)
 
         if "life" in groups:
-            write_influences(read_archive(root), destination)
+            write_influences(read_archive(root), destination, projection=True)
 
         if "checkpoints" in groups:
-            checkpoint_plots(read_checkpoints(root / "knowledge/checkpoints.jsonl"), destination)
+            checkpoint_plots(read_checkpoints(root / "knowledge/checkpoints.jsonl"), destination, projection=True)
 
         figures = []
 

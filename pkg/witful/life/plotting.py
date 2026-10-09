@@ -65,13 +65,14 @@ def draw_influences(axis: Axes, archive: Archive) -> None:
         axis.text(0.5, 0.5, "No accepted decisions recorded", ha="center", transform=axis.transAxes)
 
 
-def write_influences(archive: Archive, output: Path) -> list[Path]:
+def write_influences(archive: Archive, output: Path, *, projection: bool = False) -> list[Path]:
     """
     Render the decision-influences figure with stable bytes and searchable labels for review.
 
     Args:
         archive (Archive): Current decision history and source snapshots.
         output (Path): Directory for the derived SVG and PNG only.
+        projection (bool): Omit outer title and question in document projections.
 
     Returns:
         list[Path]: Written figure paths, preserving unchanged files.
@@ -85,8 +86,8 @@ def write_influences(archive: Archive, output: Path) -> list[Path]:
         figure = Figure(figsize=(12, 9), facecolor="white")
         axis = figure.add_axes((0.35, 0.14, 0.59, 0.69))
         draw_influences(axis, archive)
-        figure.text(0.04, 0.95, "What informs my decisions", fontsize=23, color="#263748", weight="bold")
-        figure.text(0.04, 0.90, "Which skills and lessons inform my current decisions?", fontsize=11, color="#697783")
+        figure.text(0.04, 0.95, "What informs my decisions", fontsize=23, color="#263748", weight="bold", gid="plot-heading")
+        figure.text(0.04, 0.90, "Which skills and lessons inform my current decisions?", fontsize=11, color="#697783", gid="plot-heading")
         figure.text(0.04, 0.04, "Recorded decisions, not a measure of proficiency.", fontsize=10, color="#697783")
         output.mkdir(parents=True, exist_ok=True)
-        return save_figure(figure, output, "decision-influences")
+        return save_figure(figure, output, "decision-influences", projection=projection)

@@ -91,3 +91,12 @@ builds without live access to the collection. Figure-only rebuilds reuse the sav
 LinkedIn profile. Tags retain resumeme's ordinary fresh capture and signed release
 flow. Hiding a figure never deletes earlier public copies or history. Read
 [SECURITY.md](../SECURITY.md) before sharing personal collection projections.
+
+## Presentation
+
+Awareness exports omit outer plot titles and question subtitles during generation.
+Axis labels, legends, and evidence notes remain; standalone collection figures keep
+their headings. Regenerate an older bundle to apply this behavior. The receiver
+provides its own section headings and figure identifiers. See the
+[working-emphasis map contract](knowledge-map.md) for bounded bubble selection,
+recency weighting, deterministic placement, and retained historical evidence.
