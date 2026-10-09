@@ -7,10 +7,11 @@ from __future__ import annotations
 import base64
 import hashlib
 import json
+from subprocess import CompletedProcess
 from typing import TYPE_CHECKING
 
 import pytest
-from witful.awareness.github import push
+from witful.awareness.github import _api, push
 from witful.awareness.rendering import render
 from witful.project import main as initialize
 
@@ -191,3 +192,33 @@ def test_first_push_initializes_only_the_reserved_branch(monkeypatch: MonkeyPatc
     assert push("example/resume", b"{}") == "b" * 40
     assert routes[-1] == "dispatches"
     assert routes.index("git/refs") < routes.index("contents/awareness.json")
+
+
+def test_repository_metadata_endpoint_has_no_trailing_slash(monkeypatch: MonkeyPatch) -> None:
+    """
+    Exercise the real request builder rather than replacing the API adapter itself.
+
+    Args:
+        monkeypatch (MonkeyPatch): Offline gh transport replacement.
+
+    Returns:
+        None: Metadata reads use the canonical route GitHub accepts.
+    """
+
+    def run(command: list[str], **kwargs: object) -> CompletedProcess[str]:
+        """
+        Assert the metadata request path at the subprocess boundary.
+
+        Args:
+            command (list[str]): Actual GitHub CLI request.
+            **kwargs (object): Transport options including captured output.
+
+        Returns:
+            CompletedProcess[str]: Successful synthetic repository metadata.
+        """
+        assert command[4] == "repos/example/resume"
+        assert kwargs["input"] is None
+        return CompletedProcess(command, 0, '{"default_branch":"main"}', "")
+
+    monkeypatch.setattr("witful.awareness.github.subprocess.run", run)
+    assert _api("example/resume", "") == {"default_branch": "main"}

@@ -31,7 +31,8 @@ def _api(repository: str, route: str, payload: dict[str, object] | None = None, 
         ValueError: GitHub rejects the operation or the response is malformed.
     """
     method = "PUT" if route == f"contents/{BUNDLE_PATH}" and payload else "POST"
-    command = ["gh", "api", "--hostname", "github.com", f"repos/{repository}/{route}", "-H", "X-GitHub-Api-Version: 2026-03-10"]
+    endpoint = f"repos/{repository}" + (f"/{route}" if route else "")
+    command = ["gh", "api", "--hostname", "github.com", endpoint, "-H", "X-GitHub-Api-Version: 2026-03-10"]
 
     if payload is not None:
         command.extend(["--method", method, "--input", "-"])
