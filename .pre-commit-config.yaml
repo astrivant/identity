@@ -55,7 +55,7 @@ repos:
         pass_filenames: false
         always_run: true
   - repo: https://github.com/astrivant/composer
-    rev: 0f342a53ed8fd21b7957a55f36f912081db96d4d
+    rev: 4ee8ce8507e10b6cbbac607d7bda01e22740cd37
     hooks:
       - id: helm-composer
         files: '^deploy/'
