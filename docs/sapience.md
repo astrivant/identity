@@ -25,10 +25,10 @@ Install the fork in a separate Python environment at the tested commit:
 
 ```bash
 python3 -m venv .venv-sapience
-.venv-sapience/bin/python -m pip install 'sapience-mcp @ git+https://github.com/astrivant/sapience.git@812ec0545486a5c1e3a1d2b10a846a9694f5d3e2'
+.venv-sapience/bin/python -m pip install 'sapience-mcp @ git+https://github.com/astrivant/sapience.git@d9d38b115d54b73a70bf7c769ff1bd3a5af54b22'
 ```
 
-See its [integration guide](https://github.com/astrivant/sapience/blob/812ec0545486a5c1e3a1d2b10a846a9694f5d3e2/docs/witful.md).
+See its [integration guide](https://github.com/astrivant/sapience/blob/d9d38b115d54b73a70bf7c769ff1bd3a5af54b22/docs/witful.md).
 The upstream PyPI release does not yet provide the required structured upsert contract.
 Select the resulting `sapience` executable explicitly; no shell interprets it.
 

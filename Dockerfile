@@ -9,11 +9,12 @@ RUN python -m venv /opt/poetry && /opt/poetry/bin/pip install --no-cache-dir poe
 COPY pyproject.toml poetry.lock ./
 RUN /opt/poetry/bin/poetry install --only main --extras postgres --no-root --no-interaction
 COPY README.md LICENSE ./
+COPY docs/WITFUL.md ./docs/WITFUL.md
 COPY pkg ./pkg
 RUN /opt/poetry/bin/poetry build --format wheel     && pip install --no-deps dist/*.whl
 
 FROM dependencies AS development
-RUN /opt/poetry/bin/poetry install --extras postgres --no-root --no-interaction
+RUN /opt/poetry/bin/poetry install --extras postgres --extras sapience --no-root --no-interaction
 ENTRYPOINT ["witful"]
 CMD ["--help"]
 
