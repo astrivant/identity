@@ -45,9 +45,9 @@ def test_labels_fit_their_bubbles_without_collisions(count: int, dpi: int) -> No
     figure.set_dpi(dpi)
     figure.draw_without_rendering()
     axis = figure.axes[0]
-    labels = {text.get_gid(): text for text in axis.texts}
+    labels = {text.get_gid(): text for text in axis.texts if (text.get_gid() or "").startswith("map-")}
     assert len(labels) == count * 3
-    boxes = [text.get_window_extent() for text in labels.values()]
+    boxes = [text.get_window_extent() for text in axis.texts]
     assert not any(left.overlaps(right) for left, right in combinations(boxes, 2))
 
     for bubble in emphasis_layout(model, ()):

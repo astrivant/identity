@@ -23,6 +23,7 @@ from witful.knowledge.applications import effective_applications
 from witful.knowledge.compiler import index
 from witful.knowledge.contracts import as_data
 from witful.knowledge.emphasis import _gaussian_distance, _gaussian_profile, emphasis_layout
+from witful.knowledge.map_axes import GaussianAxis, draw_principal_axes, principal_axes
 from witful.knowledge.map_labels import label_color, place_labels, visible_segments
 from witful.knowledge.metrics import graph_edges, usage
 from witful.knowledge.models import Discipline, Identity, Insight, Lesson, Skill
@@ -159,11 +160,24 @@ def _map_plot(identity: Identity, applications: Sequence[Application]) -> Figure
     colors = {discipline.id: _COLORS[index % len(_COLORS)] for index, discipline in enumerate(identity.disciplines)}
     positions: dict[str, tuple[float, float]] = {}
     opacity: dict[str, float] = {}
-    figure = Figure(figsize=(12, 12), facecolor="white")
+    guides: tuple[GaussianAxis, ...] = ()
+
+    if bubbles:
+        profile = _gaussian_profile([(bubble.x, bubble.y) for bubble in bubbles], [bubble.score for bubble in bubbles])
+
+        # One center has no directional spread; its regularization alone must not imply measured axes.
+        if len(bubbles) > 1:
+            guides = principal_axes(profile)
+
+    # Expand only the view for exterior annotations; packing, covariance, and opacity retain their original coordinates.
+    extent = max([1.05, *(abs(value) + 0.2 for guide in guides for point in (guide.label_start, guide.label_end) for value in point)])
+    # Preserve the physical room for existing labels while extending the canvas for the statistical guides.
+    side = 12 * extent / 1.05
+    figure = Figure(figsize=(side, side), facecolor="white")
     axis = figure.add_axes((0.035, 0.11, 0.93, 0.78))
     axis.set_aspect("equal")
-    axis.set_xlim(-1.05, 1.05)
-    axis.set_ylim(-1.05, 1.05)
+    axis.set_xlim(-extent, extent)
+    axis.set_ylim(-extent, extent)
     axis.axis("off")
     axis.apply_aspect()
     FigureCanvasAgg(figure)
@@ -175,13 +189,12 @@ def _map_plot(identity: Identity, applications: Sequence[Application]) -> Figure
 
     # Render the same weighted discipline Gaussian as a quiet, continuous shadow behind the bubbles.
     if bubbles:
-        profile = _gaussian_profile([(bubble.x, bubble.y) for bubble in bubbles], [bubble.score for bubble in bubbles])
-        coordinates = tuple(-1.05 + 2.10 * index / 127 for index in range(128))
+        coordinates = tuple(-extent + 2 * extent * index / 127 for index in range(128))
         field = [[math.exp(-0.5 * _gaussian_distance((x, y), profile) ** 2) for x in coordinates] for y in coordinates]
         gradient = mpl.colors.LinearSegmentedColormap.from_list("discipline-shadow", ("#F8FAFB", "#8798A6"))
         axis.imshow(
             field,
-            extent=(-1.05, 1.05, -1.05, 1.05),
+            extent=(-extent, extent, -extent, extent),
             origin="lower",
             cmap=gradient,
             vmin=0,
@@ -250,7 +263,7 @@ def _map_plot(identity: Identity, applications: Sequence[Application]) -> Figure
             axis.scatter(*vertices[skill.id], s=13 + 40 * bubble.radius, color=colors[bubble.id], alpha=bubble.opacity, zorder=4)
 
     # Opposite winding cuts text-sized holes in contour lines, without a visible label backplate.
-    viewport = PlotPath([(-1.05, -1.05), (1.05, -1.05), (1.05, 1.05), (-1.05, 1.05), (-1.05, -1.05)])
+    viewport = PlotPath([(-extent, -extent), (extent, -extent), (extent, extent), (-extent, extent), (-extent, -extent)])
     holes = [PlotPath([(b.x0, b.y0), (b.x0, b.y1), (b.x1, b.y1), (b.x1, b.y0), (b.x0, b.y0)]) for b in exclusions]
     clip = PlotPath.make_compound_path(viewport, *holes)
 
@@ -276,6 +289,8 @@ def _map_plot(identity: Identity, applications: Sequence[Application]) -> Figure
                 alpha=0.55 * min(opacity[edge.source], opacity[edge.target]),
                 zorder=1,
             )
+
+    draw_principal_axes(axis, guides, (*exclusions, *obstacles))
 
     if bubbles:
         # Draw the fitted weighted mean last so the midpoint remains visible

@@ -26,8 +26,8 @@ no-evidence note. No historical activity is inferred from lesson counts.
 
 ## Geometry and relationships
 
-The viewport has fixed size. A deterministic polar search places bubbles inside
-its unit circle with a positive gap between every pair. If one scale cannot fit,
+The bubble layout uses a fixed unit circle. A deterministic polar search places
+bubbles inside it with a positive gap between every pair. If one scale cannot fit,
 a bounded sequence of uniform reductions retries packing. This avoids overlaps
 without random animation or an unbounded optimization loop. The Python layout
 function accepts a display limit from one to twelve; the standard renderer uses
@@ -47,6 +47,14 @@ weighted mean, in muted gray with a white outline. Covariance ellipses at
 0.5, 1, 1.5, and 2 Mahalanobis standard deviations sit above the gradient and
 below the bubbles. Half-step contours are dashed; integer contours are solid.
 These are distance contours, not one-dimensional confidence percentages.
+Muted principal-axis guides mark both ends of the major and minor axes at
+2.7 standard deviations from the fitted mean. Their endpoints use
+`mean +/- 2.7 * sqrt(principal_variance) * principal_direction`, so they rotate
+with the same covariance as the ellipses. Diamond tips mark those exact distances;
+dotted leaders extend to exterior labels when needed to keep lettering clear of
+the bubbles. The viewport expands to include them without changing the fitted
+distribution, bubble selection, or opacity. A single-center fit omits directional
+guides because its covariance comes only from numerical regularization.
 Skill labels are centered beside their vertices without background
 boxes. The renderer measures full names, wraps at word boundaries, and packs text
 inside its parent circle, reserving the mean marker and each discipline title.
