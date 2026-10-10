@@ -23,3 +23,24 @@ recording lessons. Do not rotate keys or change GitHub permissions implicitly.
 CI verifies, decrypts, and regenerates figures; default outputs remain encrypted.
 Use `witful collection restore --help` to recover sources or figures into a new
 local directory. Accepted Git pushes are not proof of successful hosted refreshes.
+
+## Concurrent instances and shutdown
+
+When a session is authorized to maintain this private identity, use `witful sleeve
+start --repo CHECKOUT --directory NEW_DIRECTORY --name LABEL --key-dir KEYS` before
+edits. Start from remote main; use the returned sleeve's source directory instead
+of the shared installation collection. Each instance owns a separate worktree and
+source snapshot. Checkpoint coherent changes with `sleeve checkpoint --repo WORKTREE`.
+
+Before normal session completion, run `sleeve finish --repo WORKTREE`, then
+`sleeve guard --repo WORKTREE`. Merge directly when permitted; use a PR when branch
+protection requires one. Conflicts and failed checks keep the sleeve open. Preserve
+the branches and report blockers rather than overwriting another instance's history.
+Do not merge encrypted JSON or hash-chained journals by choosing one side blindly.
+
+For an authorized supervised workload, `sleeve run` propagates TERM/INT/HUP, drains
+writers, checkpoints, and attempts reconciliation within its deadline. Use its
+WITFUL_SLEEVE_SOURCE and WITFUL_SLEEVE_WORKTREE paths. Back up during work, not only
+at shutdown; SIGKILL and node loss cannot run a cleanup handler. Keep the Git common
+directory and sleeve directory on durable storage for interrupted-session recovery.
+Read docs/multisleeving.md in CHECKOUT for commands and precise recovery limits.

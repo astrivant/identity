@@ -66,6 +66,7 @@ class ChartContracts(unittest.TestCase):
         )
         pod = job["spec"]["template"]["spec"]
         container = pod["containers"][0]
+        assert container["command"] == ["/usr/bin/tini", "-g", "--", "witful"]
         assert container["securityContext"]["readOnlyRootFilesystem"] is True
         assert pod["securityContext"]["runAsNonRoot"] is True
         assert container["env"][0]["valueFrom"]["secretKeyRef"] == {"name": "witful-database", "key": "url"}
@@ -104,6 +105,7 @@ class ChartContracts(unittest.TestCase):
         assert services["witful"]["depends_on"]["postgres"]["condition"] == "service_healthy"
         assert services["witful"]["volumes"] == ["../lessons.jsonl:/source/lessons.jsonl:ro"]
         assert services["witful"]["read_only"] is True
+        assert services["witful"]["entrypoint"] == ["/usr/bin/tini", "-g", "--", "witful"]
         assert "ports" not in services["postgres"]
 
 

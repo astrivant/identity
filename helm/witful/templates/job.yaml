@@ -39,7 +39,7 @@ spec:
         - name: witful
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command: [witful]
+          command: [/usr/bin/tini, -g, --, witful]
           args: [lessons, --repo, /source, sync]
           env:
             - name: WITFUL_DATABASE_URL
