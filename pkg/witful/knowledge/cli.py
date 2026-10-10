@@ -13,6 +13,7 @@ from pathlib import Path
 from attrs import evolve
 from jsonschema import ValidationError
 
+from witful.collection.protection import check_collection
 from witful.files import replace_file
 from witful.knowledge.applications import append_application, application_id, effective_applications, read_applications
 from witful.knowledge.compiler import compile_identity, index
@@ -72,6 +73,7 @@ def main() -> int:
     root = args.repo.resolve()
 
     try:
+        check_collection(root, root / args.output_dir if args.command == "build" else root)
         catalog = structure(json.loads((root / "knowledge/catalog.json").read_text()), Catalog)
         identity = compile_identity(read_journal(root / "lessons.jsonl"), catalog)
         nodes, _ = index(identity)

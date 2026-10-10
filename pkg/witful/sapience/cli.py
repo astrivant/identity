@@ -13,6 +13,7 @@ from typing import TYPE_CHECKING
 
 from jsonschema import ValidationError
 
+from witful.collection.protection import check_collection
 from witful.files import replace_file
 from witful.knowledge.contracts import as_data, schema, structure
 from witful.sapience.models import Brief, Projection
@@ -126,6 +127,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         if args.command == "schema":
             print(json.dumps(schema(Projection), indent=2))
             return 0
+
+        check_collection(args.repo.resolve(), args.repo / (args.output or Path(".witful")), remote=args.command in {"sync", "propose"})
 
         if not args.namespace or "*" in args.namespace or any(char.isspace() for char in args.namespace):
             raise ValueError("A concrete namespace is required")

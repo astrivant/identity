@@ -25,6 +25,7 @@ execution; people retain authority over accepted guidance and publication.
 - [Optional awareness](#optional-awareness)
 - [Tools and integrations](#tools-and-integrations)
 - [Privacy and operations](#privacy-and-operations)
+- [Data protection](#data-protection)
 <!-- toc:end -->
 
 ## Install
@@ -176,3 +177,11 @@ free of personal data. Review output and publication contents as described in
 
 See [development](CONTRIBUTING.md), [storage and orchestration](docs/storage.md),
 [project checkpoints](docs/checkpoints.md), [awareness publication](docs/awareness.md), [releases](docs/releases.md), and [SKILL.md](SKILL.md) for agent-assisted use.
+
+## Data protection
+
+Private snapshots are encrypted and signed. Reviewed graphs can remain readable by
+explicit choice. Managed collections require encrypted local working storage; CI
+uses nonswappable memory for decryption. Trivy and PII checks gate publication.
+Read [the storage boundaries and migration requirements](docs/data-protection.md)
+before using personal records or describing an existing deployment as encrypted.

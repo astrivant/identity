@@ -14,6 +14,7 @@ from jsonschema import ValidationError
 from witful.awareness.github import push
 from witful.awareness.models import Bundle, PushConfig
 from witful.awareness.rendering import render
+from witful.collection.protection import check_collection
 from witful.files import replace_file
 from witful.knowledge.contracts import schema, structure
 
@@ -43,6 +44,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             print(json.dumps({"config": schema(PushConfig), "bundle": schema(Bundle)}, indent=2))
             return 0
 
+        check_collection(args.repo.resolve(), args.repo / args.output)
         config = structure(json.loads((args.repo / args.config).read_text()), PushConfig)
         content = render(args.repo.resolve(), config.figures)
         output = args.repo / args.output

@@ -12,6 +12,7 @@ from typing import TYPE_CHECKING
 
 from jsonschema import ValidationError
 
+from witful.collection.protection import check_collection
 from witful.files import replace_file
 from witful.knowledge.contracts import as_data, schema, structure
 from witful.life.contracts import current_decisions
@@ -85,6 +86,11 @@ def main(argv: Sequence[str] | None = None) -> int:
     root = args.repo.resolve()
 
     try:
+        check_collection(
+            root,
+            root / args.output_dir if args.command in {"build", "replay"} else root,
+            remote=args.command == "seed" or (args.command == "replay" and args.from_database),
+        )
         if args.command == "schemas":
             _schemas(root, check=False)
             return 0

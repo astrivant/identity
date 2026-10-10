@@ -1,0 +1,3 @@
+Trivy report tooling adapted from astrivant/resumeme.
+Source: https://github.com/astrivant/resumeme/blob/main/scripts/ci/checks/trivy-report.py
+Licensed under GPL-3.0; see the repository root LICENSE.

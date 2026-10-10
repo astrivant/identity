@@ -8,7 +8,7 @@ The public library ships no personal collection, and its collection job stays di
 
 ## First setup
 
-Requires macOS or Linux, Python 3.12+ excluding 3.14.1, Git, `gh`, OpenSSL,
+Requires protected local working and key-backup volumes, macOS or Linux, Python 3.12+ excluding 3.14.1, Git, `gh`, OpenSSL,
 `ssh-keygen`, and Cosign 3.x. Authenticate `gh` for GitHub.com with access to create
 the selected repository and manage its Actions secrets and variables. For example,
 Homebrew provides `python`, `gh`, `openssl`, and `cosign`; OpenSSH supplies `ssh-keygen`.
@@ -65,8 +65,8 @@ publishes only signed ciphertext. Main CI continues to generate the shared figur
 ## Record and synchronize
 
 Use the installed executable (`witful` below) for ordinary lesson, application,
-Life, repertoire, and checkpoint commands. The local collection is plaintext
-under your account. Its nested `.gitignore` excludes all its contents from a
+Life, repertoire, and checkpoint commands. The local collection is readable by the running application on a verified encrypted
+working volume. See [working storage checks](data-protection.md#verify-working-storage). Its nested `.gitignore` excludes all its contents from a
 surrounding checkout; never force-add them.
 
 ```bash
@@ -151,6 +151,7 @@ repository Actions secrets are:
 | `WITFUL_COLLECTION_PRIVATE_KEY` | Password-encrypted dedicated RSA PEM key |
 | `WITFUL_COLLECTION_PUBLIC_KEY` | Matching RSA PEM public key |
 | `WITFUL_COLLECTION_KEY_PASSWORD` | Exact RSA private-key password |
+| `WITFUL_COLLECTION_SIGNING_FINGERPRINT` | Independently retained SHA-256 signing public-key fingerprint |
 | `WITFUL_COLLECTION_SIGNING_KEY` | Password-encrypted Cosign private key |
 | `WITFUL_COLLECTION_SIGNING_PASSWORD` | Exact Cosign key password |
 
@@ -168,3 +169,9 @@ never choose one side or rewrite their causal history. Collection refresh render
 Readable-figure opt-in applies to these labels too. Exported private OTLP logs and
 full instance JSON chart exports are not additional encrypted source inputs.
 See [instance provenance and startup reconciliation](instances.md).
+
+## Managed remote storage
+
+Managed collection remote database and MCP operations now fail closed because the
+client cannot verify those services' at-rest protection. See the
+[protection contract and migration steps](data-protection.md).

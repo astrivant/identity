@@ -15,6 +15,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import TYPE_CHECKING
 
+from witful.collection.protection import check_collection
 from witful.lessons import append_lesson, new_lesson, read_journal, rebuild_database
 from witful.storage import open_store
 
@@ -57,6 +58,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     endpoint = os.environ.get("WITFUL_DATABASE_URL")
 
     try:
+        check_collection(repo, home, remote=endpoint is not None and args.command != "check")
+
         # Preserve local writer serialization; remote readers can consume read-only mounted journals.
         needs_lock = args.command == "add" or (endpoint is None and args.command != "check")
         context = (repo / ".lessons.lock").open("a") if needs_lock else nullcontext(None)

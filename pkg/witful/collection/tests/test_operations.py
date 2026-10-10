@@ -6,11 +6,13 @@ from __future__ import annotations
 
 import json
 import shutil
+import subprocess
 from typing import TYPE_CHECKING
 
 import pytest
 from witful.collection import archive, operations
-from witful.collection.crypto import verify
+from witful.collection.cli import main as collection_main
+from witful.collection.crypto import sign, verify
 from witful.collection.keys import prepare, signing_environment
 from witful.collection.models import CONFIG, FIGURES, SOURCE
 from witful.collection.operations import readme, refresh, restore, seal
@@ -81,6 +83,7 @@ def test_signed_refresh_round_trip(tmp_path: Path, monkeypatch: MonkeyPatch) -> 
         None: Full sources and all figures recover after signature verification, without retained plaintext CI files.
     """
     monkeypatch.setattr(operations, "private_repository", lambda repository: None)
+    monkeypatch.setattr(operations, "require_protected", lambda path: None)
     source, checkout, keys = tmp_path / "home/collection", tmp_path / "checkout", tmp_path / "keys"
     initialize([str(source)])
     (source / "instructions.md").write_text("SYNTHETIC_PRIVATE_SENTINEL")
@@ -92,6 +95,19 @@ def test_signed_refresh_round_trip(tmp_path: Path, monkeypatch: MonkeyPatch) -> 
     (checkout / CONFIG).write_text(json.dumps(as_data(config)))
     (checkout / "collection/cosign.pub").write_bytes((keys / "cosign.pub").read_bytes())
     seal(checkout, source, keys)
+
+    # Exercise the standalone publication gate with real signatures and a real synthetic Git index.
+    subprocess.run(["git", "init", "--quiet", str(checkout)], check=True, timeout=10)
+    assert collection_main(["verify", "--checkout", str(checkout), "--signing-fingerprint", config.signing_fingerprint]) == 0
+    with pytest.raises(SystemExit) as rejected:
+        collection_main(["verify", "--checkout", str(checkout), "--signing-fingerprint", "0" * 64])
+    assert rejected.value.code == 2
+    (checkout / "lessons.jsonl").write_text("synthetic source that must not be published")
+    subprocess.run(["git", "-C", str(checkout), "add", "lessons.jsonl"], check=True, timeout=10)
+    with pytest.raises(SystemExit) as rejected:
+        collection_main(["verify", "--checkout", str(checkout), "--signing-fingerprint", config.signing_fingerprint])
+    assert rejected.value.code == 2
+    subprocess.run(["git", "-C", str(checkout), "rm", "--force", "lessons.jsonl"], check=True, capture_output=True, timeout=10)
     restore(checkout, keys, tmp_path / "recovered", "sources")
     assert (tmp_path / "recovered/instructions.md").read_text() == "SYNTHETIC_PRIVATE_SENTINEL"
     assert (tmp_path / "recovered/knowledge/schemas/catalog.schema.json").exists()
@@ -108,9 +124,16 @@ def test_signed_refresh_round_trip(tmp_path: Path, monkeypatch: MonkeyPatch) -> 
         "WITFUL_COLLECTION_PUBLIC_KEY": (keys / "collection.pub").read_text(),
         "WITFUL_COLLECTION_KEY_PASSWORD": (keys / "collection.password").read_text(),
         "RUNNER_TEMP": str(tmp_path),
+        "WITFUL_SECURE_TEMP": str(tmp_path),
+        "WITFUL_COLLECTION_SIGNING_FINGERPRINT": config.signing_fingerprint,
     }.items():
         monkeypatch.setenv(name, value)
 
+    monkeypatch.setenv("WITFUL_COLLECTION_SIGNING_FINGERPRINT", "0" * 64)
+    with pytest.raises(ValueError, match="independent Actions trust pin"):
+        refresh(checkout)
+    assert not list(tmp_path.glob("witful-plain-*"))
+    monkeypatch.setenv("WITFUL_COLLECTION_SIGNING_FINGERPRINT", config.signing_fingerprint)
     refresh(checkout)
     assert not list(tmp_path.glob("witful-plain-*"))
     assert not (checkout / "docs/collection").exists()
@@ -148,3 +171,29 @@ def test_private_dashboard_has_no_author_data() -> None:
     assert "example/private-collection/actions" in text
     assert "![Knowledge" not in text
     assert "restore" in text
+
+
+@pytest.mark.skipif(shutil.which("cosign") is None, reason="Cosign required for real signature verification")
+def test_foreign_signing_key_is_rejected(tmp_path: Path) -> None:
+    """
+    Reject ciphertext signed by another key even when its bytes and checksum are unchanged.
+
+    Args:
+        tmp_path (Path): Synthetic signing keys and artifact.
+
+    Returns:
+        None: Only the independently pinned signing identity can authenticate the artifact.
+    """
+    owner, foreign = tmp_path / "owner", tmp_path / "foreign"
+    config = prepare(owner, "example/collection")
+    prepare(foreign, "example/collection")
+    artifact = tmp_path / "ciphertext.json"
+    artifact.write_bytes(b"synthetic encrypted artifact")
+    sign(artifact, signing_environment(owner))
+    verify(artifact, owner / "cosign.pub", config)
+    sign(artifact, signing_environment(foreign))
+
+    with pytest.raises(ValueError):
+        verify(artifact, owner / "cosign.pub", config)
+    with pytest.raises(ValueError, match="trust configuration"):
+        verify(artifact, foreign / "cosign.pub", config)
