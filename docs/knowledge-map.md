@@ -47,21 +47,27 @@ weighted mean, in muted gray with a white outline. Covariance ellipses at
 0.5, 1, 1.5, and 2 Mahalanobis standard deviations sit above the gradient and
 below the bubbles. Half-step contours are dashed; integer contours are solid.
 These are distance contours, not one-dimensional confidence percentages.
-Short exterior ticks identify both directions of the major and minor axes.
-Each tick starts beyond both the 2.7-standard-deviation threshold and the fixed
-unit-circle bubble layout, with extra clearance from bubbles and axis labels.
+Short exterior spokes indicate both directions of the major and minor axes.
+Each lies on an axis through the fitted mean and starts beyond the
+2.7-standard-deviation threshold. A ray-circle intersection moves a spoke
+farther out only where needed to clear an actual bubble, with a small gap.
 The threshold uses `mean +/- 2.7 * sqrt(principal_variance) * principal_direction`,
-so tick directions follow the same covariance as the ellipses. Only axis names
-are labeled: shifted ticks are not presented as exact 2.7-distance markers.
-There are no center-crossing axis lines, long leaders, or endpoint diamonds.
+so directions follow the same covariance as the ellipses. The viewport fits the
+bubbles and short spokes without reserving margins for axis or distance labels.
+The mean cross and its white outline rotate with the same principal directions.
+There are no axis labels, center-crossing lines, long leaders, or endpoint diamonds.
 The viewport expands for the annotations without changing the distribution,
 bubble selection, or opacity. A single-center fit omits directional guides
 because its covariance comes only from numerical regularization.
 Skill labels are centered beside their vertices without background
 boxes. The renderer measures full names, wraps at word boundaries, and packs text
 inside its parent circle, reserving the mean marker and each discipline title.
-It tries wide rows and compact columns before reducing type; an input that cannot
-fit the bounded minimum font size fails explicitly instead of dropping labels.
+Discipline titles share a fixed 11-point size; every skill uses 7.2 points on the
+source canvas. Bubble radius and label count do not change either size. The
+shared canvas provides room for dense groups; the renderer tries wide rows and
+compact columns without shrinking individual labels. Inputs that cannot fit
+fail explicitly instead of dropping names or changing the hierarchy typography.
+Embedding the complete figure in a document scales both levels uniformly.
 Relationship lines leave gaps around text, and discipline titles occupy the
 highest drawing layer. Text stays fully opaque. White or dark lettering is chosen
 by luminance contrast against the actual bubble fill composited over the Gaussian
