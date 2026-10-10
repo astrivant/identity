@@ -12,14 +12,18 @@ from textwrap import fill
 from typing import TYPE_CHECKING
 
 import matplotlib as mpl
+from matplotlib.backends.backend_agg import FigureCanvasAgg
 from matplotlib.figure import Figure
-from matplotlib.patches import Circle
+from matplotlib.patches import Circle, Ellipse
+from matplotlib.path import Path as PlotPath
+from matplotlib.transforms import Bbox
 
 from witful.files import replace_file
 from witful.knowledge.applications import effective_applications
 from witful.knowledge.compiler import index
 from witful.knowledge.contracts import as_data
 from witful.knowledge.emphasis import _gaussian_distance, _gaussian_profile, emphasis_layout
+from witful.knowledge.map_labels import label_color, place_labels, visible_segments
 from witful.knowledge.metrics import graph_edges, usage
 from witful.knowledge.models import Discipline, Identity, Insight, Lesson, Skill
 
@@ -34,7 +38,13 @@ __all__ = ["save_figure", "write_plots"]
 _COLORS = ("#366A87", "#407D61", "#A36636", "#795A91", "#996277", "#597878", "#767047", "#66758A")
 _INK = "#263748"
 _MUTED = "#697783"
-_LABEL_BACKGROUND_ALPHA = 0.48
+_BUBBLE_ALPHA = 0.18
+_GRADIENT_ALPHA = 0.34
+# Scatter size is area in points squared; scale by (2/3)^2 for two-thirds linear size.
+_MEAN_MARKER_SCALE = 2 / 3
+_MEAN_MARKER_SIZE = 720 * _MEAN_MARKER_SCALE**2
+_MEAN_MARKER_UNDERLAY_SIZE = 980 * _MEAN_MARKER_SCALE**2
+_GAUSSIAN_CONTOURS = (0.5, 1.0, 1.5, 2.0)
 _LAYERS = (Identity, Discipline, Skill, Lesson, Insight)
 
 
@@ -155,25 +165,57 @@ def _map_plot(identity: Identity, applications: Sequence[Application]) -> Figure
     axis.set_xlim(-1.05, 1.05)
     axis.set_ylim(-1.05, 1.05)
     axis.axis("off")
+    axis.apply_aspect()
+    FigureCanvasAgg(figure)
+    figure.draw_without_rendering()
+    exclusions: list[Bbox] = []
+    obstacles: list[Bbox] = []
     figure.text(0.04, 0.96, "How my skills connect", fontsize=23, color=_INK, weight="bold", gid="plot-heading")
     figure.text(0.04, 0.925, "Which areas of work are in focus, and how do they connect?", fontsize=11, color=_MUTED, gid="plot-heading")
 
     # Render the same weighted discipline Gaussian as a quiet, continuous shadow behind the bubbles.
     if bubbles:
         profile = _gaussian_profile([(bubble.x, bubble.y) for bubble in bubbles], [bubble.score for bubble in bubbles])
-        coordinates = tuple(index / 31.5 - 1 for index in range(64))
+        coordinates = tuple(-1.05 + 2.10 * index / 127 for index in range(128))
         field = [[math.exp(-0.5 * _gaussian_distance((x, y), profile) ** 2) for x in coordinates] for y in coordinates]
-        gradient = mpl.colors.LinearSegmentedColormap.from_list("discipline-shadow", ("#FFFFFF", "#AAB6BF"))
+        gradient = mpl.colors.LinearSegmentedColormap.from_list("discipline-shadow", ("#F8FAFB", "#8798A6"))
         axis.imshow(
             field,
-            extent=(-1, 1, -1, 1),
+            extent=(-1.05, 1.05, -1.05, 1.05),
             origin="lower",
             cmap=gradient,
             vmin=0,
             vmax=1,
-            alpha=0.20,
-            interpolation="bilinear",
-            zorder=0,
+            alpha=_GRADIENT_ALPHA,
+            interpolation="bicubic",
+            zorder=-2,
+        )
+
+        # Use covariance principal axes, not axis-aligned distances or confidence-probability labels.
+        for sigma in _GAUSSIAN_CONTOURS:
+            axis.add_patch(
+                Ellipse(
+                    (profile[0], profile[1]),
+                    width=2 * sigma * math.sqrt(profile[2]),
+                    height=2 * sigma * math.sqrt(profile[3]),
+                    angle=math.degrees(math.atan2(profile[5], profile[4])),
+                    facecolor="none",
+                    edgecolor="#879198",
+                    linewidth=0.8,
+                    linestyle="-" if sigma.is_integer() else "--",
+                    alpha=0.65,
+                    zorder=-1,
+                    gid=f"gaussian-contour:{sigma:g}",
+                )
+            )
+
+        # Reserve the mean marker's display footprint before fitting any label.
+        marker_radius = (math.sqrt(_MEAN_MARKER_UNDERLAY_SIZE) / 2 + 3) * figure.dpi / 72
+        center_x, center_y = axis.transData.transform((profile[0], profile[1]))
+        obstacles.append(
+            Bbox.from_extents(
+                center_x - marker_radius, center_y - marker_radius, center_x + marker_radius, center_y + marker_radius
+            ).transformed(axis.transData.inverted())
         )
 
     # Discipline bubbles replace the old square anchors; skill dots remain their nested subgraphs.
@@ -188,46 +230,33 @@ def _map_plot(identity: Identity, applications: Sequence[Application]) -> Figure
                 bubble.radius,
                 facecolor=colors[bubble.id],
                 edgecolor=colors[bubble.id],
-                alpha=0.18 * bubble.opacity,
+                alpha=_BUBBLE_ALPHA * bubble.opacity,
                 linewidth=1.2,
                 zorder=2,
             )
         )
-        label_width = max(8, int(10 + bubble.radius * 22))
-        axis.text(
-            bubble.x,
-            bubble.y + bubble.radius * 0.13,
-            fill(discipline.name, label_width, break_on_hyphens=False),
-            ha="center",
-            va="center",
-            color="white",
-            alpha=1.0,
-            fontsize=8 + 15 * bubble.radius,
-            bbox={"facecolor": colors[bubble.id], "edgecolor": "none", "alpha": _LABEL_BACKGROUND_ALPHA, "pad": 1.8},
-            weight="bold",
-            zorder=4,
-        )
+        # Measure labels against the final canvas; light fills require dark, fully opaque type.
+        density = math.exp(-0.5 * _gaussian_distance((bubble.x, bubble.y), profile) ** 2)
+        shadow = gradient(density)[:3]
+        red, green, blue = (_GRADIENT_ALPHA * channel + 1 - _GRADIENT_ALPHA for channel in shadow)
+        background = mpl.colors.to_hex((red, green, blue))
+        lettering = label_color(colors[bubble.id], _BUBBLE_ALPHA * bubble.opacity, background)
+        vertices, bounds = place_labels(axis, bubble, discipline, lettering, obstacles)
+        positions.update(vertices)
+        exclusions.extend(bounds)
 
-        for ordinal, skill in enumerate(skills):
-            # Reserve the upper half for the discipline title and distribute skills around the lower arc.
-            angle = math.pi + math.pi * (ordinal + 0.5) / max(1, len(skills))
-            point = (bubble.x + bubble.radius * 0.88 * math.cos(angle), bubble.y + bubble.radius * 0.88 * math.sin(angle))
-            positions[skill.id] = point
+        for skill in skills:
             opacity[skill.id] = bubble.opacity
-            axis.scatter(*point, s=13 + 40 * bubble.radius, color=colors[bubble.id], alpha=bubble.opacity, zorder=4)
-            # Keep skill labels on the bubble's perimeter so they do not collide with its discipline title.
-            label_point = (bubble.x + bubble.radius * 0.60 * math.cos(angle), bubble.y + bubble.radius * 0.60 * math.sin(angle))
-            axis.text(
-                *label_point,
-                fill(skill.name, max(7, int(8 + bubble.radius * 18)), break_on_hyphens=False),
-                ha="left" if math.cos(angle) >= 0 else "right",
-                va="center",
-                color="white",
-                alpha=1.0,
-                fontsize=max(4.5, min(6.5, 3.8 + bubble.radius * 10)),
-                bbox={"facecolor": colors[bubble.id], "edgecolor": "none", "alpha": _LABEL_BACKGROUND_ALPHA, "pad": 1.0},
-                zorder=5,
-            )
+            axis.scatter(*vertices[skill.id], s=13 + 40 * bubble.radius, color=colors[bubble.id], alpha=bubble.opacity, zorder=4)
+
+    # Opposite winding cuts text-sized holes in contour lines, without a visible label backplate.
+    viewport = PlotPath([(-1.05, -1.05), (1.05, -1.05), (1.05, 1.05), (-1.05, 1.05), (-1.05, -1.05)])
+    holes = [PlotPath([(b.x0, b.y0), (b.x0, b.y1), (b.x1, b.y1), (b.x1, b.y0), (b.x0, b.y0)]) for b in exclusions]
+    clip = PlotPath.make_compound_path(viewport, *holes)
+
+    for patch in axis.patches:
+        if (patch.get_gid() or "").startswith("gaussian-contour:"):
+            patch.set_clip_path(clip, axis.transData)
 
     # Only the viewport is filtered. Preserve link kinds and full-graph weights instead of recomputing evidence on a subset.
     for edge in graph_edges(identity, applications):
@@ -236,15 +265,31 @@ def _map_plot(identity: Identity, applications: Sequence[Application]) -> Figure
 
         a, b = positions[edge.source], positions[edge.target]
         observed = edge.kind in {"co-use", "observed-transfer"}
-        axis.plot(
-            [a[0], b[0]],
-            [a[1], b[1]],
-            color="#407D61" if observed and edge.verified else "#BAC4CD",
-            linewidth=0.5 + 2.5 * edge.strength,
-            linestyle="-" if observed or edge.kind == "contains" else "--",
-            alpha=0.55 * min(opacity[edge.source], opacity[edge.target]),
-            zorder=1,
+        # Leave clear intervals around glyphs instead of hiding links behind opaque label boxes.
+        for left, right in visible_segments(a, b, (*exclusions, *obstacles)):
+            axis.plot(
+                [left[0], right[0]],
+                [left[1], right[1]],
+                color="#407D61" if observed and edge.verified else "#BAC4CD",
+                linewidth=0.5 + 2.5 * edge.strength,
+                linestyle="-" if observed or edge.kind == "contains" else "--",
+                alpha=0.55 * min(opacity[edge.source], opacity[edge.target]),
+                zorder=1,
+            )
+
+    if bubbles:
+        # Draw the fitted weighted mean last so the midpoint remains visible
+        # over bubble fills and relationship lines; titles keep the highest layer.
+        axis.scatter(
+            profile[0],
+            profile[1],
+            marker="+",
+            color="white",
+            s=_MEAN_MARKER_UNDERLAY_SIZE,
+            linewidths=5.0 * _MEAN_MARKER_SCALE,
+            zorder=9,
         )
+        axis.scatter(profile[0], profile[1], marker="+", color=_MUTED, s=_MEAN_MARKER_SIZE, linewidths=2.8 * _MEAN_MARKER_SCALE, zorder=10)
 
     if not bubbles:
         axis.text(0, 0, "No disciplines recorded", ha="center", color=_MUTED)
@@ -265,7 +310,7 @@ def _map_plot(identity: Identity, applications: Sequence[Application]) -> Figure
     figure.text(
         0.04,
         0.021,
-        f"Showing {len(bubbles)} of {len(identity.disciplines)} areas. Complete hierarchy and history remain available.",
+        f"Showing {len(bubbles)} of {len(identity.disciplines)} areas. Ellipses: 0.5, 1, 1.5, 2 SD. Complete history remains available.",
         fontsize=9,
         color=_MUTED,
     )

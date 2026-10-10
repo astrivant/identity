@@ -40,13 +40,27 @@ Mahalanobis standard-deviation distance, so peripheral bubbles remain more
 visible while the configured 35% floor is retained farther out; central bubbles
 remain fully opaque.
 The same fitted distribution appears as a smooth, low-contrast gray field behind
-the discipline bubbles. It is a visual guide to the current discipline emphasis,
-not another data series; skills remain labeled inside their parent bubbles.
-Skill dots show each displayed discipline's nested structure. Full link kinds and
-weights are retained from the complete graph: dashed links are curated relations,
-solid links represent containment or observed reuse, and green identifies reuse
-reported as verified. Links to offscreen disciplines remain in the complete graph
-export. The map reports how many disciplines are visible.
+the entire plot. It is a visual guide to the current discipline emphasis, not
+another data series. Bubble fills remain tied to the same Gaussian distance and
+fade over twice the 1.75 standard-deviation distance. A large plus marks the
+weighted mean, in muted gray with a white outline. Covariance ellipses at
+0.5, 1, 1.5, and 2 Mahalanobis standard deviations sit above the gradient and
+below the bubbles. Half-step contours are dashed; integer contours are solid.
+These are distance contours, not one-dimensional confidence percentages.
+Skill labels are centered beside their vertices without background
+boxes. The renderer measures full names, wraps at word boundaries, and packs text
+inside its parent circle, reserving the mean marker and each discipline title.
+It tries wide rows and compact columns before reducing type; an input that cannot
+fit the bounded minimum font size fails explicitly instead of dropping labels.
+Relationship lines leave gaps around text, and discipline titles occupy the
+highest drawing layer. Text stays fully opaque. White or dark lettering is chosen
+by luminance contrast against the actual bubble fill composited over the Gaussian
+field, so faded peripheral bubbles remain readable without text backplates.
+Bubble selection, positions, and the existing opacity curve are unchanged. Full link kinds and weights are retained from the complete
+graph: dashed links are curated relations, solid links represent containment or
+observed reuse, and green identifies reuse reported as verified. Links to
+offscreen disciplines remain in the complete graph export. The map reports how
+many disciplines are visible.
 
 ## Resume projection
 
