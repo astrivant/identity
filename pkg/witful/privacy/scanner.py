@@ -4,12 +4,18 @@ Detect explicit personal-data patterns without echoing matched values.
 
 from __future__ import annotations
 
+import base64
 import hashlib
+import json
 import re
 import subprocess
 from typing import TYPE_CHECKING
 
 from attrs import frozen
+from jsonschema import ValidationError
+
+from witful.collection.models import MAX_BYTES, Envelope
+from witful.knowledge.contracts import structure
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -27,6 +33,7 @@ _RULES = {
 }
 _SAFE_HOMES = {"/home/runner", "/home/witful"}
 _SYNTHETIC_EMAIL_DOMAINS = {"example.com", "example.org", "example.net"}
+_ENVELOPES = {"collection/sources.enc.json", "collection/figures.enc.json"}
 
 
 @frozen
@@ -65,6 +72,10 @@ def scan_text(text: str, terms: Sequence[str] = ()) -> tuple[tuple[int, str], ..
             if rule == "personal-home" and value in _SAFE_HOMES:
                 continue
             if rule == "email":
+                # GitHub uses this shared SSH principal; it is not a personal email address.
+                if value == "git@github.com":
+                    continue
+
                 domain = value.rsplit("@", 1)[-1].lower()
 
                 if domain in _SYNTHETIC_EMAIL_DOMAINS or domain.endswith((".invalid", ".test")):
@@ -151,21 +162,56 @@ def scan(root: Path, *, staged: bool = False, terms: Sequence[str] = (), paths: 
                 data = str(path.readlink()).encode()
             elif not path.exists():
                 continue
-            elif not path.resolve().is_relative_to(root) or path.stat().st_size > 5 * 1024 * 1024:
+            elif not path.resolve().is_relative_to(root) or path.stat().st_size > (
+                MAX_BYTES * 2 if name in _ENVELOPES else 5 * 1024 * 1024
+            ):
                 findings.append(Finding(label, 0, "unscannable-file"))
                 continue
             else:
                 data = path.read_bytes()
+
+            # Only the fixed encrypted transport paths accept opaque content, with a closed envelope schema.
+            if name in _ENVELOPES:
+                validate_envelope(data)
+                continue
 
             if len(data) > 5 * 1024 * 1024 or b"\0" in data:
                 findings.append(Finding(label, 0, "unscannable-file"))
                 continue
 
             content = data.decode("utf-8")
-        except (OSError, UnicodeError):
+        except (OSError, UnicodeError, ValueError, ValidationError):
             findings.append(Finding(label, 0, "unscannable-file"))
             continue
 
         findings.extend(Finding(label, line, rule) for line, rule in scan_text(content, terms))
 
     return tuple(findings)
+
+
+def validate_envelope(data: bytes) -> None:
+    """
+    Inspect an opaque transport contract without decrypting or treating ciphertext as source text.
+
+    Args:
+        data (bytes): JSON encrypted collection envelope.
+
+    Returns:
+        None: Only recognized fields, recipient identity, and bounded base64 encodings are present.
+
+    Raises:
+        ValueError: A transport field is invalid; signatures are checked separately before decryption.
+    """
+    if len(data) > MAX_BYTES * 2:
+        raise ValueError("Oversized encrypted envelope")
+
+    value = structure(json.loads(data), Envelope)
+
+    if (
+        not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9-]*/[A-Za-z0-9_.-]+", value.repository)
+        or not re.fullmatch(r"[a-f0-9]{64}", value.encryption_fingerprint)
+        or len(base64.b64decode(value.wrapped_key, validate=True)) < 384
+        or len(base64.b64decode(value.nonce, validate=True)) != 12
+        or len(base64.b64decode(value.ciphertext, validate=True)) < 16
+    ):
+        raise ValueError("Invalid encrypted envelope")

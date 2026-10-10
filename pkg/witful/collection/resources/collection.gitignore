@@ -1,0 +1,11 @@
+# Only encrypted transport and public verification material belong in this directory.
+*
+!.gitignore
+!sources.enc.json
+!sources.enc.json.sigstore.json
+!sources.enc.json.sha256
+!figures.enc.json
+!figures.enc.json.sigstore.json
+!figures.enc.json.sha256
+!cosign.pub
+!key-fingerprints.json

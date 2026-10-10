@@ -6,8 +6,6 @@ from __future__ import annotations
 
 import hashlib
 import json
-from collections import Counter
-from textwrap import fill
 from typing import TYPE_CHECKING
 
 import matplotlib as mpl
@@ -15,13 +13,13 @@ from matplotlib.figure import Figure
 from matplotlib.ticker import MaxNLocator
 
 from witful.files import replace_file
-from witful.knowledge.compiler import index
 from witful.knowledge.contracts import as_data
 from witful.knowledge.plotting import save_figure, write_plots
 from witful.knowledge.rendering import graph_data
 from witful.life.contracts import canonical, current_decisions, snapshot_identity, validate_archive
 from witful.life.journal import renderer_fingerprint
 from witful.life.models import Archive
+from witful.life.plotting import draw_influences
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -77,15 +75,6 @@ def _figure(archive: Archive) -> Figure:
         active[event.decision.key] = event
         accepted.append(sum(item.decision.status == "accepted" for item in active.values()))
 
-    labels: dict[str, str] = {}
-
-    for snapshot in archive.snapshots:
-        labels.update({key: node.name for key, node in index(snapshot_identity(snapshot))[0].items()})
-
-    counts = Counter(
-        identifier for event in active.values() if event.decision.status == "accepted" for identifier in event.decision.concept_ids
-    )
-    selected = sorted(counts, key=lambda key: (-counts[key], key))[:15]
     figure = Figure(figsize=(14, 6), facecolor="white")
     left, right = figure.subplots(1, 2)
     figure.subplots_adjust(left=0.07, right=0.97, top=0.8, bottom=0.18, wspace=0.85)
@@ -98,13 +87,8 @@ def _figure(archive: Archive) -> Figure:
     left.legend(frameon=False)
     left.xaxis.set_major_locator(MaxNLocator(integer=True))
     left.yaxis.set_major_locator(MaxNLocator(integer=True))
-    right.barh([fill(labels[key], 28) for key in selected], [counts[key] for key in selected], color="#366A87")
-    right.invert_yaxis()
-    right.set_title("Concepts linked to accepted choices", fontsize=11)
-    right.xaxis.set_major_locator(MaxNLocator(integer=True))
-
-    if not selected:
-        right.text(0.5, 0.5, "No choices recorded", ha="center", transform=right.transAxes)
+    draw_influences(right, archive)
+    right.set_title("What informs my decisions", fontsize=11)
 
     for axis in (left, right):
         axis.spines[["top", "right"]].set_visible(False)

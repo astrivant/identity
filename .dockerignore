@@ -4,6 +4,8 @@
 !pyproject.toml
 !poetry.lock
 !README.md
+!docs/
+!docs/WITFUL.md
 !pkg/
 !pkg/**
 pkg/**/tests/

@@ -6,7 +6,6 @@ from __future__ import annotations
 
 import hashlib
 import json
-from io import BytesIO
 from textwrap import fill
 from typing import TYPE_CHECKING
 
@@ -15,7 +14,7 @@ import networkx as nx
 from matplotlib.figure import Figure
 from matplotlib.ticker import MaxNLocator
 
-from witful.files import replace_file
+from witful.knowledge.plotting import save_figure
 from witful.repertoire.journal import counts
 
 if TYPE_CHECKING:
@@ -25,7 +24,7 @@ if TYPE_CHECKING:
     from witful.repertoire.models import Inventory, Use
 
 
-def write_plots(inventory: Inventory, events: Sequence[Use], destination: Path) -> tuple[Path, ...]:
+def write_plots(inventory: Inventory, events: Sequence[Use], destination: Path, *, projection: bool = False) -> tuple[Path, ...]:
     """
     Export plots from validated observations, with question subtitles and no inferred proficiency.
 
@@ -33,6 +32,7 @@ def write_plots(inventory: Inventory, events: Sequence[Use], destination: Path) 
         inventory (Inventory): Validated definitions.
         events (Sequence[Use]): Validated task observations.
         destination (Path): Artifact directory owned by the collection.
+        projection (bool): Omit outer titles in document exports.
 
     Returns:
         tuple[Path, ...]: SVG and PNG paths for tool frequency and problem hierarchy.
@@ -45,7 +45,7 @@ def write_plots(inventory: Inventory, events: Sequence[Use], destination: Path) 
         mpl.rcParams.update({"font.family": "DejaVu Sans", "svg.fonttype": "none", "svg.hashsalt": digest})
         ordered = sorted(inventory.tools, key=lambda item: (-tool_counts[item.id], item.name.casefold()))
         figure = Figure(figsize=(12, max(5, 2.5 + len(ordered) * 0.4)), layout="constrained")
-        figure.suptitle("Toolbox use\nWhich tools have supported the most recorded tasks?", fontsize=16)
+        figure.suptitle("Toolbox use\nWhich tools have supported the most recorded tasks?", fontsize=16, gid="plot-heading")
         axis = figure.subplots()
         axis.barh([item.name for item in ordered], [tool_counts[item.id] for item in ordered], color="#327B69")
         axis.invert_yaxis()
@@ -69,7 +69,7 @@ def write_plots(inventory: Inventory, events: Sequence[Use], destination: Path) 
                 positions[identifier] = (float(depth), float(-row))
 
         figure = Figure(figsize=(14, max(5, 2 + len(inventory.problems) * 0.35)), layout="constrained")
-        figure.suptitle("Problem repertoire\nHow do concrete tasks connect to broader problem categories?", fontsize=16)
+        figure.suptitle("Problem repertoire\nHow do concrete tasks connect to broader problem categories?", fontsize=16, gid="plot-heading")
         axis = figure.subplots()
 
         if graph:
@@ -84,11 +84,6 @@ def write_plots(inventory: Inventory, events: Sequence[Use], destination: Path) 
         figures.append(("problem-repertoire", figure))
 
         for name, figure in figures:
-            for extension in ("svg", "png"):
-                stream = BytesIO()
-                figure.savefig(stream, format=extension, dpi=130, metadata={"Date": None} if extension == "svg" else {})
-                path = destination / f"{name}.{extension}"
-                replace_file(path, stream.getvalue(), expected=path.read_bytes() if path.exists() else None)
-                paths.append(path)
+            paths.extend(save_figure(figure, destination, name, projection=projection))
 
     return tuple(paths)

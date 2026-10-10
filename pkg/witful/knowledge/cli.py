@@ -49,7 +49,11 @@ def main() -> int:
         int: Zero for a successful operation, two for invalid sources or filesystem errors.
     """
     parser = argparse.ArgumentParser(
-        description=__doc__, epilog="Additional commands: init, lessons, life, repertoire, privacy scan, registry; each accepts --help."
+        description=__doc__,
+        epilog=(
+            "Additional commands: init, lessons, life, repertoire, checkpoints, awareness, collection, sapience, "
+            "privacy scan, registry; each accepts --help."
+        ),
     )
     parser.add_argument("--repo", type=Path, default=Path.cwd(), help="Existing knowledge checkout; defaults to the current directory")
     commands = parser.add_subparsers(dest="command", required=True)

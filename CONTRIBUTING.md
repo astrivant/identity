@@ -3,7 +3,7 @@
 Use Poetry 2.5.1 and the committed lockfile:
 
 ```bash
-poetry install --extras postgres
+poetry install --extras postgres --extras sapience
 poetry run pre-commit install
 poetry run pytest -n 4
 poetry run pre-commit run --all-files
@@ -29,3 +29,20 @@ together. Check JavaScript actions' own Node runtime when upgrading.
 The automatic README contents hook includes nested READMEs and at most three
 levels. Chart README/schema output comes from annotated values. Regenerate
 outputs instead of editing generated tables or schemas directly.
+
+
+Private-copy CI lives in the same workflow and uses only synthetic fixtures in tests.
+The crypto integration test needs Cosign 3.x, OpenSSL, and ssh-keygen locally; CI
+installs the pinned Cosign version before tests. Never test setup against a real
+repository or project secrets as part of an ordinary test run. See
+[private collection boundaries](docs/private-collections.md) before changing the
+archive allowlist, trust pins, or encrypted transport. Cryptography is pinned through
+Poetry; Cosign pins remain beside both its test and pipeline consumers.
+
+Sapience adapter tests cover deterministic projection and rejection of malformed
+responses without model calls. Run `pytest pkg/witful/sapience/tests -n 2` for a
+focused check. For cross-project protocol verification, launch the Sapience fork's
+`tests/stdio_fixture.py` with its own Python environment as `--server` and that script
+as `--server-arg`; set `SAPIENCE_DATA_DIR` to a temporary directory and use a synthetic
+Witful collection. Repeat `sync`, verify readback, and test `propose` against an empty
+namespace to avoid a synthesis request. Never substitute personal records into fixtures.

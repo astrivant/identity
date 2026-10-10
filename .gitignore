@@ -13,4 +13,4 @@ node_modules/
 *.key
 *.password
 *.sqlite*
-deploy/.compose-generated/
+services/.compose-generated/

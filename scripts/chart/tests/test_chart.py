@@ -12,7 +12,7 @@ import yaml
 from jsonschema import validate
 
 _ROOT = Path(__file__).resolve().parents[3]
-_CHART = _ROOT / "deploy/helm/witful"
+_CHART = _ROOT / "helm/witful"
 
 
 class ChartContracts(unittest.TestCase):
@@ -97,7 +97,7 @@ class ChartContracts(unittest.TestCase):
         Returns:
             None: The generated runtime mounts only the journal and has database health gating.
         """
-        compose = yaml.safe_load((_ROOT / "deploy/compose.yaml").read_text())
+        compose = yaml.safe_load((_ROOT / "services/compose.yaml").read_text())
         services = compose["services"]
         assert all("container_name" not in item for item in services.values())
         assert services["witful"]["environment"]["WITFUL_DATABASE_URL"].startswith("${WITFUL_DATABASE_URL:?")
