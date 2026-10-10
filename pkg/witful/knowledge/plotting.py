@@ -21,7 +21,7 @@ from witful.knowledge.compiler import index
 from witful.knowledge.contracts import as_data
 from witful.knowledge.emphasis import _gaussian_distance, _gaussian_profile, emphasis_layout
 from witful.knowledge.metrics import graph_edges, usage
-from witful.knowledge.models import Discipline, Identity, Lemma, Lesson, Skill
+from witful.knowledge.models import Discipline, Identity, Insight, Lesson, Skill
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -35,7 +35,7 @@ _COLORS = ("#366A87", "#407D61", "#A36636", "#795A91", "#996277", "#597878", "#7
 _INK = "#263748"
 _MUTED = "#697783"
 _LABEL_BACKGROUND_ALPHA = 0.48
-_LAYERS = (Identity, Discipline, Skill, Lesson, Lemma)
+_LAYERS = (Identity, Discipline, Skill, Lesson, Insight)
 
 
 def save_figure(figure: Figure, destination: Path, name: str, *, projection: bool = False) -> list[Path]:
@@ -108,7 +108,7 @@ def _usage_plot(identity: Identity, applications: Sequence[Application]) -> Figu
         [fill(node.name, 27) for node in skills], [counts[node.id].verified for node in skills], color="#407D61", label="Reported verified"
     )
     right.invert_yaxis()
-    right.set_title("Skills, including applied lessons and lemmas", fontsize=12, color=_INK)
+    right.set_title("Skills, including applied lessons and insights", fontsize=12, color=_INK)
     right.legend(frameon=False, fontsize=9, loc="lower right")
 
     for axis in (left, right):
@@ -274,7 +274,7 @@ def _map_plot(identity: Identity, applications: Sequence[Application]) -> Figure
 
 def _hierarchy_plot(identity: Identity) -> Figure:
     """
-    Display every discipline's nested skill, lesson, and lemma subgraph.
+    Display every discipline's nested skill, lesson, and insight subgraph.
 
     Args:
         identity (Identity): Complete compiled hierarchy.
@@ -321,14 +321,14 @@ def _hierarchy_plot(identity: Identity) -> Figure:
                 axis.plot([1, 2], [position, row], color="#CBD3D9", lw=0.6)
                 axis.scatter(2, row, marker="o", color=color, s=18)
 
-                for part, _ in enumerate(lesson.lemmas):
-                    point = row + (part - (len(lesson.lemmas) - 1) / 2) * 0.3
+                for part, _ in enumerate(lesson.insights):
+                    point = row + (part - (len(lesson.insights) - 1) / 2) * 0.3
                     axis.plot([2, 3], [row, point], color="#CBD3D9", lw=0.6)
                     axis.scatter(3, point, marker="D", color=color, s=13)
 
             cursor += width + 2
 
-        for column, label in enumerate(("Discipline", "Skill", "Lesson", "Lemma")):
+        for column, label in enumerate(("Discipline", "Skill", "Lesson", "Insight")):
             axis.text(column, -0.1, label, transform=axis.get_xaxis_transform(), fontsize=8, ha="center", color=_MUTED)
 
     figure.text(

@@ -61,7 +61,7 @@ def project(root: Path, collection_id: str, namespace: str) -> Projection:
         source = {
             field: value
             for field, value in as_data(node).items()
-            if field not in {"disciplines", "skills", "lessons", "lemmas", "relations"}
+            if field not in {"disciplines", "skills", "lessons", "insights", "relations"}
         }
         edges = tuple(edge for edge in identity.relations if key in {edge.source, edge.target})
         related = {child for child, parent in parents.items() if parent == key}

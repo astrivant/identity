@@ -33,7 +33,7 @@ class SkillState:
     Attributes:
         id (str): Stable skill ID.
         name (str): Reviewed display name at this boundary.
-        lessons (tuple[Fact, ...]): Active lessons, including their lemma annotations in the digest.
+        lessons (tuple[Fact, ...]): Active lessons, including their insight annotations in the digest.
         uses (tuple[Fact, ...]): Latest observation for each task/context reaching this skill.
     """
 

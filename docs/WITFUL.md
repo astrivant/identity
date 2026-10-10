@@ -54,3 +54,21 @@ summaries to reviewed lessons. Source journals remain owned by the collection.
 [private collection setup](https://github.com/astrivant/identity/blob/main/docs/private-collections.md),
 [security](https://github.com/astrivant/identity/blob/main/SECURITY.md), and
 [development](https://github.com/astrivant/identity/blob/main/CONTRIBUTING.md).
+
+
+## Hierarchy terminology
+
+The hierarchy is `Identity -> Discipline -> Skill -> Lesson -> Insight`. An Insight
+is a concrete, reusable takeaway from a sourced Lesson. The Python type is
+`Insight`, and lessons and catalog annotations expose an `insights` tuple.
+
+New catalogs use version 2 and the `insights` field. Version-1 catalogs with
+`lemmas` remain readable and serialize with their original spelling, preserving
+content-addressed snapshots and decision chains. To migrate a current catalog,
+change its version to 2 and rename each annotation's `lemmas` key to `insights`
+together. Keep concept IDs unchanged. Do not edit historical journals or snapshots.
+
+Checkpoint comparisons retain their existing digest representation, so the rename
+alone does not count as learning. Current plots, CLI output, and MCP projections
+use Insight; existing projected memory IDs remain stable. Historical replay still
+requires acknowledgment of renderer changes before producing different plot bytes.

@@ -59,9 +59,9 @@ separately for teachings (L) and applications (U). Initial state is never counte
 as newly acquired knowledge. No change produces a valid empty-diff view.
 
 Applications roll up to each skill once per task/context, including applications
-of its lessons or lemmas. Later complete task observations revise the same key.
+of its lessons or insights. Later complete task observations revise the same key.
 Active teachings exclude explicitly superseded records. Lesson hashes include
-lemma annotations, so extensions remain visible. Skill additions, removals, and
+insight annotations, so extensions remain visible. Skill additions, removals, and
 renames have explicit statuses. Reclassification can move facts between skills;
 it is a structural change, not evidence of new learning or project causality.
 Raw counts measure recorded evidence, not intelligence, proficiency, or everything

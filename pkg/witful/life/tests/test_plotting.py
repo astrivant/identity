@@ -24,7 +24,7 @@ def test_revised_and_retired_decisions_do_not_inflate_influences(source: Path, d
 
     Args:
         source (Path): Synthetic collection with validated snapshot inputs.
-        decision (Decision): Initial decision referring to one lemma.
+        decision (Decision): Initial decision referring to one insight.
 
     Returns:
         None: Only the latest accepted reference remains and repeated exports match byte for byte.

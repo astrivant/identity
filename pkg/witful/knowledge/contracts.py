@@ -12,6 +12,8 @@ from attrs import NOTHING, fields, has
 from cattrs import Converter
 from jsonschema import Draft202012Validator
 
+from witful.knowledge.models import Annotation, Catalog
+
 __all__ = ["as_data", "schema", "structure"]
 
 T = TypeVar("T")
@@ -47,13 +49,33 @@ def schema(model: object) -> dict[str, object]:
         return {"type": "array", "items": schema(arguments[0])}
     if isinstance(model, type) and has(model):
         hints = get_type_hints(model)
-        return {
+        properties = {item.name: schema(hints[item.name]) for item in fields(model)}
+        result: dict[str, object] = {
             "type": "object",
             "title": model.__name__,
             "additionalProperties": False,
-            "properties": {item.name: schema(hints[item.name]) for item in fields(model)},
+            "properties": properties,
             "required": [item.name for item in fields(model) if item.default is NOTHING],
         }
+
+        if model is Catalog:
+            # Historical snapshots retain their version-1 vocabulary and content hashes.
+            legacy_annotation = schema(Annotation)
+            legacy_fields = legacy_annotation["properties"]
+            assert isinstance(legacy_fields, dict)
+            legacy_fields["lemmas"] = legacy_fields.pop("insights")
+            legacy = {
+                **result,
+                "properties": {
+                    **properties,
+                    "version": {"type": "integer", "const": 1},
+                    "annotations": {"type": "array", "items": legacy_annotation},
+                },
+            }
+            current = {**result, "properties": {**properties, "version": {"type": "integer", "const": 2}}}
+            return {"title": "Catalog", "anyOf": [current, legacy]}
+
+        return result
 
     raise TypeError(f"No schema rule for {model}")
 
@@ -95,3 +117,85 @@ def as_data(value: object) -> dict[str, object]:
         raise TypeError("Expected an object root")
 
     return dict(result)
+
+
+def _catalog_spelling(value: object, old: str, new: str) -> dict[str, object]:
+    """
+    Translate catalog annotation keys without mutating source records or their IDs.
+
+    Args:
+        value (object): Validated catalog JSON or its unstructured equivalent.
+        old (str): Annotation field spelling present in the input format.
+        new (str): Annotation field spelling required by the target format.
+
+    Returns:
+        dict[str, object]: Shallow catalog copy with independently copied annotation objects.
+
+    Raises:
+        TypeError: The input is not a catalog-shaped JSON object.
+    """
+    if not isinstance(value, dict) or not all(isinstance(key, str) for key in value):
+        raise TypeError("Expected a catalog object")
+
+    result: dict[str, object] = dict(value)
+    annotations = result.get("annotations", [])
+
+    if not isinstance(annotations, list):
+        raise TypeError("Expected catalog annotations to be an array")
+
+    renamed: list[dict[str, object]] = []
+
+    for annotation in annotations:
+        if not isinstance(annotation, dict):
+            raise TypeError("Expected a catalog annotation object")
+
+        fields_copy: dict[str, object] = dict(annotation)
+
+        if old in fields_copy:
+            fields_copy[new] = fields_copy.pop(old)
+
+        renamed.append(fields_copy)
+
+    result["annotations"] = renamed
+    return result
+
+
+def _structure_catalog(value: object, model: type[Catalog]) -> Catalog:
+    """
+    Read either catalog vocabulary while preserving its original format version.
+
+    Args:
+        value (object): Catalog JSON already validated against the versioned schema.
+        model (type[Catalog]): Target catalog class supplied by cattrs.
+
+    Returns:
+        Catalog: Current Python attributes with the source version retained for serialization.
+    """
+    normalized = _catalog_spelling(value, "lemmas", "insights")
+
+    # Versionless sources predate explicit migration; canonical version 2 is preferred when valid.
+    if "version" not in normalized:
+        current_schema = schema(Catalog)["anyOf"]
+        assert isinstance(current_schema, list)
+        normalized["version"] = 2 if Draft202012Validator(current_schema[0]).is_valid(value) else 1
+
+    return _CONVERTER.structure_attrs_fromdict(normalized, model)
+
+
+def _unstructure_catalog(value: Catalog) -> dict[str, object]:
+    """
+    Retain legacy snapshot bytes and emit the canonical spelling for new catalogs.
+
+    Args:
+        value (Catalog): Catalog whose version selects its serialized field spelling.
+
+    Returns:
+        dict[str, object]: Versioned portable catalog data with stable historical identifiers.
+    """
+    result: object = json.loads(json.dumps(_CONVERTER.unstructure_attrs_asdict(value)))
+    old, new = ("insights", "lemmas") if value.version == 1 else ("insights", "insights")
+    return _catalog_spelling(result, old, new)
+
+
+_CONVERTER.register_structure_hook(Catalog, _structure_catalog)
+_CONVERTER.register_unstructure_hook(Catalog, _unstructure_catalog)

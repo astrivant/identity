@@ -10,7 +10,7 @@ import pytest
 from attrs import evolve
 from witful.knowledge.applications import append_application, application_id, read_applications, validate_applications
 from witful.knowledge.metrics import affinity, graph_edges, usage
-from witful.knowledge.models import Application, Discipline, Identity, Lemma, Lesson, Skill
+from witful.knowledge.models import Application, Discipline, Identity, Insight, Lesson, Skill
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -30,7 +30,7 @@ def hierarchy() -> Identity:
         "Use contracts.",
         "Fixture",
         "2026-01-01T00:00:00Z",
-        lemmas=(Lemma("lemma", "Lemma", "Validate inputs.", "Fixture"),),
+        insights=(Insight("insight", "Insight", "Validate inputs.", "Fixture"),),
     )
     return Identity("root", "Example", (Discipline("a", "A", (Skill("sa", "SA", (lesson,)),)), Discipline("b", "B", (Skill("sb", "SB"),))))
 
@@ -71,7 +71,7 @@ def test_upward_rollup_counts_once_without_guessing_children(hierarchy: Identity
     """
     counts = usage(hierarchy, (event("t", ("lesson", "sa")),))
     assert counts["root"].applications == counts["sa"].applications == counts["lesson"].applications == 1
-    assert counts["lemma"].applications == counts["b"].applications == 0
+    assert counts["insight"].applications == counts["b"].applications == 0
 
 
 def test_revisions_and_identical_reruns_do_not_inflate_counts(hierarchy: Identity, tmp_path: Path) -> None:

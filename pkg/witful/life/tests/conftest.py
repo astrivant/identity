@@ -10,7 +10,7 @@ from pathlib import Path
 
 import pytest
 from witful.knowledge.contracts import as_data
-from witful.knowledge.models import Annotation, Catalog, DisciplineSpec, Lemma, SkillSpec
+from witful.knowledge.models import Annotation, Catalog, DisciplineSpec, Insight, SkillSpec
 from witful.lessons import new_lesson
 from witful.life.models import Decision
 
@@ -24,7 +24,7 @@ def source(tmp_path: Path) -> Path:
         tmp_path (Path): Per-test isolated directory.
 
     Returns:
-        Path: Synthetic input set with one lemma and no inferred application events.
+        Path: Synthetic input set with one insight and no inferred application events.
     """
     knowledge = tmp_path / "knowledge"
     knowledge.mkdir()
@@ -34,7 +34,7 @@ def source(tmp_path: Path) -> Path:
         "root",
         "Fixture",
         disciplines=(DisciplineSpec("d", "Design", (SkillSpec("s", "Schemas", ("Testing",)),)),),
-        annotations=(Annotation(lesson.id, "Explicit inputs", (Lemma("lemma", "Replay", "Retain inputs", "Fixture"),)),),
+        annotations=(Annotation(lesson.id, "Explicit inputs", (Insight("insight", "Replay", "Retain inputs", "Fixture"),)),),
     )
     (knowledge / "catalog.json").write_text(json.dumps(as_data(catalog)))
     (knowledge / "applications.jsonl").write_text("")
@@ -45,11 +45,11 @@ def source(tmp_path: Path) -> Path:
 @pytest.fixture
 def decision() -> Decision:
     """
-    Supply a reviewable choice with a lemma reference and no revision target.
+    Supply a reviewable choice with a insight reference and no revision target.
 
     Returns:
         Decision: Synthetic choice, not a historical observation about the user's work.
     """
     return Decision(
-        "storage:journal", "Preserve history", "fixture:task", "Append revisions", "Retain prior evidence", "Fixture", ("lemma",)
+        "storage:journal", "Preserve history", "fixture:task", "Append revisions", "Retain prior evidence", "Fixture", ("insight",)
     )

@@ -18,7 +18,7 @@ from witful.checkpoints.plotting import build
 from witful.checkpoints.snapshot import snapshot
 from witful.checkpoints.storage import SQLiteCheckpointStore
 from witful.knowledge.applications import application_id
-from witful.knowledge.models import Application, Discipline, Identity, Lemma, Lesson, Skill
+from witful.knowledge.models import Application, Discipline, Identity, Insight, Lesson, Skill
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -39,10 +39,10 @@ def test_snapshot_distinguishes_revision_from_new_use() -> None:
         "Fixture",
         "2026-01-02T00:00:00Z",
         supersedes="old",
-        lemmas=(Lemma("lemma", "Detail", "Specific guidance", "Fixture"),),
+        insights=(Insight("insight", "Detail", "Specific guidance", "Fixture"),),
     )
     identity = Identity("root", "Fixture", (Discipline("d", "Design", (Skill("s", "Schemas", (old, new)),)),))
-    first = Application("", "task", "d", ("lemma", "new", "s"), "unassessed", "Synthetic result", "2026-01-02T00:00:00Z")
+    first = Application("", "task", "d", ("insight", "new", "s"), "unassessed", "Synthetic result", "2026-01-02T00:00:00Z")
     first = evolve(first, id=application_id(first))
     revised = evolve(first, id="", outcome="verified", observed_at="2026-01-03T00:00:00Z")
     revised = evolve(revised, id=application_id(revised))

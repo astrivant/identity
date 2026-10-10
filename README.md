@@ -70,7 +70,7 @@ existing private forks, custom paths, required secrets, and branch protection.
 
 ## What Identity records
 
-`Identity -> Discipline -> Skill -> Lesson -> Lemma` is a composed hierarchy.
+`Identity -> Discipline -> Skill -> Lesson -> Insight` is a composed hierarchy.
 Cross-discipline relationships form a separate graph. Recorded applications
 measure observed reuse, not intelligence or hidden model reasoning. Life
 preserves explicit choices, revisions, and the inputs behind their plots.
