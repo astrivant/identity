@@ -1,5 +1,5 @@
 """
-Show fitted Gaussian directions with short exterior ticks and unobstructed labels.
+Show fitted Gaussian directions with compact outer spokes clear of the bubbles.
 """
 
 from __future__ import annotations
@@ -17,11 +17,12 @@ if TYPE_CHECKING:
     from matplotlib.axes import Axes
     from matplotlib.transforms import Bbox
 
+    from witful.knowledge.emphasis import Bubble
+
 __all__ = ["GaussianAxis", "draw_principal_axes", "principal_axes"]
 
 _TIP_SIGMAS = 2.7
-_LABEL_RADIUS = 1.05
-_LABEL_GAP = 0.18
+_BUBBLE_CLEARANCE = 0.05
 _TICK_LENGTH = 0.07
 _INK = "#697783"
 
@@ -29,29 +30,26 @@ _INK = "#697783"
 @frozen
 class GaussianAxis:
     """
-    Keep the statistical threshold separate from exterior ticks and labels.
+    Locate the inner endpoints of two outward spokes on a fitted principal axis.
 
     Attributes:
         name (str): Major or Minor principal direction.
-        start (tuple[float, float]): Negative endpoint at the specified standardized distance.
-        end (tuple[float, float]): Positive endpoint at the specified standardized distance.
-        label_start (tuple[float, float]): Negative label beyond the bubble-packing boundary.
-        label_end (tuple[float, float]): Positive label beyond the bubble-packing boundary.
+        start (tuple[float, float]): Negative endpoint beyond the standardized threshold and nearby bubbles.
+        end (tuple[float, float]): Positive endpoint beyond the standardized threshold and nearby bubbles.
     """
 
     name: str
     start: tuple[float, float]
     end: tuple[float, float]
-    label_start: tuple[float, float]
-    label_end: tuple[float, float]
 
 
-def principal_axes(profile: tuple[float, float, float, float, float, float]) -> tuple[GaussianAxis, ...]:
+def principal_axes(profile: tuple[float, float, float, float, float, float], bubbles: Sequence[Bubble] = ()) -> tuple[GaussianAxis, ...]:
     """
-    Place tips on covariance eigenvectors and labels outside the unit-circle bubble layout.
+    Place outer spokes on covariance eigenvectors without reserving space for redundant labels.
 
     Args:
         profile (tuple[float, float, float, float, float, float]): Valid fitted center, positive principal variances, cosine, and sine.
+        bubbles (Sequence[Bubble]): Visible circles whose padded boundaries the spokes must clear.
 
     Returns:
         tuple[GaussianAxis, ...]: Major and minor guides sharing the ellipse's center and rotation.
@@ -62,64 +60,50 @@ def principal_axes(profile: tuple[float, float, float, float, float, float]) -> 
     for name, variance, direction in (("Major", major, (cosine, sine)), ("Minor", minor, (-sine, cosine))):
         distance = _TIP_SIGMAS * math.sqrt(variance)
         tips = []
-        labels = []
 
         for sign in (-1, 1):
             dx, dy = sign * direction[0], sign * direction[1]
-            tips.append((x + distance * dx, y + distance * dy))
+            offset = distance
 
-            # Intersect this outward ray with the packing boundary without moving its statistical tip.
-            projection = x * dx + y * dy
-            boundary = -projection + math.sqrt(max(0.0, projection**2 + _LABEL_RADIUS**2 - x**2 - y**2))
-            offset = max(distance, boundary) + _LABEL_GAP
-            labels.append((x + offset * dx, y + offset * dy))
+            # Intersect this outward ray with actual padded bubbles, not a larger enclosing circle.
+            # Moving beyond the furthest intersection preserves collinearity without adding unnecessary margins.
+            for bubble in bubbles:
+                bx, by = bubble.x - x, bubble.y - y
+                projection = bx * dx + by * dy
+                discriminant = (bubble.radius + _BUBBLE_CLEARANCE) ** 2 - (bx * bx + by * by - projection**2)
 
-        guides.append(GaussianAxis(name, tips[0], tips[1], labels[0], labels[1]))
+                if discriminant >= 0:
+                    offset = max(offset, projection + math.sqrt(discriminant))
+
+            tips.append((x + offset * dx, y + offset * dy))
+
+        guides.append(GaussianAxis(name, tips[0], tips[1]))
 
     return tuple(guides)
 
 
 def draw_principal_axes(axis: Axes, guides: Sequence[GaussianAxis], exclusions: Sequence[Bbox]) -> None:
     """
-    Draw only short exterior ticks beyond the statistical threshold and the bubble-packing boundary.
+    Draw short outer spokes collinear with the fitted axes, leaving the center and labels clear.
 
     Args:
         axis (Axes): Final map viewport with its renderer initialized.
-        guides (Sequence[GaussianAxis]): Fitted directions and exterior label locations.
+        guides (Sequence[GaussianAxis]): Endpoints beyond the statistical threshold and nearby bubble boundaries.
         exclusions (Sequence[Bbox]): Bubble lettering and mean-marker clearances in data coordinates.
 
     Returns:
-        None: Adds exterior labels and separated ticks without central lines, markers, or changes to the fitted distribution.
+        None: Adds separated spokes without axis labels, central lines, markers, or changes to the fitted distribution.
     """
-    boxes = list(exclusions)
-
     for guide in guides:
         key = guide.name.lower()
+        length = math.dist(guide.start, guide.end)
+        dx, dy = ((end - start) / length for start, end in zip(guide.start, guide.end, strict=True))
 
-        for sign, tip, label in (("-", guide.start, guide.label_start), ("+", guide.end, guide.label_end)):
-            text = axis.text(
-                *label,
-                f"{guide.name} axis",
-                ha="center",
-                va="center",
-                multialignment="center",
-                fontsize=8.5,
-                color=_INK,
-                alpha=1.0,
-                zorder=12,
-                gid=f"gaussian-axis-label:{key}:{sign}",
-            )
-            boxes.append(text.get_window_extent().padded(4).transformed(axis.transData.inverted()))
+        # Both segments extend away from the mean along the same principal direction.
+        for sign, direction, start in (("-", -1, guide.start), ("+", 1, guide.end)):
+            end = (start[0] + direction * _TICK_LENGTH * dx, start[1] + direction * _TICK_LENGTH * dy)
 
-            # Labels lie beyond both 2.7 SD and the packing circle. Leave a short tick at that exterior boundary.
-            # The fixed label gap supplies breathing room; the tick does not point through data or imply an exact-distance marker.
-            dx, dy = label[0] - tip[0], label[1] - tip[1]
-            length = math.hypot(dx, dy)
-            direction = (dx / length, dy / length)
-            start = tuple(value - _LABEL_GAP * step for value, step in zip(label, direction, strict=True))
-            end = tuple(value + _TICK_LENGTH * step for value, step in zip(start, direction, strict=True))
-
-            for left, right in visible_segments((start[0], start[1]), (end[0], end[1]), boxes):
+            for left, right in visible_segments(start, end, exclusions):
                 axis.plot(
                     [left[0], right[0]],
                     [left[1], right[1]],
