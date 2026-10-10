@@ -20,10 +20,11 @@ if TYPE_CHECKING:
 
 __all__ = ["Bubble", "emphasis_layout"]
 
-_LIMIT = 8
+_LIMIT = 12
 _HALF_LIFE_DAYS = 30.0
 _GAP = 0.025
-_FADE_START = 0.8
+_OPACITY_SIGMAS = 1.5
+_MIN_OPACITY = 0.35
 
 
 @frozen
@@ -90,6 +91,53 @@ def _pack(radii: Sequence[float], priorities: Sequence[float]) -> list[tuple[flo
     return points
 
 
+def _gaussian_opacity(points: Sequence[tuple[float, float]], weights: Sequence[float]) -> tuple[float, ...]:
+    """
+    Convert rotated two-dimensional Gaussian distance into bounded bubble opacity.
+
+    Args:
+        points (Sequence[tuple[float, float]]): Packed bubble centers.
+        weights (Sequence[float]): Nonnegative emphasis weights for the centers.
+
+    Returns:
+        tuple[float, ...]: Opacity values, with one value per center.
+
+    Raises:
+        ValueError: If the point and weight sequences differ in length.
+    """
+    if len(points) != len(weights):
+        raise ValueError("Gaussian opacity requires one weight per point")
+    if not points:
+        return ()
+
+    total = sum(weights) or float(len(points))
+    normalized = tuple(weight / total for weight in weights) if sum(weights) else (1 / len(points),) * len(points)
+    mean_x = sum(point[0] * weight for point, weight in zip(points, normalized, strict=True))
+    mean_y = sum(point[1] * weight for point, weight in zip(points, normalized, strict=True))
+    centered = tuple((point[0] - mean_x, point[1] - mean_y) for point in points)
+    covariance_xx = sum(vector[0] ** 2 * weight for vector, weight in zip(centered, normalized, strict=True))
+    covariance_xy = sum(vector[0] * vector[1] * weight for vector, weight in zip(centered, normalized, strict=True))
+    covariance_yy = sum(vector[1] ** 2 * weight for vector, weight in zip(centered, normalized, strict=True))
+    covariance_xx += 1e-6
+    covariance_yy += 1e-6
+    trace = covariance_xx + covariance_yy
+    spread = math.sqrt((covariance_xx - covariance_yy) ** 2 + 4 * covariance_xy**2)
+    major = max((trace + spread) / 2, 1e-6)
+    minor = max((trace - spread) / 2, 1e-6)
+    angle = 0.5 * math.atan2(2 * covariance_xy, covariance_xx - covariance_yy)
+    cosine, sine = math.cos(angle), math.sin(angle)
+
+    opacities = []
+    for vector in centered:
+        major_axis = cosine * vector[0] + sine * vector[1]
+        minor_axis = -sine * vector[0] + cosine * vector[1]
+        distance = math.sqrt(major_axis**2 / major + minor_axis**2 / minor)
+        fade = min(1.0, distance / _OPACITY_SIGMAS)
+        opacities.append(1 - (1 - _MIN_OPACITY) * fade)
+    opacities[0] = 1.0
+    return tuple(opacities)
+
+
 def emphasis_layout(identity: Identity, applications: Sequence[Application], *, limit: int = _LIMIT) -> tuple[Bubble, ...]:
     """
     Pack the most recently active disciplines with deterministic decay and bounded geometry.
@@ -144,6 +192,7 @@ def emphasis_layout(identity: Identity, applications: Sequence[Application], *, 
         points = _pack(radii, priorities)
 
         if points:
+            opacities = _gaussian_opacity(points, tuple(scores[key] for key in selected))
             return tuple(
                 Bubble(
                     key,
@@ -151,9 +200,9 @@ def emphasis_layout(identity: Identity, applications: Sequence[Application], *, 
                     x,
                     y,
                     radius,
-                    1 - 0.65 * max(0.0, min(1.0, (math.hypot(x, y) + radius - _FADE_START) / (1 - _FADE_START))),
+                    opacity,
                 )
-                for key, (x, y), radius in zip(selected, points, radii, strict=True)
+                for key, (x, y), radius, opacity in zip(selected, points, radii, opacities, strict=True)
             )
 
     raise RuntimeError("Could not pack the bounded emphasis map")

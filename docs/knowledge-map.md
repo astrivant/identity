@@ -18,7 +18,7 @@ before that reference contributes half as much as a use at the reference. All
 reported outcomes count as activity; only explicitly verified reuse is colored
 green in the links. Activity is not a proficiency or success score.
 
-The map shows at most eight disciplines, ranked by summed weighted uses, then
+The map shows at most twelve disciplines, ranked by summed weighted uses, then
 most recent use, then stable concept ID. The strongest emphasis is centered;
 lower weights produce smaller bubbles with preferred positions farther outward.
 An empty application history uses a deterministic neutral layout with an explicit
@@ -33,8 +33,10 @@ without random animation or an unbounded optimization loop. The Python layout
 function accepts a display limit from one to twelve; the standard renderer uses
 eight to keep labels legible.
 
-The outer edge of a bubble entering the final 20% of the viewport radius begins
-to fade, reaching 35% opacity at the boundary. Central bubbles remain fully opaque.
+Bubble opacity uses a weighted two-dimensional Gaussian over the displayed
+centers. Its covariance matrix is eigendecomposed, so the ellipse may rotate
+around the plot's z-axis. A center at 1.5 Mahalanobis standard deviations fades
+to the configured peripheral floor of 35%; central bubbles remain fully opaque.
 Skill dots show each displayed discipline's nested structure. Full link kinds and
 weights are retained from the complete graph: dashed links are curated relations,
 solid links represent containment or observed reuse, and green identifies reuse

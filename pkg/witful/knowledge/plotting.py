@@ -169,7 +169,7 @@ def _map_plot(identity: Identity, applications: Sequence[Application]) -> Figure
                 bubble.radius,
                 facecolor=colors[bubble.id],
                 edgecolor=colors[bubble.id],
-                alpha=0.09 * bubble.opacity,
+                alpha=0.18 * bubble.opacity,
                 linewidth=1.2,
                 zorder=2,
             )

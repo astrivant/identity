@@ -88,7 +88,7 @@ def test_recent_evidence_controls_emphasis_without_discarding_old_records() -> N
     events = (*older, first, revision)
     before = graph_data(model, events)
     bubbles = emphasis_layout(model, events)
-    assert len(bubbles) == 8
+    assert len(bubbles) == 10
     assert bubbles[0].id == "d1" and bubbles[0].score == 1
     assert bubbles[1].id == "d0" and 0 < bubbles[1].score < 0.01
     assert bubbles[0].radius > bubbles[1].radius
