@@ -1,6 +1,6 @@
 [project]
 name = "witful"
-version = "0.1.3"
+version = "0.2.0"
 description = "Typed knowledge, reusable lessons, and evidence-based decision replay"
 readme = "docs/WITFUL.md"
 license = "GPL-3.0-only"
