@@ -14,6 +14,7 @@ from typing import TYPE_CHECKING
 import matplotlib as mpl
 from matplotlib.backends.backend_agg import FigureCanvasAgg
 from matplotlib.figure import Figure
+from matplotlib.markers import MarkerStyle
 from matplotlib.patches import Circle, Ellipse
 from matplotlib.path import Path as PlotPath
 from matplotlib.transforms import Bbox
@@ -173,8 +174,8 @@ def _map_plot(identity: Identity, applications: Sequence[Application]) -> Figure
     # The 0.1 allowance covers each 0.07 spoke plus breathing room; fitted geometry and opacity stay unchanged.
     extent = max([1.05, *(abs(value) + 0.1 for guide in guides for point in (guide.start, guide.end) for value in point)])
 
-    # Preserve physical space for bubble labels as the compact viewport changes.
-    side = 12 * extent / 1.05
+    # Keep a shared physical scale for fixed hierarchy fonts, including densely labeled bubbles.
+    side = 16 * extent / 1.05
     figure = Figure(figsize=(side, side), facecolor="white")
     axis = figure.add_axes((0.035, 0.11, 0.93, 0.78))
     axis.set_aspect("equal")
@@ -297,16 +298,28 @@ def _map_plot(identity: Identity, applications: Sequence[Application]) -> Figure
     if bubbles:
         # Draw the fitted weighted mean last so the midpoint remains visible
         # over bubble fills and relationship lines; titles keep the highest layer.
+        # Rotate both strokes with the covariance so the cross shares the ellipse axes and outer spokes.
+        mean_marker = MarkerStyle("+").rotated(rad=math.atan2(profile[5], profile[4]))
         axis.scatter(
             profile[0],
             profile[1],
-            marker="+",
+            marker=mean_marker,
             color="white",
             s=_MEAN_MARKER_UNDERLAY_SIZE,
             linewidths=5.0 * _MEAN_MARKER_SCALE,
             zorder=9,
+            gid="gaussian-mean:underlay",
         )
-        axis.scatter(profile[0], profile[1], marker="+", color=_MUTED, s=_MEAN_MARKER_SIZE, linewidths=2.8 * _MEAN_MARKER_SCALE, zorder=10)
+        axis.scatter(
+            profile[0],
+            profile[1],
+            marker=mean_marker,
+            color=_MUTED,
+            s=_MEAN_MARKER_SIZE,
+            linewidths=2.8 * _MEAN_MARKER_SCALE,
+            zorder=10,
+            gid="gaussian-mean:foreground",
+        )
 
     if not bubbles:
         axis.text(0, 0, "No disciplines recorded", ha="center", color=_MUTED)

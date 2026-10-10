@@ -22,7 +22,8 @@ if TYPE_CHECKING:
 __all__ = ["label_color", "place_labels", "visible_segments"]
 
 _INK = "#263748"
-_MIN_SCALE = 0.45
+_TITLE_SIZE = 11.0
+_SKILL_SIZE = 7.2
 
 
 def label_color(color: str, opacity: float, background: str) -> str:
@@ -80,7 +81,7 @@ def place_labels(
     axis: Axes, bubble: Bubble, discipline: Discipline, color: str, obstacles: Sequence[Bbox]
 ) -> tuple[dict[str, tuple[float, float]], list[Bbox]]:
     """
-    Pack measured titles and skill names without boxes, collisions, or lost labels.
+    Pack measured labels at fixed sizes per hierarchy level without boxes, collisions, or lost names.
 
     Args:
         axis (Axes): Map axes with final limits and aspect applied.
@@ -93,7 +94,7 @@ def place_labels(
         tuple[dict[str, tuple[float, float]], list[Bbox]]: Vertex locations and padded text exclusions in data coordinates.
 
     Raises:
-        ValueError: Complete names cannot fit at the bounded minimum font scale.
+        ValueError: Complete names cannot fit at their fixed hierarchy sizes.
     """
     skills = sorted(discipline.skills, key=lambda skill: skill.id)
     names = [discipline.name, *(skill.name for skill in skills)]
@@ -115,7 +116,7 @@ def place_labels(
         for ordinal, identifier in enumerate(identifiers)
     ]
     radius = bubble.radius
-    padding = radius * 0.055
+    padding = radius * 0.035
     pixels_per_unit = axis.transData.transform((1, 0))[0] - axis.transData.transform((0, 0))[0]
     centers = [
         (bubble.x + radius * column / 12, bubble.y + radius * row / 12)
@@ -123,42 +124,39 @@ def place_labels(
         for column in sorted(range(-9, 10), key=lambda value: (abs(value), value))
     ]
 
-    # Try wider rows and compact columns at each font size before reducing type.
-    for step in range(round((1 - _MIN_SCALE) / 0.05) + 1):
-        scale = 1 - 0.05 * step
+    # Try wide rows and compact columns without changing type size from one bubble to another.
+    for width_ratio in (1.55, 0.86):
+        boxes: list[Bbox] = []
+        placed: dict[str, tuple[float, float]] = {}
 
-        for width_ratio in (1.55, 0.86):
-            boxes: list[Bbox] = []
-            placed: dict[str, tuple[float, float]] = {}
+        for ordinal, (label, name, identifier) in enumerate(zip(labels, names, identifiers, strict=True)):
+            label.set_fontsize(_TITLE_SIZE if ordinal == 0 else _SKILL_SIZE)
+            _wrap(label, name, radius * (1.55 if ordinal == 0 else width_ratio) * pixels_per_unit)
 
-            for ordinal, (label, name, identifier) in enumerate(zip(labels, names, identifiers, strict=True)):
-                label.set_fontsize((8 + 15 * radius if ordinal == 0 else 7.2) * scale)
-                _wrap(label, name, radius * (1.55 if ordinal == 0 else width_ratio) * pixels_per_unit)
+            # Titles occupy the upper cap; skill labels use the remaining measured space.
+            candidates = [(bubble.x, y) for x, y in centers if x == bubble.x and y >= bubble.y] if ordinal == 0 else centers
 
-                # Titles occupy the upper cap; skill labels use the remaining measured space.
-                candidates = [(bubble.x, y) for x, y in centers if x == bubble.x and y >= bubble.y] if ordinal == 0 else centers
+            for center in candidates:
+                label.set_position(center)
+                bounds = label.get_window_extent().transformed(axis.transData.inverted()).padded(padding)
+                corners = ((x, y) for x in (bounds.x0, bounds.x1) for y in (bounds.y0, bounds.y1))
 
-                for center in candidates:
-                    label.set_position(center)
-                    bounds = label.get_window_extent().transformed(axis.transData.inverted()).padded(padding)
-                    corners = ((x, y) for x in (bounds.x0, bounds.x1) for y in (bounds.y0, bounds.y1))
+                if any(math.dist(point, (bubble.x, bubble.y)) > radius * 0.96 for point in corners):
+                    continue
 
-                    if any(math.dist(point, (bubble.x, bubble.y)) > radius * 0.96 for point in corners):
-                        continue
+                if ordinal and bounds.y1 > boxes[0].y0:
+                    continue
 
-                    if ordinal and bounds.y1 > boxes[0].y0:
-                        continue
+                if any(bounds.overlaps(other) for other in (*boxes, *obstacles)):
+                    continue
 
-                    if any(bounds.overlaps(other) for other in (*boxes, *obstacles)):
-                        continue
-
-                    boxes.append(bounds)
-                    placed[identifier] = (center[0], bounds.y0 + padding / 2) if ordinal else (bubble.x, bubble.y)
-                    break
-                else:
-                    break
+                boxes.append(bounds)
+                placed[identifier] = (center[0], bounds.y0 + padding / 2) if ordinal else (bubble.x, bubble.y)
+                break
             else:
-                return placed, boxes
+                break
+        else:
+            return placed, boxes
 
     # Dense or exceptionally long input must not silently erase labels or render an unreadable collision.
     for label in labels:

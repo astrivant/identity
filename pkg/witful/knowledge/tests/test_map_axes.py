@@ -9,6 +9,7 @@ from itertools import combinations
 
 import numpy as np
 import pytest
+from witful.knowledge import plotting
 from witful.knowledge.emphasis import Bubble, _gaussian_distance, _gaussian_profile, emphasis_layout
 from witful.knowledge.map_axes import principal_axes
 from witful.knowledge.models import Discipline, Identity, Skill
@@ -124,3 +125,35 @@ def test_spokes_move_only_for_intersecting_bubbles(angle: float) -> None:
     assert adjusted[1] == original[1]
     assert adjusted[0].end == pytest.approx((profile[0] + 0.75 * cosine, profile[1] + 0.75 * sine))
     assert math.dist(adjusted[0].end, (bubble.x, bubble.y)) == pytest.approx(bubble.radius + 0.05)
+
+
+@pytest.mark.parametrize("angle", [0.0, math.pi / 4, -math.pi / 3])
+def test_mean_cross_and_outline_share_the_fitted_rotation(angle: float, monkeypatch: pytest.MonkeyPatch) -> None:
+    """
+    Check both rendered marker paths against known rotated principal directions.
+
+    Args:
+        angle (float): Principal-axis rotation in radians.
+        monkeypatch (pytest.MonkeyPatch): Replace the fit with controlled geometry.
+
+    Returns:
+        None: Both strokes and their white outline align with the axes at the fitted mean.
+    """
+    profile = (0.13, -0.09, 0.16, 0.04, math.cos(angle), math.sin(angle))
+    monkeypatch.setattr(plotting, "_gaussian_profile", lambda *_: profile)
+    model = Identity("root", "Example", tuple(Discipline(f"d{i}", f"Area {i}", (Skill(f"s{i}", "Contracts"),)) for i in range(6)))
+    figure = _map_plot(model, ())
+    markers = [artist for artist in figure.axes[0].collections if (artist.get_gid() or "").startswith("gaussian-mean:")]
+    assert {marker.get_gid() for marker in markers} == {"gaussian-mean:underlay", "gaussian-mean:foreground"}
+
+    for marker in markers:
+        assert tuple(np.asarray(marker.get_offsets(), dtype=np.float64)[0]) == pytest.approx(profile[:2])
+        vertices = np.asarray(marker.get_paths()[0].vertices, dtype=np.float64)
+
+        for (start, end), direction in zip(
+            ((vertices[0], vertices[1]), (vertices[2], vertices[3])), ((profile[4], profile[5]), (-profile[5], profile[4])), strict=True
+        ):
+            vector = end - start
+            assert vector / np.linalg.norm(vector) == pytest.approx(direction)
+
+    figure.clear()
