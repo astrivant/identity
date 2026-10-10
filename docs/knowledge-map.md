@@ -31,12 +31,17 @@ its unit circle with a positive gap between every pair. If one scale cannot fit,
 a bounded sequence of uniform reductions retries packing. This avoids overlaps
 without random animation or an unbounded optimization loop. The Python layout
 function accepts a display limit from one to twelve; the standard renderer uses
-eight to keep labels legible.
+twelve to preserve more peripheral context.
 
 Bubble opacity uses a weighted two-dimensional Gaussian over the displayed
 centers. Its covariance matrix is eigendecomposed, so the ellipse may rotate
-around the plot's z-axis. A center at 1.5 Mahalanobis standard deviations fades
-to the configured peripheral floor of 35%; central bubbles remain fully opaque.
+around the plot's z-axis. The opacity fall-off is spread across twice the 1.75
+Mahalanobis standard-deviation distance, so peripheral bubbles remain more
+visible while the configured 35% floor is retained farther out; central bubbles
+remain fully opaque.
+The same fitted distribution appears as a smooth, low-contrast gray field behind
+the discipline bubbles. It is a visual guide to the current discipline emphasis,
+not another data series; skills remain labeled inside their parent bubbles.
 Skill dots show each displayed discipline's nested structure. Full link kinds and
 weights are retained from the complete graph: dashed links are curated relations,
 solid links represent containment or observed reuse, and green identifies reuse

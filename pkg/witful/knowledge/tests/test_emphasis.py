@@ -10,7 +10,7 @@ from itertools import combinations
 import pytest
 from attrs import evolve
 from witful.knowledge.applications import application_id
-from witful.knowledge.emphasis import emphasis_layout
+from witful.knowledge.emphasis import _gaussian_opacity, emphasis_layout
 from witful.knowledge.models import Application, Discipline, Identity, Skill
 from witful.knowledge.rendering import graph_data
 
@@ -95,6 +95,19 @@ def test_recent_evidence_controls_emphasis_without_discarding_old_records() -> N
     assert any(bubble.opacity < 1 for bubble in bubbles[1:])
     assert bubbles == emphasis_layout(model, tuple(reversed(events)))
     assert graph_data(model, events) == before
+
+
+def test_opacity_falloff_is_half_speed_without_changing_the_viewport() -> None:
+    """
+    Keep the selected bubbles and Gaussian boundary while making peripheral opacity decay gentler.
+
+    Returns:
+        None: The half-speed curve remains opaque at the center and fades more slowly at one sigma.
+    """
+    opacities = _gaussian_opacity(((0.0, 0.0), (0.1, 0.0)), (1.0, 1.0))
+
+    assert opacities[0] == 1.0
+    assert opacities[1] > 0.8
 
 
 @pytest.mark.parametrize("limit", [0, 13])

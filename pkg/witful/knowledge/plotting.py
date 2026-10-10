@@ -19,7 +19,7 @@ from witful.files import replace_file
 from witful.knowledge.applications import effective_applications
 from witful.knowledge.compiler import index
 from witful.knowledge.contracts import as_data
-from witful.knowledge.emphasis import emphasis_layout
+from witful.knowledge.emphasis import _gaussian_distance, _gaussian_profile, emphasis_layout
 from witful.knowledge.metrics import graph_edges, usage
 from witful.knowledge.models import Discipline, Identity, Lemma, Lesson, Skill
 
@@ -34,6 +34,7 @@ __all__ = ["save_figure", "write_plots"]
 _COLORS = ("#366A87", "#407D61", "#A36636", "#795A91", "#996277", "#597878", "#767047", "#66758A")
 _INK = "#263748"
 _MUTED = "#697783"
+_LABEL_BACKGROUND_ALPHA = 0.48
 _LAYERS = (Identity, Discipline, Skill, Lesson, Lemma)
 
 
@@ -157,6 +158,24 @@ def _map_plot(identity: Identity, applications: Sequence[Application]) -> Figure
     figure.text(0.04, 0.96, "How my skills connect", fontsize=23, color=_INK, weight="bold", gid="plot-heading")
     figure.text(0.04, 0.925, "Which areas of work are in focus, and how do they connect?", fontsize=11, color=_MUTED, gid="plot-heading")
 
+    # Render the same weighted discipline Gaussian as a quiet, continuous shadow behind the bubbles.
+    if bubbles:
+        profile = _gaussian_profile([(bubble.x, bubble.y) for bubble in bubbles], [bubble.score for bubble in bubbles])
+        coordinates = tuple(index / 31.5 - 1 for index in range(64))
+        field = [[math.exp(-0.5 * _gaussian_distance((x, y), profile) ** 2) for x in coordinates] for y in coordinates]
+        gradient = mpl.colors.LinearSegmentedColormap.from_list("discipline-shadow", ("#FFFFFF", "#AAB6BF"))
+        axis.imshow(
+            field,
+            extent=(-1, 1, -1, 1),
+            origin="lower",
+            cmap=gradient,
+            vmin=0,
+            vmax=1,
+            alpha=0.20,
+            interpolation="bilinear",
+            zorder=0,
+        )
+
     # Discipline bubbles replace the old square anchors; skill dots remain their nested subgraphs.
     for bubble in bubbles:
         discipline = disciplines[bubble.id]
@@ -174,26 +193,41 @@ def _map_plot(identity: Identity, applications: Sequence[Application]) -> Figure
                 zorder=2,
             )
         )
+        label_width = max(8, int(10 + bubble.radius * 22))
         axis.text(
             bubble.x,
             bubble.y + bubble.radius * 0.13,
-            fill(discipline.name, 16, break_on_hyphens=False),
+            fill(discipline.name, label_width, break_on_hyphens=False),
             ha="center",
             va="center",
-            color=colors[bubble.id],
-            alpha=bubble.opacity,
+            color="white",
+            alpha=1.0,
             fontsize=8 + 15 * bubble.radius,
-            bbox={"facecolor": "white", "edgecolor": "none", "alpha": 0.80, "pad": 1.5},
+            bbox={"facecolor": colors[bubble.id], "edgecolor": "none", "alpha": _LABEL_BACKGROUND_ALPHA, "pad": 1.8},
             weight="bold",
             zorder=4,
         )
 
         for ordinal, skill in enumerate(skills):
-            angle = math.pi * (1.15 + 0.70 * (ordinal + 0.5) / max(1, len(skills)))
-            point = (bubble.x + bubble.radius * 0.73 * math.cos(angle), bubble.y + bubble.radius * 0.73 * math.sin(angle))
+            # Reserve the upper half for the discipline title and distribute skills around the lower arc.
+            angle = math.pi + math.pi * (ordinal + 0.5) / max(1, len(skills))
+            point = (bubble.x + bubble.radius * 0.88 * math.cos(angle), bubble.y + bubble.radius * 0.88 * math.sin(angle))
             positions[skill.id] = point
             opacity[skill.id] = bubble.opacity
             axis.scatter(*point, s=13 + 40 * bubble.radius, color=colors[bubble.id], alpha=bubble.opacity, zorder=4)
+            # Keep skill labels on the bubble's perimeter so they do not collide with its discipline title.
+            label_point = (bubble.x + bubble.radius * 0.60 * math.cos(angle), bubble.y + bubble.radius * 0.60 * math.sin(angle))
+            axis.text(
+                *label_point,
+                fill(skill.name, max(7, int(8 + bubble.radius * 18)), break_on_hyphens=False),
+                ha="left" if math.cos(angle) >= 0 else "right",
+                va="center",
+                color="white",
+                alpha=1.0,
+                fontsize=max(4.5, min(6.5, 3.8 + bubble.radius * 10)),
+                bbox={"facecolor": colors[bubble.id], "edgecolor": "none", "alpha": _LABEL_BACKGROUND_ALPHA, "pad": 1.0},
+                zorder=5,
+            )
 
     # Only the viewport is filtered. Preserve link kinds and full-graph weights instead of recomputing evidence on a subset.
     for edge in graph_edges(identity, applications):

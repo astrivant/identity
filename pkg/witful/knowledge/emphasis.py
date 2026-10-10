@@ -23,7 +23,8 @@ __all__ = ["Bubble", "emphasis_layout"]
 _LIMIT = 12
 _HALF_LIFE_DAYS = 30.0
 _GAP = 0.025
-_OPACITY_SIGMAS = 1.5
+_OPACITY_SIGMAS = 1.75
+_OPACITY_FALLOFF_SCALE = 2.0
 _MIN_OPACITY = 0.35
 
 
@@ -91,24 +92,25 @@ def _pack(radii: Sequence[float], priorities: Sequence[float]) -> list[tuple[flo
     return points
 
 
-def _gaussian_opacity(points: Sequence[tuple[float, float]], weights: Sequence[float]) -> tuple[float, ...]:
+def _gaussian_profile(points: Sequence[tuple[float, float]], weights: Sequence[float]) -> tuple[float, float, float, float, float, float]:
     """
-    Convert rotated two-dimensional Gaussian distance into bounded bubble opacity.
+    Fit the weighted, rotated two-dimensional Gaussian used by the map renderer.
 
     Args:
-        points (Sequence[tuple[float, float]]): Packed bubble centers.
+        points (Sequence[tuple[float, float]]): Bubble centers in viewport coordinates.
         weights (Sequence[float]): Nonnegative emphasis weights for the centers.
 
     Returns:
-        tuple[float, ...]: Opacity values, with one value per center.
+        tuple[float, float, float, float, float, float]: Weighted center, principal variances,
+            and the principal-axis cosine and sine.
 
     Raises:
-        ValueError: If the point and weight sequences differ in length.
+        ValueError: If the point and weight sequences differ in length or are empty.
     """
     if len(points) != len(weights):
-        raise ValueError("Gaussian opacity requires one weight per point")
+        raise ValueError("Gaussian profile requires one weight per point")
     if not points:
-        return ()
+        raise ValueError("Gaussian profile requires at least one point")
 
     total = sum(weights) or float(len(points))
     normalized = tuple(weight / total for weight in weights) if sum(weights) else (1 / len(points),) * len(points)
@@ -125,14 +127,50 @@ def _gaussian_opacity(points: Sequence[tuple[float, float]], weights: Sequence[f
     major = max((trace + spread) / 2, 1e-6)
     minor = max((trace - spread) / 2, 1e-6)
     angle = 0.5 * math.atan2(2 * covariance_xy, covariance_xx - covariance_yy)
-    cosine, sine = math.cos(angle), math.sin(angle)
+    return mean_x, mean_y, major, minor, math.cos(angle), math.sin(angle)
+
+
+def _gaussian_distance(point: tuple[float, float], profile: tuple[float, float, float, float, float, float]) -> float:
+    """
+    Measure one point in the fitted Gaussian's rotated Mahalanobis coordinates.
+
+    Args:
+        point (tuple[float, float]): Point in viewport coordinates.
+        profile (tuple[float, float, float, float, float, float]): Profile from ``_gaussian_profile``.
+
+    Returns:
+        float: Nonnegative distance from the weighted Gaussian center.
+    """
+    mean_x, mean_y, major, minor, cosine, sine = profile
+    vector = (point[0] - mean_x, point[1] - mean_y)
+    major_axis = cosine * vector[0] + sine * vector[1]
+    minor_axis = -sine * vector[0] + cosine * vector[1]
+    return math.sqrt(major_axis**2 / major + minor_axis**2 / minor)
+
+
+def _gaussian_opacity(points: Sequence[tuple[float, float]], weights: Sequence[float]) -> tuple[float, ...]:
+    """
+    Convert rotated two-dimensional Gaussian distance into bounded bubble opacity.
+
+    Args:
+        points (Sequence[tuple[float, float]]): Packed bubble centers.
+        weights (Sequence[float]): Nonnegative emphasis weights for the centers.
+
+    Returns:
+        tuple[float, ...]: Opacity values, with one value per center.
+
+    Raises:
+        ValueError: If the point and weight sequences differ in length.
+    """
+    if not points:
+        return ()
+    profile = _gaussian_profile(points, weights)
 
     opacities = []
-    for vector in centered:
-        major_axis = cosine * vector[0] + sine * vector[1]
-        minor_axis = -sine * vector[0] + cosine * vector[1]
-        distance = math.sqrt(major_axis**2 / major + minor_axis**2 / minor)
-        fade = min(1.0, distance / _OPACITY_SIGMAS)
+    for point in points:
+        distance = _gaussian_distance(point, profile)
+        # Keep the selection boundary unchanged while spreading the same fade over twice the distance.
+        fade = min(1.0, distance / (_OPACITY_SIGMAS * _OPACITY_FALLOFF_SCALE))
         opacities.append(1 - (1 - _MIN_OPACITY) * fade)
     opacities[0] = 1.0
     return tuple(opacities)

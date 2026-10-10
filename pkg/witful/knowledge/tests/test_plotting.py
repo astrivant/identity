@@ -33,7 +33,9 @@ def test_plots_preserve_unchanged_bytes_and_modification_times(tmp_path: Path, p
     assert len(paths) == 6
     assert 'id="plot-heading"' in (tmp_path / "knowledge-map.svg").read_text()
     if populated:
-        assert "Design" in (tmp_path / "knowledge-map.svg").read_text()
+        rendered = (tmp_path / "knowledge-map.svg").read_text()
+        assert "Design" in rendered
+        assert "Contracts" in rendered
     assert all(content for content, _ in before.values())
     assert write_plots(model, (), tmp_path) == paths
     assert {path: (path.read_bytes(), path.stat().st_mtime_ns) for path in paths} == before
