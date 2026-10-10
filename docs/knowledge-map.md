@@ -47,14 +47,16 @@ weighted mean, in muted gray with a white outline. Covariance ellipses at
 0.5, 1, 1.5, and 2 Mahalanobis standard deviations sit above the gradient and
 below the bubbles. Half-step contours are dashed; integer contours are solid.
 These are distance contours, not one-dimensional confidence percentages.
-Muted principal-axis guides mark both ends of the major and minor axes at
-2.7 standard deviations from the fitted mean. Their endpoints use
-`mean +/- 2.7 * sqrt(principal_variance) * principal_direction`, so they rotate
-with the same covariance as the ellipses. Diamond tips mark those exact distances;
-dotted leaders extend to exterior labels when needed to keep lettering clear of
-the bubbles. The viewport expands to include them without changing the fitted
-distribution, bubble selection, or opacity. A single-center fit omits directional
-guides because its covariance comes only from numerical regularization.
+Short exterior ticks identify both directions of the major and minor axes.
+Each tick starts beyond both the 2.7-standard-deviation threshold and the fixed
+unit-circle bubble layout, with extra clearance from bubbles and axis labels.
+The threshold uses `mean +/- 2.7 * sqrt(principal_variance) * principal_direction`,
+so tick directions follow the same covariance as the ellipses. Only axis names
+are labeled: shifted ticks are not presented as exact 2.7-distance markers.
+There are no center-crossing axis lines, long leaders, or endpoint diamonds.
+The viewport expands for the annotations without changing the distribution,
+bubble selection, or opacity. A single-center fit omits directional guides
+because its covariance comes only from numerical regularization.
 Skill labels are centered beside their vertices without background
 boxes. The renderer measures full names, wraps at word boundaries, and packs text
 inside its parent circle, reserving the mean marker and each discipline title.

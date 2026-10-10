@@ -1,5 +1,5 @@
 """
-Draw the fitted Gaussian's principal directions with true-distance tips and exterior labels.
+Show fitted Gaussian directions with short exterior ticks and unobstructed labels.
 """
 
 from __future__ import annotations
@@ -21,14 +21,15 @@ __all__ = ["GaussianAxis", "draw_principal_axes", "principal_axes"]
 
 _TIP_SIGMAS = 2.7
 _LABEL_RADIUS = 1.05
-_LABEL_GAP = 0.08
+_LABEL_GAP = 0.18
+_TICK_LENGTH = 0.07
 _INK = "#697783"
 
 
 @frozen
 class GaussianAxis:
     """
-    Keep statistical endpoints distinct from labels displaced for readability.
+    Keep the statistical threshold separate from exterior ticks and labels.
 
     Attributes:
         name (str): Major or Minor principal direction.
@@ -80,7 +81,7 @@ def principal_axes(profile: tuple[float, float, float, float, float, float]) -> 
 
 def draw_principal_axes(axis: Axes, guides: Sequence[GaussianAxis], exclusions: Sequence[Bbox]) -> None:
     """
-    Keep muted guides behind bubble lettering and mark the exact standardized endpoints.
+    Draw only short exterior ticks beyond the statistical threshold and the bubble-packing boundary.
 
     Args:
         axis (Axes): Final map viewport with its renderer initialized.
@@ -88,7 +89,7 @@ def draw_principal_axes(axis: Axes, guides: Sequence[GaussianAxis], exclusions: 
         exclusions (Sequence[Bbox]): Bubble lettering and mean-marker clearances in data coordinates.
 
     Returns:
-        None: Adds labels, clipped lines, and endpoint markers without changing the fit or bubble geometry.
+        None: Adds exterior labels and separated ticks without central lines, markers, or changes to the fitted distribution.
     """
     boxes = list(exclusions)
 
@@ -98,7 +99,7 @@ def draw_principal_axes(axis: Axes, guides: Sequence[GaussianAxis], exclusions: 
         for sign, tip, label in (("-", guide.start, guide.label_start), ("+", guide.end, guide.label_end)):
             text = axis.text(
                 *label,
-                f"{guide.name} axis\n{sign}{_TIP_SIGMAS:g} SD",
+                f"{guide.name} axis",
                 ha="center",
                 va="center",
                 multialignment="center",
@@ -109,22 +110,23 @@ def draw_principal_axes(axis: Axes, guides: Sequence[GaussianAxis], exclusions: 
                 gid=f"gaussian-axis-label:{key}:{sign}",
             )
             boxes.append(text.get_window_extent().padded(4).transformed(axis.transData.inverted()))
-            axis.scatter(*tip, marker="D", s=15, color=_INK, zorder=4, gid=f"gaussian-axis-tip:{key}:{sign}")
 
-        # Dotted leaders distinguish displaced labels from the solid, measured principal-axis span.
-        for start, end, linestyle in (
-            (guide.start, guide.end, "-"),
-            (guide.start, guide.label_start, ":"),
-            (guide.end, guide.label_end, ":"),
-        ):
-            for left, right in visible_segments(start, end, boxes):
+            # Labels lie beyond both 2.7 SD and the packing circle. Leave a short tick at that exterior boundary.
+            # The fixed label gap supplies breathing room; the tick does not point through data or imply an exact-distance marker.
+            dx, dy = label[0] - tip[0], label[1] - tip[1]
+            length = math.hypot(dx, dy)
+            direction = (dx / length, dy / length)
+            start = tuple(value - _LABEL_GAP * step for value, step in zip(label, direction, strict=True))
+            end = tuple(value + _TICK_LENGTH * step for value, step in zip(start, direction, strict=True))
+
+            for left, right in visible_segments((start[0], start[1]), (end[0], end[1]), boxes):
                 axis.plot(
                     [left[0], right[0]],
                     [left[1], right[1]],
                     color=_INK,
                     linewidth=0.8,
                     alpha=0.65,
-                    linestyle=linestyle,
+                    solid_capstyle="round",
                     zorder=0,
-                    gid=f"gaussian-axis-guide:{key}",
+                    gid=f"gaussian-axis-tick:{key}:{sign}",
                 )

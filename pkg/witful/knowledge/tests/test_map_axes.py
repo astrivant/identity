@@ -46,7 +46,7 @@ def test_tips_follow_principal_variances_and_rotation(angle: float) -> None:
 
 
 @pytest.mark.parametrize("count", [0, 1, 6, 12])
-def test_rendered_tips_and_labels_remain_visible(count: int) -> None:
+def test_rendered_outer_ticks_leave_the_data_clear(count: int) -> None:
     """
     Exercise empty, regularized, and populated maps without clipping or label collisions.
 
@@ -54,7 +54,7 @@ def test_rendered_tips_and_labels_remain_visible(count: int) -> None:
         count (int): Number of equally weighted disciplines in the test collection.
 
     Returns:
-        None: Meaningful fits retain four labeled exact-distance tips inside the publication canvas.
+        None: Meaningful fits retain four short exterior ticks without crossing data or crowding labels.
     """
     model = Identity("root", "Example", tuple(Discipline(f"d{i}", f"Area {i}", (Skill(f"s{i}", "Contracts"),)) for i in range(count)))
     figure = _map_plot(model, ())
@@ -63,19 +63,30 @@ def test_rendered_tips_and_labels_remain_visible(count: int) -> None:
     axis = figure.axes[0]
     labels = [text for text in axis.texts if (text.get_gid() or "").startswith("gaussian-axis-label:")]
     tips = [artist for artist in axis.collections if (artist.get_gid() or "").startswith("gaussian-axis-tip:")]
-    assert len(labels) == len(tips) == (4 if count > 1 else 0)
+    ticks = [line for line in axis.lines if (line.get_gid() or "").startswith("gaussian-axis-tick:")]
+    assert len(labels) == len(ticks) == (4 if count > 1 else 0)
+    assert not tips
+    assert not any((line.get_gid() or "").startswith("gaussian-axis-guide:") for line in axis.lines)
 
     if count > 1:
         bubbles = emphasis_layout(model, ())
         profile = _gaussian_profile([(bubble.x, bubble.y) for bubble in bubbles], [bubble.score for bubble in bubbles])
-        assert {text.get_text() for text in labels} == {f"{name} axis\n{sign}2.7 SD" for name in ("Major", "Minor") for sign in ("-", "+")}
+        assert {text.get_text() for text in labels} == {"Major axis", "Minor axis"}
 
-        for tip in tips:
-            coordinates = np.asarray(tip.get_offsets(), dtype=np.float64)
-            x, y = float(coordinates[0, 0]), float(coordinates[0, 1])
-            assert _gaussian_distance((float(x), float(y)), profile) == pytest.approx(2.7)
-            assert axis.get_xlim()[0] < x < axis.get_xlim()[1]
-            assert axis.get_ylim()[0] < y < axis.get_ylim()[1]
+        for tick in ticks:
+            coordinates = np.asarray(tick.get_xydata(), dtype=np.float64)
+            start, end = coordinates[0], coordinates[-1]
+            assert np.linalg.norm(end - start) <= 0.070001
+
+            # The whole visible segment stays outside the data envelope, including peripheral circles.
+            for point in np.linspace(start, end, 9):
+                x, y = float(point[0]), float(point[1])
+                assert _gaussian_distance((x, y), profile) >= 2.7 - 1e-8
+                assert math.hypot(x, y) >= 1.05 - 1e-8
+                assert all(math.dist((x, y), (bubble.x, bubble.y)) >= bubble.radius + 0.049 for bubble in bubbles)
+                assert axis.get_xlim()[0] < x < axis.get_xlim()[1]
+                assert axis.get_ylim()[0] < y < axis.get_ylim()[1]
+                assert not any(text.get_window_extent().padded(4).contains(*axis.transData.transform((x, y))) for text in axis.texts)
 
         for label in labels:
             bounds = label.get_window_extent()
