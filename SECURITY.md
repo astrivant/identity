@@ -178,3 +178,24 @@ They never update reviewed journals automatically. Review claims and cited sourc
 before recording an accepted lesson. Stable upserts support resuming partial writes;
 there is no automatic deletion of remote records removed from a local catalog.
 See [Sapience operations and recovery](docs/sapience.md).
+
+## Multisleeving and termination
+
+Sleeves create private branches and linked worktrees. Fetch and push destinations
+must identify the same private GitHub repository and are rechecked before writes.
+Encrypted collections retain independent plaintext sources outside Git and publish
+only the established signed transport. Directly tracked collections retain their
+existing plaintext-in-private-Git policy; multisleeving does not encrypt them.
+
+Local receipts include paths, revision identifiers, timestamps, key-directory paths
+without key contents, and a plaintext archive digest. They remain under Git's common
+directory and are not pushed. `status` prints local metadata; do not publish it as
+a public log. Remote branch names and commit summaries must be non-sensitive.
+
+Use durable encrypted volumes for worktrees, the common Git directory, and private
+source directories; mount keys separately. The supervisor forwards catchable
+signals and saves within a deadline, but SIGKILL, host loss, storage failure, and
+unavailable credentials/network can prevent backup. It never marks an unmerged
+session closed. Open worktrees, branches, and partial edits are retained for explicit
+recovery. Child workloads control their own logs and must join their writers before
+exit. See [multisleeving](docs/multisleeving.md) for the lifecycle and residual risks.

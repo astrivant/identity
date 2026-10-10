@@ -40,6 +40,7 @@ Sapience or its vector database.
 - Render plots from recorded evidence and explicitly export selected awareness figures.
 - Check publication inputs with the PII scanner and configurable deny terms.
 - Install and synchronize encrypted, signed private collections.
+- Isolate concurrent sleeves, sign backups, and reconcile their histories before closure.
 - Optionally project reviewed concepts into Sapience and save generated review proposals.
 
 The package does not infer experience from installed dependencies or promote model
@@ -52,6 +53,7 @@ summaries to reviewed lessons. Source journals remain owned by the collection.
 [Sapience integration](https://github.com/astrivant/identity/blob/main/docs/sapience.md),
 [awareness figures](https://github.com/astrivant/identity/blob/main/docs/awareness.md),
 [private collection setup](https://github.com/astrivant/identity/blob/main/docs/private-collections.md),
+[multisleeving](https://github.com/astrivant/identity/blob/main/docs/multisleeving.md),
 [security](https://github.com/astrivant/identity/blob/main/SECURITY.md), and
 [development](https://github.com/astrivant/identity/blob/main/CONTRIBUTING.md).
 

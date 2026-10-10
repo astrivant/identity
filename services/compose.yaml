@@ -7,6 +7,9 @@ services:
     group_add:
       - '10001'
     entrypoint:
+      - /usr/bin/tini
+      - -g
+      - --
       - witful
     command:
       - lessons

@@ -32,6 +32,26 @@ never reconstruct undocumented past use or infer learning from a repository swit
 Commit the reviewed checkpoint journal; let the collection main workflow render
 its plots and synchronize its SQLite mirror. Remote database writes remain explicit.
 
+## Multisleeving and session completion
+
+For an authorized session maintaining a private identity, read
+[the multisleeving contract](docs/multisleeving.md) before editing. Start a separate
+`witful sleeve` from current remote main and use its worktree/source paths for this
+instance. Never share an uncommitted worktree or the installer's plaintext source
+with another instance. Preserve the primary checkout and its user edits.
+
+Checkpoint coherent changes to the sleeve's signed remote branch promptly. Before
+normal session completion, run `sleeve finish`, then `sleeve guard`; direct merge is
+the default when allowed. Required review/checks and conflicts block closure.
+Explain the blocker and keep the session open instead of claiming synchronization.
+Do not choose ours/theirs, rewrite causal journals, force-push, or weaken protections.
+
+When launching an authorized agent workload, use `sleeve run` for signal propagation
+and bounded final checkpoint/reconciliation. Frequent checkpoints and persistent
+storage remain necessary: abrupt process/node loss cannot run cleanup. Resume open
+receipts after interruption and report the last verified remote state, not assumed
+recovery. Setup, key creation, and unrelated agent launches still require task scope.
+
 ## Publish awareness figures
 
 For a requested figure export or resume rebuild, read [awareness publication](docs/awareness.md)

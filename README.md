@@ -77,6 +77,10 @@ this README with your dashboard and generates your figures. Empty collections st
 with empty-state plots. Full figures remain encrypted by default; readable README
 plots require a separate opt-in.
 
+Run concurrent instances with [multisleeving](docs/multisleeving.md): each gets an
+isolated branch/worktree, signed backup checkpoints, and required reconciliation
+before normal session closure. A supervised command also saves on termination.
+
 See [setup, daily sync, and recovery](docs/private-collections.md), including
 existing private forks, custom paths, required secrets, and branch protection.
 

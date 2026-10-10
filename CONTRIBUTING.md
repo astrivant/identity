@@ -46,3 +46,15 @@ focused check. For cross-project protocol verification, launch the Sapience fork
 as `--server-arg`; set `SAPIENCE_DATA_DIR` to a temporary directory and use a synthetic
 Witful collection. Repeat `sync`, verify readback, and test `propose` against an empty
 namespace to avoid a synthesis request. Never substitute personal records into fixtures.
+
+## Session and process lifecycle
+
+[Multisleeving](docs/multisleeving.md) uses private worktrees, signed checkpoints,
+and an explicit remote-ancestry close gate. Its focused tests use temporary local
+Git remotes, ephemeral SSH signing keys, synthetic encrypted collections, and real
+TERM/INT/HUP signals. No model provider or live Kubernetes cluster is required.
+
+The Dockerfile pins Debian Trixie's Tini to `0.19.0-3+b8`, verified for amd64 and
+arm64 in the [Debian package index](https://packages.debian.org/trixie/tini).
+Both image targets and the chart/derived Compose entrypoint retain Tini. Regenerate
+Compose when changing the chart; do not patch its generated entrypoint directly.

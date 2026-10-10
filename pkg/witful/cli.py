@@ -21,6 +21,11 @@ def main() -> int:
 
         return sapience_main(sys.argv[2:])
 
+    if len(sys.argv) > 1 and sys.argv[1] == "sleeve":
+        from witful.sleeves.cli import main as sleeve_main
+
+        return sleeve_main(sys.argv[2:])
+
     if len(sys.argv) > 1 and sys.argv[1] == "collection":
         from witful.collection.cli import main as collection_main
 

@@ -53,6 +53,15 @@ plots, not the author's history or invented activity. Later source commits repea
 that refresh. Configure GitHub Actions to permit this repository's workflow if
 organization policy or fork defaults disable it.
 
+## Concurrent instances
+
+Use [multisleeving](multisleeving.md) for concurrent agents. Start each instance
+before its first edit, use its isolated source path, checkpoint every coherent
+update, and require `sleeve finish` plus `sleeve guard` before normal closure.
+The installer's shared plaintext collection is for one writer; do not point
+multiple sleeves at it. Each encrypted sleeve restores its own snapshot and
+publishes only signed ciphertext. Main CI continues to generate the shared figures.
+
 ## Record and synchronize
 
 Use the installed executable (`witful` below) for ordinary lesson, application,

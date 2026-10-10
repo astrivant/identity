@@ -32,6 +32,7 @@ sources and schema drift.
 | `privacy scan [--repo PATH] [--staged] [--terms-file PATH]` | Scan publishable source; redacted findings, exit 1 for matches, 2 for incomplete scans |
 | `awareness [--repo PATH] [--config PATH] [--output PATH] build/push/schema` | Render selected figures, explicitly dispatch a resume rebuild, or print wire schemas |
 | `sapience [--repo PATH] export/sync/propose/schema` | Optional MCP projection, stable readback-verified synchronization, and pending review briefs |
+| `sleeve start/checkpoint/backup/finish/status/guard/run/schema` | Isolated sessions, signed backup, termination handling, and verified reconciliation |
 | `collection setup/seal/restore/refresh/schema` | Private-copy installation, authenticated encryption, and CI figure refresh |
 | `registry NAME... [--stdin] [--refresh] [--offline]` | Batched PyPI observations, cached for six hours; exit 2 for unknown results |
 
@@ -101,3 +102,23 @@ or loopback HTTP. `--allow-insecure-http` explicitly permits other HTTP endpoint
 `--topic` and `--namespace`; it never appends to the lesson journal. `--output` overrides
 the collection-relative export or proposal destination. `schema` prints the projection
 contract without reading a collection or contacting a server.
+
+## Multisleeving
+
+Read [the lifecycle, conflict, and recovery contract](multisleeving.md).
+`start --repo CHECKOUT --directory NEW_DIRECTORY --name LABEL` begins an isolated
+private session from remote main; encrypted copies also require `--key-dir KEYS`.
+`checkpoint --repo WORKTREE` signs and pushes the source transport; directly
+tracked collections require named `--paths`. `backup` pushes only existing commits.
+
+`finish` merges directly when permitted. Use `--pull-request` when review is
+required, and rerun after a merge commit lands. `guard` fails until closure is
+recorded and no later work remains. `status` lists local receipts; `schema` emits
+the attrs-derived receipt contract. No force pushes or automatic conflict choices.
+
+`run --repo WORKTREE [--paths PATH ...] -- AGENT ARG ...` forwards termination to
+the workload, drains writers, checkpoints, and reconciles. `--shutdown-seconds`
+defaults to 90 and `--stop-seconds` to 10; require `0 < stop < shutdown`. Workloads
+receive `WITFUL_SLEEVE_WORKTREE` and `WITFUL_SLEEVE_SOURCE`. Normal completion
+preserves the workload's status, interrupted completion uses `128 + signal`, and
+incomplete cleanup returns 2. No hook can save in-memory work after SIGKILL.
