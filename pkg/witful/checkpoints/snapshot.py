@@ -35,6 +35,23 @@ def digest(value: object) -> str:
     return hashlib.sha256(json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()).hexdigest()
 
 
+def _lesson_digest(lesson: Lesson) -> str:
+    """
+    Keep checkpoint comparisons stable across the terminology-only hierarchy rename.
+
+    Args:
+        lesson (Lesson): Current teaching and its sourced insights.
+
+    Returns:
+        str: Digest using the checkpoint contract's original field spelling.
+    """
+    data = as_data(lesson)
+
+    # Renaming an API field must not count as revised guidance in historical checkpoint comparisons.
+    data["lemmas"] = data.pop("insights")
+    return digest(data)
+
+
 def snapshot(identity: Identity, applications: Sequence[Application]) -> tuple[SkillState, ...]:
     """
     Capture active guidance and deduplicated actual use for each skill.
@@ -63,7 +80,7 @@ def snapshot(identity: Identity, applications: Sequence[Application]) -> tuple[S
         SkillState(
             key,
             node.name,
-            tuple(sorted((Fact(item.id, digest(as_data(item))) for item in node.lessons if item.id not in superseded), key=lambda f: f.id)),
+            tuple(sorted((Fact(item.id, _lesson_digest(item)) for item in node.lessons if item.id not in superseded), key=lambda f: f.id)),
             tuple(sorted(uses[key], key=lambda f: f.id)),
         )
         for key, node in sorted(nodes.items())

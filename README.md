@@ -14,6 +14,18 @@ This repository also provides collection conventions, agent guidance, private-co
 workflows, and optional professional-awareness figures. Public examples are synthetic;
 your personal record belongs in your own collection.
 
+- **Make every project teach the next.** Capture the work you do, the decisions you
+  make, and the lessons worth reusing. Keep the evidence behind your choices within reach.
+- **Give your agents a shared understanding of how you work.** Bring reviewed knowledge
+  into [agent workflows](SKILL.md) and [MCP-compatible clients through Sapience](docs/sapience.md).
+  Run your collection services on [Kubernetes or Docker Compose](docs/storage.md).
+- **Let your resume grow with your experience.** Publish selected skill and decision
+  figures to [resumeme](https://github.com/astrivant/resumeme) and trigger an automated
+  PDF rebuild. [Choose what appears](docs/awareness.md) as your record develops.
+- **Keep your data yours.** Own your source records, encrypt and sign
+  [private collection snapshots](docs/private-collections.md), and control what
+  you share with agents or publish in your resume.
+
 <!-- toc:start -->
 **Table of contents**
 
@@ -70,7 +82,7 @@ existing private forks, custom paths, required secrets, and branch protection.
 
 ## What Identity records
 
-`Identity -> Discipline -> Skill -> Lesson -> Lemma` is a composed hierarchy.
+`Identity -> Discipline -> Skill -> Lesson -> Insight` is a composed hierarchy.
 Cross-discipline relationships form a separate graph. Recorded applications
 measure observed reuse, not intelligence or hidden model reasoning. Life
 preserves explicit choices, revisions, and the inputs behind their plots.

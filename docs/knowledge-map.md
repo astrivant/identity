@@ -26,8 +26,8 @@ no-evidence note. No historical activity is inferred from lesson counts.
 
 ## Geometry and relationships
 
-The viewport has fixed size. A deterministic polar search places bubbles inside
-its unit circle with a positive gap between every pair. If one scale cannot fit,
+The bubble layout uses a fixed unit circle. A deterministic polar search places
+bubbles inside it with a positive gap between every pair. If one scale cannot fit,
 a bounded sequence of uniform reductions retries packing. This avoids overlaps
 without random animation or an unbounded optimization loop. The Python layout
 function accepts a display limit from one to twelve; the standard renderer uses
@@ -40,13 +40,37 @@ Mahalanobis standard-deviation distance, so peripheral bubbles remain more
 visible while the configured 35% floor is retained farther out; central bubbles
 remain fully opaque.
 The same fitted distribution appears as a smooth, low-contrast gray field behind
-the discipline bubbles. It is a visual guide to the current discipline emphasis,
-not another data series; skills remain labeled inside their parent bubbles.
-Skill dots show each displayed discipline's nested structure. Full link kinds and
-weights are retained from the complete graph: dashed links are curated relations,
-solid links represent containment or observed reuse, and green identifies reuse
-reported as verified. Links to offscreen disciplines remain in the complete graph
-export. The map reports how many disciplines are visible.
+the entire plot. It is a visual guide to the current discipline emphasis, not
+another data series. Bubble fills remain tied to the same Gaussian distance and
+fade over twice the 1.75 standard-deviation distance. A large plus marks the
+weighted mean, in muted gray with a white outline. Covariance ellipses at
+0.5, 1, 1.5, and 2 Mahalanobis standard deviations sit above the gradient and
+below the bubbles. Half-step contours are dashed; integer contours are solid.
+These are distance contours, not one-dimensional confidence percentages.
+Short exterior ticks identify both directions of the major and minor axes.
+Each tick starts beyond both the 2.7-standard-deviation threshold and the fixed
+unit-circle bubble layout, with extra clearance from bubbles and axis labels.
+The threshold uses `mean +/- 2.7 * sqrt(principal_variance) * principal_direction`,
+so tick directions follow the same covariance as the ellipses. Only axis names
+are labeled: shifted ticks are not presented as exact 2.7-distance markers.
+There are no center-crossing axis lines, long leaders, or endpoint diamonds.
+The viewport expands for the annotations without changing the distribution,
+bubble selection, or opacity. A single-center fit omits directional guides
+because its covariance comes only from numerical regularization.
+Skill labels are centered beside their vertices without background
+boxes. The renderer measures full names, wraps at word boundaries, and packs text
+inside its parent circle, reserving the mean marker and each discipline title.
+It tries wide rows and compact columns before reducing type; an input that cannot
+fit the bounded minimum font size fails explicitly instead of dropping labels.
+Relationship lines leave gaps around text, and discipline titles occupy the
+highest drawing layer. Text stays fully opaque. White or dark lettering is chosen
+by luminance contrast against the actual bubble fill composited over the Gaussian
+field, so faded peripheral bubbles remain readable without text backplates.
+Bubble selection, positions, and the existing opacity curve are unchanged. Full link kinds and weights are retained from the complete
+graph: dashed links are curated relations, solid links represent containment or
+observed reuse, and green identifies reuse reported as verified. Links to
+offscreen disciplines remain in the complete graph export. The map reports how
+many disciplines are visible.
 
 ## Resume projection
 

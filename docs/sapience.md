@@ -45,12 +45,12 @@ a separate database and a fresh projection. External embeddings use `OPENAI_API_
 
 ## Ownership and synchronization
 
-The projection includes Identity, Discipline, Skill, Lesson, and Lemma nodes.
+The projection includes Identity, Discipline, Skill, Lesson, and Insight nodes.
 Ancestors are flattened rather than duplicating descendant journals. IDs are
 SHA256-derived from collection ID, namespace, and source concept ID. Each record
 retains schema version, source ID, kind, source reference, source revision, content
 hash, observed time when recorded, supersession, containment, and sourced graph edges.
-Superseded lessons and their lemmas are marked historical. A revision fingerprints
+Superseded lessons and their insights are marked historical. A revision fingerprints
 the source representation, not a fabricated version number or commit.
 
 Synchronization discovers structured tool contracts, calls `upsert_memory`, then

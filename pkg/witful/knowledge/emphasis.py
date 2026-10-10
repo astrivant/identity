@@ -26,6 +26,8 @@ _GAP = 0.025
 _OPACITY_SIGMAS = 1.75
 _OPACITY_FALLOFF_SCALE = 2.0
 _MIN_OPACITY = 0.35
+_MAX_RADIUS = 0.36
+_RADIUS_AREA_FACTOR = 0.95
 
 
 @frozen
@@ -221,7 +223,9 @@ def emphasis_layout(identity: Identity, applications: Sequence[Application], *, 
 
     maximum = max(scores.values())
     priorities = [scores[key] / maximum if maximum else 0.0 for key in selected]
-    largest = min(0.30, 0.75 / math.sqrt(len(selected)))
+    # Reserve more area for each discipline so its nested skill labels have room
+    # to breathe; the packing search still shrinks the whole set when needed.
+    largest = min(_MAX_RADIUS, _RADIUS_AREA_FACTOR / math.sqrt(len(selected)))
     initial = [largest * (0.60 + 0.40 * math.sqrt(priority)) for priority in priorities]
 
     # Uniform bounded shrinkage handles equal-weight crowds without collision jitter or random seeds.

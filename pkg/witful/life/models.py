@@ -26,7 +26,7 @@ class Decision:
         choice (str): Chosen behavior or disposition.
         rationale (str): Concise explanation of relevant constraints and tradeoffs.
         source (str): Evidence, user instruction, commit, or documentation reference.
-        concept_ids (tuple[str, ...]): Concepts involved, including lemmas when applicable.
+        concept_ids (tuple[str, ...]): Concepts involved, including insights when applicable.
         alternatives (tuple[str, ...]): Documented alternatives, without inferred hidden deliberation.
         supersedes (str | None): Current event for this key being explicitly revised.
         status (Literal["accepted", "retired"]): Whether this choice remains in effect.

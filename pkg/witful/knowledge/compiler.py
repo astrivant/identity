@@ -8,7 +8,7 @@ import hashlib
 from graphlib import CycleError, TopologicalSorter
 from typing import TYPE_CHECKING
 
-from witful.knowledge.models import Catalog, Discipline, Identity, Lemma, Lesson, Skill
+from witful.knowledge.models import Catalog, Discipline, Identity, Insight, Lesson, Skill
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 
 __all__ = ["Concept", "compile_identity", "index", "lineage"]
 
-type Concept = Identity | Discipline | Skill | Lesson | Lemma
+type Concept = Identity | Discipline | Skill | Lesson | Insight
 
 
 def _children(node: Concept) -> tuple[Concept, ...]:
@@ -28,7 +28,7 @@ def _children(node: Concept) -> tuple[Concept, ...]:
         node (Concept): One hierarchy node.
 
     Returns:
-        tuple[Concept, ...]: Directly owned children, empty for lemmas.
+        tuple[Concept, ...]: Directly owned children, empty for insights.
     """
     if isinstance(node, Identity):
         return node.disciplines
@@ -37,7 +37,7 @@ def _children(node: Concept) -> tuple[Concept, ...]:
     if isinstance(node, Skill):
         return node.lessons
     if isinstance(node, Lesson):
-        return node.lemmas
+        return node.insights
     return ()
 
 
@@ -63,7 +63,7 @@ def index(identity: Identity) -> tuple[dict[str, Concept], dict[str, str]]:
 
         if not node.id.strip() or not node.name.strip() or node.id in nodes:
             raise ValueError(f"Empty or duplicated concept: {node.id}")
-        if isinstance(node, (Lesson, Lemma)) and (not node.statement.strip() or not node.source.strip()):
+        if isinstance(node, (Lesson, Insight)) and (not node.statement.strip() or not node.source.strip()):
             raise ValueError("Teachings require a statement and explicit provenance")
 
         nodes[node.id] = node
@@ -136,7 +136,7 @@ def compile_identity(records: Sequence[JournalLesson], catalog: Catalog) -> Iden
             record.source,
             record.observed_at,
             record.supersedes,
-            annotation.lemmas if annotation else (),
+            annotation.insights if annotation else (),
         )
 
     for discipline in catalog.disciplines:

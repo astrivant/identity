@@ -9,7 +9,7 @@ from attrs import evolve
 from jsonschema import ValidationError
 from witful.knowledge.compiler import compile_identity, index
 from witful.knowledge.contracts import as_data, structure
-from witful.knowledge.models import Annotation, Catalog, DisciplineSpec, Identity, Lemma, Lesson, Relation, SkillSpec
+from witful.knowledge.models import Annotation, Catalog, DisciplineSpec, Identity, Insight, Lesson, Relation, SkillSpec
 from witful.lessons import new_lesson
 
 
@@ -41,7 +41,7 @@ def test_archive_preservation_roundtrip_and_input_order() -> None:
         "root",
         "Example",
         disciplines=(DisciplineSpec("design", "Design", (SkillSpec("compiler", "Compilers", ("Compiler",)),)),),
-        annotations=(Annotation(first.id, "Explicit inputs", (Lemma("inputs", "Inputs", "Pass context.", "Synthetic decomposition"),)),),
+        annotations=(Annotation(first.id, "Explicit inputs", (Insight("inputs", "Inputs", "Pass context.", "Synthetic decomposition"),)),),
     )
     compiled = compile_identity((first, second), catalog)
     assert compiled == compile_identity((second, first), catalog)

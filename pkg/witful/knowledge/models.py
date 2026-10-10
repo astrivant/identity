@@ -15,7 +15,7 @@ __all__ = [
     "Discipline",
     "DisciplineSpec",
     "Identity",
-    "Lemma",
+    "Insight",
     "Lesson",
     "Relation",
     "Skill",
@@ -24,9 +24,9 @@ __all__ = [
 
 
 @frozen
-class Lemma:
+class Insight:
     """
-    Express one reusable, scoped sub-lesson without implying mathematical proof.
+    Express one concrete, reusable takeaway from a sourced lesson.
 
     Attributes:
         id (str): Stable concept identifier.
@@ -53,7 +53,7 @@ class Lesson:
         source (str): Original provenance.
         observed_at (str): Original recording time.
         supersedes (str | None): Explicit earlier record corrected by this teaching.
-        lemmas (tuple[Lemma, ...]): Optional, explicitly sourced sub-lessons.
+        insights (tuple[Insight, ...]): Optional, explicitly sourced sub-lessons.
     """
 
     id: str
@@ -62,7 +62,7 @@ class Lesson:
     source: str
     observed_at: str
     supersedes: str | None = None
-    lemmas: tuple[Lemma, ...] = ()
+    insights: tuple[Insight, ...] = ()
 
 
 @frozen
@@ -173,12 +173,12 @@ class Annotation:
     Attributes:
         lesson_id (str): Existing full journal ID.
         name (str): Concise label, without changing the lesson statement.
-        lemmas (tuple[Lemma, ...]): Explicitly authored sub-lessons.
+        insights (tuple[Insight, ...]): Explicitly authored sub-lessons.
     """
 
     lesson_id: str
     name: str
-    lemmas: tuple[Lemma, ...] = ()
+    insights: tuple[Insight, ...] = ()
 
 
 @frozen
@@ -189,7 +189,7 @@ class Catalog:
     Attributes:
         id (str): Stable identity ID.
         name (str): Collection label.
-        version (Literal[1]): Supported source format.
+        version (Literal[1, 2]): Catalog format; version 1 retains its historical field spelling.
         disciplines (tuple[DisciplineSpec, ...]): Explicit topic assignments.
         annotations (tuple[Annotation, ...]): Optional named decompositions.
         relations (tuple[Relation, ...]): Explicit relationships between compiled concepts.
@@ -197,7 +197,7 @@ class Catalog:
 
     id: str
     name: str
-    version: Literal[1] = 1
+    version: Literal[1, 2] = 2
     disciplines: tuple[DisciplineSpec, ...] = ()
     annotations: tuple[Annotation, ...] = ()
     relations: tuple[Relation, ...] = ()
