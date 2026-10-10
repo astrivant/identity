@@ -47,13 +47,14 @@ weighted mean, in muted gray with a white outline. Covariance ellipses at
 0.5, 1, 1.5, and 2 Mahalanobis standard deviations sit above the gradient and
 below the bubbles. Half-step contours are dashed; integer contours are solid.
 These are distance contours, not one-dimensional confidence percentages.
-Short exterior ticks identify both directions of the major and minor axes.
-Each tick starts beyond both the 2.7-standard-deviation threshold and the fixed
-unit-circle bubble layout, with extra clearance from bubbles and axis labels.
+Short exterior spokes indicate both directions of the major and minor axes.
+Each lies on an axis through the fitted mean and starts beyond the
+2.7-standard-deviation threshold. A ray-circle intersection moves a spoke
+farther out only where needed to clear an actual bubble, with a small gap.
 The threshold uses `mean +/- 2.7 * sqrt(principal_variance) * principal_direction`,
-so tick directions follow the same covariance as the ellipses. Only axis names
-are labeled: shifted ticks are not presented as exact 2.7-distance markers.
-There are no center-crossing axis lines, long leaders, or endpoint diamonds.
+so directions follow the same covariance as the ellipses. The viewport fits the
+bubbles and short spokes without reserving margins for axis or distance labels.
+There are no axis labels, center-crossing lines, long leaders, or endpoint diamonds.
 The viewport expands for the annotations without changing the distribution,
 bubble selection, or opacity. A single-center fit omits directional guides
 because its covariance comes only from numerical regularization.

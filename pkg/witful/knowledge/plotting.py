@@ -167,11 +167,13 @@ def _map_plot(identity: Identity, applications: Sequence[Application]) -> Figure
 
         # One center has no directional spread; its regularization alone must not imply measured axes.
         if len(bubbles) > 1:
-            guides = principal_axes(profile)
+            guides = principal_axes(profile, bubbles)
 
-    # Expand only the view for exterior annotations; packing, covariance, and opacity retain their original coordinates.
-    extent = max([1.05, *(abs(value) + 0.2 for guide in guides for point in (guide.label_start, guide.label_end) for value in point)])
-    # Preserve the physical room for existing labels while extending the canvas for the statistical guides.
+    # Fit only the bubbles and short spokes, without label margins that shrink the map in a containing page.
+    # The 0.1 allowance covers each 0.07 spoke plus breathing room; fitted geometry and opacity stay unchanged.
+    extent = max([1.05, *(abs(value) + 0.1 for guide in guides for point in (guide.start, guide.end) for value in point)])
+
+    # Preserve physical space for bubble labels as the compact viewport changes.
     side = 12 * extent / 1.05
     figure = Figure(figsize=(side, side), facecolor="white")
     axis = figure.add_axes((0.035, 0.11, 0.93, 0.78))
