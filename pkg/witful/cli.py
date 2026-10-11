@@ -76,6 +76,11 @@ def main() -> int:
 
         return lessons_main(sys.argv[2:])
 
+    if len(sys.argv) > 1 and sys.argv[1] == "reflection":
+        from witful.reflection.cli import main as reflection_main
+
+        return reflection_main(sys.argv[2:])
+
     if len(sys.argv) > 1 and sys.argv[1] == "life":
         from witful.life.cli import main as life_main
 

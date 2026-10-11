@@ -78,3 +78,13 @@ or new OpenTelemetry dependency. Preserve native schema/hash compatibility, exac
 journal prefixes, task compare-and-set updates, and unknown/gap semantics. Inspect
 empty, baseline, zero-change, changing, and overlapping-window renders before
 publishing renderer changes. See [the instance contract](docs/instances.md).
+
+## Continual-learning examples
+
+The independent `learning` job renders only the packaged synthetic fixture using
+`witful reflection example`. Successful main runs publish its plots alongside the
+coverage badge on `gh-pages`; no personal collection or model service is accessed.
+Review renderer changes locally with `witful reflection example --output-dir
+.cache/continual-learning`. Preserve the question subtitles and explicit synthetic
+labels. Reflection tests use temporary Git histories and cover cadence boundaries,
+retry identity, provenance, unknown outcomes, and deterministic output.

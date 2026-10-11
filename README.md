@@ -36,6 +36,7 @@ execution; people retain authority over accepted guidance and publication.
   - [Lessons and decisions](#lessons-and-decisions)
   - [Project history and tools](#project-history-and-tools)
   - [Instance evidence](#instance-evidence)
+  - [Continual learning](#continual-learning)
   - [Concurrent sessions](#concurrent-sessions)
   - [Optional resume figures](#optional-resume-figures)
 - [Integrations and operations](#integrations-and-operations)
@@ -156,6 +157,21 @@ shows an empty-state panel; its first actual observation is a baseline. It never
 receives someone else's UUIDs, model history, or invented understanding scores.
 The private collection dashboard renders `instance-comparisons` from its own
 recorded evidence, including timestamps, revisions, missing evidence, and overlap.
+
+### Continual learning
+
+Revisit past choices against current knowledge, with a review due every 100 commits
+by default. Keep the original constraints fixed, record actual outcomes separately,
+and turn useful findings into reviewed lesson proposals. [Configure the cadence and
+review workflow](docs/continual-learning.md).
+
+The XY views compare present support for past choices with their outcomes, then
+show how circumstances changed afterward. These public previews are **synthetic**;
+private collections generate their own figures from reviewed evidence.
+
+[![Past decisions, current knowledge](https://raw.githubusercontent.com/astrivant/identity/gh-pages/badges/continual-learning/decision-outcomes.svg)](docs/continual-learning.md#read-the-figures)
+
+[![What changed afterward](https://raw.githubusercontent.com/astrivant/identity/gh-pages/badges/continual-learning/decision-context.svg)](docs/continual-learning.md#read-the-figures)
 
 ### Concurrent sessions
 

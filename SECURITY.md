@@ -213,3 +213,12 @@ unavailable credentials/network can prevent backup. It never marks an unmerged
 session closed. Open worktrees, branches, and partial edits are retained for explicit
 recovery. Child workloads control their own logs and must join their writers before
 exit. See [multisleeving](docs/multisleeving.md) for the lifecycle and residual risks.
+
+## Retrospective reviews
+
+Decision assessments, original context, knowledge snapshots, and proposed lessons
+can reveal sensitive work. Reflection sources join the encrypted collection archive;
+CI keeps pending plans inside the signed, encrypted figure archive. Upstream examples
+contain synthetic data only. Readable plots remain a separate opt-in disclosure.
+No model call, lesson acceptance, or external publication occurs automatically when
+the review cadence is reached.

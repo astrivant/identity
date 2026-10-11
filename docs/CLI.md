@@ -34,6 +34,7 @@ sources and schema drift.
 | `sapience [--repo PATH] export/sync/propose/schema` | Optional MCP projection, stable readback-verified synchronization, and pending review briefs |
 | `sleeve start/checkpoint/backup/finish/status/guard/run/schema` | Isolated sessions, signed backup, termination handling, and verified reconciliation |
 | `collection setup/seal/restore/refresh/verify/check-storage/schema` | Private-copy installation, authenticated encryption, and CI figure refresh |
+| `reflection [--repo PATH] plan/record/build/check/schema/example` | Periodic decision reassessment, outcome/context plots, and synthetic examples |
 | `registry NAME... [--stdin] [--refresh] [--offline]` | Batched PyPI observations, cached for six hours; exit 2 for unknown results |
 
 Life decisions contain `key`, `title`, `task`, `choice`, `rationale`, `source`,
@@ -178,3 +179,12 @@ See [coverage, handoff, storage, and hook behavior](completion.md).
 `--path` for keys, indexes, and temporary storage. `collection verify --checkout PATH
 --signing-fingerprint TRUSTED_SHA256 [--figures]` authenticates ciphertext against
 an independently retained signing identity. See [data protection](data-protection.md).
+
+## Continual learning
+
+`witful reflection --repo COLLECTION plan --history-repo CHECKOUT` prepares a
+private review brief using full Git history. `record --input assessments.json`
+accepts its complete reviewed batch; `build --output-dir PATH` renders current
+assessments, and `check` validates the journal. `schema` prints generated contracts.
+`example --output-dir PATH` renders synthetic public demonstration data only.
+See [cadence, rubric, and evidence requirements](continual-learning.md).

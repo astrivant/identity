@@ -175,3 +175,13 @@ See [instance provenance and startup reconciliation](instances.md).
 Managed collection remote database and MCP operations now fail closed because the
 client cannot verify those services' at-rest protection. See the
 [protection contract and migration steps](data-protection.md).
+
+## Periodic decision reviews
+
+Collection refreshes now prepare a bounded review plan and render decision-outcome
+and context-change views by default. Configure `knowledge/reflection.json`; its
+absence means enabled, every 100 first-parent commits, with batches of 20 decisions.
+The new `knowledge/reflections.jsonl` journal and its embedded snapshots are sealed
+with source records. `reflection-plan.json` stays inside the encrypted figure
+archive, never a readable CI artifact. Only a due flag and batch count reach logs.
+See [continual learning](continual-learning.md) for the review contract and CLI.
