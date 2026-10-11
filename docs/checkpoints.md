@@ -5,6 +5,24 @@ revisions, and actual skill applications. It records the project's Git commit
 and the collection's evidence at recording time. A repository switch or extra
 commit does not itself establish learning.
 
+## Skill: maintaining project chapters
+
+Keep one checkpoint per project touched during meaningful work. For a task spanning
+several repositories, record each project's committed HEAD separately in the owning
+collection, after its evidence is recorded. Updating the last repository alone loses
+the other boundaries. Use the existing work ledger to reconcile omissions; do not
+scan unrelated repositories or manufacture historical snapshots.
+
+A catch-up review records current evidence and current recording time. It cannot
+attribute changes since an old checkpoint to a particular intervening project.
+Document that gap, retain zero-change visits, and record future boundaries as the
+work happens. Generated-only publication commits need no new checkpoint, avoiding
+an endless refresh loop. Merely recording a checkpoint is not a skill application.
+
+Keep each collection independent. Public library examples are synthetic; never copy
+personal journals into upstream documentation. Private publication follows the
+collection's encryption and readable-figure policy.
+
 ## Record a boundary
 
 After recording the lessons and applications from a task, run:
@@ -56,7 +74,7 @@ The display limit is 1-20 comparisons, default 8. It does not discard history
 from the export. New and removed fact IDs are set differences; shared IDs with
 changed content hashes are revisions. Cells show `+ added / - removed / ~ revised`
 separately for teachings (L) and applications (U). Initial state is never counted
-as newly acquired knowledge. No change produces a valid empty-diff view.
+as newly acquired knowledge. No change preserves the project labels with an explicit "No changes" row.
 
 Applications roll up to each skill once per task/context, including applications
 of its lessons or insights. Later complete task observations revise the same key.
@@ -66,6 +84,18 @@ renames have explicit statuses. Reclassification can move facts between skills;
 it is a structural change, not evidence of new learning or project causality.
 Raw counts measure recorded evidence, not intelligence, proficiency, or everything
 that happened between checkpoints.
+
+## Reproduce the public example
+
+![Synthetic project chapters](assets/project-chapters/checkpoint-transitions.svg)
+
+This example contains invented projects and evidence, including an unchanged visit.
+Regenerate it from the committed fixture without accessing a personal collection:
+
+```bash
+witful checkpoints --repo examples/project-chapters check
+witful checkpoints --repo examples/project-chapters build --output-dir ../../docs/assets/project-chapters
+```
 
 ## Database mirror and recovery
 

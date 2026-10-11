@@ -95,7 +95,8 @@ preserves explicit choices, revisions, and the inputs behind their plots.
 - Append-only lesson, application, and decision journals with validated IDs.
 - Local SQLite or optional PostgreSQL search and decision archive seeding.
 - Deterministic plots, source snapshots, and explicit renderer drift checks.
-- Project checkpoints comparing documented learning and skill use across Git boundaries.
+- [Project chapters](docs/checkpoints.md): separate evidence checkpoints for every touched project.
+  [View the synthetic example](docs/assets/project-chapters/checkpoint-transitions.svg).
 - A toolbox and problem taxonomy with source-backed task-frequency plots.
 - Batched PyPI name checks with TTL caching and rate-limit cooldowns.
 - A redacted PII scanner usable locally, in pre-commit, and in CI.

@@ -44,3 +44,14 @@ WITFUL_SLEEVE_SOURCE and WITFUL_SLEEVE_WORKTREE paths. Back up during work, not 
 at shutdown; SIGKILL and node loss cannot run a cleanup handler. Keep the Git common
 directory and sleeve directory on durable storage for interrupted-session recovery.
 Read docs/multisleeving.md in CHECKOUT for commands and precise recovery limits.
+
+## Maintain project chapters
+
+Treat maintaining project chapters as a Skill. Record each meaningfully touched
+project individually in its owning collection, using a stable alias and committed
+HEAD, before leaving it or completing a multi-project task. Reconcile the work ledger
+against recorded boundaries. Catch-up reviews use the present recording time and
+current evidence; do not infer past learning or attribute a gap to the last project.
+Preserve zero-change visits and keep collections separate. Generated-only commits
+do not require another checkpoint. Validate and publish under the collection's
+existing encryption policy; CI owns routine plot refreshes.
