@@ -6,16 +6,15 @@ from __future__ import annotations
 
 import hashlib
 import json
-from textwrap import fill
 from typing import TYPE_CHECKING
 
 import matplotlib as mpl
-import networkx as nx
 from matplotlib.figure import Figure
 from matplotlib.ticker import MaxNLocator
 
 from witful.knowledge.plotting import save_figure
 from witful.repertoire.journal import counts
+from witful.repertoire.layout import problem_figure
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -58,30 +57,7 @@ def write_plots(inventory: Inventory, events: Sequence[Use], destination: Path, 
             axis.set_axis_off()
         figures = [("toolbox-use", figure)]
 
-        graph: nx.DiGraph[str, dict[str, object], dict[str, object]] = nx.DiGraph()
-        graph.add_nodes_from(item.id for item in inventory.problems)
-        graph.add_edges_from((item.parent, item.id) for item in inventory.problems if item.parent is not None)
-        labels = {item.id: fill(item.name, 22) + f"\n{problem_counts[item.id]} tasks" for item in inventory.problems}
-        positions = {}
-
-        for depth, layer in enumerate(nx.topological_generations(graph)):
-            for row, identifier in enumerate(sorted(layer)):
-                positions[identifier] = (float(depth), float(-row))
-
-        figure = Figure(figsize=(14, max(5, 2 + len(inventory.problems) * 0.35)), layout="constrained")
-        figure.suptitle("Problem repertoire\nHow do concrete tasks connect to broader problem categories?", fontsize=16, gid="plot-heading")
-        axis = figure.subplots()
-
-        if graph:
-            nx.draw_networkx_edges(graph, positions, ax=axis, arrows=True, node_size=2800, edge_color="#B0BBC2")
-            nx.draw_networkx_nodes(graph, positions, ax=axis, node_size=2800, node_color="#E2EFEA", edgecolors="#327B69")
-            nx.draw_networkx_labels(graph, positions, labels, ax=axis, font_size=9)
-        else:
-            axis.text(0.5, 0.5, "No problem categories recorded", transform=axis.transAxes, ha="center", va="center")
-
-        axis.margins(0.2)
-        axis.set_axis_off()
-        figures.append(("problem-repertoire", figure))
+        figures.append(("problem-repertoire", problem_figure(inventory, problem_counts)))
 
         for name, figure in figures:
             paths.extend(save_figure(figure, destination, name, projection=projection))
