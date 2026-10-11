@@ -55,6 +55,9 @@ from broad concepts to concrete problem types. Empty collections are valid.
 `knowledge/tool-uses.jsonl` contains explicit observations, never a dependency
 scan interpreted as historical use. `repertoire build` emits schemas, an exact
 input export, a frequency histogram, and the problem graph under `docs/assets/`.
+Problem circles enclose the measured full label and task count, including wrapped
+lines. Layer spacing accounts for those radii, keeping nodes disjoint at a fixed
+font size; larger taxonomies expand the figure instead of truncating labels.
 
 To record a use, provide a JSON object with `id` and `observed_at` as empty
 strings (assigned by the command), a stable `task`, sorted unique `tools`,
