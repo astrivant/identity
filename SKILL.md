@@ -32,6 +32,27 @@ never reconstruct undocumented past use or infer learning from a repository swit
 Commit the reviewed checkpoint journal; let the collection main workflow render
 its plots and synchronize its SQLite mirror. Remote database writes remain explicit.
 
+## Runtime provenance and startup reconciliation
+
+Read [the instance contract](docs/instances.md). Before authorized identity work,
+start or reuse `witful instances` with an explicit observed runtime boundary; if
+none is exposed, record a logical-session boundary and its limitation. Preserve
+the UUID across wakes, retries, and compaction. Never invent historical IDs,
+served models, parent/predecessor links, or understanding scores. Keep requested
+configuration separate from authoritative served-model evidence, and record the
+actual definition SHA/dirty state and known template SHA.
+
+Review startup pending tasks and relevant external sources, record explicit
+complete/incomplete coverage, and pass `instances guard` before acting. Missing
+sources keep the action gate closed. Maintain durable task handoffs and correlate
+actual actions in the supported local audit layer. Never add unsupported connector
+arguments or put secrets/raw payloads in metadata. Record native evidence with
+`observe` after meaningful changes; do not rewrite native history. Run `check`,
+then develop/inspect instance charts with `build`; normal refresh belongs in CI.
+First observations are baselines, missing evidence remains gaps, and concurrent
+windows cannot establish model causality. Keep source/log exports private and
+record `stop` before a normal runtime ends without discarding unfinished tasks.
+
 ## Multisleeving and session completion
 
 For an authorized session maintaining a private identity, read

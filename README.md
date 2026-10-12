@@ -32,6 +32,7 @@ your personal record belongs in your own collection.
 - [Install](#install)
 - [Your private identity](#your-private-identity)
 - [What Identity records](#what-identity-records)
+- [Instance evidence](#instance-evidence)
 - [Optional awareness](#optional-awareness)
 - [Tools and integrations](#tools-and-integrations)
 - [Privacy and operations](#privacy-and-operations)
@@ -96,10 +97,24 @@ preserves explicit choices, revisions, and the inputs behind their plots.
 - Local SQLite or optional PostgreSQL search and decision archive seeding.
 - Deterministic plots, source snapshots, and explicit renderer drift checks.
 - Project checkpoints comparing documented learning and skill use across Git boundaries.
+- Observed runtime provenance, startup task reconciliation, and native instance comparisons.
 - A toolbox and problem taxonomy with source-backed task-frequency plots.
 - Batched PyPI name checks with TTL caching and rate-limit cooldowns.
 - A redacted PII scanner usable locally, in pre-commit, and in CI.
 - Opt-in awareness figures and authenticated resume rebuilds through GitHub.
+
+## Instance evidence
+
+[Observed instance tracking](docs/instances.md) connects explicit runtime UUIDs,
+authoritative model evidence, definition revisions, and durable task handoffs to
+the same native knowledge and Life decision snapshots. Compare skill structure,
+insights, lessons, observed use, and decisions across retained boundaries.
+
+**No instance observations ship with this public template.** A new collection
+shows an empty-state panel; its first actual observation is a baseline. It never
+receives someone else's UUIDs, model history, or invented understanding scores.
+The private collection dashboard renders `instance-comparisons` from its own
+recorded evidence, including timestamps, revisions, missing evidence, and overlap.
 
 ## Optional awareness
 

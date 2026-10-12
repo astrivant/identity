@@ -11,6 +11,8 @@ from typing import TYPE_CHECKING
 
 from witful.checkpoints.journal import read as read_checkpoints
 from witful.collection.models import MAX_BYTES
+from witful.instances.journal import check_references
+from witful.instances.journal import read as read_instances
 from witful.knowledge.applications import read_applications, validate_applications
 from witful.knowledge.compiler import compile_identity, index
 from witful.knowledge.contracts import structure
@@ -30,6 +32,7 @@ SOURCES = (
     "knowledge/applications.jsonl",
     "knowledge/life.jsonl",
     "knowledge/checkpoints.jsonl",
+    "knowledge/instances.jsonl",
     "knowledge/repertoire.json",
     "knowledge/tool-uses.jsonl",
     "instructions.md",
@@ -74,6 +77,7 @@ def validate(root: Path) -> None:
     validate_applications(identity, read_applications(root / "knowledge/applications.jsonl"))
     read_archive(root)
     read_checkpoints(root / "knowledge/checkpoints.jsonl")
+    check_references(root, read_instances(root))
     inventory_path = root / "knowledge/repertoire.json"
     inventory = structure(json.loads(inventory_path.read_text()), Inventory) if inventory_path.exists() else Inventory()
     journal = root / "knowledge/tool-uses.jsonl"

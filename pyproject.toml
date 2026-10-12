@@ -63,6 +63,8 @@ shellcheck-py = "0.11.0.1"
 shfmt-py = "4.2.0"
 types-networkx = "3.6.1.20261006"
 types-jsonschema = ">=4.26,<5"
+opentelemetry-proto = "1.45.1"
+types-protobuf = "7.35.1.20260906"
 
 [build-system]
 requires = ["poetry-core==2.5.0"]

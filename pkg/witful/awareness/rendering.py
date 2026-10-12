@@ -13,6 +13,7 @@ from tempfile import TemporaryDirectory
 from witful.awareness.models import FIGURES, MAX_BUNDLE_BYTES, MAX_IMAGE_BYTES, Bundle, Figure
 from witful.checkpoints.journal import read as read_checkpoints
 from witful.checkpoints.plotting import build as checkpoint_plots
+from witful.instances.reporting import build as instance_plots
 from witful.knowledge.applications import read_applications
 from witful.knowledge.compiler import compile_identity, index
 from witful.knowledge.contracts import as_data, structure
@@ -69,6 +70,9 @@ def render(root: Path, selected: tuple[str, ...]) -> bytes:
 
         if "checkpoints" in groups:
             checkpoint_plots(read_checkpoints(root / "knowledge/checkpoints.jsonl"), destination, projection=True)
+
+        if "instances" in groups:
+            instance_plots(root, destination, projection=True)
 
         figures = []
 

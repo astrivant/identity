@@ -17,6 +17,7 @@ FIGURES = {
     "problem-repertoire": ("repertoire", "Problem repertoire"),
     "checkpoint-transitions": ("checkpoints", "Project transitions"),
     "checkpoint-comparisons": ("checkpoints", "Project comparisons"),
+    "instance-comparisons": ("instances", "Observed instance comparisons"),
 }
 BRANCH = "witful-awareness"
 BUNDLE_PATH = "awareness.json"

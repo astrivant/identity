@@ -37,6 +37,7 @@ Sapience or its vector database.
 - Index lessons in SQLite or optional PostgreSQL.
 - Preserve concise decisions and source snapshots for reproducible replay.
 - Record observed applications, tool use, and project checkpoints.
+- Track explicit runtime provenance, reconcile pending tasks, and compare native evidence across instances.
 - Render plots from recorded evidence and explicitly export selected awareness figures.
 - Check publication inputs with the PII scanner and configurable deny terms.
 - Install and synchronize encrypted, signed private collections.
@@ -54,6 +55,7 @@ summaries to reviewed lessons. Source journals remain owned by the collection.
 [awareness figures](https://github.com/astrivant/identity/blob/main/docs/awareness.md),
 [private collection setup](https://github.com/astrivant/identity/blob/main/docs/private-collections.md),
 [multisleeving](https://github.com/astrivant/identity/blob/main/docs/multisleeving.md),
+[observed instances](https://github.com/astrivant/identity/blob/main/docs/instances.md),
 [security](https://github.com/astrivant/identity/blob/main/SECURITY.md), and
 [development](https://github.com/astrivant/identity/blob/main/CONTRIBUTING.md).
 

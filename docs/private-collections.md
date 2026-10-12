@@ -96,7 +96,7 @@ Preserve those pins when editing `publish_figures`:
 - `false` (default): source records **and full figures stay encrypted**. README
   displays the repository's CI badge, the source ciphertext digest, and restore
   instructions. GitHub cannot render encrypted image bytes inline.
-- `true`: CI also commits the seven readable SVG figures under `docs/collection/`
+- `true`: CI also commits the generated readable SVG figures under `docs/collection/`
   and embeds them in README. This exposes labels, concepts, counts, and relationships
   to repository readers and Git history. A privacy scan checks known text patterns;
   it is not an anonymization guarantee. Review your labels before opting in.
@@ -156,3 +156,15 @@ repository Actions secrets are:
 
 No new GitHub token is generated; setup uses the authenticated `gh` client and CI
 uses the job token. See [data handling and threat boundaries](../SECURITY.md#private-collection-data-handling).
+
+
+## Instance continuity
+
+The encrypted source allowlist retains `knowledge/instances.jsonl` and its native
+`knowledge/snapshots/` references. Sleeve source fingerprints therefore include
+durable instance/task handoffs. Divergent journals require reviewed reconciliation;
+never choose one side or rewrite their causal history. Collection refresh renders
+`instance-comparisons`, with an honest empty state before observations exist.
+Readable-figure opt-in applies to these labels too. Exported private OTLP logs and
+full instance JSON chart exports are not additional encrypted source inputs.
+See [instance provenance and startup reconciliation](instances.md).
