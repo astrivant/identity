@@ -44,3 +44,28 @@ WITFUL_SLEEVE_SOURCE and WITFUL_SLEEVE_WORKTREE paths. Back up during work, not 
 at shutdown; SIGKILL and node loss cannot run a cleanup handler. Keep the Git common
 directory and sleeve directory on durable storage for interrupted-session recovery.
 Read docs/multisleeving.md in CHECKOUT for commands and precise recovery limits.
+
+
+## Instance provenance and pending-task continuity
+
+Use the installed command's `instances --help` and read `docs/instances.md` in
+CHECKOUT. Before authorized work, start/reuse an explicitly observed runtime
+boundary, or honestly label a logical-session fallback when the platform exposes
+no runtime boundary. Keep its UUID across wakes, retries, and compaction. Record
+known definition/template revisions and dirty state; served models require
+runtime evidence and stay separate from requested configuration. Never reconstruct
+historical UUIDs, models, parent links, or scores from chat.
+
+Review the returned pending tasks and relevant source outcomes; reconcile with
+explicit complete/incomplete coverage and evidence, then require `instances guard`
+before actions. Unavailable sources keep coverage incomplete. Record task handoffs
+with exact predecessor event IDs, correlate actual actions through supported local
+audit metadata, and capture `observe` after meaningful evidence changes. Never
+supply unsupported connector arguments or raw/secret payloads as identifiers.
+
+The private sidecar references the existing native snapshots and decision structure;
+seal/restore and sleeve checkpoints retain it. Run `instances check` and let CI
+build its native comparison figures. Baselines are not new learning, missing
+snapshots remain gaps, and overlap is not causal attribution. Keep exports private;
+publication needs separate permission. Record `stop` at a normal runtime boundary
+while preserving unfinished tasks for the next instance.

@@ -125,3 +125,20 @@ defaults to 90 and `--stop-seconds` to 10; require `0 < stop < shutdown`. Worklo
 receive `WITFUL_SLEEVE_WORKTREE` and `WITFUL_SLEEVE_SOURCE`. Normal completion
 preserves the workload's status, interrupted completion uses `128 + signal`, and
 incomplete cleanup returns 2. No hook can save in-memory work after SIGKILL.
+
+
+## Observed instances
+
+`witful instances --repo COLLECTION start --boundary-id ID --boundary-kind runtime`
+creates or reuses an explicit observed boundary. Use `logical-session` when runtime
+boundaries are unavailable. Startup returns JSON with the UUID and pending tasks;
+coverage defaults to incomplete. `reconcile --instance-id UUID --operation-id KEY
+--coverage complete --coverage-source REFERENCE` records a reviewed startup check.
+`guard` and `resource` require the active, reconciled UUID.
+
+`task`, `audit`, `observe`, and `stop` require `--instance-id` and a stable
+`--operation-id`; retries are idempotent and conflicting reuse fails. `status`
+shows current tasks, `check` validates source/reference integrity and reports gaps,
+`schemas` emits the sidecar schema, `build` writes bounded native comparison charts,
+and `logs` emits private local OTLP/JSON without contacting an exporter.
+See [the complete instance API, provenance, and privacy contract](instances.md).

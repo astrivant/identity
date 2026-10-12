@@ -58,3 +58,15 @@ The Dockerfile pins Debian Trixie's Tini to `0.19.0-3+b8`, verified for amd64 an
 arm64 in the [Debian package index](https://packages.debian.org/trixie/tini).
 Both image targets and the chart/derived Compose entrypoint retain Tini. Regenerate
 Compose when changing the chart; do not patch its generated entrypoint directly.
+
+
+## Observed instance contracts
+
+Instance tests use synthetic native collections and independent writer processes.
+Run `pytest pkg/witful/instances/tests -n 2` when changing boundaries, reconciliation,
+source allowlists, or instance plots. The development-only OpenTelemetry protobuf
+package validates the emitted local OTLP/JSON envelope; production has no exporter
+or new OpenTelemetry dependency. Preserve native schema/hash compatibility, exact
+journal prefixes, task compare-and-set updates, and unknown/gap semantics. Inspect
+empty, baseline, zero-change, changing, and overlapping-window renders before
+publishing renderer changes. See [the instance contract](docs/instances.md).

@@ -16,6 +16,11 @@ def main() -> int:
     Returns:
         int: Selected command status; database failures remain credential-safe.
     """
+    if len(sys.argv) > 1 and sys.argv[1] == "instances":
+        from witful.instances.cli import main as instances_main
+
+        return instances_main(sys.argv[2:])
+
     if len(sys.argv) > 1 and sys.argv[1] == "sapience":
         from witful.sapience.cli import main as sapience_main
 

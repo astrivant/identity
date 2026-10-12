@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 
     from witful.checkpoints.models import Checkpoint, Fact
 
-__all__ = ["Change", "SkillDiff", "compare", "visits"]
+__all__ = ["Change", "SkillDiff", "compare", "compare_states", "visits"]
 
 
 @frozen
@@ -85,8 +85,22 @@ def compare(before: Checkpoint, after: Checkpoint) -> tuple[SkillDiff, ...]:
     Returns:
         tuple[SkillDiff, ...]: Only changed skills, sorted by stable ID; identical evidence yields no differences.
     """
-    left = {state.id: state for state in before.skills}
-    right = {state.id: state for state in after.skills}
+    return compare_states(before.skills, after.skills)
+
+
+def compare_states(before: tuple[SkillState, ...], after: tuple[SkillState, ...]) -> tuple[SkillDiff, ...]:
+    """
+    Compare native skill snapshots independently of the boundary that retained them.
+
+    Args:
+        before (tuple[SkillState, ...]): Earlier native skill evidence.
+        after (tuple[SkillState, ...]): Later native skill evidence.
+
+    Returns:
+        tuple[SkillDiff, ...]: Exact recorded additions, removals, revisions, and classification changes.
+    """
+    left = {state.id: state for state in before}
+    right = {state.id: state for state in after}
     result: list[SkillDiff] = []
 
     for key in sorted(left.keys() | right.keys()):

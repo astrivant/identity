@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 from witful.checkpoints.models import Checkpoint
+from witful.instances.models import Event as InstanceEvent
 from witful.knowledge.contracts import as_data, schema
 from witful.knowledge.models import Application, Catalog
 from witful.life.models import Decision, Event, Snapshot
@@ -41,11 +42,13 @@ def main(argv: Sequence[str] | None = None) -> int:
     (root / "knowledge/applications.jsonl").touch(mode=0o600)
     (root / "knowledge/life.jsonl").touch(mode=0o600)
     (root / "knowledge/checkpoints.jsonl").touch(mode=0o600)
+    (root / "knowledge/instances.jsonl").touch(mode=0o600)
     (root / "knowledge/catalog.json").write_text(json.dumps(as_data(Catalog("identity:local", "Knowledge collection")), indent=2) + "\n")
     (root / ".gitignore").write_text(".witful/\n*.sqlite*\n.*.lock\n")
 
     for name, model in (
         ("checkpoint", Checkpoint),
+        ("instance-event", InstanceEvent),
         ("catalog", Catalog),
         ("application", Application),
         ("life-decision", Decision),

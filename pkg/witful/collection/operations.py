@@ -20,6 +20,7 @@ from witful.collection.keys import signing_environment
 from witful.collection.models import FIGURES, SOURCE, load_config
 from witful.collection.process import private_repository
 from witful.files import replace_file
+from witful.instances.reporting import build as instance_plots
 from witful.knowledge.applications import read_applications
 from witful.knowledge.compiler import compile_identity
 from witful.knowledge.contracts import structure
@@ -134,6 +135,7 @@ def render(root: Path, destination: Path) -> None:
     events = [structure(json.loads(line), Use) for line in (journal.read_text() if journal.exists() else "").splitlines()]
     repertoire_plots(inventory, events, destination)
     checkpoint_plots(read_checkpoints(root / "knowledge/checkpoints.jsonl"), destination)
+    instance_plots(root, destination)
 
 
 def readme(config: Config, source_digest: str) -> str:
