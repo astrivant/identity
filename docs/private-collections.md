@@ -96,7 +96,7 @@ Preserve those pins when editing `publish_figures`:
 - `false` (default): source records **and full figures stay encrypted**. README
   displays the repository's CI badge, the source ciphertext digest, and restore
   instructions. GitHub cannot render encrypted image bytes inline.
-- `true`: CI also commits the seven readable SVG figures under `docs/collection/`
+- `true`: CI also commits the generated readable SVG figures under `docs/collection/`
   and embeds them in README. This exposes labels, concepts, counts, and relationships
   to repository readers and Git history. A privacy scan checks known text patterns;
   it is not an anonymization guarantee. Review your labels before opting in.

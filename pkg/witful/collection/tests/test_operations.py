@@ -9,7 +9,7 @@ import shutil
 from typing import TYPE_CHECKING
 
 import pytest
-from witful.collection import operations
+from witful.collection import archive, operations
 from witful.collection.crypto import verify
 from witful.collection.keys import prepare, signing_environment
 from witful.collection.models import CONFIG, FIGURES, SOURCE
@@ -21,6 +21,51 @@ if TYPE_CHECKING:
     from pathlib import Path
 
     from pytest import MonkeyPatch
+
+
+_FIGURE_NAMES = {
+    "knowledge-usage",
+    "knowledge-map",
+    "knowledge-hierarchy",
+    "toolbox-use",
+    "problem-repertoire",
+    "checkpoint-transitions",
+    "checkpoint-comparisons",
+    "instance-comparisons",
+}
+
+
+def _assert_figure_names(directory: Path) -> None:
+    """
+    Require the exact supported readable collection figures in both generated formats.
+
+    Args:
+        directory (Path): Rendered or restored private figure directory.
+
+    Returns:
+        None: Both format namespaces contain precisely the expected names, with no missing or extra figures.
+    """
+    for suffix in ("png", "svg"):
+        assert {path.name for path in directory.glob(f"*.{suffix}")} == {f"{name}.{suffix}" for name in _FIGURE_NAMES}
+
+
+def test_rendered_figure_contract_without_signing_tools(tmp_path: Path) -> None:
+    """
+    Cover the complete render and figure-archive allowlist even when Cosign is unavailable locally.
+
+    Args:
+        tmp_path (Path): Synthetic source, output, and archive restoration parent.
+
+    Returns:
+        None: All eight figure families survive the portable private archive round trip.
+    """
+    source, rendered, restored = tmp_path / "source", tmp_path / "rendered", tmp_path / "restored"
+    initialize([str(source)])
+    operations.render(source, rendered)
+    _assert_figure_names(rendered)
+    archive.unpack(archive.pack(rendered, figures=True), restored, figures=True)
+    _assert_figure_names(restored)
+    assert not (restored / "instances.json").exists()
 
 
 @pytest.mark.skipif(shutil.which("cosign") is None, reason="Cosign is installed by CI; required for the offline signature contract")
@@ -72,8 +117,7 @@ def test_signed_refresh_round_trip(tmp_path: Path, monkeypatch: MonkeyPatch) -> 
     assert "figures.enc.json" in (checkout / "README.md").read_text()
     assert all(b"SYNTHETIC_PRIVATE_SENTINEL" not in path.read_bytes() for path in checkout.rglob("*") if path.is_file())
     restore(checkout, keys, tmp_path / "plots", "figures")
-    assert len(list((tmp_path / "plots").glob("*.png"))) == 7
-    assert len(list((tmp_path / "plots").glob("*.svg"))) == 7
+    _assert_figure_names(tmp_path / "plots")
     verify(checkout / FIGURES, checkout / "collection/cosign.pub", config)
 
     # Both ciphertext and its checksum may be attacker-controlled; the independent signature still rejects changes.
