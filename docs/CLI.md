@@ -142,3 +142,32 @@ shows current tasks, `check` validates source/reference integrity and reports ga
 `schemas` emits the sidecar schema, `build` writes bounded native comparison charts,
 and `logs` emits private local OTLP/JSON without contacting an exporter.
 See [the complete instance API, provenance, and privacy contract](instances.md).
+
+## Life overview
+
+`witful life build` renders `docs/assets/life.svg` and `.png` from the same
+decision journal used by `life show`; `life.json` retains raw events and current
+choices. README headings such as "Life: choices and revisions" refer to this
+"Life: recorded choices" figure, not a separate dataset.
+
+The left panel shows **net change per journal entry**, the discrete first
+difference of the former cumulative counts. Each observation contributes +1,
+so that series is horizontal. Accepted choices contribute +1 when added or
+reinstated, 0 when revised without changing accepted status, and -1 when retired.
+Retirement requires an existing choice; source validation rejects an orphan
+retirement. Totals remain beneath the panel. Coincident series use different widths and line styles so neither
+hides the other. Empty journals show no invented observations.
+
+This is a rate per recorded entry, not per day, and neither growth nor revision
+counts measure decision quality. The right panel still counts concept references
+in currently accepted choices. Historical replay retains original snapshots;
+the renderer change follows the existing explicit drift-acknowledgement contract.
+
+## Completion audits
+
+`witful completion --repo COLLECTION plan --task TASK --workspace PROJECT --output
+COLLECTION/.witful/completion/review.json` enumerates the entire hierarchy for an
+explicit review. `check --task TASK --workspace PROJECT --input PATH` rejects gaps
+and stale state. `schema` emits its closed source contract. `hook-config --identity
+NAME` prepares a synchronous Codex hook definition for native user review and trust.
+See [coverage, handoff, storage, and hook behavior](completion.md).

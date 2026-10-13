@@ -49,6 +49,8 @@ summaries to reviewed lessons. Source journals remain owned by the collection.
 
 ## Guides
 
+- [Completion audits](completion.md): review every concept before handing work back.
+
 [Architecture and collection conventions](https://github.com/astrivant/identity#readme),
 [CLI](https://github.com/astrivant/identity/blob/main/docs/CLI.md),
 [Sapience integration](https://github.com/astrivant/identity/blob/main/docs/sapience.md),

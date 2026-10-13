@@ -69,3 +69,32 @@ build its native comparison figures. Baselines are not new learning, missing
 snapshots remain gaps, and overlap is not causal attribution. Keep exports private;
 publication needs separate permission. Record `stop` at a normal runtime boundary
 while preserving unfinished tasks for the next instance.
+
+## Maintain project chapters
+
+Treat maintaining project chapters as a Skill. Record each meaningfully touched
+project individually in its owning collection, using a stable alias and committed
+HEAD, before leaving it or completing a multi-project task. Reconcile the work ledger
+against recorded boundaries. Catch-up reviews use the present recording time and
+current evidence; do not infer past learning or attribute a gap to the last project.
+Preserve zero-change visits and keep collections separate. Generated-only commits
+do not require another checkpoint. Validate and publish under the collection's
+existing encryption policy; CI owns routine plot refreshes.
+
+## Review completion and new defect findings
+
+Before handing work back, generate and review a current `witful completion` plan
+for the owning collection and touched Git workspaces. Check every active concept
+through Insights, with evidence or a reason it does not apply. Use an explicit
+incomplete handoff for unresolved work; never convert pending entries into a
+completion claim. Follow [the completion contract](https://github.com/astrivant/identity/blob/main/docs/completion.md).
+Installing this skill does not install or trust a native host hook.
+
+When a defect in authored code, automation, or an assumption is discovered, record
+the smallest supported Insight with its actual source and remaining unknowns.
+Connect it to a sourced Lesson and canonical Skill/Discipline using the existing
+catalog; reuse matching findings rather than duplicating provenance. Add a remedy
+and proportionate prevention check when verified. Broaden guidance only as far as
+evidence supports it, and preserve corrections. Passing checks are bounded
+evidence, not a guarantee of bug-free code. Keep personal findings in their owning
+collection; public examples must be synthetic.
