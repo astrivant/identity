@@ -4,32 +4,20 @@
 [![PyPI](https://img.shields.io/pypi/v/witful)](https://pypi.org/project/witful/)
 [![License](https://img.shields.io/github/license/astrivant/identity)](LICENSE)
 
-Build a user-owned, Git-backed record of what you learn, how you solve problems, and where
-that knowledge proves useful. Identity connects lessons, skills, decisions, tools,
-and project checkpoints so you can review your work and carry useful understanding
-into the next project.
+Identity is a **user-owned policy and learning layer for intelligent agents**.
+It gives engineers and their agents a shared, reviewable record of how to work,
+what experience has taught them, and what evidence supports their decisions.
+Git preserves that record across projects and agent sessions.
 
-[Witful](docs/WITFUL.md) is the Python library and CLI that manages these records.
-This repository also provides collection conventions, agent guidance, private-copy
-workflows, and optional professional-awareness figures. Public examples are synthetic;
-your personal record belongs in your own collection.
-
-- **Make every project teach the next.** Capture the work you do, the decisions you
-  make, and the lessons worth reusing. Keep the evidence behind your choices within reach.
-- **Give your agents a shared understanding of how you work.** Bring reviewed knowledge
-  into [agent workflows](SKILL.md) and [MCP-compatible clients through Sapience](docs/sapience.md).
-  Run your collection services on [Kubernetes or Docker Compose](docs/storage.md).
-- **Let your resume grow with your experience.** Publish selected skill and decision
-  figures to [resumeme](https://github.com/astrivant/resumeme) and trigger an automated
-  PDF rebuild. [Choose what appears](docs/awareness.md) as your record develops.
-- **Keep your data yours.** Own your source records, encrypt and sign
-  [private collection snapshots](docs/private-collections.md), and control what
-  you share with agents or publish in your resume.
+[Witful](docs/WITFUL.md) is the Python library and CLI that manages the collection,
+validates its records, and runs its review checks. Agents use those records to guide
+execution; people retain authority over accepted guidance and publication.
 
 <!-- toc:start -->
 **Table of contents**
 
 - [Install](#install)
+- [How it works](#how-it-works)
 - [Your private identity](#your-private-identity)
 - [Git and GitOps](#git-and-gitops)
 - [What Identity records](#what-identity-records)
@@ -56,6 +44,34 @@ For an AI-assisted workflow, use this prompt:
 > Read SKILL.md in this checkout and help me maintain my existing Identity collection using Witful.
 > Preserve its configuration, validate the relevant sources, and use the documented
 > commands. Create a collection or publish selected figures only when I request it.
+
+## How it works
+
+Policy means the reviewed expectations, constraints, and procedures that guide
+an agent's work. Learning connects those rules to sourced lessons and observed
+outcomes so colleagues can understand why a practice exists and revise it when
+new evidence warrants a change.
+
+| Component | Responsibility |
+| --- | --- |
+| Identity collection | Owns reviewed guidance, lessons, decisions, and their provenance. |
+| Witful | Validates and searches records, tracks applications, and checks completion-review coverage. |
+| Executing agent | Consults applicable guidance, performs authorized work, and records evidence. |
+| Optional Sapience integration | Provides MCP retrieval and generated review proposals from selected records. |
+
+A policy-agent workflow connects these responsibilities: consult guidance, act,
+record the outcome, then review the applicable requirements before handoff.
+[Completion audits](docs/completion.md) check review coverage against the current
+source state. Enforcement depends on the checks installed in the agent's runtime
+and delivery pipeline; reviewers still assess whether the evidence supports each
+claim. Reading a lesson or installing the package does not grant action authority.
+
+Use Identity to carry engineering practices between projects, explain decisions
+to reviewers, and coordinate agents using a versioned body of knowledge. Keep
+records in a collection you control, with explicit sharing and publication choices.
+[Optional awareness figures](docs/awareness.md) make selected experience visible
+in reports and resumes. See [Witful's responsibilities](docs/WITFUL.md#responsibilities)
+for the concrete tooling and [Git and GitOps](#git-and-gitops) for the operating model.
 
 ## Your private identity
 

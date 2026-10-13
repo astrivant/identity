@@ -5,6 +5,12 @@ description: Search or maintain a local Witful collection and explicitly synchro
 
 # Local knowledge collection
 
+Identity is a user-owned policy and learning layer for intelligent agents. Use
+Witful to retrieve reviewed guidance, record sourced experience, and check review
+coverage. Apply guidance within the task's authority; the executing agent and its
+configured runtime checks determine how it affects actions. A recorded rule or
+completed audit does not itself grant permissions or establish an outcome.
+
 The managed collection lives at `$CODEX_HOME/collection`, defaulting to
 `~/.codex/collection`. Use `witful lessons --repo COLLECTION search TEXT` for
 relevant teachings. Current task instructions override historical observations.

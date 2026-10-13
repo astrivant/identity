@@ -5,6 +5,12 @@ description: Curate a user-owned knowledge collection with typed lessons, observ
 
 # Identity with Witful
 
+Identity is a user-owned policy and learning layer for intelligent agents. Use
+Witful to retrieve reviewed guidance, record sourced experience, and check review
+coverage. Apply guidance within the task's authority; the executing agent and its
+configured runtime checks determine how it affects actions. A recorded rule or
+completed audit does not itself grant permissions or establish an outcome.
+
 Read [CLI contracts](docs/CLI.md) and [SECURITY.md](SECURITY.md). Locate the user's
 existing collection before making changes; create one only when requested.
 Current instructions take precedence over stored lessons. Ask which rule wins

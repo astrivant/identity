@@ -1,11 +1,11 @@
 [project]
 name = "witful"
 version = "0.2.0"
-description = "Typed knowledge, reusable lessons, and evidence-based decision replay"
+description = "Policy and learning tools for intelligent agents, with user-owned guidance and evidence"
 readme = "docs/WITFUL.md"
 license = "GPL-3.0-only"
 license-files = ["LICENSE"]
-keywords = ["knowledge", "lessons", "audit", "privacy", "replay"]
+keywords = ["agents", "policy", "knowledge", "lessons", "audit", "privacy", "replay"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",

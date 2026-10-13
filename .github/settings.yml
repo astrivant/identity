@@ -1,6 +1,6 @@
 repository:
   name: identity
-  description: User-owned lessons, skills, decisions, and project awareness, managed with Witful
+  description: A user-owned policy and learning layer for intelligent agents, powered by Witful
   homepage: https://github.com/astrivant/identity#readme
   private: false
   has_issues: true

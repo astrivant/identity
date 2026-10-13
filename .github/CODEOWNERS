@@ -6,3 +6,6 @@
 /README.md @emmeowzing
 /SKILL.md @emmeowzing
 /pkg/witful/collection/resources/SKILL.md @emmeowzing
+/.github/settings.yml @emmeowzing
+/.github/CODEOWNERS @emmeowzing
+/pyproject.toml @emmeowzing

@@ -1,9 +1,14 @@
 # Witful
 
-Witful is the Python library and CLI for [Identity](https://github.com/astrivant/identity):
-a user-owned record of lessons, skills, decisions, tools, and project experience.
-It validates sources, builds searchable indexes, generates evidence figures, and
-supports explicit sharing through optional integrations.
+Witful is the Python library and CLI for [Identity](https://github.com/astrivant/identity),
+a user-owned policy and learning layer for intelligent agents. It turns reviewed
+guidance, sourced lessons, and observed decisions into validated, searchable records
+that engineers and agents can reuse across projects.
+
+Witful supplies the collection and review tooling. The executing agent applies
+relevant guidance within its granted authority; people decide which teachings to
+accept. Git versions the source records, while configured CI and runtime hooks
+validate changes and check review coverage.
 
 <!-- toc:start -->
 **Table of contents**
@@ -11,6 +16,7 @@ supports explicit sharing through optional integrations.
 - [Install](#install)
 - [Responsibilities](#responsibilities)
 - [Guides](#guides)
+- [Hierarchy terminology](#hierarchy-terminology)
 <!-- toc:end -->
 
 ## Install
@@ -33,6 +39,10 @@ Sapience or its vector database.
 
 ## Responsibilities
 
+The workflow is to retrieve applicable guidance, perform authorized work, record
+what happened, and review the result against that guidance. Witful supports the
+record and review steps through these capabilities:
+
 - Validate the attrs/cattrs hierarchy and append-only journals.
 - Index lessons in SQLite or optional PostgreSQL.
 - Preserve concise decisions and source snapshots for reproducible replay.
@@ -44,8 +54,11 @@ Sapience or its vector database.
 - Isolate concurrent sleeves, sign backups, and reconcile their histories before closure.
 - Optionally project reviewed concepts into Sapience and save generated review proposals.
 
-The package does not infer experience from installed dependencies or promote model
-summaries to reviewed lessons. Source journals remain owned by the collection.
+Source journals remain owned by the collection. Generated proposals require review
+before they become accepted lessons. Application counts describe recorded use;
+completion checks establish review coverage. Evidence quality, permission checks,
+and runtime enforcement remain responsibilities of the people and integrations
+using those outputs.
 
 ## Guides
 
