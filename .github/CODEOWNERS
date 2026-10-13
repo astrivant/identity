@@ -9,3 +9,7 @@
 /.github/settings.yml @emmeowzing
 /.github/CODEOWNERS @emmeowzing
 /pyproject.toml @emmeowzing
+/.github/workflows/ci.yml @emmeowzing
+/scripts/ci/ @emmeowzing
+/docs/view-freshness.md @emmeowzing
+/.gitignore @emmeowzing

@@ -104,3 +104,16 @@ and proportionate prevention check when verified. Broaden guidance only as far a
 evidence supports it, and preserve corrections. Passing checks are bounded
 evidence, not a guarantee of bug-free code. Keep personal findings in their owning
 collection; public examples must be synthetic.
+
+## Keep evidence sources and plots current
+
+Populate the selected collection's sourced Lessons, observed applications, decisions,
+tool uses, runtime boundaries, and project checkpoints during execution. Record only
+actual evidence and retain unknowns. Publish reviewed canonical inputs under that
+collection's policy; an archive that the renderer never consumes is only a backup.
+
+On every main source revision, regenerate all applicable views and matching data
+exports with locked tools. Validate the source/output receipt and actual published
+result. Preserve collection separation and required reviews. A successful job or an
+unchanged image alone does not establish freshness. See
+[view freshness](https://github.com/astrivant/identity/blob/main/docs/view-freshness.md) in the upstream repository.

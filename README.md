@@ -128,6 +128,7 @@ preserves explicit choices, revisions, and the inputs behind their plots.
 - Deterministic plots, source snapshots, and explicit renderer drift checks.
 - [Project chapters](docs/checkpoints.md): separate evidence checkpoints for every touched project.
   [View the synthetic example](docs/assets/project-chapters/checkpoint-transitions.svg).
+  [Inspect its regeneration and source receipt](docs/view-freshness.md).
 - Observed runtime provenance, startup task reconciliation, and native instance comparisons.
 - [Completion audits](docs/completion.md) covering every concept through Insights before handoff.
 - A toolbox and problem taxonomy with source-backed task-frequency plots.
