@@ -200,3 +200,28 @@ def test_skill_rename_and_removal_are_not_learning(collection: Path) -> None:
     removed = compare(first, evolve(first, skills=()))[0]
     assert removed.status == "removed"
     assert removed.lessons.removed == (first.skills[0].lessons[0].id,)
+
+
+def test_unchanged_visits_keep_project_labels(collection: Path, tmp_path: Path) -> None:
+    """
+    Keep individually recorded projects visible without fabricating evidence changes.
+
+    Args:
+        collection (Path): Synthetic collection with unchanged reviewed evidence.
+        tmp_path (Path): Isolated generated output directory.
+
+    Returns:
+        None: Both project views retain all comparisons, with empty evidence differences.
+    """
+    record(collection, collection, "example/one")
+    record(collection, collection, "example/two")
+    record(collection, collection, "example/three")
+    events = read(collection / "knowledge/checkpoints.jsonl")
+    build(events, tmp_path / "unchanged")
+
+    for name in ("checkpoint-transitions", "checkpoint-comparisons"):
+        svg = (tmp_path / "unchanged" / f"{name}.svg").read_text()
+        assert all(project in svg for project in ("example/one", "example/two", "example/three"))
+        assert "No changes" in svg
+
+    assert all(compare(before, after) == () for before, after in zip(events[:-1], events[1:], strict=True))

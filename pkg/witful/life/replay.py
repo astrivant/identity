@@ -10,7 +10,6 @@ from typing import TYPE_CHECKING
 
 import matplotlib as mpl
 from matplotlib.figure import Figure
-from matplotlib.ticker import MaxNLocator
 
 from witful.files import replace_file
 from witful.knowledge.contracts import as_data
@@ -19,12 +18,10 @@ from witful.knowledge.rendering import graph_data
 from witful.life.contracts import canonical, current_decisions, snapshot_identity, validate_archive
 from witful.life.journal import renderer_fingerprint
 from witful.life.models import Archive
-from witful.life.plotting import draw_influences
+from witful.life.plotting import draw_changes, draw_influences
 
 if TYPE_CHECKING:
     from pathlib import Path
-
-    from witful.life.models import Event
 
 __all__ = ["prefix", "render"]
 
@@ -66,36 +63,21 @@ def _figure(archive: Archive) -> Figure:
         archive (Archive): Validated historical prefix.
 
     Returns:
-        Figure: Decision timeline and direct concept references in currently accepted choices.
+        Figure: Per-entry choice changes and direct concept references in currently accepted choices.
     """
-    active: dict[str, Event] = {}
-    accepted = [0]
-
-    for event in archive.events:
-        active[event.decision.key] = event
-        accepted.append(sum(item.decision.status == "accepted" for item in active.values()))
-
-    figure = Figure(figsize=(14, 6), facecolor="white")
+    figure = Figure(figsize=(14, 8), facecolor="white")
     left, right = figure.subplots(1, 2)
-    figure.subplots_adjust(left=0.07, right=0.97, top=0.8, bottom=0.18, wspace=0.85)
+    figure.subplots_adjust(left=0.07, right=0.97, top=0.79, bottom=0.21, wspace=0.85)
     figure.suptitle("Life: recorded choices", x=0.04, ha="left", fontsize=22, color="#263748")
-    sequence = list(range(len(archive.events) + 1))
-    left.step(sequence, sequence, where="post", label="All observations", color="#A36636")
-    left.step(sequence, accepted, where="post", label="Accepted choices", color="#407D61")
-    left.set_xlabel("Journal position")
-    left.set_ylabel("Count")
-    left.legend(frameon=False)
-    left.xaxis.set_major_locator(MaxNLocator(integer=True))
-    left.yaxis.set_major_locator(MaxNLocator(integer=True))
+    figure.text(0.04, 0.90, "How do accepted choices change with each recorded observation?", fontsize=12, color="#697783")
+    draw_changes(left, archive)
     draw_influences(right, archive)
     right.set_title("What informs my decisions", fontsize=11)
 
     for axis in (left, right):
         axis.spines[["top", "right"]].set_visible(False)
 
-    figure.text(
-        0.04, 0.05, "Revisions retain earlier choices. Links document rationale; they do not add application-use counts.", color="#697783"
-    )
+    figure.text(0.04, 0.05, "Per-entry changes, not a time-based rate or quality score. Revisions retain earlier choices.", color="#697783")
     return figure
 
 

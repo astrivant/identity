@@ -44,16 +44,15 @@ def _figure(pairs: Sequence[tuple[Checkpoint, Checkpoint]], title: str, question
     figure.suptitle(title + "\n" + question, fontsize=16, gid="plot-heading")
     axis = figure.subplots()
 
-    if not keys or not pairs:
-        message = (
-            "No changed skill evidence between these boundaries" if pairs else "Record a second project visit to compare with the baseline"
-        )
+    if not pairs:
+        message = "Record a second project visit to compare with the baseline"
         axis.text(0.5, 0.5, message, transform=axis.transAxes, ha="center", va="center", color="#586774")
         axis.set_axis_off()
         return figure
 
     # Cell brightness describes change volume; text retains direction and revisions separately.
-    cells = [[0 for _ in pairs] for _ in keys]
+    # A reviewed visit with unchanged evidence remains a visible chapter, not a missing plot.
+    cells = [[0 for _ in pairs] for _ in (keys or ["unchanged"])]
     annotations: dict[tuple[int, int], str] = {}
 
     for column, group in enumerate(differences):
@@ -68,9 +67,12 @@ def _figure(pairs: Sequence[tuple[Checkpoint, Checkpoint]], title: str, question
                 + (f"\n{item.status}" if item.status != "retained" else "")
             )
 
+    if not keys:
+        annotations = {(0, column): "No changes" for column in range(len(pairs))}
+
     maximum = max(max(row) for row in cells)
     axis.imshow(cells, cmap="Blues", vmin=0, vmax=max(2, maximum * 2), aspect="auto")
-    axis.set_yticks(range(len(keys)), [names[key] for key in keys], fontsize=10)
+    axis.set_yticks(range(len(cells)), [names[key] for key in keys] or ["Recorded evidence"], fontsize=10)
     axis.set_xticks(
         range(len(pairs)),
         [f"{after.project} @ {after.revision[:7]}\nvs {before.project} @ {before.revision[:7]}" for before, after in pairs],
