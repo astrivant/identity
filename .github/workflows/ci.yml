@@ -8,7 +8,7 @@ on:
 permissions:
   contents: read
 concurrency:
-  group: witful-${{ github.ref }}
+  group: witful-${{ github.ref }}-${{ github.sha }}
   cancel-in-progress: false
 env:
   MPLBACKEND: Agg
@@ -39,7 +39,7 @@ jobs:
       - uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
         with:
           cosign-release: v3.1.3
-      - run: pytest -n 4
+      - run: pytest -n 4 pkg/witful scripts/ci/tests
 
   lint:
     name: Source checks
@@ -151,6 +151,23 @@ jobs:
         run: |
           docker run --rm witful:0.1.0 lessons --help
           docker run --rm --entrypoint python witful:0.1.0 -c             'from importlib.resources import files; assert files("witful").joinpath("sql/postgres/life/schema.sql").is_file()'
+
+  views:
+    name: Render synthetic evidence views
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/python
+      - run: bash scripts/ci/render-views.sh
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: synthetic-evidence-views
+          path: docs/assets/project-chapters/
+          if-no-files-found: error
+          retention-days: 7
 
   publish:
     name: Publish signed release

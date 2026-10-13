@@ -114,7 +114,7 @@ require-return-section-when-returning-nothing = true
 skip-checking-raises = true
 
 [tool.pytest.ini_options]
-testpaths = ["pkg/witful"]
+testpaths = ["pkg/witful", "scripts/ci/tests"]
 pythonpath = ["scripts", "pkg"]
 addopts = "-ra -n auto --import-mode=importlib"
 
