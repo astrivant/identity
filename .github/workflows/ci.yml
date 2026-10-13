@@ -64,8 +64,8 @@ jobs:
           ruff check pkg scripts
           ruff format --check pkg scripts
           mypy
-          pydocstyle pkg scripts
-          pydoclint pkg scripts
+          pre-commit run docstrings --all-files
+          pre-commit run typed-docstrings --all-files
           sqlfluff lint pkg/witful/sql pkg/witful/storage/tests pkg/witful/life/tests pkg/witful/checkpoints/tests
           git ls-files -z 'scripts/*.sh' | xargs -0 shellcheck -x
           git ls-files -z 'scripts/*.sh' | xargs -0 shfmt -d -i 4 -ci
