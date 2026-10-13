@@ -70,3 +70,25 @@ or new OpenTelemetry dependency. Preserve native schema/hash compatibility, exac
 journal prefixes, task compare-and-set updates, and unknown/gap semantics. Inspect
 empty, baseline, zero-change, changing, and overlapping-window renders before
 publishing renderer changes. See [the instance contract](docs/instances.md).
+
+## Documentation and merge checks
+
+Install Node.js 26.10.0, then run
+`npm ci --prefix scripts/documentation --ignore-scripts --no-fund` before the
+hooks. The pinned CODEOWNERS hook bootstraps its own Go environment on first use.
+Run `npm --prefix scripts/documentation test` for the syntax checker regressions
+and `pytest scripts/ci/tests` for missing, skipped, failed, and cancelled CI results.
+
+The math check accepts a strict KaTeX subset, hosted Markdown dollar delimiters,
+and fenced Mermaid diagrams. It checks syntax, so preview changed diagrams and
+equations in their intended renderer as well. Escape literal dollars in prose.
+CODEOWNERS checks are offline; owner permissions remain a separate host check.
+
+`Required CI` joins all required validation producers without serializing them.
+The proposed main policy binds that check to GitHub Actions, retains one independent
+approval and administrator bypass, and requires resolved conversations. A maintainer
+must reconcile the live policy after this PR is reviewed; changing YAML alone does
+not enforce it. An agent still needs approval for a particular administrator merge.
+
+See the [engineering standards review](docs/engineering-review.md) for checked
+contracts, evidence limits, and follow-up work. No tag or release is part of that review.

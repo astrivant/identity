@@ -1,6 +1,5 @@
 # Identity
 
-[![CI](https://github.com/astrivant/identity/actions/workflows/ci.yml/badge.svg)](https://github.com/astrivant/identity/actions/workflows/ci.yml)
 [![PyPI](https://img.shields.io/pypi/v/witful)](https://pypi.org/project/witful/)
 [![License](https://img.shields.io/github/license/astrivant/identity)](LICENSE)
 
@@ -17,6 +16,7 @@ execution; people retain authority over accepted guidance and publication.
 **Table of contents**
 
 - [Install](#install)
+- [Inputs and configuration](#inputs-and-configuration)
 - [How it works](#how-it-works)
 - [Your private identity](#your-private-identity)
 - [Git and GitOps](#git-and-gitops)
@@ -39,11 +39,39 @@ witful --help
 Use `pip install 'witful[postgres]'` for a shared PostgreSQL index. SQLite is
 the default and needs no server. See [Witful installation and capabilities](docs/WITFUL.md) and [CLI contracts](docs/CLI.md).
 
-For an AI-assisted workflow, use this prompt:
+For an AI-assisted workflow, read the [agent skill locally](SKILL.md) or
+[on GitHub](https://github.com/astrivant/identity/blob/main/SKILL.md). The hosted
+copy explains the workflow; collection operations still require an installed
+Witful CLI and an explicitly selected local collection. Use this prompt:
 
 > Read SKILL.md in this checkout and help me maintain my existing Identity collection using Witful.
 > Preserve its configuration, validate the relevant sources, and use the documented
 > commands. Create a collection or publish selected figures only when I request it.
+
+## Inputs and configuration
+
+Commands select an existing collection with `--repo PATH`; the default is the
+current directory. An explicit command-line option overrides its corresponding
+environment default. Source journals and reviewed configuration stay in the
+collection, while local indexes and caches remain outside its published records.
+
+| Input | Default | Purpose |
+| --- | --- | --- |
+| `--repo PATH` | Current directory | Collection containing `lessons.jsonl` and `knowledge/` sources. |
+| `WITFUL_HOME` / `lessons --home PATH` | Current directory's `.witful/` | Local lesson SQLite index; independent of `--repo`. |
+| `WITFUL_DATABASE_URL` | Unset, SQLite | PostgreSQL connection URI for lesson indexing and explicitly requested Life/checkpoint mirroring. Treat as a secret. |
+| `WITFUL_DATABASE_NAMESPACE` / `--namespace` | `default` | Partition used by cooperating PostgreSQL clients. |
+| `WITFUL_PII_TERMS_FILE` / `privacy scan --terms-file` | Unset | Local UTF-8 literal deny terms, one per line; never publish this file. |
+| `WITFUL_SAPIENCE_TOKEN` / `sapience --token-env NAME` | Unset | Optional HTTP MCP authentication; the option selects an environment variable name. |
+| `CODEX_HOME` / `collection setup --home` | `~/.codex` | Destination for explicitly requested collection setup. |
+| `XDG_DATA_HOME` | `~/.local/share` | Default parent for repository-scoped key backups under `witful/collections/`; `collection setup --key-dir` overrides it. |
+| `knowledge/catalog.json` | Collection file | Reviewed classification, concepts, and sourced relationships. |
+| `knowledge/awareness.json` | Collection file | Optional figure selection and publication configuration. |
+
+See [CLI options](docs/CLI.md), [database and Helm inputs](docs/storage.md),
+[private collection secrets and CI opt-in](docs/private-collections.md), and
+[release credentials](docs/releases.md) for operation-specific inputs. Tests alone
+use `WITFUL_TEST_DATABASE_URL`; ordinary commands never read that variable.
 
 ## How it works
 

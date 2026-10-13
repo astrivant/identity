@@ -9,3 +9,14 @@
 /.github/settings.yml @emmeowzing
 /.github/CODEOWNERS @emmeowzing
 /pyproject.toml @emmeowzing
+/.pre-commit-config.yaml @emmeowzing
+/.github/workflows/ci.yml @emmeowzing
+/.github/actions/python/ @emmeowzing
+/Dockerfile @emmeowzing
+/CONTRIBUTING.md @emmeowzing
+/scripts/documentation/ @emmeowzing
+/scripts/ci/ @emmeowzing
+/docs/engineering-review.md @emmeowzing
+/helm/witful/ @emmeowzing
+/scripts/chart/ @emmeowzing
+/docs/storage.md @emmeowzing

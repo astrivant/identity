@@ -8,10 +8,18 @@ No credentials or lesson records belong in Helm values. There are no subchart de
 <!-- toc:start -->
 **Table of contents**
 
+- [Configuration references](#configuration-references)
 - [Parameters](#parameters)
   - [Synchronization workers](#synchronization-workers)
   - [Development PostgreSQL](#development-postgresql)
 <!-- toc:end -->
+
+## Configuration references
+
+See [configuration references](references/README.md) for reviewed overrides with
+separate values files, generated input tables, and operating instructions.
+The default chart uses an existing PostgreSQL endpoint. The local reference
+explicitly enables a disposable single-node database.
 
 ## Parameters
 

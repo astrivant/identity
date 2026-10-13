@@ -39,7 +39,7 @@ jobs:
       - uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
         with:
           cosign-release: v3.1.3
-      - run: pytest -n 4
+      - run: pytest -n 4 pkg/witful scripts/ci/tests
 
   lint:
     name: Source checks
@@ -50,6 +50,16 @@ jobs:
         with:
           persist-credentials: false
       - uses: ./.github/actions/python
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0, Node 24 action runtime
+        with:
+          node-version: 26.10.0
+          cache: npm
+          cache-dependency-path: scripts/documentation/package-lock.json
+      - run: npm ci --prefix scripts/documentation --ignore-scripts --no-fund
+      - run: npm --prefix scripts/documentation test
+      - run: pre-commit run codeowners --all-files
+      - run: pre-commit run documentation-syntax --all-files
+      - run: pre-commit run documentation-javascript --all-files
       - run: |
           ruff check pkg scripts
           ruff format --check pkg scripts
@@ -116,13 +126,13 @@ jobs:
               npm --prefix scripts/chart ci --ignore-scripts
           fi
           npm --prefix scripts/chart run generate
-          git diff --exit-code -- helm/witful/README.md helm/witful/values.schema.json
+          git diff --exit-code -- helm/witful/README.md helm/witful/values.schema.json helm/witful/references/
       - name: Generate Compose from the reviewed chart
         uses: astrivant/composer@4ee8ce8507e10b6cbbac607d7bda01e22740cd37
         with:
           watch-directory: '.'
           chart: helm/witful
-          values: services/compose.values.yaml
+          values: helm/witful/references/local/values.yaml
           profile: services/compose.profile.yaml
           release: witful
           output: services/compose.yaml
@@ -147,10 +157,42 @@ jobs:
           tags: witful:0.1.0
           cache-from: type=gha,scope=witful-runtime
           cache-to: type=gha,scope=witful-runtime,mode=max
+      - name: Build the development runtime
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: .
+          target: development
+          load: true
+          push: false
+          tags: witful:development
+          cache-from: type=gha,scope=witful-development
+          cache-to: type=gha,scope=witful-development,mode=max
+      - name: Verify unprivileged runtimes and writable working directories
+        run: |
+          for image in witful:0.1.0 witful:development; do
+              docker run --rm "$image" --help
+              docker run --rm --entrypoint sh "$image" -c 'test "$(id -u)" = 10001 && test -w "$PWD"'
+          done
       - name: Verify packaged CLI and SQL resources
         run: |
           docker run --rm witful:0.1.0 lessons --help
           docker run --rm --entrypoint python witful:0.1.0 -c             'from importlib.resources import files; assert files("witful").joinpath("sql/postgres/life/schema.sql").is_file()'
+
+  quality-gate:
+    name: Required CI
+    # Always evaluate the complete producer set, including skipped and cancelled jobs.
+    if: always()
+    needs: [tests, lint, privacy, distributions, orchestration]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Require every validation producer
+        env:
+          NEEDS_JSON: ${{ toJSON(needs) }}
+        run: bash scripts/ci/checks/quality-gate.sh
 
   publish:
     name: Publish signed release

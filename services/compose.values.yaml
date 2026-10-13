@@ -1,3 +1,0 @@
-# A local development database is an explicit override, not the cluster default.
-postgresql:
-  enabled: true

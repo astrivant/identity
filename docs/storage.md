@@ -19,12 +19,19 @@ PostgreSQL endpoint. The optional single-node database is for development.
 Compose is generated from that chart using the pinned
 [Composer action](https://github.com/astrivant/composer). Edit chart values and
 `services/compose.profile.yaml`, regenerate, and review `services/compose.yaml`.
+The local override is now [helm/witful/references/local/values.yaml](../helm/witful/references/local/values.yaml)
+(previously `services/compose.values.yaml`); update any local generator command
+that names the old path. Its [reference guide](../helm/witful/references/local/README.md)
+documents the generated parameters and local run/cleanup commands.
 Set `WITFUL_DATABASE_URL` and `WITFUL_POSTGRES_PASSWORD` at runtime. Build the
 image from this checkout before using the generated local Compose services.
 Do not commit credentials or private journal mounts.
 
-The Dockerfile provides development and production targets; the runtime uses a
-non-root account. Python tests verify both SQLite and PostgreSQL contracts in
+Both Dockerfile targets run as UID/GID 10001 with Tini as PID 1 and a writable
+working directory. Build the development CLI with
+`docker build --target development -t witful:development .` and verify it with
+`docker run --rm witful:development --help`. Use `--target production` for the
+minimal runtime. Python tests verify both SQLite and PostgreSQL contracts in
 CI. SQLFluff checks the independently stored SQL for each configured dialect.
 
 Charts live under `helm/`; service configuration and generated Compose files live

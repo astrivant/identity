@@ -1,7 +1,7 @@
 {
   "private": true,
   "scripts": {
-    "generate": "readme-generator --values ../../helm/witful/values.yaml --readme ../../helm/witful/README.md --schema ../../helm/witful/values.schema.json"
+    "generate": "readme-generator --values ../../helm/witful/values.yaml --readme ../../helm/witful/README.md --schema ../../helm/witful/values.schema.json && readme-generator --values ../../helm/witful/references/local/values.yaml --readme ../../helm/witful/references/local/README.md"
   },
   "devDependencies": {
     "@bitnami/readme-generator-for-helm": "2.7.2"

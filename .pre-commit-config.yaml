@@ -7,6 +7,15 @@ repos:
         language: system
         pass_filenames: false
         always_run: true
+      - id: codeowners
+        name: CODEOWNERS syntax and paths
+        entry: env REPOSITORY_PATH=. CHECKS=files,duppatterns,syntax EXPERIMENTAL_CHECKS= CHECK_FAILURE_LEVEL=warning codeowners-validator
+        language: golang
+        language_version: 1.27.2
+        additional_dependencies:
+          - github.com/mszostok/codeowners-validator@7f3f5e28c6d7b8dfae5731e54ce2272ca384592f # v0.7.4
+        pass_filenames: false
+        always_run: true
       - id: ruff
         name: Ruff lint
         entry: ruff check
@@ -60,10 +69,22 @@ repos:
         language: system
         pass_filenames: false
         always_run: true
+      - id: documentation-syntax
+        name: Markdown math and Mermaid syntax
+        entry: npm --prefix scripts/documentation run check
+        language: system
+        pass_filenames: false
+        always_run: true
+      - id: documentation-javascript
+        name: Documentation tooling JavaScript
+        entry: npm --prefix scripts/documentation run lint
+        language: system
+        pass_filenames: false
+        files: '^scripts/documentation/.*\.(mjs|json)$'
   - repo: https://github.com/astrivant/composer
     rev: 4ee8ce8507e10b6cbbac607d7bda01e22740cd37
     hooks:
       - id: helm-composer
         files: '^(helm/|services/)'
-        args: [--chart=helm/witful, --values=services/compose.values.yaml, --profile=services/compose.profile.yaml,
+        args: [--chart=helm/witful, --values=helm/witful/references/local/values.yaml, --profile=services/compose.profile.yaml,
                --release=witful, --output=services/compose.yaml]

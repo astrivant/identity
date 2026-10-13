@@ -1,0 +1,5 @@
+# A local development database is an explicit override, not the cluster default.
+## @section Local development database
+postgresql:
+  ## @param postgresql.enabled Enable the single-node database for disposable local development
+  enabled: true

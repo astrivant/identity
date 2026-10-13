@@ -13,7 +13,7 @@ runs:
         path: |
           .venv
           .cache/poetry-cli
-        key: witful-v1-${{ runner.os }}-${{ runner.arch }}-${{ steps.python.outputs.python-version }}-${{ hashFiles('pyproject.toml', 'poetry.lock') }}
+        key: witful-v1-${{ runner.os }}-${{ runner.arch }}-${{ steps.python.outputs.python-version }}-${{ hashFiles('pyproject.toml', 'poetry.lock', '.github/actions/python/action.yml') }}
     - name: Install locked dependencies on cache miss
       if: steps.cache.outputs.cache-hit != 'true'
       shell: bash
