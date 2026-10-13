@@ -104,3 +104,13 @@ and proportionate prevention check when verified. Broaden guidance only as far a
 evidence supports it, and preserve corrections. Passing checks are bounded
 evidence, not a guarantee of bug-free code. Keep personal findings in their owning
 collection; public examples must be synthetic.
+
+## Durable chat commands
+
+Follow the [portable agent command contract](https://github.com/astrivant/identity/blob/main/docs/agent-commands.md)
+for PR rebases and ordered review lists, publication, standards reviews and teaching
+capture. These are agent conventions, not new CLI commands. Persist accepted
+commands and nested aliases in the collection README, agent routing and sourced
+Skill/Lesson. Contribute generic behavior upstream by default through review; keep
+personal bindings and private records in the owning collection. Explicit commands
+define scope but do not bypass checks, exact-head leases or review protection.

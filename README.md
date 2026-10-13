@@ -15,6 +15,7 @@ execution; people retain authority over accepted guidance and publication.
 **Table of contents**
 
 - [Install](#install)
+- [Agent chat commands](#agent-chat-commands)
 - [Inputs and configuration](#inputs-and-configuration)
 - [How it works](#how-it-works)
 - [Your private identity](#your-private-identity)
@@ -46,6 +47,37 @@ Witful CLI and an explicitly selected local collection. Use this prompt:
 > Read SKILL.md in this checkout and help me maintain my existing Identity collection using Witful.
 > Preserve its configuration, validate the relevant sources, and use the documented
 > commands. Create a collection or publish selected figures only when I request it.
+
+## Agent chat commands
+
+Load [SKILL.md](SKILL.md) for these portable agent conventions. They are chat
+instructions, not shell commands. The [command contract](docs/agent-commands.md)
+defines scope, review ordering, publication and durable upstream/collection storage.
+
+- `Push`: checked, signed publication of selected work.
+  - Alias: `push`.
+- `Tag`: release the selected project under its release contract.
+  - Alias: `tag`.
+- `Tag All`: release explicitly selected active projects.
+  - Alias: `tag all`.
+- `search soul`: review all applicable standards in the active awareness tree.
+  - Alias: `soul search`.
+- `project pr rebase`: rebase open PRs safely and return their review order.
+  - Aliases: none currently defined.
+- `project pr show`: display clickable PRs, dependencies, sizes and CI in review order.
+  - Aliases: none currently defined.
+- `identity deactivate`: suspend optional collection guidance for this conversation.
+  - Aliases: none currently defined.
+- `identity activate <name>`: load an existing, explicitly identified collection.
+  - Aliases: none currently defined.
+- `Lesson: <teaching>`: record a sourced reusable teaching.
+  - Alias: `New Lesson: <teaching>`.
+- `Insight: <finding>`: record supported evidence under a sourced Lesson.
+  - Aliases: `Insight. Record this`, `New insight: <finding>`.
+- `Insight -> Lesson`: promote a finding while preserving its history.
+  - Aliases: none currently defined.
+- `New command: <definition>`: persist a durable command and its aliases.
+  - Aliases: none currently defined.
 
 ## Inputs and configuration
 

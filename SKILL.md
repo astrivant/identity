@@ -38,6 +38,20 @@ never reconstruct undocumented past use or infer learning from a repository swit
 Commit the reviewed checkpoint journal; let the collection main workflow render
 its plots and synchronize its SQLite mirror. Remote database writes remain explicit.
 
+## Durable agent commands
+
+Follow [the chat command contract](docs/agent-commands.md) for `project pr rebase`,
+`project pr show`, `Push`, release requests, awareness reviews and teaching capture.
+These are agent conventions, not additional Witful CLI subcommands. Honor explicit
+invocation, aliases and side-effect boundaries; preserve PR dependencies and exact
+remote-head leases when rebasing. Return clickable review order and current evidence.
+
+Persist user-defined commands in the owning collection and keep its README alias
+catalog and relevant Skill/Lesson aligned. By default, contribute reusable generic
+behavior to this upstream project through review, updating its README, this guide
+and the collection template. Keep personal bindings and records private. Do not
+claim a proposed definition has shipped to consumers before release/adoption.
+
 ## Runtime provenance and startup reconciliation
 
 Read [the instance contract](docs/instances.md). Before authorized identity work,
