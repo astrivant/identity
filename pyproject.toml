@@ -65,6 +65,7 @@ types-networkx = "3.6.1.20261006"
 types-jsonschema = ">=4.26,<5"
 opentelemetry-proto = "1.45.1"
 types-protobuf = "7.35.1.20260906"
+pytest-cov = "7.1.0"
 
 [build-system]
 requires = ["poetry-core==2.5.0"]
@@ -123,3 +124,14 @@ markers = ["postgres: live PostgreSQL contract tests (WITFUL_TEST_DATABASE_URL r
 [tool.sqlfluff.core]
 templater = "placeholder"
 max_line_length = 140
+
+[tool.coverage.run]
+branch = true
+relative_files = true
+data_file = ".cache/coverage/.coverage"
+source = ["witful"]
+omit = ["*/tests/*"]
+
+[tool.coverage.report]
+show_missing = true
+precision = 1

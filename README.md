@@ -1,7 +1,6 @@
 # Identity
 
-[![PyPI](https://img.shields.io/pypi/v/witful)](https://pypi.org/project/witful/)
-[![License](https://img.shields.io/github/license/astrivant/identity)](LICENSE)
+[![Coverage](https://raw.githubusercontent.com/astrivant/identity/gh-pages/badges/coverage.svg)](https://github.com/astrivant/identity/blob/gh-pages/badges/coverage.json)
 
 Identity is a **user-owned policy and learning layer for intelligent agents**.
 It gives engineers and their agents a shared, reviewable record of how to work,

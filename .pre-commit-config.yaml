@@ -80,7 +80,7 @@ repos:
         entry: npm --prefix scripts/documentation run lint
         language: system
         pass_filenames: false
-        files: '^scripts/documentation/.*\.(mjs|json)$'
+        files: '^scripts/(documentation|ci)/.*\.(mjs|json)$'
   - repo: https://github.com/astrivant/composer
     rev: 4ee8ce8507e10b6cbbac607d7bda01e22740cd37
     hooks:

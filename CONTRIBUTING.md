@@ -92,3 +92,25 @@ not enforce it. An agent still needs approval for a particular administrator mer
 
 See the [engineering standards review](docs/engineering-review.md) for checked
 contracts, evidence limits, and follow-up work. No tag or release is part of that review.
+
+## Measured coverage
+
+The Python test job combines pytest-xdist workers through pytest-cov and measures
+line and branch coverage for `witful`, excluding only test modules. It retains
+JSON, XML, raw coverage data, and a badge/provenance pair in the `python-coverage`
+artifact for 14 days. The README badge shows the combined line/branch percentage;
+it is evidence of exercised code, not correctness or a replacement for assertions.
+
+Every successful public-main test run updates `badges/coverage.svg` and
+`badges/coverage.json` on `gh-pages` through GitHub's signed commit API. The latter
+records the measured source commit, scope, counts, and full report digest. The
+publisher checks the latest main source, uses an expected branch head to reject
+concurrent writers, verifies GitHub's commit signature status, and reads back the
+exact published bytes. No external coverage account, secret, or main-branch bypass
+is required. PRs retain artifacts without publishing; the badge becomes available
+after the first successful main run following merge. Failed tests keep the last
+successful main measurement, whose source remains visible in the linked metadata.
+
+Run `poetry run pytest -n 4 --cov=witful --cov-branch --cov-report=term-missing`
+locally. `npm --prefix scripts/documentation test` includes the publisher's
+bootstrap, stale-source, conflict, signature, readback, and malformed-input cases.

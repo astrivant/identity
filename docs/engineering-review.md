@@ -20,6 +20,10 @@ No live branch policy, release, credential, or deployment is changed by this PR.
 - Run the development image as the same non-root identity as production. Hosted
   orchestration builds and smoke-tests both targets and their writable directories.
 - Include environment-install logic in the executable Python cache key.
+- Measure package line/branch coverage in CI, retain its source-bound report, and
+  publish a measured README badge through signed API commits on an artifact branch.
+  This gap was missed in the initial review and corrected during maintainer feedback;
+  PyPI and license badges were removed as requested.
 - Document real runtime inputs and hosted agent-skill access, and give each Helm
   configuration reference its own values file and generated parameter guide.
 
@@ -31,6 +35,7 @@ No live branch policy, release, credential, or deployment is changed by this PR.
 | Functional boundaries | Inspected append-only journals, explicit PostgreSQL selection, read-only remote consumers, encrypted transport, and completion coverage/freshness tests. These contracts have synthetic regression coverage; they do not establish behavior against every external service. |
 | Architecture and lifecycle | CLI and bounded batch jobs, with explicit source/configuration selection. Both image targets retain Tini; chart workers have non-root, read-only security contexts and bounded job duration. No new persistent HTTP service or queue is introduced, so a Flask metrics API is outside this patch. |
 | Documentation | Runtime inputs checked against argument/environment readers. Existing automatic README TOCs retained; Helm tables/schema regenerated from annotated values. New syntax checks parse equations and diagrams; hosted visual rendering is not proved by parsing. |
+| Coverage | CI now measures the package and prepares report/badge artifacts. The badge publisher is covered by API fixtures; first live publication requires the post-merge main event. |
 | CI | Independent source producers remain parallel. Gate tests exercise every producer's failure, cancellation, and skip state, plus missing/malformed results. Hosted results for this PR are the authority for image builds and PostgreSQL integration. |
 | Live protection | At the review baseline, main required five named checks, strict freshness, and one approval, with administrator bypass allowed. Checks had no app binding. Proposed settings require a separately authorized host reconciliation after review. |
 | Ownership | Existing scoped owners preserved and extended to this patch. GitHub reported no CODEOWNERS parse errors and the listed maintainer had admin access. Local lint checks syntax and paths, not ongoing membership. |

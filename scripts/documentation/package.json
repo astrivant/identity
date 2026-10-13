@@ -7,10 +7,12 @@
   },
   "scripts": {
     "check": "node check-markdown.mjs",
-    "test": "node --test check-markdown.test.mjs",
-    "lint": "eslint ."
+    "test": "node --test check-markdown.test.mjs ../ci/coverage.test.mjs",
+    "lint": "cd ../.. && node scripts/documentation/node_modules/eslint/bin/eslint.js --config scripts/documentation/eslint.config.mjs scripts/documentation scripts/ci"
   },
-  "overrides": { "katex": "$katex" },
+  "overrides": {
+    "katex": "$katex"
+  },
   "devDependencies": {
     "@eslint/js": "10.0.1",
     "eslint": "10.12.0",
