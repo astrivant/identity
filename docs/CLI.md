@@ -162,3 +162,12 @@ This is a rate per recorded entry, not per day, and neither growth nor revision
 counts measure decision quality. The right panel still counts concept references
 in currently accepted choices. Historical replay retains original snapshots;
 the renderer change follows the existing explicit drift-acknowledgement contract.
+
+## Completion audits
+
+`witful completion --repo COLLECTION plan --task TASK --workspace PROJECT --output
+COLLECTION/.witful/completion/review.json` enumerates the entire hierarchy for an
+explicit review. `check --task TASK --workspace PROJECT --input PATH` rejects gaps
+and stale state. `schema` emits its closed source contract. `hook-config --identity
+NAME` prepares a synchronous Codex hook definition for native user review and trust.
+See [coverage, handoff, storage, and hook behavior](completion.md).

@@ -99,6 +99,7 @@ preserves explicit choices, revisions, and the inputs behind their plots.
 - [Project chapters](docs/checkpoints.md): separate evidence checkpoints for every touched project.
   [View the synthetic example](docs/assets/project-chapters/checkpoint-transitions.svg).
 - Observed runtime provenance, startup task reconciliation, and native instance comparisons.
+- [Completion audits](docs/completion.md) covering every concept through Insights before handoff.
 - A toolbox and problem taxonomy with source-backed task-frequency plots.
 - Batched PyPI name checks with TTL caching and rate-limit cooldowns.
 - A redacted PII scanner usable locally, in pre-commit, and in CI.
