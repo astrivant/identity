@@ -4,7 +4,7 @@
 [![PyPI](https://img.shields.io/pypi/v/witful)](https://pypi.org/project/witful/)
 [![License](https://img.shields.io/github/license/astrivant/identity)](LICENSE)
 
-Build a user-owned record of what you learn, how you solve problems, and where
+Build a user-owned, Git-backed record of what you learn, how you solve problems, and where
 that knowledge proves useful. Identity connects lessons, skills, decisions, tools,
 and project checkpoints so you can review your work and carry useful understanding
 into the next project.
@@ -31,6 +31,7 @@ your personal record belongs in your own collection.
 
 - [Install](#install)
 - [Your private identity](#your-private-identity)
+- [Git and GitOps](#git-and-gitops)
 - [What Identity records](#what-identity-records)
 - [Instance evidence](#instance-evidence)
 - [Optional awareness](#optional-awareness)
@@ -84,6 +85,19 @@ before normal session closure. A supervised command also saves on termination.
 
 See [setup, daily sync, and recovery](docs/private-collections.md), including
 existing private forks, custom paths, required secrets, and branch protection.
+
+## Git and GitOps
+
+Git gives your knowledge a versioned history, reviewable changes, and signed
+checkpoints. Use branches and pull requests to collaborate; [multisleeving](docs/multisleeving.md)
+keeps concurrent instances isolated until their work is reconciled.
+
+Identity fits [GitOps workflows](https://opengitops.dev/): keep desired service
+configuration in Git and apply it through your deployment reconciler using the
+[Helm deployment](docs/storage.md). Collection CI validates committed inputs and
+rebuilds derived dashboards under your [publication policy](docs/private-collections.md).
+By default, personal source snapshots and full figures stay encrypted in Git;
+readable figures require explicit opt-in.
 
 ## What Identity records
 
