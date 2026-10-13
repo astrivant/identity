@@ -171,3 +171,10 @@ explicit review. `check --task TASK --workspace PROJECT --input PATH` rejects ga
 and stale state. `schema` emits its closed source contract. `hook-config --identity
 NAME` prepares a synchronous Codex hook definition for native user review and trust.
 See [coverage, handoff, storage, and hook behavior](completion.md).
+
+## Repository delivery
+
+`witful delivery` provides read-only `pr show`, isolated `pr rebase`, reviewed
+`pr publish`, and resumable `recovery plan` / `recovery apply`. Read the
+[delivery contract](delivery.md) for required inputs, exact-head leases, signed
+small-first batches, review boundaries, and interrupted-run recovery.

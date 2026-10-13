@@ -62,7 +62,7 @@ defines scope, review ordering, publication and durable upstream/collection stor
   - Alias: `tag all`.
 - `search soul`: review all applicable standards in the active awareness tree.
   - Alias: `soul search`.
-- `project pr rebase`: rebase open PRs safely and return their review order.
+- `project pr rebase`: rebase open PRs safely and return their review order using the [delivery helpers](docs/delivery.md).
   - Aliases: none currently defined.
 - `project pr show`: display clickable PRs, dependencies, sizes and CI in review order.
   - Aliases: none currently defined.

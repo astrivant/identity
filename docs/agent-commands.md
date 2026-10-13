@@ -1,7 +1,8 @@
 # Agent chat commands
 
 These are portable instructions to an agent that has loaded this project's
-[SKILL.md](../SKILL.md). They are not `witful` subcommands or native host controls.
+[SKILL.md](../SKILL.md). They are not native host controls. [Delivery helpers](delivery.md) provide
+explicit executable steps behind the PR and upload workflows.
 Only deliberate user invocations act; quoting or documenting a command does not.
 The [CLI reference](CLI.md) describes executable commands.
 

@@ -42,7 +42,11 @@ its plots and synchronize its SQLite mirror. Remote database writes remain expli
 
 Follow [the chat command contract](docs/agent-commands.md) for `project pr rebase`,
 `project pr show`, `Push`, release requests, awareness reviews and teaching capture.
-These are agent conventions, not additional Witful CLI subcommands. Honor explicit
+Use the tested [`witful delivery` helpers](docs/delivery.md) for PR inventories,
+isolated rebase preparation/publication, and small-first recovery pushes. Link
+reusable helpers from the applicable Skill and sourced Lesson/Insight so later
+instances execute reviewed code instead of reconstructing it. These chat conventions
+and the explicit helper subcommands have separate side-effect boundaries. Honor explicit
 invocation, aliases and side-effect boundaries; preserve PR dependencies and exact
 remote-head leases when rebasing. Return clickable review order and current evidence.
 

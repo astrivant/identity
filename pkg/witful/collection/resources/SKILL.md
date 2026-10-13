@@ -114,3 +114,8 @@ commands and nested aliases in the collection README, agent routing and sourced
 Skill/Lesson. Contribute generic behavior upstream by default through review; keep
 personal bindings and private records in the owning collection. Explicit commands
 define scope but do not bypass checks, exact-head leases or review protection.
+
+Use the tested [delivery helpers](https://github.com/astrivant/identity/blob/main/docs/delivery.md)
+for PR ordering, isolated rebases and small-first recovery pushes when present in
+the installed release. Link reusable scripts from their Skill and sourced learning
+records; preserve publication authority and inspect receipts before claiming success.
