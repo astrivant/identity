@@ -32,6 +32,9 @@ For an explicitly requested sync, run `witful collection seal --checkout CHECKOU
 --source COLLECTION --key-dir KEYS`, inspect the named encrypted outputs, then
 commit and push them to that private repository. Publication is separate from
 recording lessons. Do not rotate keys or change GitHub permissions implicitly.
+For explicitly requested rotation, follow docs/key-rotation.md in CHECKOUT:
+verify every current managed file, restore-test the backup and replacement, and
+publish one complete generation. Keep old keys for retained-history recovery.
 Verify ciphertext with `collection verify --signing-fingerprint TRUSTED_SHA256`
 using the fingerprint retained separately from the downloaded artifact. CI also
 compares the signing identity with its independent Actions secret before decryption.

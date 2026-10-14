@@ -82,6 +82,10 @@ configuration and custom audit files are not silently included. Preserve and ver
 any additional records through a reviewed migration. Make an encrypted backup and
 test restoration before removing an old copy.
 
+[Key rotation](key-rotation.md) covers current bundles and explicitly registered
+opaque files. Retain old keys for Git history, downloaded artifacts and external
+backups. Filesystem and provider keys retain their separate management procedures.
+
 Resealing today's state does not encrypt old Git objects, previous artifacts,
 backups, clones, or downloads. History rewriting is a separate coordinated action,
 not an automatic installer step. Do not claim an existing private repository was

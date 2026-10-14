@@ -9,3 +9,10 @@
 /.github/settings.yml @emmeowzing
 /.github/CODEOWNERS @emmeowzing
 /pyproject.toml @emmeowzing
+/pkg/witful/collection/ @emmeowzing
+/pkg/witful/privacy/ @emmeowzing
+/scripts/collection/ @emmeowzing
+/.github/workflows/ci.yml @emmeowzing
+/docs/key-rotation.md @emmeowzing
+/docs/private-collections.md @emmeowzing
+/docs/data-protection.md @emmeowzing
