@@ -1,0 +1,93 @@
+[
+  {
+    "decision_id": "synthetic-0",
+    "current_choice": "Reassess the original constraints",
+    "rationale": "Illustrative ratings, not observations about a person.",
+    "knowledge_ids": [
+      "synthetic:lesson"
+    ],
+    "current_support": 2,
+    "observed_outcome": 2,
+    "outcome_evidence": "Synthetic example",
+    "context_effect": 1,
+    "context_evidence": "Synthetic example"
+  },
+  {
+    "decision_id": "synthetic-1",
+    "current_choice": "Reassess the original constraints",
+    "rationale": "Illustrative ratings, not observations about a person.",
+    "knowledge_ids": [
+      "synthetic:lesson"
+    ],
+    "current_support": 2,
+    "observed_outcome": 2,
+    "outcome_evidence": "Synthetic example",
+    "context_effect": 2,
+    "context_evidence": "Synthetic example"
+  },
+  {
+    "decision_id": "synthetic-2",
+    "current_choice": "Reassess the original constraints",
+    "rationale": "Illustrative ratings, not observations about a person.",
+    "knowledge_ids": [
+      "synthetic:lesson"
+    ],
+    "current_support": 1,
+    "observed_outcome": -1,
+    "outcome_evidence": "Synthetic example",
+    "context_effect": 0,
+    "context_evidence": "Synthetic example"
+  },
+  {
+    "decision_id": "synthetic-3",
+    "current_choice": "Reassess the original constraints",
+    "rationale": "Illustrative ratings, not observations about a person.",
+    "knowledge_ids": [
+      "synthetic:lesson"
+    ],
+    "current_support": -1,
+    "observed_outcome": -2,
+    "outcome_evidence": "Synthetic example",
+    "context_effect": -1,
+    "context_evidence": "Synthetic example"
+  },
+  {
+    "decision_id": "synthetic-4",
+    "current_choice": "Reassess the original constraints",
+    "rationale": "Illustrative ratings, not observations about a person.",
+    "knowledge_ids": [
+      "synthetic:lesson"
+    ],
+    "current_support": -2,
+    "observed_outcome": 1,
+    "outcome_evidence": "Synthetic example",
+    "context_effect": 0,
+    "context_evidence": "Synthetic example"
+  },
+  {
+    "decision_id": "synthetic-5",
+    "current_choice": "Reassess the original constraints",
+    "rationale": "Illustrative ratings, not observations about a person.",
+    "knowledge_ids": [
+      "synthetic:lesson"
+    ],
+    "current_support": 0,
+    "observed_outcome": 0,
+    "outcome_evidence": "Synthetic example",
+    "context_effect": 1,
+    "context_evidence": "Synthetic example"
+  },
+  {
+    "decision_id": "synthetic-6",
+    "current_choice": "Reassess the original constraints",
+    "rationale": "Illustrative ratings, not observations about a person.",
+    "knowledge_ids": [
+      "synthetic:lesson"
+    ],
+    "current_support": null,
+    "observed_outcome": null,
+    "outcome_evidence": "Synthetic example",
+    "context_effect": null,
+    "context_evidence": "Synthetic example"
+  }
+]

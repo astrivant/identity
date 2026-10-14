@@ -8,6 +8,7 @@ import hashlib
 import json
 import os
 import shutil
+import subprocess
 from datetime import date
 from typing import TYPE_CHECKING
 
@@ -221,11 +222,13 @@ def test_deadlines_stop_writes_but_allow_retained_recovery(collection: Path, gen
         )
 
 
+@pytest.mark.parametrize("rotate_keys", [False, True])
 def test_pipeline_candidate_is_atomic_verified_and_refuses_changed_bytes(
     collection: Path,
     generations: tuple[Path, Path],
     tmp_path: Path,
     monkeypatch: MonkeyPatch,
+    rotate_keys: bool,
 ) -> None:
     """
     Prepare with real cryptography and inspect the sole optimistic publication mutation through a fake host.
@@ -235,6 +238,7 @@ def test_pipeline_candidate_is_atomic_verified_and_refuses_changed_bytes(
         generations (tuple[Path, Path]): Old and new key material.
         tmp_path (Path): Private candidate root.
         monkeypatch (MonkeyPatch): GitHub visibility, event authorization and API boundary only.
+        rotate_keys (bool): Exercise a new generation or refresh the existing active keys.
 
     Returns:
         None: One verified API commit owns all paths, and changes after verification never reach the host.
@@ -243,22 +247,45 @@ def test_pipeline_candidate_is_atomic_verified_and_refuses_changed_bytes(
     from witful.collection import operations
 
     monkeypatch.setattr(operations, "private_repository", lambda repository: None)
+
+    # Review cadence belongs to the immutable checkout, never the prepared ciphertext directory.
+    git = [
+        "git",
+        "-C",
+        str(collection),
+        "-c",
+        "user.name=Fixture",
+        "-c",
+        "user.email=fixture@example.org",
+        "-c",
+        "commit.gpgsign=false",
+        "-c",
+        "core.hooksPath=/dev/null",
+    ]
+    subprocess.run([*git, "init", "--quiet"], check=True, capture_output=True, timeout=10)
+    subprocess.run([*git, "commit", "--allow-empty", "-qm", "Synthetic history"], check=True, capture_output=True, timeout=10)
+    source_revision = subprocess.run([*git, "rev-parse", "HEAD"], check=True, capture_output=True, text=True, timeout=10).stdout.strip()
     env = read_keys(generations[0]).environment(
         {
             "PATH": os.environ["PATH"],
-            "GITHUB_SHA": "a" * 40,
+            "GITHUB_SHA": source_revision,
             "GITHUB_REPOSITORY": "example/collection",
             "GITHUB_EVENT_NAME": "push",
             "GITHUB_REF": "refs/heads/main",
             "WITFUL_SECURE_TEMP": str(tmp_path),
         }
     )
-    env["WITFUL_COLLECTION_NEXT_KEYS"] = json.dumps(as_data(Candidate("example/collection", DEADLINE, read_keys(generations[1]))))
+    if rotate_keys:
+        env["WITFUL_COLLECTION_NEXT_KEYS"] = json.dumps(as_data(Candidate("example/collection", DEADLINE, read_keys(generations[1]))))
     output = tmp_path / "prepared"
     current = pipeline.prepare(collection, output, env, TODAY)
     assert (output / "VERIFIED").is_file()
-    assert (output / "rotated" / RECEIPT).is_file()
-    restore(current, generations[1], tmp_path / "pipeline-figures", "figures")
+    assert (output / "rotated" / RECEIPT).is_file() is rotate_keys
+    assert not (current / ".git").exists()
+    restore(current, generations[int(rotate_keys)], tmp_path / "pipeline-figures", "figures")
+    review = json.loads((tmp_path / "pipeline-figures/reflection-plan.json").read_bytes())
+    assert review["revision"] == source_revision
+    assert review["commits_since_review"] == 1
     provenance = json.loads((tmp_path / "pipeline-figures/provenance.json").read_bytes())
     assert provenance["source_ciphertext_sha256"] == hashlib.sha256((current / SOURCE).read_bytes()).hexdigest()
     contents = publication.publication_files(current)
@@ -280,7 +307,7 @@ def test_pipeline_candidate_is_atomic_verified_and_refuses_changed_bytes(
             assert data is not None
             request = json.loads(data)
             requests.append(request)
-            assert request["variables"]["input"]["expectedHeadOid"] == "a" * 40
+            assert request["variables"]["input"]["expectedHeadOid"] == source_revision
             additions = request["variables"]["input"]["fileChanges"]["additions"]
             assert {item["path"] for item in additions} == set(contents)
             return json.dumps({"data": {"createCommitOnBranch": {"commit": {"oid": "b" * 40}}}}).encode()
