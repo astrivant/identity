@@ -9,3 +9,7 @@
 /.github/settings.yml @emmeowzing
 /.github/CODEOWNERS @emmeowzing
 /pyproject.toml @emmeowzing
+/.github/workflows/ @emmeowzing
+/.pre-commit-config.yaml @emmeowzing
+/scripts/ci/checks/ @emmeowzing
+/CONTRIBUTING.md @emmeowzing
