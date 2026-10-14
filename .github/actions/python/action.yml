@@ -26,6 +26,7 @@ runs:
       shell: bash
       run: |
         VIRTUAL_ENV="$PWD/.venv" .cache/poetry-cli/bin/poetry install --only-root --no-interaction
-        echo "$PWD/.venv/bin" >> "$GITHUB_PATH"
+        # GitHub prepends later path entries first; the project interpreter must win.
         echo "$PWD/.cache/poetry-cli/bin" >> "$GITHUB_PATH"
+        echo "$PWD/.venv/bin" >> "$GITHUB_PATH"
         echo "VIRTUAL_ENV=$PWD/.venv" >> "$GITHUB_ENV"

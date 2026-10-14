@@ -6,7 +6,9 @@ from __future__ import annotations
 
 import json
 import os
+import shutil
 import subprocess
+import sys
 from pathlib import Path
 
 import pytest
@@ -164,3 +166,36 @@ def test_tag_gate_refreshes_latest_contracts_before_testing_and_publication() ->
     assert steps.index(refresh) < steps.index(test)
     assert "if" not in test and "continue-on-error" not in refresh and "continue-on-error" not in test
     assert "provider-contracts" in workflow["jobs"]["publish"]["needs"]
+
+
+def test_python_setup_selects_project_interpreter(tmp_path: Path) -> None:
+    """
+    Exercise the composite action path exports with GitHub's prepend ordering.
+
+    Args:
+        tmp_path (Path): Isolated runner checkout with separate tool and project bins.
+
+    Returns:
+        None: Direct Python calls select project dependencies rather than Poetry's environment.
+    """
+    action = yaml.safe_load((ROOT / ".github/actions/python/action.yml").read_text())
+    step = next(step for step in action["runs"]["steps"] if step.get("name") == "Install current entry points")
+    project = tmp_path / ".venv/bin"
+    tooling = tmp_path / ".cache/poetry-cli/bin"
+    project.mkdir(parents=True)
+    tooling.mkdir(parents=True)
+    (project / "python").symlink_to(sys.executable)
+    (tooling / "python").symlink_to(sys.executable)
+    # Installation is outside this regression; execute the actual export script unchanged.
+    (tooling / "poetry").symlink_to(shutil.which("true") or "/usr/bin/true")
+    path_file, env_file = tmp_path / "path", tmp_path / "environment"
+    subprocess.run(
+        ["bash", "-eu", "-c", step["run"]],
+        cwd=tmp_path,
+        env={**os.environ, "GITHUB_PATH": str(path_file), "GITHUB_ENV": str(env_file)},
+        check=True,
+        timeout=10,
+    )
+    runner_path = os.pathsep.join([*reversed(path_file.read_text().splitlines()), os.environ["PATH"]])
+    assert shutil.which("python", path=runner_path) == str(project / "python")
+    assert f"VIRTUAL_ENV={tmp_path}/.venv" in env_file.read_text().splitlines()
