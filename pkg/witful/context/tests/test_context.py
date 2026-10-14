@@ -12,6 +12,7 @@ from attrs import evolve
 from witful.completion.core import check as completion_check
 from witful.completion.core import plan as completion_plan
 from witful.context.core import check, digest, resolve
+from witful.context.graph import ordered, validate
 from witful.context.models import Decision, Descriptor, Limits, Mapping, Observation, Receipt, Rule, Scope
 from witful.knowledge.contracts import as_data, structure
 from witful.knowledge.models import Discipline, Identity, Insight, Lesson, Relation, Skill
@@ -437,3 +438,48 @@ def test_unclassified_topics_remain_visible_without_ownership_changes() -> None:
     assert receipt.state == "complete"
     assert any(item.name == "Unclassified" for item in receipt.candidates)
     assert as_data(graph) == before
+
+
+@pytest.mark.parametrize("reverse", [False, True])
+def test_order_uses_ready_id_ties_and_retains_isolated_nodes(tree: Identity, reverse: bool) -> None:
+    """
+    Keep prerequisite orientation and choose newly ready smaller IDs before queued peers.
+
+    Args:
+        tree (Identity): Synthetic hierarchy with unordered requirements.
+        reverse (bool): Whether to reverse relation insertion order.
+
+    Returns:
+        None: The exact order is stable, complete, and restricted to selected IDs.
+    """
+    relations = (
+        Relation("skill:author", "skill:keys", "requires", "fixture:order"),
+        Relation("skill:optional", "skill:author", "related", "fixture:optional"),
+        Relation("lesson:keys", "skill:audit", "requires", "fixture:unselected"),
+    )
+    identity = evolve(tree, relations=tuple(reversed(relations)) if reverse else relations)
+    selected = {"skill:author", "skill:keys", "skill:optional", "skill:test"}
+    original = set(selected)
+    assert ordered(identity, selected) == ("skill:keys", "skill:author", "skill:optional", "skill:test")
+    assert selected == original
+    assert ordered(identity, set()) == ()
+    assert ordered(identity, {"skill:author"}) == ("skill:author",)
+
+
+def test_supersession_cycles_keep_the_validation_error(tree: Identity) -> None:
+    """
+    Reject cycles in teaching replacement independently of requirement relations.
+
+    Args:
+        tree (Identity): Synthetic tree whose current lesson replaces an old lesson.
+
+    Returns:
+        None: A reverse replacement is diagnosed using the established public message.
+    """
+    discipline = tree.disciplines[0]
+    skill = discipline.skills[0]
+    old, current = skill.lessons
+    cyclic = evolve(skill, lessons=(evolve(old, supersedes=current.id), current))
+    identity = evolve(tree, disciplines=(evolve(discipline, skills=(cyclic, *discipline.skills[1:])), *tree.disciplines[1:]))
+    with pytest.raises(ValueError, match="^Cyclic supersession$"):
+        validate(identity)

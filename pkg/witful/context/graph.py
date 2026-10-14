@@ -4,9 +4,9 @@ Enumerate canonical ownership and directed requirements without consulting usage
 
 from __future__ import annotations
 
-import heapq
-from graphlib import CycleError, TopologicalSorter
 from typing import TYPE_CHECKING
+
+import networkx as nx
 
 from witful.knowledge.compiler import index, lineage
 from witful.knowledge.models import Discipline, Lesson
@@ -34,17 +34,15 @@ def validate(identity: Identity) -> tuple[dict[str, Concept], dict[str, str], se
     superseded = {node.supersedes for node in nodes.values() if isinstance(node, Lesson) and node.supersedes}
     if any(identifier not in nodes or not isinstance(nodes[identifier], Lesson) for identifier in superseded):
         raise ValueError("Invalid supersession")
-    supersessions: TopologicalSorter[str] = TopologicalSorter()
+    supersessions: nx.DiGraph[str, dict[str, object], dict[str, object]] = nx.DiGraph()
     for node in nodes.values():
         if isinstance(node, Lesson) and node.supersedes:
-            supersessions.add(node.id, node.supersedes)
-    try:
-        tuple(supersessions.static_order())
-    except CycleError as error:
-        raise ValueError("Cyclic supersession") from error
+            supersessions.add_edge(node.supersedes, node.id)
+    if not nx.is_directed_acyclic_graph(supersessions):
+        raise ValueError("Cyclic supersession")
     historical = {identifier for identifier in nodes if set(lineage(identifier, parents)) & superseded}
     seen: set[tuple[str, str, str]] = set()
-    dependencies: TopologicalSorter[str] = TopologicalSorter()
+    dependencies: nx.DiGraph[str, dict[str, object], dict[str, object]] = nx.DiGraph()
     for edge in identity.relations:
         key = (edge.source, edge.target, edge.kind)
         if edge.source not in nodes or edge.target not in nodes or edge.source == edge.target or key in seen or not edge.evidence.strip():
@@ -53,11 +51,9 @@ def validate(identity: Identity) -> tuple[dict[str, Concept], dict[str, str], se
             raise ValueError("Unknown relation kind")
         seen.add(key)
         if edge.kind == "requires":
-            dependencies.add(edge.source, edge.target)
-    try:
-        tuple(dependencies.static_order())
-    except CycleError as error:
-        raise ValueError("Cyclic requirements") from error
+            dependencies.add_edge(edge.target, edge.source)
+    if not nx.is_directed_acyclic_graph(dependencies):
+        raise ValueError("Cyclic requirements")
     return nodes, parents, historical
 
 
@@ -182,20 +178,13 @@ def ordered(identity: Identity, selected: set[str]) -> tuple[str, ...]:
     Returns:
         tuple[str, ...]: Stable topological order; incoming requirements are never reversed.
     """
-    dependencies = {identifier: set[str]() for identifier in selected}
-    followers = {identifier: set[str]() for identifier in selected}
+    dependencies: nx.DiGraph[str, dict[str, object], dict[str, object]] = nx.DiGraph()
+    # Explicit nodes retain isolated candidates and the empty selection.
+    dependencies.add_nodes_from(selected)
     for edge in identity.relations:
         if edge.kind == "requires" and edge.source in selected and edge.target in selected:
-            dependencies[edge.source].add(edge.target)
-            followers[edge.target].add(edge.source)
-    ready = [identifier for identifier in selected if not dependencies[identifier]]
-    heapq.heapify(ready)
-    result: list[str] = []
-    while ready:
-        identifier = heapq.heappop(ready)
-        result.append(identifier)
-        for follower in sorted(followers[identifier]):
-            dependencies[follower].remove(identifier)
-            if not dependencies[follower]:
-                heapq.heappush(ready, follower)
-    return tuple(result)
+            # A requires B means B must precede A in NetworkX's topological edge direction.
+            dependencies.add_edge(edge.target, edge.source)
+
+    # Compare canonical IDs among all ready nodes, including newly unblocked candidates.
+    return tuple(nx.lexicographical_topological_sort(dependencies))

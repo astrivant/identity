@@ -5,8 +5,9 @@ Compile the unchanged lesson archive and curated classifications into one hierar
 from __future__ import annotations
 
 import hashlib
-from graphlib import CycleError, TopologicalSorter
 from typing import TYPE_CHECKING
+
+import networkx as nx
 
 from witful.knowledge.models import Catalog, Discipline, Identity, Insight, Lesson, Skill
 
@@ -176,7 +177,7 @@ def compile_identity(records: Sequence[JournalLesson], catalog: Catalog) -> Iden
 
     result = Identity(catalog.id, catalog.name, tuple(disciplines), catalog.relations)
     nodes, _ = index(result)
-    requirements: TopologicalSorter[str] = TopologicalSorter()
+    requirements: nx.DiGraph[str, dict[str, object], dict[str, object]] = nx.DiGraph()
     seen: set[tuple[str, str, str]] = set()
 
     for relation in catalog.relations:
@@ -190,11 +191,9 @@ def compile_identity(records: Sequence[JournalLesson], catalog: Catalog) -> Iden
         seen.add(key)
 
         if relation.kind == "requires":
-            requirements.add(relation.source, relation.target)
+            requirements.add_edge(relation.target, relation.source)
 
-    try:
-        tuple(requirements.static_order())
-    except CycleError as error:
-        raise ValueError("Prerequisite relationships must be acyclic") from error
+    if not nx.is_directed_acyclic_graph(requirements):
+        raise ValueError("Prerequisite relationships must be acyclic")
 
     return result

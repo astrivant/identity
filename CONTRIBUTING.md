@@ -36,6 +36,11 @@ with explicit inputs. Add focused regressions for behavior changes. Tests use
 synthetic data; never copy personal records into fixtures. Live PostgreSQL tests
 use `WITFUL_TEST_DATABASE_URL` and skip when it is not configured locally.
 
+Use NetworkX consistently for graph operations, including cycle validation and
+prerequisite ordering. Keep the graph vocabulary uniform across modules. A
+`source requires target` relation becomes a `target -> source` edge for ordering;
+retain isolated nodes and canonical-ID tie breaks when constructing selected graphs.
+
 Define custom package exceptions in `witful.exceptions` and import them directly
 from there in implementation code and tests. Keep operational functions, such as
 `require_protected`, in their domain modules. The exception module has no domain

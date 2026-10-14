@@ -34,3 +34,4 @@
 /scripts/release/setup-signing.sh @emmeowzing
 /pkg/witful/context/ @emmeowzing
 /docs/context.md @emmeowzing
+/pkg/witful/knowledge/compiler.py @emmeowzing
