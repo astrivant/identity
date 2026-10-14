@@ -29,6 +29,7 @@ if TYPE_CHECKING:
 SOURCES = (
     "lessons.jsonl",
     "knowledge/catalog.json",
+    "knowledge/context.json",
     "knowledge/applications.jsonl",
     "knowledge/life.jsonl",
     "knowledge/checkpoints.jsonl",
@@ -74,6 +75,12 @@ def validate(root: Path) -> None:
     """
     catalog = structure(json.loads((root / "knowledge/catalog.json").read_text()), Catalog)
     identity = compile_identity(read_journal(root / "lessons.jsonl"), catalog)
+    # Reviewed context mappings travel with sources; private runtime receipts never enter the archive.
+    context_path = root / "knowledge/context.json"
+    if context_path.exists():
+        from witful.context.models import Mapping
+
+        structure(json.loads(context_path.read_text()), Mapping)
     validate_applications(identity, read_applications(root / "knowledge/applications.jsonl"))
     read_archive(root)
     read_checkpoints(root / "knowledge/checkpoints.jsonl")

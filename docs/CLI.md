@@ -17,6 +17,7 @@ sources and schema drift.
 
 | Command | Purpose |
 | --- | --- |
+| `context --repo PATH snapshot/schema/plan/resolve/check` | Explicit offline working context, individual applicability, and freshness checks; [contract and inputs](context.md) |
 | `init PATH` | Create an empty collection; never overwrite an existing directory |
 | `lessons [--repo PATH] add/search/check/sync/status` | Source journal and SQLite/PostgreSQL search |
 | `[--repo PATH] show [ID]` | Inspect the hierarchy and observed counts |
