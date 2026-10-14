@@ -6,6 +6,10 @@ from __future__ import annotations
 
 from attrs import frozen
 
+from witful.exceptions import SleeveError
+
+__all__ = ["Sleeve", "SleeveError"]
+
 
 @frozen
 class Sleeve:
@@ -37,9 +41,3 @@ class Sleeve:
     keys: str | None = None
     source_digest: str | None = None
     closed_commit: str | None = None
-
-
-class SleeveError(ValueError):
-    """
-    Report an actionable lifecycle failure without private Git output or source values.
-    """

@@ -12,9 +12,10 @@ from uuid import uuid4
 from attrs import evolve
 
 from witful.collection.process import run
+from witful.exceptions import SleeveError
 from witful.sleeves import sources, state
 from witful.sleeves.git import clean, destination, git, incoming
-from witful.sleeves.models import Sleeve, SleeveError
+from witful.sleeves.models import Sleeve
 
 
 def start(repo: Path, directory: Path, *, name: str, base: str = "main", remote: str = "origin", keys: Path | None = None) -> Sleeve:

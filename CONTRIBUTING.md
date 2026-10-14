@@ -15,6 +15,13 @@ with explicit inputs. Add focused regressions for behavior changes. Tests use
 synthetic data; never copy personal records into fixtures. Live PostgreSQL tests
 use `WITFUL_TEST_DATABASE_URL` and skip when it is not configured locally.
 
+Define custom package exceptions in `witful.exceptions` and import them directly
+from there in implementation code and tests. Keep operational functions, such as
+`require_protected`, in their domain modules. The exception module has no domain
+imports, so low-level callers can import failure types without circular dependencies.
+Existing storage, protection, and sleeve-model exception paths remain aliases to
+the same classes for compatibility; preserve their base types and catch behavior.
+
 The README badge reports line coverage of all `pkg/witful` modules, excluding tests.
 [pytest-cov](https://pytest-cov.readthedocs.io/en/latest/xdist.html) combines the four
 workers' measurements. CI retains `python-coverage` XML reports for 14 days on PRs,

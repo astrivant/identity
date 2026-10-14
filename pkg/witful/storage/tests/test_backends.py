@@ -12,8 +12,11 @@ from typing import TYPE_CHECKING
 from uuid import uuid4
 
 import pytest
+from witful import storage
+from witful.exceptions import StorageError
 from witful.lessons import new_lesson
-from witful.storage import SQLiteStore, StorageError, open_store
+from witful.storage import SQLiteStore, open_store
+from witful.storage import exceptions as legacy_exceptions
 from witful.storage.cli import main
 
 if TYPE_CHECKING:
@@ -223,3 +226,15 @@ def test_driver_errors_and_repr_omit_credentials(monkeypatch: MonkeyPatch) -> No
     assert "secret-sentinel" not in str(captured.value)
     assert "secret-sentinel" not in repr(backend)
     assert captured.value.__suppress_context__ is True
+
+
+def test_storage_exception_keeps_its_legacy_identity() -> None:
+    """
+    Preserve both public storage import paths while consumers use the package exception module.
+
+    Returns:
+        None: Legacy catch clauses and RuntimeError handlers receive the same canonical class.
+    """
+    assert storage.StorageError is legacy_exceptions.StorageError is StorageError
+    assert StorageError.__module__ == "witful.exceptions"
+    assert StorageError.__bases__ == (RuntimeError,)
