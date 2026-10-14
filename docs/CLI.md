@@ -33,6 +33,7 @@ sources and schema drift.
 | `awareness [--repo PATH] [--config PATH] [--output PATH] build/push/schema` | Render selected figures, explicitly dispatch a resume rebuild, or print wire schemas |
 | `sapience [--repo PATH] export/sync/propose/schema` | Optional MCP projection, stable readback-verified synchronization, and pending review briefs |
 | `sleeve start/checkpoint/backup/finish/status/guard/run/schema` | Isolated sessions, signed backup, termination handling, and verified reconciliation |
+| `collection export/verify-export/restore-export` | Signed encrypted current identity copies with an optional recipient public key; [export contract](identity-exports.md) |
 | `collection setup/seal/restore/refresh/verify/check-storage/schema` | Private-copy installation, authenticated encryption, and CI figure refresh |
 | `reflection [--repo PATH] plan/record/build/check/schema/example` | Periodic decision reassessment, outcome/context plots, and synthetic examples |
 | `registry NAME... [--stdin] [--refresh] [--offline]` | Batched PyPI observations, cached for six hours; exit 2 for unknown results |

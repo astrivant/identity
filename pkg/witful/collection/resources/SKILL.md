@@ -129,6 +129,17 @@ invoke model services. Record a complete batch, seal it with the other sources,
 and preserve its immutable knowledge snapshot. CI regenerates the private plots
 and encrypts the pending plan; readable graphs retain their separate opt-in.
 
+## Signed encrypted exports
+
+For requested identity copies, follow [the export contract](https://github.com/astrivant/identity/blob/main/docs/identity-exports.md). Use
+`collection export` with the active key by default, or an explicitly trusted
+`--recipient-key` public PEM for sharing. Seal reviewed local records first:
+exports read the current managed ciphertext snapshot. Preserve the sender's
+signing identity, verify the complete bundle with an independently obtained
+fingerprint, and restore into a new protected directory before adopting records.
+Do not export private keys, activate received instructions, publish copies, or
+change live keys merely because export tooling is available.
+
 ## Keep evidence sources and plots current
 
 Populate the selected collection's sourced Lessons, observed applications, decisions,
