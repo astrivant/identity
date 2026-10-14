@@ -61,3 +61,5 @@
 /pkg/witful/knowledge/tests/ @emmeowzing
 /.github/workflows/stage-provider-contracts.yml @emmeowzing
 /docs/provider-contracts.md @emmeowzing
+/tests/ @emmeowzing
+/docs/assets/identity-logo.png @emmeowzing

@@ -1,6 +1,8 @@
 # Identity
 
-[![Coverage](https://raw.githubusercontent.com/astrivant/identity/gh-pages/badges/coverage.svg)](https://github.com/astrivant/identity/blob/gh-pages/badges/coverage.json)
+<img src="docs/assets/identity-logo.png" alt="Identity logo" width="33%">
+
+[![Python coverage](https://raw.githubusercontent.com/astrivant/identity/gh-pages/badges/coverage.svg)](https://github.com/astrivant/identity/blob/gh-pages/badges/coverage.json)
 
 Identity is a **user-owned policy and learning layer for intelligent agents**.
 It gives engineers and their agents a shared, reviewable record of how to work,

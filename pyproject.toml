@@ -98,7 +98,7 @@ convention = "google"
 [tool.mypy]
 python_version = "3.12"
 strict = true
-files = ["scripts", "pkg"]
+files = ["scripts", "pkg", "tests"]
 disallow_any_explicit = true
 disallow_any_unimported = true
 
@@ -119,7 +119,7 @@ require-return-section-when-returning-nothing = true
 skip-checking-raises = true
 
 [tool.pytest.ini_options]
-testpaths = ["pkg/witful", "scripts/ci/tests"]
+testpaths = ["pkg/witful", "scripts/ci/tests", "tests"]
 pythonpath = ["scripts", "scripts/ci", "pkg"]
 addopts = "-ra -n auto --import-mode=importlib"
 
