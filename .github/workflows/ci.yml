@@ -11,7 +11,7 @@ defaults:
   run:
     shell: bash
 concurrency:
-  group: witful-${{ github.ref }}
+  group: witful-${{ github.ref }}-${{ github.sha }}
   cancel-in-progress: false
 env:
   MPLBACKEND: Agg
@@ -43,7 +43,7 @@ jobs:
         with:
           cosign-release: v3.1.3
       - name: Run parallel tests and measure package line coverage
-        run: pytest -n 4 --cov --cov-report=term-missing --cov-report=xml:.cache/coverage/coverage.xml
+        run: pytest -n 4 --cov --cov-report=term-missing --cov-report=xml:.cache/coverage/coverage.xml pkg/witful scripts/ci/tests
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: ${{ !cancelled() }}
         with:
@@ -340,6 +340,23 @@ jobs:
               echo "Trivy found $FINDING_COUNT secret or vulnerability issue(s)."
               exit 1
           fi
+
+  views:
+    name: Render synthetic evidence views
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/python
+      - run: bash scripts/ci/render-views.sh
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: synthetic-evidence-views
+          path: docs/assets/project-chapters/
+          if-no-files-found: error
+          retention-days: 7
 
   publish:
     name: Publish signed release

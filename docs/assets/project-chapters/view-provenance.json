@@ -1,0 +1,32 @@
+{
+  "outputs": {
+    "docs/assets/project-chapters/checkpoint-comparisons.png": "dea1120eb86da96426bd1d621464ad86818c9ad75a2b547c669936664712a98d",
+    "docs/assets/project-chapters/checkpoint-comparisons.svg": "3646dad6bc8a61e226bffaeebeb1204509ad6ffaa11b6ff441c9adf52269076e",
+    "docs/assets/project-chapters/checkpoint-transitions.png": "9872b95bcdec354fdf22a83df9d945b77296fec35292bf2a62ada2d031345e43",
+    "docs/assets/project-chapters/checkpoint-transitions.svg": "7a342e0482fc13e5245bebe0a679d149548b77eb262e31affeae6b177f89d11a",
+    "docs/assets/project-chapters/checkpoints.json": "c286f8cb617edf7b459598821117c92019d707f6cd93c9d5e87128a2b6d16d2e"
+  },
+  "source_revision": "ae4fe02b03640e68219d9e385b9c19ea75cefbda",
+  "source_state": "working-tree",
+  "sources": {
+    ".github/workflows/ci.yml": "1ef1cc8f46818c0f0fd877ca83743f434a454520b2529ca52ae89e4e2a7580f2",
+    "examples/project-chapters/knowledge/checkpoints.jsonl": "e1bb5d8c9c3ed6b4c167e4729934340b6d00e8fd5b0715b8f372e587510ee67a",
+    "pkg/witful/checkpoints/__init__.py": "b7e8d468c0a969a2f8f5d183851e40039b34f211b834bb6067f226cfdc29ded9",
+    "pkg/witful/checkpoints/cli.py": "eac375c3d3ae57da602de333752a60859ec4379092e8479bac70c6ea6f7154f3",
+    "pkg/witful/checkpoints/diff.py": "50c22b00f5c2fe6c7a8682d41df6aa6e02279732cb5b272b2b58deec74668bd6",
+    "pkg/witful/checkpoints/journal.py": "22f265cec4a98a963b17b656103a27f53a5194f83ecfb92d0627587fa6bfe342",
+    "pkg/witful/checkpoints/models.py": "c147ba27982e96f798adea69854719aae7a38e811e1de3deeb9b46d199f8b99a",
+    "pkg/witful/checkpoints/plotting.py": "6db65deab6334b48259fc8abc000d0b5b55fe49a1212bb1a4a1e3290edeeb4dd",
+    "pkg/witful/checkpoints/postgres.py": "af751bf6e76d5373e06dd4c128b2abbec7dcd48a37dc241979cec9373ce7a52c",
+    "pkg/witful/checkpoints/snapshot.py": "fcf234d397556c33a8efddd4dafd156dcb23c525d4d838486337cc5cc721abbc",
+    "pkg/witful/checkpoints/storage.py": "35c8e821a87b2a4ae7f93a5777981b5e1d03fc04c469160cc56b03abe1552b70",
+    "pkg/witful/knowledge/plotting.py": "e00c9b7e06fb884b7b70b62e759e6b6736d2840564fb2fcc9b10787fc55f8d6f",
+    "poetry.lock": "1b729d1651070a3aeb1fc274a3be309946042b6371ac5358ae465377cc348918",
+    "pyproject.toml": "cc63133e7537821ef4c0d6aeda5c4c6604cb4c8928a346b04f4d38348b5e8f7a",
+    "scripts/ci/publish-views.graphql": "29581e84beefc14ba8b37fd45503e4afd2daf81c71f1b316166cb1b9d357de05",
+    "scripts/ci/publish-views.sh": "56db2ab70477e424b2c47b708ec7d6687ec4cc826c1d10d1e0b9ee091190f96f",
+    "scripts/ci/render-views.sh": "b5eab895341ef725d32083701555ac7d46675015632a5b13be76602b8f31dda9",
+    "scripts/ci/view_manifest.py": "ecaffe31e13006deca1c2f05f3595e1c958b06ed933d4540d67d1f646719695a"
+  },
+  "version": 1
+}

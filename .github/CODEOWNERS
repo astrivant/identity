@@ -13,3 +13,6 @@
 /.pre-commit-config.yaml @emmeowzing
 /scripts/ci/checks/ @emmeowzing
 /CONTRIBUTING.md @emmeowzing
+/scripts/ci/ @emmeowzing
+/docs/view-freshness.md @emmeowzing
+/.gitignore @emmeowzing

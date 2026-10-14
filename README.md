@@ -137,6 +137,7 @@ drift checks make historical comparisons reviewable.
 ### Project history and tools
 
 [View the synthetic project-chapter example](docs/assets/project-chapters/checkpoint-transitions.svg).
+[Inspect its regeneration and source receipt](docs/view-freshness.md).
 [Project checkpoints](docs/checkpoints.md) compare documented learning and skill
 use across Git boundaries. The [toolbox and problem taxonomy](docs/CLI.md#toolbox-and-problems)
 connect tools to observed work, with source-backed task-frequency plots.
