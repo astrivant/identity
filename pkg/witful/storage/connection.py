@@ -11,7 +11,7 @@ import psycopg
 from psycopg.conninfo import conninfo_to_dict
 from psycopg.rows import tuple_row
 
-from witful.storage.exceptions import StorageError
+from witful.exceptions import StorageError
 
 if TYPE_CHECKING:
     from collections.abc import Iterator

@@ -12,7 +12,8 @@ from typing import TYPE_CHECKING
 
 import pytest
 from witful.collection import protection
-from witful.collection.protection import StorageProtectionError, check_collection, require_protected
+from witful.collection.protection import check_collection, require_protected
+from witful.exceptions import StorageProtectionError
 
 if TYPE_CHECKING:
     from pytest import MonkeyPatch
@@ -141,3 +142,15 @@ def test_private_policy_covers_outputs_and_refuses_unverified_remote_storage(tmp
         check_collection(tmp_path, remote=True)
 
     assert not inspected
+
+
+def test_protection_exception_keeps_its_legacy_identity() -> None:
+    """
+    Preserve existing catch clauses when callers adopt the centralized import.
+
+    Returns:
+        None: The old import names the canonical ValueError subclass without wrapping it.
+    """
+    assert protection.StorageProtectionError is StorageProtectionError
+    assert StorageProtectionError.__module__ == "witful.exceptions"
+    assert StorageProtectionError.__bases__ == (ValueError,)

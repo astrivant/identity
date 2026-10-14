@@ -9,10 +9,10 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 import pytest
-from witful.sleeves import operations, state
+from witful.exceptions import SleeveError
+from witful.sleeves import models, operations, state
 from witful.sleeves.cli import main
 from witful.sleeves.git import destination
-from witful.sleeves.models import SleeveError
 
 if TYPE_CHECKING:
     from pytest import CaptureFixture, MonkeyPatch
@@ -107,3 +107,15 @@ def test_cli_redacts_source_validation_failure(monkeypatch: MonkeyPatch, capsys:
         main(["guard"])
     assert error.value.code == 2
     assert "SYNTHETIC_PRIVATE_SENTINEL" not in capsys.readouterr().err
+
+
+def test_sleeve_exception_keeps_its_legacy_identity() -> None:
+    """
+    Preserve lifecycle error handling for callers using the original model import.
+
+    Returns:
+        None: Both import paths name the canonical ValueError subclass.
+    """
+    assert models.SleeveError is SleeveError
+    assert SleeveError.__module__ == "witful.exceptions"
+    assert SleeveError.__bases__ == (ValueError,)

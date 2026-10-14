@@ -119,6 +119,11 @@ explicit private-copy installer, preserving the user's existing Codex settings a
 collection. Run setup only when requested; it creates keys and updates repository
 secrets. Reuse the saved key directory after partial setup, never silently rotate.
 
+For authorized replacement keys, follow [key rotation](docs/key-rotation.md). Inventory
+managed files, restore-test both generations, and publish all replacements with
+their trust configuration atomically. Retain old keys for history. Reading this
+skill does not authorize secret writes, key retirement or history rewriting.
+
 The installed collection is readable at runtime on verified encrypted working storage.
 Use [the data-protection contract](docs/data-protection.md) for local volume checks,
 independent signing pins, retained history, and unsupported remote-storage attestation.

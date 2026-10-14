@@ -12,8 +12,6 @@ import sys
 from importlib.resources import files
 from typing import TYPE_CHECKING
 
-from attrs import evolve
-
 from witful.collection.crypto import fingerprint
 from witful.collection.keys import prepare, project
 from witful.collection.models import CONFIG, load_config
@@ -110,7 +108,7 @@ def setup(repository: str, checkout: Path, home: Path, keys: Path, *, create: bo
             config.signing_fingerprint,
         ):
             raise ValueError("Setup cannot rotate a configured collection's keys; reuse the original backup")
-        config = evolve(config, publish_figures=previous.publish_figures)
+        config = previous
 
     config_path.parent.mkdir(parents=True, exist_ok=True)
     replace_file(

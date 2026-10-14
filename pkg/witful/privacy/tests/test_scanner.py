@@ -4,10 +4,13 @@ Prove redaction, staged-source ownership, and known detector boundaries with syn
 
 from __future__ import annotations
 
+import json
 import subprocess
 from typing import TYPE_CHECKING
 
 import pytest
+from witful.collection.models import CONFIG, Config
+from witful.knowledge.contracts import as_data
 from witful.privacy.cli import main
 from witful.privacy.scanner import scan, scan_text
 
@@ -105,3 +108,26 @@ def test_symlinks_do_not_read_outside_the_repository(tmp_path: Path) -> None:
     external.write_text("forbidden sentinel")
     (root / "link").symlink_to(external)
     assert scan(root, terms=["forbidden sentinel"]) == ()
+
+
+def test_managed_file_policy_comes_from_the_scanned_snapshot(tmp_path: Path) -> None:
+    """
+    Prevent an unstaged configuration edit from bypassing staged envelope validation.
+
+    Args:
+        tmp_path (Path): Synthetic Git index and distinct working configuration.
+
+    Returns:
+        None: The registered staged file still requires an envelope after an unstaged removal.
+    """
+    subprocess.run(["git", "init", "-q", str(tmp_path)], check=True)
+    (tmp_path / ".config").mkdir()
+    (tmp_path / "collection/files").mkdir(parents=True)
+    config = Config("example/collection", "a" * 64, "b" * 64, managed_files=("export-01",))
+    (tmp_path / CONFIG).write_text(json.dumps(as_data(config)))
+    relative = "collection/files/export-01.enc.json"
+    (tmp_path / relative).write_text("not an encrypted envelope")
+    subprocess.run(["git", "-C", str(tmp_path), "add", CONFIG, relative], check=True)
+    (tmp_path / CONFIG).write_text(json.dumps(as_data(Config("example/collection", "a" * 64, "b" * 64))))
+    assert scan(tmp_path) == ()
+    assert any(item.path == relative and item.rule == "unscannable-file" for item in scan(tmp_path, staged=True))

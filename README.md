@@ -42,6 +42,7 @@ execution; people retain authority over accepted guidance and publication.
   - [Git and GitOps](#git-and-gitops)
   - [Retrieval and storage](#retrieval-and-storage)
   - [Privacy and data protection](#privacy-and-data-protection)
+  - [Inputs](#inputs)
   - [Development and releases](#development-and-releases)
 <!-- toc:end -->
 
@@ -83,6 +84,8 @@ plots require a separate opt-in.
 
 Follow [setup, daily sync, and recovery](docs/private-collections.md) for existing
 private copies, custom paths, required secrets, and branch protection.
+Use [key rotation](docs/key-rotation.md) to replace current encryption and signing
+keys while retaining historical recovery.
 
 ### Work with an AI agent
 
@@ -211,6 +214,19 @@ Run `witful privacy scan` before sharing a collection. It detects defined patter
 and configured deny terms; it cannot prove text is free of personal data. Trivy
 adds dependency-vulnerability and secret checks in CI. See [security checks](docs/security-checks.md)
 and [SECURITY.md](SECURITY.md) for publication review and reporting vulnerabilities.
+
+### Inputs
+
+Collection rotation inputs are documented in [key rotation](docs/key-rotation.md):
+
+| Input | Purpose |
+| --- | --- |
+| `WITFUL_COLLECTION_NEXT_KEYS` | Optional Actions secret containing a complete reviewed candidate generation |
+| `.config/collection.json: rotate_by` | UTC deadline for new protected writes; retained historical reads remain available |
+| `.config/collection.json: managed_files` | Reviewed opaque files participating alongside source and figure bundles |
+
+See [all collection secrets and permissions](docs/private-collections.md#workflow-and-permissions)
+and [CLI inputs](docs/CLI.md) for the remaining configuration.
 
 ### Development and releases
 

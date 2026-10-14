@@ -9,3 +9,11 @@
 !figures.enc.json.sha256
 !cosign.pub
 !key-fingerprints.json
+!rotation.json
+!rotation.json.sigstore.json
+!rotation.json.sha256
+!files/
+files/*
+!files/*.enc.json
+!files/*.enc.json.sigstore.json
+!files/*.enc.json.sha256

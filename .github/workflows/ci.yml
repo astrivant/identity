@@ -443,27 +443,22 @@ jobs:
           WITFUL_COLLECTION_PRIVATE_KEY: ${{ secrets.WITFUL_COLLECTION_PRIVATE_KEY }}
           WITFUL_COLLECTION_PUBLIC_KEY: ${{ secrets.WITFUL_COLLECTION_PUBLIC_KEY }}
           WITFUL_COLLECTION_KEY_PASSWORD: ${{ secrets.WITFUL_COLLECTION_KEY_PASSWORD }}
+          WITFUL_COLLECTION_NEXT_KEYS: ${{ secrets.WITFUL_COLLECTION_NEXT_KEYS }}
           COSIGN_PRIVATE_KEY: ${{ secrets.WITFUL_COLLECTION_SIGNING_KEY }}
           COSIGN_PASSWORD: ${{ secrets.WITFUL_COLLECTION_SIGNING_PASSWORD }}
         run: bash scripts/collection/refresh.sh
-      - name: Verify signatures and publication boundary
-        env:
-          WITFUL_COLLECTION_SIGNING_FINGERPRINT: ${{ secrets.WITFUL_COLLECTION_SIGNING_FINGERPRINT }}
-        run: |
-          witful collection verify --signing-fingerprint "$WITFUL_COLLECTION_SIGNING_FINGERPRINT"
-          witful collection verify --figures --signing-fingerprint "$WITFUL_COLLECTION_SIGNING_FINGERPRINT"
-          witful privacy scan
-      - name: Retain only encrypted figures and verification material
+      - name: Check source publication boundary
+        run: witful privacy scan
+      - name: Retain verified encrypted candidates and old-generation recovery snapshots
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
-          name: encrypted-collection-figures
+          name: encrypted-collection-candidate
           path: |
-            collection/figures.enc.json
-            collection/figures.enc.json.sigstore.json
-            collection/figures.enc.json.sha256
-            collection/cosign.pub
-            collection/key-fingerprints.json
-            .config/collection.json
+            ${{ env.WITFUL_SECURE_TEMP }}/publication/current
+            ${{ env.WITFUL_SECURE_TEMP }}/publication/previous
+            ${{ env.WITFUL_SECURE_TEMP }}/publication/rotated
+            ${{ env.WITFUL_SECURE_TEMP }}/publication/VERIFIED
+            ${{ env.WITFUL_SECURE_TEMP }}/publication/READY
           include-hidden-files: true
           if-no-files-found: error
           retention-days: 7

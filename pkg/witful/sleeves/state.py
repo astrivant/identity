@@ -10,10 +10,11 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import TYPE_CHECKING
 
+from witful.exceptions import SleeveError
 from witful.files import replace_file
 from witful.knowledge.contracts import as_data, structure
 from witful.sleeves.git import git
-from witful.sleeves.models import Sleeve, SleeveError
+from witful.sleeves.models import Sleeve
 
 if TYPE_CHECKING:
     from collections.abc import Iterator

@@ -178,3 +178,13 @@ See [coverage, handoff, storage, and hook behavior](completion.md).
 `--path` for keys, indexes, and temporary storage. `collection verify --checkout PATH
 --signing-fingerprint TRUSTED_SHA256 [--figures]` authenticates ciphertext against
 an independently retained signing identity. See [data protection](data-protection.md).
+
+## Collection key rotation
+
+`witful collection inventory` lists current managed ciphertext. `seal-file` and
+`restore-file` explicitly register and recover opaque files outside the source
+archive allowlist. `rotation-keys` writes a private candidate; `rotate` prepares
+verified previous/current snapshots without editing the active checkout.
+`prepare-refresh` and `publish-refresh` are trusted CI stages. `promote-keys`
+explicitly projects adopted keys to existing primary Actions secrets.
+See [inputs, limits, recovery and publication](key-rotation.md).
