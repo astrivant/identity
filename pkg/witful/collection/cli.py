@@ -16,8 +16,9 @@ from typing import TYPE_CHECKING
 from cryptography.exceptions import InvalidTag, UnsupportedAlgorithm
 from jsonschema import ValidationError
 
-from witful.collection import archive
+from witful.collection import archive, export_cli
 from witful.collection.crypto import verify
+from witful.collection.exports import Manifest
 from witful.collection.install import setup
 from witful.collection.keys import project as project_keys
 from witful.collection.managed import restore_file, seal_file, snapshot
@@ -101,13 +102,16 @@ def main(argv: Sequence[str] | None = None) -> int:
         managed.add_argument("--key-dir", type=Path, required=True)
         managed.add_argument("--name", required=True, help="Non-sensitive opaque identifier")
         managed.add_argument("--source" if command == "seal-file" else "--output", type=Path, required=True)
+    export_cli.register(commands)
     args = parser.parse_args(argv)
     os.umask(0o077)
     today = datetime.now(UTC).date()
 
     try:
-        if args.command == "schema":
-            print(json.dumps({"config": schema(Config), "envelope": schema(Envelope)}, indent=2))
+        if args.command in {"export", "verify-export", "restore-export"}:
+            export_cli.dispatch(args, today)
+        elif args.command == "schema":
+            print(json.dumps({"config": schema(Config), "envelope": schema(Envelope), "export": schema(Manifest)}, indent=2))
         elif args.command == "check-storage":
             for path in args.path:
                 require_protected(path)

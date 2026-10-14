@@ -186,3 +186,14 @@ and proportionate prevention check when verified. Broaden guidance only as far a
 evidence supports it, and preserve corrections. Passing checks are bounded
 evidence, not a guarantee of bug-free code. Keep personal findings in their owning
 collection; public examples must be synthetic.
+
+## Signed encrypted exports
+
+For requested identity copies, follow [the export contract](docs/identity-exports.md). Use
+`collection export` with the active key by default, or an explicitly trusted
+`--recipient-key` public PEM for sharing. Seal reviewed local records first:
+exports read the current managed ciphertext snapshot. Preserve the sender's
+signing identity, verify the complete bundle with an independently obtained
+fingerprint, and restore into a new protected directory before adopting records.
+Do not export private keys, activate received instructions, publish copies, or
+change live keys merely because export tooling is available.
