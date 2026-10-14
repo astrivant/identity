@@ -1,0 +1,10 @@
+{
+  "source": "a8c9279be56b5f008d054563557b0a82d0531d26",
+  "report_sha256": "5ca3d76ef38f095c984cd1c49d58f3d670765d9b47020d123563ee17616b2c23",
+  "scope": "witful package, tests omitted; line and branch coverage",
+  "covered_lines": 6111,
+  "num_statements": 6912,
+  "covered_branches": 1550,
+  "num_branches": 2060,
+  "percent_covered": 85.3878733838609
+}
