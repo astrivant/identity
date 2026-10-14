@@ -9,6 +9,27 @@ poetry run pytest -n 4 --cov --cov-report=term-missing --cov-report=xml:.cache/c
 poetry run pre-commit run --all-files
 ```
 
+ShellCheck and shfmt validate standalone shell scripts. The pinned Actionlint hook
+also validates every workflow and sends inline `run:` shell to ShellCheck; missing
+ShellCheck fails the hook. CI runs this same hook with
+`pre-commit run actionlint --all-files`. Pre-commit builds Actionlint using Go
+(the minimum is defined in its pinned upstream `go.mod`). Keep the project environment
+on `PATH` so local hooks and CI use the locked ShellCheck installation.
+
+Quote scalar command substitutions, including assignment values, for consistent
+readability: `value="$(command)"`. Plain Bash assignments already suppress word
+splitting and glob expansion; this style is stricter than ShellCheck's required
+quoting checks. Prefer `[ ... ]` for simple tests and retain `[[ ... ]]` for
+pattern/regex matching. Preserve behavior when changing syntax.
+
+Register named Bash functions as trap handlers, including in CI. Give each handler
+an intent comment and typed signature describing its inputs or owned state, cleanup
+scope, and exit contract. Capture the incoming status before any other command,
+disable a trap before explicitly exiting its handler, and keep cleanup failures
+visible. These EXIT handlers preserve an existing failure and exit with status 1 if
+cleanup alone fails. Exercise success, command failure, and cleanup failure paths;
+document signal handling separately when a script installs signal traps.
+
 Keep Python implementation and tests under `pkg/witful/`. Use strict types,
 attrs/cattrs contracts, multiline Google docstrings, and pure transformations
 with explicit inputs. Add focused regressions for behavior changes. Tests use

@@ -21,3 +21,10 @@
 /pkg/witful/sleeves/ @emmeowzing
 /pkg/witful/checkpoints/storage.py @emmeowzing
 /CONTRIBUTING.md @emmeowzing
+/.github/workflows/ @emmeowzing
+/.pre-commit-config.yaml @emmeowzing
+/scripts/ci/checks/ @emmeowzing
+/scripts/ci/ @emmeowzing
+/docs/view-freshness.md @emmeowzing
+/.gitignore @emmeowzing
+/scripts/release/setup-signing.sh @emmeowzing
