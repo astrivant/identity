@@ -143,7 +143,9 @@ Stop when authorization or validation fails and report the specific blocker.
 Validate sources and run relevant tests. Render and inspect affected plots locally
 when developing their renderer; routine evidence updates rely on CI generation. Every study plot should answer a concise question stated
 in its subtitle. Inspect publication inputs with `witful privacy scan`, using
-private deny terms where relevant. A passing scan is not proof of anonymization.
+private deny terms where relevant. Review reported coverage gaps separately; use
+`--require-complete` when every selected payload must be inspected as text. A passing
+scan is not proof of anonymization or approval of skipped assets.
 Do not publish records, upload archives, seed remote databases, or generate keys
 without the user's task authorizing that action.
 

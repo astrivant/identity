@@ -294,7 +294,9 @@ requirements](docs/data-protection.md) before using personal records or describi
 an existing deployment as encrypted.
 
 Run `witful privacy scan` before sharing a collection. It detects defined patterns
-and configured deny terms; it cannot prove text is free of personal data. Trivy
+and configured deny terms, and reports unsupported content separately. See the
+[PII coverage and exit-status contract](docs/CLI.md#pii-scan-coverage); a passing scan
+is not publication approval for uninspected assets. Trivy
 adds dependency-vulnerability and secret checks in CI. See [security checks](docs/security-checks.md)
 and [SECURITY.md](SECURITY.md) for publication review and reporting vulnerabilities.
 

@@ -131,7 +131,7 @@ jobs:
         with:
           persist-credentials: false
       - uses: ./.github/actions/python
-      - run: python scripts/ci/checks/privacy.py
+      - run: witful-pii scan
 
   distributions:
     name: Build distributions
@@ -513,7 +513,7 @@ jobs:
           COSIGN_PASSWORD: ${{ secrets.WITFUL_COLLECTION_SIGNING_PASSWORD }}
         run: bash scripts/collection/refresh.sh
       - name: Check source publication boundary
-        run: python scripts/ci/checks/privacy.py
+        run: witful-pii scan
       - name: Retain verified encrypted candidates and old-generation recovery snapshots
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:

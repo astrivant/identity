@@ -15,7 +15,7 @@ service.
 `witful privacy scan` scans tracked and nonignored untracked UTF-8 sources.
 `--staged` inspects the complete Git index, so unstaged clean files cannot hide
 staged sensitive content. `.git` history and ignored files are outside its scope.
-The CI job scans every checked-out source file and must pass before merge/release;
+The CI job inspects checked-out filenames and supported text and must pass before merge/release;
 pre-commit exports the same gate as `witful-pii`. Hooks can be bypassed locally,
 so repository branch protection must require **PII scan**.
 
@@ -41,10 +41,20 @@ verification. A private repository alone is not encryption.
 - Additional case-insensitive literals from `--terms-file` or `WITFUL_PII_TERMS_FILE`.
 
 Keep the terms file outside public source control. Logs contain only relative
-file location, line number, and detector ID. A sensitive filename becomes a
-digest label. Matched values and snippets are never printed. Files larger than
-5 MiB, non-UTF-8/binary files, and unreadable files block the scan; symlink targets
-are inspected without following them outside the checkout.
+file locations, line numbers, detector IDs and bounded coverage diagnostics. A sensitive filename becomes a
+digest label. Matched values and snippets are never printed. Unreadable files and ordinary source files larger than 5 MiB fail inspection with
+exit 2. Non-UTF-8/binary content is reported as skipped, never as a PII finding;
+symlink targets are inspected as link text without following them. Valid configured
+envelopes are also reported as skipped because transport validation does not
+inspect encrypted plaintext. Invalid envelopes fail inspection.
+
+A summary reports findings, skips, errors and whether coverage is complete. Exit 0
+means no detected patterns in inspected content and no inspection errors; it does
+not approve unsupported assets for publication. Use `--require-complete` to reject
+any skipped payload with exit 2. Actual detector matches return 1 unless an error
+or required coverage failure takes precedence. Review binary assets separately;
+the scanner performs no OCR or image metadata analysis. See the
+[full PII scan contract](docs/CLI.md#pii-scan-coverage).
 
 This is a deterministic guard for defined patterns, not an identity classifier.
 It cannot recognize all people's names, postal addresses, international phones,
