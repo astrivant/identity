@@ -1,5 +1,7 @@
 # Identity
 
+<img src="docs/assets/identity-logo.png" alt="Identity logo" width="320">
+
 [![Python coverage](https://raw.githubusercontent.com/astrivant/identity/gh-pages/badges/coverage.svg)](https://github.com/astrivant/identity/actions/workflows/ci.yml)
 
 
