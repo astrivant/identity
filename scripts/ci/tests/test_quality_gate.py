@@ -13,7 +13,7 @@ import pytest
 import yaml
 
 ROOT = Path(__file__).resolve().parents[3]
-REQUIRED = ("distributions", "lint", "orchestration", "privacy", "security", "tests", "views")
+REQUIRED = ("distributions", "learning", "lint", "orchestration", "privacy", "security", "tests", "views")
 
 
 def gate_result(payload: str) -> int:
@@ -123,3 +123,24 @@ def test_app_bound_checks_do_not_include_legacy_contexts() -> None:
     for branch in settings["branches"]:
         checks = branch["protection"]["required_status_checks"]
         assert not {"contexts", "checks"}.issubset(checks)
+
+
+def test_figure_publication_follows_both_current_run_producers() -> None:
+    """
+    Preserve synthetic figures when the coverage publisher changes implementation.
+
+    Returns:
+        None: Publication consumes both producers without selecting another run.
+    """
+    workflow = yaml.load((ROOT / ".github/workflows/ci.yml").read_text(), Loader=yaml.BaseLoader)
+    jobs = workflow["jobs"]
+    publisher = jobs["coverage-badge"]
+    assert set(publisher["needs"]) == {"tests", "learning"}
+    assert "needs" not in jobs["learning"]
+    downloads = {
+        step["with"]["name"]: step["with"] for step in publisher["steps"] if step.get("uses", "").startswith("actions/download-artifact@")
+    }
+    assert set(downloads) == {"python-coverage", "continual-learning-example"}
+    assert downloads["continual-learning-example"]["path"] == ".cache/coverage/badges/continual-learning"
+    assert all("run-id" not in settings and "github-token" not in settings for settings in downloads.values())
+    assert jobs["learning"]["steps"][-1]["with"]["name"] == "continual-learning-example"

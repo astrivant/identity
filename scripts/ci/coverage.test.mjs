@@ -10,10 +10,17 @@ const context = { eventName: 'push', ref: 'refs/heads/main', sha: SOURCE, repo: 
 const report = (totals) => JSON.stringify({ meta: { branch_coverage: true }, totals });
 const totals = { num_statements: 80, covered_lines: 70, num_branches: 20, covered_branches: 10 };
 const rendered = coverageBadge(report(totals), SOURCE);
-const assets = { 'badges/coverage.json': JSON.stringify(rendered.summary), 'badges/coverage.svg': rendered.svg };
+const assets = {
+  'badges/coverage.json': JSON.stringify(rendered.summary),
+  'badges/coverage.svg': rendered.svg,
+  'badges/continual-learning/decision-context.png': Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x00, 0xff]),
+  'badges/continual-learning/decision-context.svg': '<svg>synthetic context</svg>',
+  'badges/continual-learning/decision-outcomes.png': Buffer.from([0x89, 0x50, 0x4e, 0x47, 0xfe, 0x00]),
+  'badges/continual-learning/decision-outcomes.svg': '<svg>synthetic outcomes</svg>',
+};
 
 /** Emulate only the API boundaries used by publication, retaining all attempted writes. */
-function fixture({ missing = false, refError, current = SOURCE, verified = true, conflict = false, corrupt = false } = {}) {
+function fixture({ missing = false, refError, current = SOURCE, verified = true, conflict = false, corrupt = false, corruptPath } = {}) {
   const writes = [];
   return {
     writes,
@@ -31,7 +38,7 @@ function fixture({ missing = false, refError, current = SOURCE, verified = true,
           async getCommit({ ref }) { assert.equal(ref, PUBLISHED); return { data: { commit: { verification: { verified } } } }; },
           async getContent({ path, ref }) {
             assert.equal(ref, PUBLISHED);
-            return { data: { type: 'file', encoding: 'base64', content: Buffer.from(corrupt ? 'wrong' : assets[path]).toString('base64') } };
+            return { data: { type: 'file', encoding: 'base64', content: Buffer.from(corrupt || corruptPath === path ? 'wrong' : assets[path]).toString('base64') } };
           },
         },
       },
@@ -75,8 +82,8 @@ for (const missing of [false, true]) {
     const input = writes.at(-1);
     assert.equal(input.expectedHeadOid, missing ? SOURCE : PREVIOUS);
     assert.equal(input.branch.branchName, 'gh-pages');
-    assert.deepEqual(input.fileChanges.additions.map((item) => item.path), Object.keys(assets));
-    for (const item of input.fileChanges.additions) assert.equal(Buffer.from(item.contents, 'base64').toString(), assets[item.path]);
+    assert.deepEqual(input.fileChanges.additions.map((item) => item.path), Object.keys(assets).sort());
+    for (const item of input.fileChanges.additions) assert.deepEqual(Buffer.from(item.contents, 'base64'), Buffer.from(assets[item.path]));
     assert.equal(writes.length, missing ? 2 : 1);
   });
 }
@@ -106,5 +113,21 @@ test('PRs, foreign-source reports and unexpected paths cannot publish', async ()
   await assert.rejects(publishCoverage({ github, context: { ...context, eventName: 'pull_request' }, assets }));
   await assert.rejects(publishCoverage({ github, context, assets: { ...assets, 'badges/extra': 'unreviewed' } }));
   await assert.rejects(publishCoverage({ github, context, assets: { ...assets, 'badges/coverage.json': JSON.stringify({ source: PREVIOUS }) } }));
+  assert.equal(writes.length, 0);
+});
+
+test('binary corruption fails exact-commit readback', async () => {
+  const corruptPath = 'badges/continual-learning/decision-outcomes.png';
+  await assert.rejects(
+    publishCoverage({ github: fixture({ corruptPath }).github, context, assets }),
+    /Coverage readback mismatch: badges\/continual-learning\/decision-outcomes.png/u,
+  );
+});
+
+test('missing learning figures prevent partial publication', async () => {
+  const { github, writes } = fixture();
+  const incomplete = { ...assets };
+  delete incomplete['badges/continual-learning/decision-context.svg'];
+  await assert.rejects(publishCoverage({ github, context, assets: incomplete }), /Unexpected coverage publication paths/u);
   assert.equal(writes.length, 0);
 });

@@ -36,6 +36,8 @@ SOURCES = (
     "knowledge/repertoire.json",
     "knowledge/tool-uses.jsonl",
     "instructions.md",
+    "knowledge/reflection.json",
+    "knowledge/reflections.jsonl",
 )
 
 
@@ -52,8 +54,11 @@ def allowed(name: str, *, figures: bool = False) -> bool:
     """
     if figures:
         from witful.awareness.models import FIGURES
+        from witful.reflection.plotting import FIGURES as REFLECTION_FIGURES
 
-        return name == "provenance.json" or name in {f"{key}.{suffix}" for key in FIGURES for suffix in ("png", "svg")}
+        return name in {"provenance.json", "reflection-plan.json"} or name in {
+            f"{key}.{suffix}" for key in (*FIGURES, *REFLECTION_FIGURES) for suffix in ("png", "svg")
+        }
 
     return (
         name in SOURCES
@@ -76,6 +81,12 @@ def validate(root: Path) -> None:
     identity = compile_identity(read_journal(root / "lessons.jsonl"), catalog)
     validate_applications(identity, read_applications(root / "knowledge/applications.jsonl"))
     read_archive(root)
+
+    # Reflection is an independent journal; never promote its proposed lessons during validation.
+    from witful.reflection.journal import config, read
+
+    config(root)
+    read(root)
     read_checkpoints(root / "knowledge/checkpoints.jsonl")
     check_references(root, read_instances(root))
     inventory_path = root / "knowledge/repertoire.json"

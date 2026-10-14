@@ -35,6 +35,7 @@ sources and schema drift.
 | `sleeve start/checkpoint/backup/finish/status/guard/run/schema` | Isolated sessions, signed backup, termination handling, and verified reconciliation |
 | `collection export/verify-export/restore-export` | Signed encrypted current identity copies with an optional recipient public key; [export contract](identity-exports.md) |
 | `collection setup/seal/restore/refresh/verify/check-storage/schema` | Private-copy installation, authenticated encryption, and CI figure refresh |
+| `reflection [--repo PATH] plan/record/build/check/schema/example` | Periodic decision reassessment, outcome/context plots, and synthetic examples |
 | `registry NAME... [--stdin] [--refresh] [--offline]` | Batched PyPI observations, cached for six hours; exit 2 for unknown results |
 
 Life decisions contain `key`, `title`, `task`, `choice`, `rationale`, `source`,
@@ -186,6 +187,15 @@ small-first batches, review boundaries, and interrupted-run recovery.
 `--path` for keys, indexes, and temporary storage. `collection verify --checkout PATH
 --signing-fingerprint TRUSTED_SHA256 [--figures]` authenticates ciphertext against
 an independently retained signing identity. See [data protection](data-protection.md).
+
+## Continual learning
+
+`witful reflection --repo COLLECTION plan --history-repo CHECKOUT` prepares a
+private review brief using full Git history. `record --input assessments.json`
+accepts its complete reviewed batch; `build --output-dir PATH` renders current
+assessments, and `check` validates the journal. `schema` prints generated contracts.
+`example --output-dir PATH` renders synthetic public demonstration data only.
+See [cadence, rubric, and evidence requirements](continual-learning.md).
 
 ## Collection key rotation
 

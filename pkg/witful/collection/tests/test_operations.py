@@ -10,6 +10,7 @@ import subprocess
 from typing import TYPE_CHECKING
 
 import pytest
+from attrs import evolve
 from witful.collection import archive, operations
 from witful.collection.cli import main as collection_main
 from witful.collection.crypto import sign, verify
@@ -34,6 +35,9 @@ _FIGURE_NAMES = {
     "checkpoint-transitions",
     "checkpoint-comparisons",
     "instance-comparisons",
+    "decision-influences",
+    "decision-outcomes",
+    "decision-context",
 }
 
 
@@ -59,7 +63,7 @@ def test_rendered_figure_contract_without_signing_tools(tmp_path: Path) -> None:
         tmp_path (Path): Synthetic source, output, and archive restoration parent.
 
     Returns:
-        None: All eight figure families survive the portable private archive round trip.
+        None: All eleven figure families survive the portable private archive round trip.
     """
     source, rendered, restored = tmp_path / "source", tmp_path / "rendered", tmp_path / "restored"
     initialize([str(source)])
@@ -84,6 +88,7 @@ def test_signed_refresh_round_trip(tmp_path: Path, monkeypatch: MonkeyPatch) -> 
     """
     monkeypatch.setattr(operations, "private_repository", lambda repository: None)
     monkeypatch.setattr(operations, "require_protected", lambda path: None)
+    monkeypatch.setattr(operations, "reflection_plan", lambda root, history: {"due": False, "decision_ids": [], "decision_count": 0})
     source, checkout, keys = tmp_path / "home/collection", tmp_path / "checkout", tmp_path / "keys"
     initialize([str(source)])
     (source / "instructions.md").write_text("SYNTHETIC_PRIVATE_SENTINEL")
@@ -142,6 +147,17 @@ def test_signed_refresh_round_trip(tmp_path: Path, monkeypatch: MonkeyPatch) -> 
     restore(checkout, keys, tmp_path / "plots", "figures")
     _assert_figure_names(tmp_path / "plots")
     verify(checkout / FIGURES, checkout / "collection/cosign.pub", config)
+
+    # Disabling reviews must remove already-published review plots without hiding other figures.
+    visible_config = evolve(config, publish_figures=True)
+    (checkout / CONFIG).write_text(json.dumps(as_data(visible_config)))
+    refresh(checkout)
+    assert (checkout / "docs/collection/decision-outcomes.svg").exists()
+    (source / "knowledge/reflection.json").write_text('{"enabled": false}')
+    seal(checkout, source, keys)
+    refresh(checkout)
+    assert not (checkout / "docs/collection/decision-outcomes.svg").exists()
+    assert (checkout / "docs/collection/knowledge-map.svg").exists()
 
     # Both ciphertext and its checksum may be attacker-controlled; the independent signature still rejects changes.
     path = checkout / SOURCE

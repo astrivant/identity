@@ -132,6 +132,18 @@ for PR ordering, isolated rebases and small-first recovery pushes when present i
 the installed release. Link reusable scripts from their Skill and sourced learning
 records; preserve publication authority and inspect receipts before claiming success.
 
+## Continual learning
+
+At session boundaries, use `witful reflection --repo COLLECTION plan --history-repo
+CHECKOUT`. Defaults are enabled, 100 first-parent commits, and 20 decisions per
+round. Read docs/continual-learning.md in CHECKOUT. Reassess original constraints
+with current knowledge; record actual outcomes and later context separately.
+Unknown outcomes remain null. Present useful findings and proposed lessons for
+review, asking for assistance when warranted. Do not silently accept proposals or
+invoke model services. Record a complete batch, seal it with the other sources,
+and preserve its immutable knowledge snapshot. CI regenerates the private plots
+and encrypts the pending plan; readable graphs retain their separate opt-in.
+
 ## Signed encrypted exports
 
 For requested identity copies, follow [the export contract](https://github.com/astrivant/identity/blob/main/docs/identity-exports.md). Use

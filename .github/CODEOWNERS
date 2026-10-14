@@ -29,7 +29,6 @@
 /pkg/witful/privacy/ @emmeowzing
 /scripts/collection/ @emmeowzing
 /docs/key-rotation.md @emmeowzing
-/docs/private-collections.md @emmeowzing
 /docs/data-protection.md @emmeowzing
 /docs/identity-exports.md @emmeowzing
 /pkg/witful/exceptions.py @emmeowzing
@@ -40,4 +39,7 @@
 /scripts/ci/checks/ @emmeowzing
 /docs/view-freshness.md @emmeowzing
 /.gitignore @emmeowzing
+/docs/private-collections.md @emmeowzing
+/docs/security-checks.md @emmeowzing
+/pkg/witful/collection/tests/test_operations.py @emmeowzing
 /scripts/release/setup-signing.sh @emmeowzing
