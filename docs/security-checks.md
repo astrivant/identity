@@ -29,10 +29,9 @@ a finding may disclose sensitive paths or package names.
 
 ## Pinned tools
 
-Trivy uses `aquasec/trivy:0.75.0` pinned to OCI index
-`sha256:af6acf9a6b85dfe389a1941505c0ce9efef52a4719635e1a962f022a3d855daa`.
-Update the version, digest, and cache key together after reviewing the
-[upstream release](https://github.com/aquasecurity/trivy/releases/tag/v0.75.0).
-Actions remain pinned by commit in [the workflow](../.github/workflows/ci.yml).
+The [workflow](../.github/workflows/ci.yml) is the authoritative source for
+Trivy's image version, OCI digest, cache key, and action commit pins. Update the
+related image and cache settings together after reviewing the
+[upstream release notes](https://github.com/aquasecurity/trivy/releases).
 The report sanitizer is adapted from Resumeme; its attribution is kept beside
 [the script](../scripts/ci/checks/trivy-report.py).

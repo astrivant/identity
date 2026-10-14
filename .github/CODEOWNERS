@@ -9,3 +9,13 @@
 /.github/settings.yml @emmeowzing
 /.github/CODEOWNERS @emmeowzing
 /pyproject.toml @emmeowzing
+/.github/workflows/ @emmeowzing
+/.pre-commit-config.yaml @emmeowzing
+/scripts/ci/checks/ @emmeowzing
+/CONTRIBUTING.md @emmeowzing
+/scripts/ci/ @emmeowzing
+/docs/view-freshness.md @emmeowzing
+/.gitignore @emmeowzing
+/docs/private-collections.md @emmeowzing
+/docs/security-checks.md @emmeowzing
+/pkg/witful/collection/tests/test_operations.py @emmeowzing
