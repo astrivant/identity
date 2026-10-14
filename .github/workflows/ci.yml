@@ -17,6 +17,13 @@ env:
   MPLBACKEND: Agg
   MPLCONFIGDIR: ${{ github.workspace }}/.cache/matplotlib
 jobs:
+  provider-contracts:
+    name: Provider API contracts
+    uses: ./.github/workflows/stage-provider-contracts.yml
+    with:
+      source: ${{ github.sha }}
+      refresh-latest: ${{ startsWith(github.ref, 'refs/tags/') }}
+
   tests:
     name: Python tests
     runs-on: ubuntu-24.04
@@ -267,7 +274,7 @@ jobs:
     name: Required CI
     # Always evaluate the complete producer set, including skipped and cancelled jobs.
     if: always()
-    needs: [tests, lint, privacy, security, distributions, orchestration, views, learning]
+    needs: [tests, lint, privacy, security, distributions, orchestration, views, learning, provider-contracts]
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
@@ -434,7 +441,7 @@ jobs:
 
   publish:
     name: Publish signed release
-    needs: [tests, lint, privacy, security, distributions, orchestration, views, learning]
+    needs: [tests, lint, privacy, security, distributions, orchestration, views, learning, provider-contracts]
     if: >-
       github.repository == 'astrivant/identity'
       && github.event_name == 'push'

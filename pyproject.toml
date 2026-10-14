@@ -68,6 +68,7 @@ types-jsonschema = ">=4.26,<5"
 opentelemetry-proto = "1.45.1"
 types-protobuf = "7.35.1.20260906"
 pytest-cov = "7.1.0"
+openapi-schema-validator = "0.9.0"
 
 [build-system]
 requires = ["poetry-core==2.5.0"]
@@ -119,7 +120,7 @@ skip-checking-raises = true
 
 [tool.pytest.ini_options]
 testpaths = ["pkg/witful", "scripts/ci/tests"]
-pythonpath = ["scripts", "pkg"]
+pythonpath = ["scripts", "scripts/ci", "pkg"]
 addopts = "-ra -n auto --import-mode=importlib"
 
 markers = ["postgres: live PostgreSQL contract tests (WITFUL_TEST_DATABASE_URL required)"]

@@ -13,7 +13,7 @@ import pytest
 import yaml
 
 ROOT = Path(__file__).resolve().parents[3]
-REQUIRED = ("distributions", "learning", "lint", "orchestration", "privacy", "security", "tests", "views")
+REQUIRED = ("distributions", "learning", "lint", "orchestration", "privacy", "provider-contracts", "security", "tests", "views")
 
 
 def gate_result(payload: str) -> int:
@@ -144,3 +144,23 @@ def test_figure_publication_follows_both_current_run_producers() -> None:
     assert downloads["continual-learning-example"]["path"] == ".cache/coverage/badges/continual-learning"
     assert all("run-id" not in settings and "github-token" not in settings for settings in downloads.values())
     assert jobs["learning"]["steps"][-1]["with"]["name"] == "continual-learning-example"
+
+
+def test_tag_gate_refreshes_latest_contracts_before_testing_and_publication() -> None:
+    """
+    Prevent tag publication from silently relying on an older pinned API baseline.
+
+    Returns:
+        None: Every tag selects freshness and tests only after a successful refresh.
+    """
+    workflow = yaml.load((ROOT / ".github/workflows/ci.yml").read_text(), Loader=yaml.BaseLoader)
+    gate = workflow["jobs"]["provider-contracts"]
+    assert gate["with"] == {"source": "${{ github.sha }}", "refresh-latest": "${{ startsWith(github.ref, 'refs/tags/') }}"}
+    stage = yaml.load((ROOT / ".github/workflows/stage-provider-contracts.yml").read_text(), Loader=yaml.BaseLoader)
+    steps = stage["jobs"]["contracts"]["steps"]
+    refresh = next(step for step in steps if step.get("run", "").endswith("refresh.py --latest"))
+    test = next(step for step in steps if step.get("run", "").startswith("pytest "))
+    assert refresh["if"] == "inputs.refresh-latest"
+    assert steps.index(refresh) < steps.index(test)
+    assert "if" not in test and "continue-on-error" not in refresh and "continue-on-error" not in test
+    assert "provider-contracts" in workflow["jobs"]["publish"]["needs"]

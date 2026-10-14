@@ -1,0 +1,2032 @@
+{
+  "components": {
+    "schemas": {
+      "APIEntitiesBasicProjectDetails": {
+        "properties": {
+          "avatar_url": {
+            "example": "http://example.com/uploads/project/avatar/3/uploads/avatar.png",
+            "type": "string"
+          },
+          "created_at": {
+            "example": "2020-05-07T04:27:17.016Z",
+            "format": "date-time",
+            "type": "string"
+          },
+          "custom_attributes": {
+            "$ref": "#/components/schemas/APIEntitiesCustomAttribute"
+          },
+          "default_branch": {
+            "example": "main",
+            "type": "string"
+          },
+          "description": {
+            "example": "desc",
+            "type": "string"
+          },
+          "forks_count": {
+            "example": 1,
+            "type": "integer"
+          },
+          "http_url_to_repo": {
+            "example": "https://gitlab.example.com/gitlab/gitlab.git",
+            "type": "string"
+          },
+          "id": {
+            "example": 1,
+            "format": "int64",
+            "type": "integer"
+          },
+          "last_activity_at": {
+            "example": "2013-09-30T13:46:02Z",
+            "format": "date-time",
+            "type": "string"
+          },
+          "license": {
+            "$ref": "#/components/schemas/APIEntitiesLicenseBasic"
+          },
+          "license_url": {
+            "example": "https://gitlab.example.com/gitlab/gitlab/blob/master/LICENCE",
+            "type": "string"
+          },
+          "name": {
+            "example": "project1",
+            "type": "string"
+          },
+          "name_with_namespace": {
+            "example": "John Doe / project1",
+            "type": "string"
+          },
+          "namespace": {
+            "$ref": "#/components/schemas/APIEntitiesNamespaceBasic"
+          },
+          "path": {
+            "example": "project1",
+            "type": "string"
+          },
+          "path_with_namespace": {
+            "example": "namespace1/project1",
+            "type": "string"
+          },
+          "readme_url": {
+            "example": "https://gitlab.example.com/gitlab/gitlab/blob/master/README.md",
+            "type": "string"
+          },
+          "repository_storage": {
+            "example": "default",
+            "type": "string"
+          },
+          "ssh_url_to_repo": {
+            "example": "git@example.invalid:gitlab/gitlab.git",
+            "type": "string"
+          },
+          "star_count": {
+            "example": 1,
+            "type": "integer"
+          },
+          "tag_list": {
+            "example": [
+              "tag"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "topics": {
+            "example": [
+              "topic"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "visibility": {
+            "example": "public",
+            "type": "string"
+          },
+          "web_url": {
+            "example": "https://gitlab.example.com/gitlab/gitlab",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "APIEntitiesCiPipeline": {
+        "properties": {
+          "archived": {
+            "example": false,
+            "type": "boolean"
+          },
+          "before_sha": {
+            "example": "a91957a858320c0e17f3a0eca7cfacbff50ea29a",
+            "type": "string"
+          },
+          "committed_at": {
+            "example": "2015-12-24T15:51:21.880Z",
+            "format": "date-time",
+            "type": "string"
+          },
+          "coverage": {
+            "example": 98.29,
+            "format": "float",
+            "type": "number"
+          },
+          "created_at": {
+            "example": "2015-12-24T15:51:21.880Z",
+            "format": "date-time",
+            "type": "string"
+          },
+          "detailed_status": {
+            "$ref": "#/components/schemas/DetailedStatusEntity"
+          },
+          "duration": {
+            "description": "Time spent running in seconds",
+            "example": 127,
+            "type": "integer"
+          },
+          "finished_at": {
+            "example": "2015-12-24T17:54:31.198Z",
+            "format": "date-time",
+            "type": "string"
+          },
+          "id": {
+            "example": 1,
+            "format": "int64",
+            "type": "integer"
+          },
+          "iid": {
+            "example": 2,
+            "type": "integer"
+          },
+          "project_id": {
+            "example": 3,
+            "format": "int64",
+            "type": "integer"
+          },
+          "queued_duration": {
+            "description": "Time spent enqueued in seconds",
+            "example": 63,
+            "type": "integer"
+          },
+          "ref": {
+            "example": "feature-branch",
+            "type": "string"
+          },
+          "sha": {
+            "example": "0ec9e58fdfca6cdd6652c083c9edb53abc0bad52",
+            "type": "string"
+          },
+          "source": {
+            "example": "push",
+            "type": "string"
+          },
+          "started_at": {
+            "example": "2015-12-24T17:54:30.733Z",
+            "format": "date-time",
+            "type": "string"
+          },
+          "status": {
+            "example": "success",
+            "type": "string"
+          },
+          "tag": {
+            "example": false,
+            "type": "boolean"
+          },
+          "updated_at": {
+            "example": "2015-12-24T17:54:31.198Z",
+            "format": "date-time",
+            "type": "string"
+          },
+          "user": {
+            "$ref": "#/components/schemas/APIEntitiesUserBasic"
+          },
+          "web_url": {
+            "example": "https://gitlab.example.com/gitlab-org/gitlab-foss/-/pipelines/61",
+            "type": "string"
+          },
+          "yaml_errors": {
+            "example": "widgets:build: needs 'widgets:test'",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "APIEntitiesCiPipelineBasic": {
+        "properties": {
+          "created_at": {
+            "example": "2022-10-21T16:49:48.000+02:00",
+            "format": "date-time",
+            "type": "string"
+          },
+          "id": {
+            "example": 1,
+            "format": "int64",
+            "type": "integer"
+          },
+          "iid": {
+            "example": 2,
+            "type": "integer"
+          },
+          "project_id": {
+            "example": 3,
+            "format": "int64",
+            "type": "integer"
+          },
+          "ref": {
+            "example": "feature-branch",
+            "type": "string"
+          },
+          "sha": {
+            "example": "0ec9e58fdfca6cdd6652c083c9edb53abc0bad52",
+            "type": "string"
+          },
+          "source": {
+            "example": "push",
+            "type": "string"
+          },
+          "status": {
+            "example": "success",
+            "type": "string"
+          },
+          "updated_at": {
+            "example": "2022-10-21T16:49:48.000+02:00",
+            "format": "date-time",
+            "type": "string"
+          },
+          "web_url": {
+            "example": "https://gitlab.example.com/gitlab-org/gitlab-foss/-/pipelines/61",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "APIEntitiesCommitSignature": {
+        "properties": {
+          "commit_source": {
+            "example": "gitaly",
+            "type": "string"
+          },
+          "signature": {
+            "type": "object"
+          },
+          "signature_type": {
+            "example": "PGP",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "APIEntitiesCommitStatus": {
+        "properties": {
+          "allow_failure": {
+            "example": false,
+            "type": "boolean"
+          },
+          "author": {
+            "$ref": "#/components/schemas/APIEntitiesUserBasic"
+          },
+          "coverage": {
+            "example": 98.29,
+            "format": "float",
+            "type": "number"
+          },
+          "created_at": {
+            "example": "2016-01-19T09:05:50.355Z",
+            "format": "date-time",
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "finished_at": {
+            "example": "2016-01-21T08:40:25.832Z",
+            "format": "date-time",
+            "type": "string"
+          },
+          "id": {
+            "example": 93,
+            "format": "int64",
+            "type": "integer"
+          },
+          "name": {
+            "example": "default",
+            "type": "string"
+          },
+          "pipeline_id": {
+            "example": 101,
+            "format": "int64",
+            "type": "integer"
+          },
+          "ref": {
+            "example": "develop",
+            "type": "string"
+          },
+          "sha": {
+            "example": "18f3e63d05582537db6d183d9d557be09e1f90c8",
+            "type": "string"
+          },
+          "started_at": {
+            "example": "2016-01-20T08:40:25.832Z",
+            "format": "date-time",
+            "type": "string"
+          },
+          "status": {
+            "example": "success",
+            "type": "string"
+          },
+          "target_url": {
+            "example": "https://gitlab.example.com/janedoe/gitlab-foss/builds/91",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "APIEntitiesContainerExpirationPolicy": {
+        "properties": {
+          "cadence": {
+            "type": "string"
+          },
+          "enabled": {
+            "type": "string"
+          },
+          "keep_n": {
+            "type": "string"
+          },
+          "name_regex": {
+            "type": "string"
+          },
+          "name_regex_keep": {
+            "type": "string"
+          },
+          "next_run_at": {
+            "type": "string"
+          },
+          "older_than": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "APIEntitiesCustomAttribute": {
+        "properties": {
+          "key": {
+            "example": "foo",
+            "type": "string"
+          },
+          "value": {
+            "example": "bar",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "APIEntitiesDiff": {
+        "properties": {
+          "a_mode": {
+            "example": "100755",
+            "type": "string"
+          },
+          "b_mode": {
+            "example": "100644",
+            "type": "string"
+          },
+          "collapsed": {
+            "type": "boolean"
+          },
+          "deleted_file": {
+            "type": "boolean"
+          },
+          "diff": {
+            "example": "@@ -71,6 +71,8 @@\\n...",
+            "type": "string"
+          },
+          "generated_file": {
+            "type": "boolean"
+          },
+          "new_file": {
+            "type": "boolean"
+          },
+          "new_path": {
+            "example": "doc/update/5.4-to-6.0.md",
+            "type": "string"
+          },
+          "old_path": {
+            "example": "doc/update/5.4-to-6.0.md",
+            "type": "string"
+          },
+          "renamed_file": {
+            "type": "boolean"
+          },
+          "too_large": {
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "APIEntitiesDiffRefs": {
+        "properties": {
+          "base_sha": {
+            "example": "b83d6e391c22777fca1ed3012fce84f633d7fed0",
+            "type": "string"
+          },
+          "head_sha": {
+            "example": "b83d6e391c22777fca1ed3012fce84f633d7fed0",
+            "type": "string"
+          },
+          "start_sha": {
+            "example": "b83d6e391c22777fca1ed3012fce84f633d7fed0",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "APIEntitiesGroupAccess": {
+        "properties": {
+          "access_level": {
+            "type": "string"
+          },
+          "notification_level": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "APIEntitiesIssuableReferences": {
+        "properties": {
+          "full": {
+            "example": "test&6",
+            "type": "string"
+          },
+          "relative": {
+            "example": "&6",
+            "type": "string"
+          },
+          "short": {
+            "example": "&6",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "APIEntitiesIssuableTimeStats": {
+        "properties": {
+          "human_time_estimate": {
+            "example": "3h 30m",
+            "type": "string"
+          },
+          "human_total_time_spent": {
+            "example": "1h",
+            "type": "string"
+          },
+          "time_estimate": {
+            "example": 12600,
+            "type": "integer"
+          },
+          "total_time_spent": {
+            "example": 3600,
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "APIEntitiesLicenseBasic": {
+        "properties": {
+          "html_url": {
+            "example": "http://choosealicense.com/licenses/gpl-3.0",
+            "type": "string"
+          },
+          "key": {
+            "example": "gpl-3.0",
+            "type": "string"
+          },
+          "name": {
+            "example": "GNU General Public License v3.0",
+            "type": "string"
+          },
+          "nickname": {
+            "example": "GNU GPLv3",
+            "type": "string"
+          },
+          "source_url": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "APIEntitiesMergeRequest": {
+        "properties": {
+          "allow_collaboration": {
+            "type": "boolean"
+          },
+          "allow_maintainer_to_push": {
+            "type": "boolean"
+          },
+          "approvals_before_merge": {
+            "example": 2,
+            "type": "integer"
+          },
+          "assignee": {
+            "$ref": "#/components/schemas/APIEntitiesUserBasic"
+          },
+          "assignees": {
+            "$ref": "#/components/schemas/APIEntitiesUserBasic"
+          },
+          "author": {
+            "$ref": "#/components/schemas/APIEntitiesMergeRequestAuthor"
+          },
+          "blocking_discussions_resolved": {
+            "type": "boolean"
+          },
+          "changes_count": {
+            "example": "1",
+            "type": "string"
+          },
+          "closed_at": {
+            "example": "2022-01-31T15:10:45.080Z",
+            "format": "date-time",
+            "type": "string"
+          },
+          "closed_by": {
+            "$ref": "#/components/schemas/APIEntitiesUserBasic"
+          },
+          "created_at": {
+            "example": "2022-08-17T12:46:35.053Z",
+            "format": "date-time",
+            "type": "string"
+          },
+          "description": {
+            "example": "Repellendus impedit et vel velit dignissimos.",
+            "type": "string"
+          },
+          "description_html": {
+            "type": "string"
+          },
+          "detailed_merge_status": {
+            "example": "mergeable",
+            "type": "string"
+          },
+          "diff_refs": {
+            "$ref": "#/components/schemas/APIEntitiesDiffRefs"
+          },
+          "discussion_locked": {
+            "type": "boolean"
+          },
+          "diverged_commits_count": {
+            "example": 0,
+            "type": "integer"
+          },
+          "downvotes": {
+            "type": "integer"
+          },
+          "draft": {
+            "type": "boolean"
+          },
+          "first_contribution": {
+            "type": "boolean"
+          },
+          "first_deployed_to_production_at": {
+            "example": "2022-01-31T15:10:45.080Z",
+            "format": "date-time",
+            "type": "string"
+          },
+          "force_remove_source_branch": {
+            "type": "boolean"
+          },
+          "has_conflicts": {
+            "type": "boolean"
+          },
+          "head_pipeline": {
+            "$ref": "#/components/schemas/APIEntitiesCiPipeline"
+          },
+          "id": {
+            "example": 84,
+            "format": "int64",
+            "type": "integer"
+          },
+          "iid": {
+            "example": 14,
+            "type": "integer"
+          },
+          "imported": {
+            "type": "boolean"
+          },
+          "imported_from": {
+            "example": "bitbucket",
+            "type": "string"
+          },
+          "labels": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "latest_build_finished_at": {
+            "example": "2022-01-31T15:10:45.080Z",
+            "format": "date-time",
+            "type": "string"
+          },
+          "latest_build_started_at": {
+            "example": "2022-01-31T15:10:45.080Z",
+            "format": "date-time",
+            "type": "string"
+          },
+          "merge_after": {
+            "example": "2022-01-31T15:10:45.080Z",
+            "format": "date-time",
+            "type": "string"
+          },
+          "merge_commit_sha": {
+            "example": "1234abcd",
+            "type": "string"
+          },
+          "merge_error": {
+            "example": "Merge error",
+            "type": "string"
+          },
+          "merge_status": {
+            "example": "unchecked",
+            "type": "string"
+          },
+          "merge_user": {
+            "$ref": "#/components/schemas/APIEntitiesUserBasic"
+          },
+          "merge_when_pipeline_succeeds": {
+            "type": "boolean"
+          },
+          "merged_at": {
+            "example": "2022-01-31T15:10:45.080Z",
+            "format": "date-time",
+            "type": "string"
+          },
+          "merged_by": {
+            "$ref": "#/components/schemas/APIEntitiesUserBasic"
+          },
+          "milestone": {
+            "$ref": "#/components/schemas/APIEntitiesMilestone"
+          },
+          "pipeline": {
+            "$ref": "#/components/schemas/APIEntitiesCiPipelineBasic"
+          },
+          "prepared_at": {
+            "example": "2022-01-31T15:10:45.080Z",
+            "format": "date-time",
+            "type": "string"
+          },
+          "project_id": {
+            "example": 4,
+            "format": "int64",
+            "type": "integer"
+          },
+          "rebase_in_progress": {
+            "type": "boolean"
+          },
+          "reference": {
+            "example": "!1",
+            "type": "string"
+          },
+          "references": {
+            "$ref": "#/components/schemas/APIEntitiesIssuableReferences"
+          },
+          "reviewers": {
+            "$ref": "#/components/schemas/APIEntitiesUserBasic"
+          },
+          "sha": {
+            "example": "1234abcd",
+            "type": "string"
+          },
+          "should_remove_source_branch": {
+            "type": "boolean"
+          },
+          "source_branch": {
+            "type": "string"
+          },
+          "source_project_id": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "squash": {
+            "type": "boolean"
+          },
+          "squash_commit_sha": {
+            "example": "1234abcd",
+            "type": "string"
+          },
+          "squash_on_merge": {
+            "type": "boolean"
+          },
+          "state": {
+            "example": "closed",
+            "type": "string"
+          },
+          "subscribed": {
+            "type": "boolean"
+          },
+          "target_branch": {
+            "type": "string"
+          },
+          "target_project_id": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "task_completion_status": {
+            "$ref": "#/components/schemas/APIEntitiesTaskCompletionStatus"
+          },
+          "time_stats": {
+            "$ref": "#/components/schemas/APIEntitiesIssuableTimeStats"
+          },
+          "title": {
+            "example": "Impedit et ut et dolores vero provident ullam est",
+            "type": "string"
+          },
+          "title_html": {
+            "type": "string"
+          },
+          "updated_at": {
+            "example": "2022-11-14T17:22:01.470Z",
+            "format": "date-time",
+            "type": "string"
+          },
+          "upvotes": {
+            "type": "integer"
+          },
+          "user": {
+            "properties": {
+              "can_merge": {
+                "type": "boolean"
+              }
+            },
+            "type": "object"
+          },
+          "user_notes_count": {
+            "type": "integer"
+          },
+          "web_url": {
+            "example": "https://gitlab.example.com/my-group/my-project/-/merge_requests/1",
+            "type": "string"
+          },
+          "work_in_progress": {
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "APIEntitiesMergeRequestAuthor": {
+        "properties": {
+          "avatar_path": {
+            "example": "/user/avatar/28/The-Big-Lebowski-400-400.png",
+            "type": "string"
+          },
+          "avatar_url": {
+            "example": "https://gravatar.com/avatar/1",
+            "type": "string"
+          },
+          "bot": {
+            "example": false,
+            "type": "boolean"
+          },
+          "custom_attributes": {
+            "items": {
+              "$ref": "#/components/schemas/APIEntitiesCustomAttribute"
+            },
+            "type": "array"
+          },
+          "id": {
+            "example": 1,
+            "format": "int64",
+            "type": "integer"
+          },
+          "locked": {
+            "type": "boolean"
+          },
+          "name": {
+            "example": "Administrator",
+            "type": "string"
+          },
+          "public_email": {
+            "example": "fixture@example.invalid",
+            "type": "string"
+          },
+          "state": {
+            "example": "active",
+            "type": "string"
+          },
+          "username": {
+            "example": "admin",
+            "type": "string"
+          },
+          "web_url": {
+            "example": "https://gitlab.example.com/root",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "APIEntitiesMergeRequestBasic": {
+        "properties": {
+          "allow_collaboration": {
+            "type": "boolean"
+          },
+          "allow_maintainer_to_push": {
+            "type": "boolean"
+          },
+          "approvals_before_merge": {
+            "example": 2,
+            "type": "integer"
+          },
+          "assignee": {
+            "$ref": "#/components/schemas/APIEntitiesUserBasic"
+          },
+          "assignees": {
+            "$ref": "#/components/schemas/APIEntitiesUserBasic"
+          },
+          "author": {
+            "$ref": "#/components/schemas/APIEntitiesMergeRequestAuthor"
+          },
+          "blocking_discussions_resolved": {
+            "type": "boolean"
+          },
+          "closed_at": {
+            "example": "2022-01-31T15:10:45.080Z",
+            "format": "date-time",
+            "type": "string"
+          },
+          "closed_by": {
+            "$ref": "#/components/schemas/APIEntitiesUserBasic"
+          },
+          "created_at": {
+            "example": "2022-08-17T12:46:35.053Z",
+            "format": "date-time",
+            "type": "string"
+          },
+          "description": {
+            "example": "Repellendus impedit et vel velit dignissimos.",
+            "type": "string"
+          },
+          "description_html": {
+            "type": "string"
+          },
+          "detailed_merge_status": {
+            "example": "mergeable",
+            "type": "string"
+          },
+          "discussion_locked": {
+            "type": "boolean"
+          },
+          "downvotes": {
+            "type": "integer"
+          },
+          "draft": {
+            "type": "boolean"
+          },
+          "force_remove_source_branch": {
+            "type": "boolean"
+          },
+          "has_conflicts": {
+            "type": "boolean"
+          },
+          "id": {
+            "example": 84,
+            "format": "int64",
+            "type": "integer"
+          },
+          "iid": {
+            "example": 14,
+            "type": "integer"
+          },
+          "imported": {
+            "type": "boolean"
+          },
+          "imported_from": {
+            "example": "bitbucket",
+            "type": "string"
+          },
+          "labels": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "merge_after": {
+            "example": "2022-01-31T15:10:45.080Z",
+            "format": "date-time",
+            "type": "string"
+          },
+          "merge_commit_sha": {
+            "example": "1234abcd",
+            "type": "string"
+          },
+          "merge_status": {
+            "example": "unchecked",
+            "type": "string"
+          },
+          "merge_user": {
+            "$ref": "#/components/schemas/APIEntitiesUserBasic"
+          },
+          "merge_when_pipeline_succeeds": {
+            "type": "boolean"
+          },
+          "merged_at": {
+            "example": "2022-01-31T15:10:45.080Z",
+            "format": "date-time",
+            "type": "string"
+          },
+          "merged_by": {
+            "$ref": "#/components/schemas/APIEntitiesUserBasic"
+          },
+          "milestone": {
+            "$ref": "#/components/schemas/APIEntitiesMilestone"
+          },
+          "prepared_at": {
+            "example": "2022-01-31T15:10:45.080Z",
+            "format": "date-time",
+            "type": "string"
+          },
+          "project_id": {
+            "example": 4,
+            "format": "int64",
+            "type": "integer"
+          },
+          "reference": {
+            "example": "!1",
+            "type": "string"
+          },
+          "references": {
+            "$ref": "#/components/schemas/APIEntitiesIssuableReferences"
+          },
+          "reviewers": {
+            "$ref": "#/components/schemas/APIEntitiesUserBasic"
+          },
+          "sha": {
+            "example": "1234abcd",
+            "type": "string"
+          },
+          "should_remove_source_branch": {
+            "type": "boolean"
+          },
+          "source_branch": {
+            "type": "string"
+          },
+          "source_project_id": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "squash": {
+            "type": "boolean"
+          },
+          "squash_commit_sha": {
+            "example": "1234abcd",
+            "type": "string"
+          },
+          "squash_on_merge": {
+            "type": "boolean"
+          },
+          "state": {
+            "example": "closed",
+            "type": "string"
+          },
+          "target_branch": {
+            "type": "string"
+          },
+          "target_project_id": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "task_completion_status": {
+            "$ref": "#/components/schemas/APIEntitiesTaskCompletionStatus"
+          },
+          "time_stats": {
+            "$ref": "#/components/schemas/APIEntitiesIssuableTimeStats"
+          },
+          "title": {
+            "example": "Impedit et ut et dolores vero provident ullam est",
+            "type": "string"
+          },
+          "title_html": {
+            "type": "string"
+          },
+          "updated_at": {
+            "example": "2022-11-14T17:22:01.470Z",
+            "format": "date-time",
+            "type": "string"
+          },
+          "upvotes": {
+            "type": "integer"
+          },
+          "user_notes_count": {
+            "type": "integer"
+          },
+          "web_url": {
+            "example": "https://gitlab.example.com/my-group/my-project/-/merge_requests/1",
+            "type": "string"
+          },
+          "work_in_progress": {
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "APIEntitiesMilestone": {
+        "properties": {
+          "created_at": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "due_date": {
+            "type": "string"
+          },
+          "expired": {
+            "type": "boolean"
+          },
+          "group_id": {
+            "type": "string"
+          },
+          "id": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "iid": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "project_id": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "start_date": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "string"
+          },
+          "web_url": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "APIEntitiesNamespaceBasic": {
+        "properties": {
+          "avatar_url": {
+            "example": "https://example.com/avatar/12345",
+            "type": "string"
+          },
+          "full_path": {
+            "example": "group/my_project",
+            "type": "string"
+          },
+          "id": {
+            "example": 2,
+            "format": "int64",
+            "type": "integer"
+          },
+          "kind": {
+            "example": "project",
+            "type": "string"
+          },
+          "name": {
+            "example": "project",
+            "type": "string"
+          },
+          "parent_id": {
+            "example": 1,
+            "format": "int64",
+            "type": "integer"
+          },
+          "path": {
+            "example": "my_project",
+            "type": "string"
+          },
+          "web_url": {
+            "example": "https://example.com/group/my_project",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "APIEntitiesProjectAccess": {
+        "properties": {
+          "access_level": {
+            "type": "string"
+          },
+          "notification_level": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "APIEntitiesProjectStatistics": {
+        "properties": {
+          "commit_count": {
+            "example": 37,
+            "type": "integer"
+          },
+          "container_registry_size": {
+            "example": 0,
+            "type": "integer"
+          },
+          "job_artifacts_size": {
+            "example": 0,
+            "type": "integer"
+          },
+          "lfs_objects_size": {
+            "example": 0,
+            "type": "integer"
+          },
+          "packages_size": {
+            "example": 0,
+            "type": "integer"
+          },
+          "pipeline_artifacts_size": {
+            "example": 0,
+            "type": "integer"
+          },
+          "repository_size": {
+            "example": 1038090,
+            "type": "integer"
+          },
+          "snippets_size": {
+            "example": 0,
+            "type": "integer"
+          },
+          "storage_size": {
+            "example": 1038090,
+            "type": "integer"
+          },
+          "uploads_size": {
+            "example": 0,
+            "type": "integer"
+          },
+          "wiki_size": {
+            "example": 0,
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "APIEntitiesProjectsWithAccessAndCatalogSetting": {
+        "properties": {
+          "_links": {
+            "properties": {
+              "cluster_agents": {
+                "example": "https://gitlab.example.com/api/v4/projects/4/cluster_agents",
+                "type": "string"
+              },
+              "events": {
+                "example": "https://gitlab.example.com/api/v4/projects/4/events",
+                "type": "string"
+              },
+              "issues": {
+                "example": "https://gitlab.example.com/api/v4/projects/4/issues",
+                "type": "string"
+              },
+              "labels": {
+                "example": "https://gitlab.example.com/api/v4/projects/4/labels",
+                "type": "string"
+              },
+              "members": {
+                "example": "https://gitlab.example.com/api/v4/projects/4/members",
+                "type": "string"
+              },
+              "merge_requests": {
+                "example": "https://gitlab.example.com/api/v4/projects/4/merge_requests",
+                "type": "string"
+              },
+              "repo_branches": {
+                "example": "https://gitlab.example.com/api/v4/projects/4/repository/branches",
+                "type": "string"
+              },
+              "self": {
+                "example": "https://gitlab.example.com/api/v4/projects/4",
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "allow_merge_on_skipped_pipeline": {
+            "type": "boolean"
+          },
+          "allow_pipeline_trigger_approve_deployment": {
+            "type": "boolean"
+          },
+          "analytics_access_level": {
+            "example": "enabled",
+            "type": "string"
+          },
+          "approvals_before_merge": {
+            "type": "string"
+          },
+          "archived": {
+            "type": "boolean"
+          },
+          "auto_cancel_pending_pipelines": {
+            "example": "enabled",
+            "type": "string"
+          },
+          "auto_devops_deploy_strategy": {
+            "example": "continuous",
+            "type": "string"
+          },
+          "auto_devops_enabled": {
+            "type": "boolean"
+          },
+          "auto_duo_code_review_enabled": {
+            "type": "string"
+          },
+          "autoclose_referenced_issues": {
+            "type": "boolean"
+          },
+          "automatic_rebase_enabled": {
+            "type": "boolean"
+          },
+          "avatar_url": {
+            "example": "http://example.com/uploads/project/avatar/3/uploads/avatar.png",
+            "type": "string"
+          },
+          "build_git_strategy": {
+            "example": "fetch",
+            "type": "string"
+          },
+          "build_timeout": {
+            "example": 3600,
+            "type": "integer"
+          },
+          "builds_access_level": {
+            "example": "enabled",
+            "type": "string"
+          },
+          "can_create_merge_request_in": {
+            "type": "boolean"
+          },
+          "ci_allow_fork_pipelines_to_run_in_parent_project": {
+            "type": "boolean"
+          },
+          "ci_config_path": {
+            "example": "",
+            "type": "string"
+          },
+          "ci_default_git_depth": {
+            "example": 20,
+            "type": "integer"
+          },
+          "ci_delete_pipelines_in_seconds": {
+            "example": 86400,
+            "type": "integer"
+          },
+          "ci_display_pipeline_variables": {
+            "type": "boolean"
+          },
+          "ci_forward_deployment_enabled": {
+            "type": "boolean"
+          },
+          "ci_forward_deployment_rollback_allowed": {
+            "type": "boolean"
+          },
+          "ci_id_token_sub_claim_components": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "ci_job_token_scope_enabled": {
+            "type": "boolean"
+          },
+          "ci_pipeline_variables_minimum_override_role": {
+            "type": "string"
+          },
+          "ci_push_repository_for_job_token_allowed": {
+            "type": "boolean"
+          },
+          "ci_restrict_pipeline_cancellation_role": {
+            "type": "string"
+          },
+          "ci_separated_caches": {
+            "type": "boolean"
+          },
+          "ci_skip_branch_pipelines_for_mrs": {
+            "type": "boolean"
+          },
+          "cicd_catalog_enabled": {
+            "type": "boolean"
+          },
+          "compliance_frameworks": {
+            "type": "string"
+          },
+          "container_expiration_policy": {
+            "$ref": "#/components/schemas/APIEntitiesContainerExpirationPolicy"
+          },
+          "container_registry_access_level": {
+            "example": "enabled",
+            "type": "string"
+          },
+          "container_registry_enabled": {
+            "type": "boolean"
+          },
+          "container_registry_image_prefix": {
+            "example": "registry.gitlab.example.com/gitlab/gitlab-client",
+            "type": "string"
+          },
+          "created_at": {
+            "example": "2020-05-07T04:27:17.016Z",
+            "format": "date-time",
+            "type": "string"
+          },
+          "creator_id": {
+            "example": 1,
+            "format": "int64",
+            "type": "integer"
+          },
+          "custom_attributes": {
+            "$ref": "#/components/schemas/APIEntitiesCustomAttribute"
+          },
+          "default_branch": {
+            "example": "main",
+            "type": "string"
+          },
+          "description": {
+            "example": "desc",
+            "type": "string"
+          },
+          "description_html": {
+            "type": "string"
+          },
+          "duo_code_review_decisions_enabled": {
+            "type": "string"
+          },
+          "duo_dependency_bump_breaking_changes_enabled": {
+            "type": "string"
+          },
+          "duo_foundational_flows_enabled": {
+            "type": "string"
+          },
+          "duo_remote_flows_enabled": {
+            "type": "string"
+          },
+          "duo_sast_fp_detection_enabled": {
+            "type": "string"
+          },
+          "duo_sast_vr_workflow_enabled": {
+            "type": "string"
+          },
+          "duo_secret_detection_fp_enabled": {
+            "type": "string"
+          },
+          "emails_disabled": {
+            "type": "boolean"
+          },
+          "emails_enabled": {
+            "type": "boolean"
+          },
+          "empty_repo": {
+            "type": "boolean"
+          },
+          "enforce_auth_checks_on_uploads": {
+            "type": "boolean"
+          },
+          "environments_access_level": {
+            "example": "enabled",
+            "type": "string"
+          },
+          "external_authorization_classification_label": {
+            "type": "string"
+          },
+          "feature_flags_access_level": {
+            "example": "enabled",
+            "type": "string"
+          },
+          "forked_from_project": {
+            "$ref": "#/components/schemas/APIEntitiesBasicProjectDetails"
+          },
+          "forking_access_level": {
+            "example": "enabled",
+            "type": "string"
+          },
+          "forks_count": {
+            "example": 1,
+            "type": "integer"
+          },
+          "group_runners_enabled": {
+            "type": "boolean"
+          },
+          "http_url_to_repo": {
+            "example": "https://gitlab.example.com/gitlab/gitlab.git",
+            "type": "string"
+          },
+          "id": {
+            "example": 1,
+            "format": "int64",
+            "type": "integer"
+          },
+          "import_error": {
+            "example": "Import error",
+            "type": "string"
+          },
+          "import_status": {
+            "example": "none",
+            "type": "string"
+          },
+          "import_type": {
+            "example": "git",
+            "type": "string"
+          },
+          "import_url": {
+            "example": "https://gitlab.com/gitlab/gitlab.git",
+            "type": "string"
+          },
+          "infrastructure_access_level": {
+            "example": "enabled",
+            "type": "string"
+          },
+          "issue_branch_template": {
+            "example": "%(title)",
+            "type": "string"
+          },
+          "issues_access_level": {
+            "example": "enabled",
+            "type": "string"
+          },
+          "issues_enabled": {
+            "type": "boolean"
+          },
+          "issues_template": {
+            "type": "string"
+          },
+          "jobs_enabled": {
+            "type": "boolean"
+          },
+          "keep_latest_artifact": {
+            "type": "boolean"
+          },
+          "last_activity_at": {
+            "example": "2013-09-30T13:46:02Z",
+            "format": "date-time",
+            "type": "string"
+          },
+          "lfs_enabled": {
+            "type": "boolean"
+          },
+          "license": {
+            "$ref": "#/components/schemas/APIEntitiesLicenseBasic"
+          },
+          "license_url": {
+            "example": "https://gitlab.example.com/gitlab/gitlab/blob/master/LICENCE",
+            "type": "string"
+          },
+          "marked_for_deletion_at": {
+            "example": "2020-05-07T04:27:17.016Z",
+            "format": "date-time",
+            "type": "string"
+          },
+          "marked_for_deletion_on": {
+            "example": "2020-05-07T04:27:17.016Z",
+            "format": "date-time",
+            "type": "string"
+          },
+          "max_artifacts_size": {
+            "type": "integer"
+          },
+          "max_pipelines_per_merge_train": {
+            "type": "string"
+          },
+          "merge_commit_template": {
+            "example": "%(title)",
+            "type": "string"
+          },
+          "merge_method": {
+            "example": "merge",
+            "type": "string"
+          },
+          "merge_pipelines_enabled": {
+            "type": "string"
+          },
+          "merge_request_title_regex": {
+            "example": "/Title of merge request/",
+            "type": "string"
+          },
+          "merge_request_title_regex_description": {
+            "example": "This requires the title to include a Jira label",
+            "type": "string"
+          },
+          "merge_requests_access_level": {
+            "example": "enabled",
+            "type": "string"
+          },
+          "merge_requests_enabled": {
+            "type": "boolean"
+          },
+          "merge_requests_template": {
+            "type": "string"
+          },
+          "merge_train_enforcement": {
+            "type": "string"
+          },
+          "merge_trains_enabled": {
+            "type": "string"
+          },
+          "merge_trains_skip_train_allowed": {
+            "type": "string"
+          },
+          "mirror": {
+            "type": "string"
+          },
+          "mirror_overwrites_diverged_branches": {
+            "type": "string"
+          },
+          "mirror_trigger_builds": {
+            "type": "string"
+          },
+          "mirror_user_id": {
+            "type": "string"
+          },
+          "model_experiments_access_level": {
+            "example": "enabled",
+            "type": "string"
+          },
+          "model_registry_access_level": {
+            "example": "enabled",
+            "type": "string"
+          },
+          "monitor_access_level": {
+            "example": "enabled",
+            "type": "string"
+          },
+          "mr_default_target_self": {
+            "type": "boolean"
+          },
+          "mr_default_title_template": {
+            "example": "%(source_branch)",
+            "type": "string"
+          },
+          "name": {
+            "example": "project1",
+            "type": "string"
+          },
+          "name_with_namespace": {
+            "example": "John Doe / project1",
+            "type": "string"
+          },
+          "namespace": {
+            "$ref": "#/components/schemas/APIEntitiesNamespaceBasic"
+          },
+          "only_allow_merge_if_all_discussions_are_resolved": {
+            "type": "boolean"
+          },
+          "only_allow_merge_if_all_status_checks_passed": {
+            "type": "string"
+          },
+          "only_allow_merge_if_pipeline_succeeds": {
+            "type": "boolean"
+          },
+          "only_mirror_protected_branches": {
+            "type": "string"
+          },
+          "open_issues_count": {
+            "example": 1,
+            "type": "integer"
+          },
+          "owner": {
+            "$ref": "#/components/schemas/APIEntitiesUserBasic"
+          },
+          "package_registry_access_level": {
+            "example": "enabled",
+            "type": "string"
+          },
+          "packages_enabled": {
+            "type": "boolean"
+          },
+          "pages_access_level": {
+            "example": "enabled",
+            "type": "string"
+          },
+          "path": {
+            "example": "project1",
+            "type": "string"
+          },
+          "path_with_namespace": {
+            "example": "namespace1/project1",
+            "type": "string"
+          },
+          "permissions": {
+            "properties": {
+              "group_access": {
+                "$ref": "#/components/schemas/APIEntitiesGroupAccess"
+              },
+              "project_access": {
+                "$ref": "#/components/schemas/APIEntitiesProjectAccess"
+              }
+            },
+            "type": "object"
+          },
+          "pre_receive_secret_detection_enabled": {
+            "type": "boolean"
+          },
+          "prevent_merge_without_jira_issue": {
+            "type": "string"
+          },
+          "printing_merge_request_link_enabled": {
+            "type": "boolean"
+          },
+          "protect_merge_request_pipelines": {
+            "type": "boolean"
+          },
+          "public_jobs": {
+            "type": "boolean"
+          },
+          "readme_url": {
+            "example": "https://gitlab.example.com/gitlab/gitlab/blob/master/README.md",
+            "type": "string"
+          },
+          "releases_access_level": {
+            "example": "enabled",
+            "type": "string"
+          },
+          "remove_source_branch_after_merge": {
+            "type": "boolean"
+          },
+          "repository_access_level": {
+            "example": "enabled",
+            "type": "string"
+          },
+          "repository_object_format": {
+            "example": "sha1",
+            "type": "string"
+          },
+          "repository_storage": {
+            "example": "default",
+            "type": "string"
+          },
+          "request_access_enabled": {
+            "type": "boolean"
+          },
+          "requirements_access_level": {
+            "type": "string"
+          },
+          "requirements_enabled": {
+            "type": "string"
+          },
+          "resolve_outdated_diff_discussions": {
+            "type": "boolean"
+          },
+          "resource_group_default_process_mode": {
+            "example": "unordered",
+            "type": "string"
+          },
+          "restrict_user_defined_variables": {
+            "type": "boolean"
+          },
+          "reviewer_assignment_strategy": {
+            "example": "code_owners",
+            "type": "string"
+          },
+          "runner_token_expiration_interval": {
+            "example": 3600,
+            "type": "integer"
+          },
+          "runners_token": {
+            "example": "b8547b1dc37721d05889db52fa2f02",
+            "type": "string"
+          },
+          "secret_push_protection_enabled": {
+            "type": "boolean"
+          },
+          "security_and_compliance_access_level": {
+            "example": "enabled",
+            "type": "string"
+          },
+          "security_and_compliance_enabled": {
+            "type": "string"
+          },
+          "security_policy_pipeline_must_succeed": {
+            "description": "Require all security policy pipelines to succeed before merge requests can be merged.",
+            "type": "boolean"
+          },
+          "service_desk_address": {
+            "example": "fixture@example.invalid",
+            "type": "string"
+          },
+          "service_desk_enabled": {
+            "type": "boolean"
+          },
+          "shared_runners_enabled": {
+            "type": "boolean"
+          },
+          "shared_with_groups": {
+            "items": {
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "show_diff_preview_in_email": {
+            "type": "boolean"
+          },
+          "snippets_access_level": {
+            "example": "enabled",
+            "type": "string"
+          },
+          "snippets_enabled": {
+            "type": "boolean"
+          },
+          "spp_repository_pipeline_access": {
+            "description": "The spp_repository_pipeline_access setting is only visible if the security_orchestration_policies feature is available.",
+            "type": "boolean"
+          },
+          "squash_commit_template": {
+            "example": "%(source_branch)",
+            "type": "string"
+          },
+          "squash_option": {
+            "example": "default_off",
+            "type": "string"
+          },
+          "ssh_url_to_repo": {
+            "example": "git@example.invalid:gitlab/gitlab.git",
+            "type": "string"
+          },
+          "star_count": {
+            "example": 1,
+            "type": "integer"
+          },
+          "statistics": {
+            "$ref": "#/components/schemas/APIEntitiesProjectStatistics"
+          },
+          "suggestion_commit_message": {
+            "example": "Suggestion message",
+            "type": "string"
+          },
+          "tag_list": {
+            "example": [
+              "tag"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "topics": {
+            "example": [
+              "topic"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "updated_at": {
+            "example": "2020-05-07T04:27:17.016Z",
+            "format": "date-time",
+            "type": "string"
+          },
+          "visibility": {
+            "example": "public",
+            "type": "string"
+          },
+          "warn_about_potentially_unwanted_characters": {
+            "type": "boolean"
+          },
+          "web_based_commit_signing_enabled": {
+            "type": "string"
+          },
+          "web_url": {
+            "example": "https://gitlab.example.com/gitlab/gitlab",
+            "type": "string"
+          },
+          "wiki_access_level": {
+            "example": "enabled",
+            "type": "string"
+          },
+          "wiki_enabled": {
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "APIEntitiesTaskCompletionStatus": {
+        "properties": {
+          "completed_count": {
+            "example": 3,
+            "type": "integer"
+          },
+          "count": {
+            "example": 5,
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "APIEntitiesUserBasic": {
+        "properties": {
+          "avatar_path": {
+            "example": "/user/avatar/28/The-Big-Lebowski-400-400.png",
+            "type": "string"
+          },
+          "avatar_url": {
+            "example": "https://gravatar.com/avatar/1",
+            "type": "string"
+          },
+          "custom_attributes": {
+            "items": {
+              "$ref": "#/components/schemas/APIEntitiesCustomAttribute"
+            },
+            "type": "array"
+          },
+          "id": {
+            "example": 1,
+            "format": "int64",
+            "type": "integer"
+          },
+          "locked": {
+            "type": "boolean"
+          },
+          "name": {
+            "example": "Administrator",
+            "type": "string"
+          },
+          "public_email": {
+            "example": "fixture@example.invalid",
+            "type": "string"
+          },
+          "state": {
+            "example": "active",
+            "type": "string"
+          },
+          "username": {
+            "example": "admin",
+            "type": "string"
+          },
+          "web_url": {
+            "example": "https://gitlab.example.com/root",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "DetailedStatusEntity": {
+        "properties": {
+          "action": {
+            "properties": {
+              "button_title": {
+                "example": "Cancel this job",
+                "type": "string"
+              },
+              "confirmation_message": {
+                "example": "Are you sure?",
+                "type": "string"
+              },
+              "icon": {
+                "example": "cancel",
+                "type": "string"
+              },
+              "method": {
+                "example": "post",
+                "type": "string"
+              },
+              "path": {
+                "example": "/namespace1/project1/-/jobs/2/cancel",
+                "type": "string"
+              },
+              "title": {
+                "example": "Cancel",
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "details_path": {
+            "example": "/test-group/test-project/-/pipelines/287",
+            "type": "string"
+          },
+          "favicon": {
+            "example": "/assets/ci_favicons/favicon_status_success.png",
+            "type": "string"
+          },
+          "group": {
+            "example": "success",
+            "type": "string"
+          },
+          "has_details": {
+            "example": true,
+            "type": "boolean"
+          },
+          "icon": {
+            "example": "status_success",
+            "type": "string"
+          },
+          "illustration": {
+            "example": {
+              "content": "This job depends on upstream jobs that need to succeed in order for this job to be triggered",
+              "image": "illustrations/empty-state/empty-job-not-triggered-md.svg",
+              "size": "",
+              "title": "This job has not been triggered yet"
+            },
+            "type": "object"
+          },
+          "label": {
+            "example": "passed",
+            "type": "string"
+          },
+          "text": {
+            "example": "passed",
+            "type": "string"
+          },
+          "tooltip": {
+            "example": "passed",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "description": "GitLab REST API used to interact with a GitLab installation.",
+    "license": {
+      "name": "CC BY-SA 4.0",
+      "url": "https://gitlab.com/gitlab-org/gitlab/-/blob/master/LICENSE",
+      "x-gitlab-description": "The license applies to the OpenAPI specification document itself. For terms governing use of the GitLab API, see the termsOfService field."
+    },
+    "termsOfService": "https://handbook.gitlab.com/handbook/legal/api-terms/",
+    "title": "GitLab REST API",
+    "version": "19.5"
+  },
+  "openapi": "3.0.0",
+  "responses": {
+    "diffs": {
+      "content": {
+        "application/json": {
+          "schema": {
+            "items": {
+              "$ref": "#/components/schemas/APIEntitiesDiff"
+            },
+            "type": "array"
+          }
+        }
+      },
+      "description": "OK"
+    },
+    "project": {
+      "content": {
+        "application/json": {
+          "schema": {
+            "$ref": "#/components/schemas/APIEntitiesProjectsWithAccessAndCatalogSetting"
+          }
+        }
+      },
+      "description": "OK"
+    },
+    "request": {
+      "content": {
+        "application/json": {
+          "schema": {
+            "$ref": "#/components/schemas/APIEntitiesMergeRequest"
+          }
+        }
+      },
+      "description": "OK"
+    },
+    "requests": {
+      "content": {
+        "application/json": {
+          "schema": {
+            "items": {
+              "$ref": "#/components/schemas/APIEntitiesMergeRequestBasic"
+            },
+            "type": "array"
+          }
+        }
+      },
+      "description": "OK"
+    },
+    "signature": {
+      "content": {
+        "application/json": {
+          "schema": {
+            "$ref": "#/components/schemas/APIEntitiesCommitSignature"
+          }
+        }
+      },
+      "description": "OK"
+    },
+    "statuses": {
+      "content": {
+        "application/json": {
+          "schema": {
+            "items": {
+              "$ref": "#/components/schemas/APIEntitiesCommitStatus"
+            },
+            "type": "array"
+          }
+        }
+      },
+      "description": "OK"
+    }
+  }
+}

@@ -200,3 +200,10 @@ The backend context manager owns client cleanup and redacts API error payloads.
 Shared orchestration owns NetworkX ordering, local Git, signing, validation and
 receipts. Adding a host requires a backend plus the same inventory and signed-Git
 contract tests; it does not add provider branches to CLI dispatch.
+
+## Provider contract validation
+
+[The provider test guide](provider-contracts.md) describes versioned vendor schemas,
+isolated HTTP SDK tests, explicit coverage gaps, CI provenance artifacts and the
+refresh command. Update these contracts when changing SDKs or supported servers;
+synthetic test success alone does not establish live SaaS compatibility.

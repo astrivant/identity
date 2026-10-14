@@ -59,3 +59,5 @@
 /SECURITY.md @emmeowzing
 /pkg/witful/knowledge/cli.py @emmeowzing
 /pkg/witful/knowledge/tests/ @emmeowzing
+/.github/workflows/stage-provider-contracts.yml @emmeowzing
+/docs/provider-contracts.md @emmeowzing

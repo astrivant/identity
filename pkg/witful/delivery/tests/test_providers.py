@@ -74,17 +74,18 @@ def sdk_responses(monkeypatch: MonkeyPatch) -> dict[str, object]:
     return fixtures
 
 
-def github_rows(fixtures: dict[str, object]) -> GitHub:
+def github_rows(fixtures: dict[str, object], host: str = "https://api.github.com") -> GitHub:
     """
     Configure a complete PR including a second page and exact-head checks.
 
     Args:
         fixtures (dict[str, object]): Synthetic transport table.
+        host (str): Explicit SDK endpoint; loopback for HTTP contract tests.
 
     Returns:
         GitHub: Actual SDK-backed provider with synthetic endpoints.
     """
-    path, host, sha = "/repos/example/project", "https://api.github.com", "a" * 40
+    path, sha = "/repos/example/project", "a" * 40
     fixtures[path] = {"id": 1, "url": host + path, "full_name": "example/project", "default_branch": "main"}
     pull = {
         "number": 5,
@@ -111,16 +112,17 @@ def github_rows(fixtures: dict[str, object]) -> GitHub:
     }
     fixtures[path + "/statuses/" + sha] = [{"id": 9, "state": "pending", "context": "build"}]
     fixtures[path + "/commits/" + sha + "/check-runs"] = {"total_count": 0, "check_runs": []}
-    return GitHub(Repository("github", "github.com", "example/project"), Github(retry=0))
+    return GitHub(Repository("github", "github.com", "example/project"), Github(base_url=host, retry=0, timeout=5))
 
 
-def gitlab_rows(fixtures: dict[str, object], changes: str = "1") -> GitLab:
+def gitlab_rows(fixtures: dict[str, object], changes: str = "1", host: str = "https://gitlab.com") -> GitLab:
     """
     Configure a nested-group MR with an unrelated merge-result pipeline.
 
     Args:
         fixtures (dict[str, object]): Synthetic transport table.
         changes (str): Reported changed-file count, possibly capped or pending.
+        host (str): Explicit SDK endpoint; loopback for HTTP contract tests.
 
     Returns:
         GitLab: Actual SDK-backed provider with synthetic endpoints.
@@ -153,7 +155,7 @@ def gitlab_rows(fixtures: dict[str, object], changes: str = "1") -> GitLab:
     ]
     fixtures[project + "/repository/commits/" + sha + "/statuses"] = [{"id": 1, "sha": sha, "status": "failed", "name": "build"}]
     fixtures[path + "/repository/commits/" + sha + "/signature"] = {"verification_status": "verified"}
-    return GitLab(Repository("gitlab", "gitlab.com", "group/subgroup/project", "mirror"), Gitlab("https://gitlab.com"))
+    return GitLab(Repository("gitlab", "gitlab.com", "group/subgroup/project", "mirror"), Gitlab(host, timeout=5))
 
 
 def test_sdk_backends_retain_distinct_evidence_and_order(sdk_responses: dict[str, object]) -> None:
