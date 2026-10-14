@@ -11,6 +11,7 @@ from typing import TYPE_CHECKING
 
 import pytest
 from witful.cli import build_parser, main
+from witful.delivery.cli import main as delivery_main
 from witful.storage.cli import main as lessons_main
 
 if TYPE_CHECKING:
@@ -96,3 +97,40 @@ assert not {'matplotlib', 'networkx', 'github', 'gitlab', 'witful.knowledge.cli'
 """
     result = subprocess.run([sys.executable, "-c", program], capture_output=True, text=True, check=False)
     assert result.returncode == 0, result.stderr
+
+
+@pytest.mark.parametrize("standalone", [False, True])
+def test_nested_domain_errors_name_the_selected_leaf(standalone: bool, tmp_path: Path, capsys: CaptureFixture[str]) -> None:
+    """
+    Preserve runtime validation while reporting the operation that owns the failure.
+
+    Args:
+        standalone (bool): Select standalone or root composition.
+        tmp_path (Path): Nonexistent receipt path that validation must not read.
+        capsys (CaptureFixture[str]): Capture the leaf-owned usage diagnostic.
+
+    Returns:
+        None: Both entrypoints reject the remote override before touching the receipt.
+    """
+    arguments = [
+        "--remote",
+        "origin",
+        "mr",
+        "publish",
+        "--receipt",
+        str(tmp_path / "receipt.json"),
+        "--reviewed-head",
+        "reviewed",
+        "--checks",
+        str(tmp_path / "checks.json"),
+    ]
+    with pytest.raises(SystemExit) as result:
+        if standalone:
+            delivery_main(arguments)
+        else:
+            main(["delivery", *arguments])
+    assert result.value.code == 2
+    error = capsys.readouterr().err
+    assert " pr publish" in error
+    assert "Publication uses the receipt destination" in error
+    assert not list(tmp_path.iterdir())

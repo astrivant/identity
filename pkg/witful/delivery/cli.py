@@ -8,6 +8,7 @@ import argparse
 import json
 from typing import TYPE_CHECKING
 
+from witful.commands.builder import dispatch
 from witful.commands.delivery import configure
 
 from . import prs, recovery
@@ -29,7 +30,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     """
     parser = argparse.ArgumentParser(description=__doc__)
     configure(parser)
-    return execute(parser.parse_args(argv), parser)
+    return dispatch(parser.parse_args(argv))
 
 
 def execute(args: argparse.Namespace, parser: argparse.ArgumentParser) -> int:

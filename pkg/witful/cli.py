@@ -5,10 +5,7 @@ Compose one argparse command hierarchy while loading runtime services only for t
 from __future__ import annotations
 
 import argparse
-from importlib import import_module
-from typing import TYPE_CHECKING, Protocol, runtime_checkable
-
-from attrs import frozen
+from typing import TYPE_CHECKING
 
 from witful.commands import (
     awareness,
@@ -27,80 +24,13 @@ from witful.commands import (
     sleeves,
     storage,
 )
+from witful.commands.builder import Command, dispatch
 from witful.commands.project import configure as project
 
 if TYPE_CHECKING:
-    from collections.abc import Callable, Sequence
+    from collections.abc import Sequence
 
 __all__ = ["build_parser", "main"]
-
-
-@runtime_checkable
-class Executable(Protocol):
-    """
-    Describe a lazily imported domain command module.
-    """
-
-    def execute(self, args: argparse.Namespace, parser: argparse.ArgumentParser) -> int:
-        """
-        Dispatch an already validated namespace without parsing again.
-
-        Args:
-            args (argparse.Namespace): Selected domain arguments.
-            parser (argparse.ArgumentParser): Owning parser for actionable errors.
-
-        Returns:
-            int: Operation status.
-        """
-        ...
-
-
-@frozen
-class Command:
-    """
-    Assemble a command from lightweight argument declarations and its runtime module.
-
-    Attributes:
-        name (str): Public subcommand name.
-        description (str): Root help description.
-        configure (Callable[[argparse.ArgumentParser], object]): Parser composition function.
-        module (str): Runtime module implementing the typed execute contract.
-    """
-
-    name: str
-    description: str
-    configure: Callable[[argparse.ArgumentParser], object]
-    module: str
-
-    def register(self, commands: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
-        """
-        Add this command and its selected handler to a parent group.
-
-        Args:
-            commands (argparse._SubParsersAction[argparse.ArgumentParser]): Parent-owned subparser collection.
-
-        Returns:
-            None: Parser and handler are registered; runtime code remains unloaded.
-        """
-        parser = commands.add_parser(self.name, help=self.description, description=self.description)
-        self.configure(parser)
-        parser.set_defaults(handler=self, command_parser=parser)
-
-    def invoke(self, args: argparse.Namespace, parser: argparse.ArgumentParser) -> int:
-        """
-        Load and execute only the selected command module.
-
-        Args:
-            args (argparse.Namespace): Namespace parsed once by the root.
-            parser (argparse.ArgumentParser): Selected parser for domain errors.
-
-        Returns:
-            int: Domain status without altering its error semantics.
-        """
-        module: object = import_module(self.module)
-        if not isinstance(module, Executable):
-            raise TypeError("Command module does not implement execute")
-        return module.execute(args, parser)
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -130,7 +60,7 @@ def build_parser() -> argparse.ArgumentParser:
         Command("sleeve", "Isolate concurrent work", sleeves.configure, "witful.sleeves.cli"),
         Command("completion", "Review completion coverage", completion.configure, "witful.completion.cli"),
         Command("context", "Resolve advisory working context", context.configure, "witful.context.cli"),
-        Command("delivery", "Review and prepare PRs and MRs", delivery.configure, "witful.delivery.cli"),
+        delivery.command(),
     ):
         command.register(commands)
     return parser
@@ -147,9 +77,4 @@ def main(argv: Sequence[str] | None = None) -> int:
         int: Selected domain status; argparse handles help and invalid syntax.
     """
     parser = build_parser()
-    args = parser.parse_args(argv)
-    handler: object = args.handler
-    selected_parser: object = args.command_parser
-    if not isinstance(handler, Command) or not isinstance(selected_parser, argparse.ArgumentParser):
-        raise TypeError("Command registration is incomplete")
-    return handler.invoke(args, selected_parser)
+    return dispatch(parser.parse_args(argv))
