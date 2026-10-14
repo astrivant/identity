@@ -33,13 +33,13 @@ services:
     remove: [/volumes, /environment, /ports, /container_name]
     set:
       environment:
-        POSTGRES_DB: witful
-        POSTGRES_USER: witful
+        POSTGRES_DB: {$values: /postgresql/database}
+        POSTGRES_USER: {$values: /postgresql/username}
         POSTGRES_PASSWORD: "${WITFUL_POSTGRES_PASSWORD:?Set the local database password}"
       volumes:
         - postgres-data:/var/lib/postgresql
       healthcheck:
-        test: [CMD, pg_isready, -U, witful, -d, witful]
+        test: [CMD, pg_isready, -U, {$values: /postgresql/username}, -d, {$values: /postgresql/database}]
         interval: 5s
         timeout: 3s
         retries: 12

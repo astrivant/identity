@@ -5,7 +5,7 @@ Use Poetry 2.5.1 and the committed lockfile:
 ```bash
 poetry install --extras postgres
 poetry run pre-commit install
-poetry run pytest -n 4 --cov --cov-report=term-missing --cov-report=xml:.cache/coverage/coverage.xml
+poetry run pytest -n 4 pkg/witful scripts/ci/tests --cov=witful --cov-branch --cov-report=term-missing
 poetry run pre-commit run --all-files
 ```
 
@@ -48,12 +48,8 @@ imports, so low-level callers can import failure types without circular dependen
 Existing storage, protection, and sleeve-model exception paths remain aliases to
 the same classes for compatibility; preserve their base types and catch behavior.
 
-The README badge reports line coverage of all `pkg/witful` modules, excluding tests.
-[pytest-cov](https://pytest-cov.readthedocs.io/en/latest/xdist.html) combines the four
-workers' measurements. CI retains `python-coverage` XML reports for 14 days on PRs,
-main, and tags. Successful current-main test runs update `gh-pages/badges/coverage.svg`;
-PRs and tags never overwrite the badge. No external coverage account is required.
-The badge appears after the first successful main run with this workflow.
+See [measured coverage](#measured-coverage) for the combined line/branch report,
+provenance, and verified API publication contract.
 
 Independent CI checks start in parallel: Python tests, lint, PII, Trivy, distributions,
 and orchestration. Tag publication consumes the verified distributions after
@@ -63,7 +59,7 @@ Non-Python pins live beside their consumers: action commit SHAs and documented
 versions in `.github/workflows/ci.yml`; Python/PostgreSQL image digests in the
 Dockerfile and chart; Composer commit in CI and pre-commit; Bitnami README/schema
 generator 2.7.2 (with glob 13.0.6 using its compatible synchronous API) in `scripts/chart/package-lock.json`; Poetry 2.5.1 in CI/Docker.
-Coverage publication pins peaceiris/actions-gh-pages 4.1.0 (Node 24) by commit.
+Coverage publication uses the pinned GitHub SDK action in the workflow.
 The release signing job pins Cosign. Update consumer and lock/schema outputs
 together. Check JavaScript actions' own Node runtime when upgrading.
 
@@ -104,6 +100,52 @@ journal prefixes, task compare-and-set updates, and unknown/gap semantics. Inspe
 empty, baseline, zero-change, changing, and overlapping-window renders before
 publishing renderer changes. See [the instance contract](docs/instances.md).
 
+## Documentation and merge checks
+
+Install Node.js 26.10.0, then run
+`npm ci --prefix scripts/documentation --ignore-scripts --no-fund` before the
+hooks. The pinned CODEOWNERS hook bootstraps its own Go environment on first use.
+Run `npm --prefix scripts/documentation test` for the syntax checker regressions
+and `pytest scripts/ci/tests` for missing, skipped, failed, and cancelled CI results.
+
+The math check accepts a strict KaTeX subset, hosted Markdown dollar delimiters,
+and fenced Mermaid diagrams. It checks syntax, so preview changed diagrams and
+equations in their intended renderer as well. Escape literal dollars in prose.
+CODEOWNERS checks are offline; owner permissions remain a separate host check.
+
+`Required CI` joins all required validation producers without serializing them.
+The proposed main policy binds that check to GitHub Actions, retains one independent
+approval and administrator bypass, and requires resolved conversations. A maintainer
+must reconcile the live policy after this PR is reviewed; changing YAML alone does
+not enforce it. An agent still needs approval for a particular administrator merge.
+
+See the [engineering standards review](docs/engineering-review.md) for checked
+contracts, evidence limits, and follow-up work. No tag or release is part of that review.
+
+## Measured coverage
+
+The Python test job combines pytest-xdist workers through pytest-cov and measures
+line and branch coverage for `witful`, excluding only test modules. It retains
+JSON, XML, raw coverage data, and a badge/provenance pair in the `python-coverage`
+artifact for 14 days. The README badge shows the combined line/branch percentage;
+it is evidence of exercised code, not correctness or a replacement for assertions.
+
+Every successful public-main test and learning run updates `badges/coverage.svg` and
+`badges/coverage.json` on `gh-pages` through GitHub's signed commit API. The latter
+records the measured source commit, scope, counts, and full report digest. The
+same atomic commit publishes all four synthetic learning SVG/PNG figures under
+`badges/continual-learning/`, preserving their exact binary bytes. The publisher
+checks the latest main source, uses an expected branch head to reject concurrent
+writers, verifies GitHub's commit signature status, and reads back the
+exact published bytes. No external coverage account, secret, or main-branch bypass
+is required. PRs retain artifacts without publishing; the badge becomes available
+after the first successful main run following merge. Failed tests keep the last
+successful main measurement, whose source remains visible in the linked metadata.
+
+Run `poetry run pytest -n 4 --cov=witful --cov-branch --cov-report=term-missing`
+locally. `npm --prefix scripts/documentation test` includes the publisher's
+bootstrap, stale-source, conflict, signature, readback, and malformed-input cases.
+
 ## Continual-learning examples
 
 The independent `learning` job renders only the packaged synthetic fixture using
@@ -113,3 +155,16 @@ Review renderer changes locally with `witful reflection example --output-dir
 .cache/continual-learning`. Preserve the question subtitles and explicit synthetic
 labels. Reflection tests use temporary Git histories and cover cadence boundaries,
 retry identity, provenance, unknown outcomes, and deterministic output.
+
+## Command and provider composition
+
+Declare CLI arguments in `pkg/witful/commands/`, register the domain with the
+immutable root builder, and expose `execute(args, parser)` in its runtime module.
+Reuse the declaration from standalone entrypoints; parse once at each entrypoint,
+without command-name tests against `sys.argv`. Keep parser imports lightweight.
+Exercise public help, input errors, legacy syntax and selected runtime imports.
+
+Delivery providers implement one interface using the maintained Python SDKs.
+Keep host-specific metadata in the backend and shared Git lifecycle in orchestration.
+Test the real SDK parsers with synthetic HTTP responses, as well as signed local
+Git histories; fixture passes do not establish live host publication.

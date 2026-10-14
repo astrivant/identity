@@ -8,12 +8,13 @@ import argparse
 import fcntl
 import json
 from datetime import UTC, datetime
-from pathlib import Path
+from typing import TYPE_CHECKING
 
 from attrs import evolve
 from jsonschema import ValidationError
 
 from witful.collection.protection import check_collection
+from witful.commands.knowledge import configure
 from witful.files import replace_file
 from witful.knowledge.applications import append_application, application_id, effective_applications, read_applications
 from witful.knowledge.compiler import compile_identity, index
@@ -23,6 +24,10 @@ from witful.knowledge.models import Application, Catalog
 from witful.knowledge.plotting import write_plots
 from witful.knowledge.rendering import graph_data
 from witful.lessons import read_journal
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
+    from pathlib import Path
 
 __all__ = ["main"]
 
@@ -42,34 +47,32 @@ def _write_json(path: Path, value: object) -> None:
     replace_file(path, content, expected=path.read_bytes() if path.exists() else None)
 
 
-def main() -> int:
+def main(argv: Sequence[str] | None = None) -> int:
     """
     Run explicit, bounded knowledge operations without contacting an external service.
 
+    Args:
+        argv (Sequence[str] | None): Explicit arguments or the process command line.
+
     Returns:
-        int: Zero for a successful operation, two for invalid sources or filesystem errors.
+        int: Zero on success, two for invalid sources or filesystem errors.
     """
-    parser = argparse.ArgumentParser(
-        description=__doc__,
-        epilog=(
-            "Additional commands: init, lessons, life, repertoire, checkpoints, reflection, awareness, collection, "
-            "privacy scan, registry; each accepts --help."
-        ),
-    )
-    parser.add_argument("--repo", type=Path, default=Path.cwd(), help="Existing knowledge checkout; defaults to the current directory")
-    commands = parser.add_subparsers(dest="command", required=True)
-    commands.add_parser("check", help="Validate journal, source schemas, hierarchy, and every application")
-    build = commands.add_parser("build", help="Regenerate schemas, graph export, and README plots")
-    build.add_argument("--output-dir", type=Path, default=Path("docs/assets"))
-    show = commands.add_parser("show", help="List concept IDs or inspect one concept and its recorded usage")
-    show.add_argument("identifier", nargs="?")
-    record = commands.add_parser("record", help="Append a sourced application or a complete revised observation")
-    record.add_argument("--task", required=True)
-    record.add_argument("--discipline", required=True)
-    record.add_argument("--concept", action="append", required=True)
-    record.add_argument("--outcome", choices=["unassessed", "verified", "unsuccessful"], default="unassessed")
-    record.add_argument("--evidence", required=True)
-    args = parser.parse_args()
+    parser = argparse.ArgumentParser(description=__doc__)
+    configure(parser)
+    return execute(parser.parse_args(argv), parser)
+
+
+def execute(args: argparse.Namespace, parser: argparse.ArgumentParser) -> int:
+    """
+    Execute an already parsed domain command.
+
+    Args:
+        args (argparse.Namespace): Validated arguments from the shared hierarchy or standalone parser.
+        parser (argparse.ArgumentParser): Owning parser for consistent error reporting.
+
+    Returns:
+        int: Selected operation status.
+    """
     root = args.repo.resolve()
 
     try:

@@ -6,6 +6,8 @@ ENV PATH="/opt/witful/bin:$PATH"
 ARG TINI_VERSION=0.19.0-3+b8
 RUN apt-get update && apt-get install --no-install-recommends -y tini="${TINI_VERSION}" \
     && rm -rf /var/lib/apt/lists/*
+# Both runnable targets share the same non-root identity and owned working directory.
+RUN groupadd --gid 10001 witful && useradd --uid 10001 --gid witful --create-home witful
 STOPSIGNAL SIGTERM
 
 FROM base AS dependencies
@@ -19,12 +21,14 @@ COPY pkg ./pkg
 RUN /opt/poetry/bin/poetry build --format wheel     && pip install --no-deps dist/*.whl
 
 FROM dependencies AS development
-RUN /opt/poetry/bin/poetry install --extras postgres --no-root --no-interaction
+RUN /opt/poetry/bin/poetry install --extras postgres --no-root --no-interaction \
+    && chown -R witful:witful /build /opt/witful
+USER 10001:10001
+WORKDIR /build
 ENTRYPOINT ["/usr/bin/tini", "-g", "--", "witful"]
 CMD ["--help"]
 
 FROM base AS production
-RUN groupadd --gid 10001 witful && useradd --uid 10001 --gid witful --create-home witful
 COPY --from=dependencies /opt/witful /opt/witful
 USER 10001:10001
 WORKDIR /home/witful

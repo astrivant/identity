@@ -8,13 +8,13 @@ import argparse
 import fcntl
 import json
 from datetime import UTC, datetime
-from pathlib import Path
 from typing import TYPE_CHECKING
 
 from attrs import evolve
 from jsonschema import ValidationError
 
 from witful.collection.protection import check_collection
+from witful.commands.repertoire import configure
 from witful.files import replace_file
 from witful.knowledge.compiler import compile_identity, index
 from witful.knowledge.contracts import as_data, schema, structure
@@ -39,13 +39,21 @@ def main(argv: Sequence[str] | None = None) -> int:
         int: Zero on success; parser exit two for invalid sources.
     """
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--repo", type=Path, default=Path.cwd())
-    commands = parser.add_subparsers(dest="command", required=True)
-    commands.add_parser("check")
-    commands.add_parser("build")
-    record = commands.add_parser("record")
-    record.add_argument("--input", type=Path, required=True)
-    args = parser.parse_args(argv)
+    configure(parser)
+    return execute(parser.parse_args(argv), parser)
+
+
+def execute(args: argparse.Namespace, parser: argparse.ArgumentParser) -> int:
+    """
+    Execute an already parsed domain command.
+
+    Args:
+        args (argparse.Namespace): Validated arguments from the shared hierarchy or standalone parser.
+        parser (argparse.ArgumentParser): Owning parser for consistent error reporting.
+
+    Returns:
+        int: Selected operation status.
+    """
     root = args.repo.resolve()
 
     try:

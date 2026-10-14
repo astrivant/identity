@@ -128,6 +128,21 @@ evidence supports it, and preserve corrections. Passing checks are bounded
 evidence, not a guarantee of bug-free code. Keep personal findings in their owning
 collection; public examples must be synthetic.
 
+## Durable chat commands
+
+Follow the [portable agent command contract](https://github.com/astrivant/identity/blob/main/docs/agent-commands.md)
+for PR rebases and ordered review lists, publication, standards reviews and teaching
+capture. These are agent conventions, not new CLI commands. Persist accepted
+commands and nested aliases in the collection README, agent routing and sourced
+Skill/Lesson. Contribute generic behavior upstream by default through review; keep
+personal bindings and private records in the owning collection. Explicit commands
+define scope but do not bypass checks, exact-head leases or review protection.
+
+Use the tested [delivery helpers](https://github.com/astrivant/identity/blob/main/docs/delivery.md)
+for PR ordering, isolated rebases and small-first recovery pushes when present in
+the installed release. Link reusable scripts from their Skill and sourced learning
+records; preserve publication authority and inspect receipts before claiming success.
+
 ## Continual learning
 
 At session boundaries, use `witful reflection --repo COLLECTION plan --history-repo
@@ -163,3 +178,16 @@ exports with locked tools. Validate the source/output receipt and actual publish
 result. Preserve collection separation and required reviews. A successful job or an
 unchanged image alone does not establish freshness. See
 [view freshness](https://github.com/astrivant/identity/blob/main/docs/view-freshness.md) in the upstream repository.
+
+## Compose repository delivery operations
+
+Use the shared `witful delivery` command for GitHub PRs and GitLab MRs. Select
+existing remotes explicitly; repeated selectors combine read-only review inventories.
+Prepare one signed rebase at a time and publish only its reviewed receipt-bound
+candidate. The maintained Python SDK backends own host metadata and verification;
+shared orchestration owns Git, checks and recovery. Refer to the
+[delivery contract](https://github.com/astrivant/identity/blob/main/docs/delivery.md).
+
+For CLI maintenance, compose lightweight argparse builders and typed handlers.
+Reuse those builders for standalone entrypoints and parse once; preserve existing
+syntax, help and input validation through the public command tests.

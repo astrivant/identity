@@ -9,13 +9,13 @@ import json
 import subprocess
 import sys
 import time
-from pathlib import Path
 from typing import TYPE_CHECKING
 
 from attrs import evolve
 from jsonschema import ValidationError
 
 from witful.collection.protection import check_collection
+from witful.commands.context import configure
 from witful.context.core import check, digest, resolve
 from witful.context.models import Descriptor, Mapping, Receipt, Review
 from witful.context.storage import capture, destination, read
@@ -37,28 +37,21 @@ def main(argv: Sequence[str] | None = None) -> int:
         int: Zero for snapshot/schema or complete coverage, one for gaps, two for invalid inputs or unavailable state.
     """
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--repo", required=True, type=Path)
-    commands = parser.add_subparsers(dest="command", required=True)
-    commands.add_parser("schema")
-    commands.add_parser("snapshot")
-    for name in ("plan", "resolve", "check"):
-        command = commands.add_parser(name)
-        command.add_argument("--mapping", type=Path, required=True)
-        command.add_argument("--descriptor", type=Path, required=True)
-        command.add_argument(
-            "--observed-at", type=int, required=True, help="Original source-snapshot observation epoch, never renewed by a check"
-        )
-        command.add_argument("--workspace", type=Path, action="append", default=[])
-        command.add_argument("--decisions", type=Path)
-        if name == "check":
-            command.add_argument("--input", type=Path, required=True)
-            command.add_argument(
-                "--context-present", action="store_true", help="Attest exact loaded text is still present in this runtime context"
-            )
-        else:
-            command.add_argument("--output", type=Path, required=True)
-            command.add_argument("--replace", action="store_true")
-    args = parser.parse_args(argv)
+    configure(parser)
+    return execute(parser.parse_args(argv), parser)
+
+
+def execute(args: argparse.Namespace, parser: argparse.ArgumentParser) -> int:
+    """
+    Execute an already parsed domain command.
+
+    Args:
+        args (argparse.Namespace): Validated arguments from the shared hierarchy or standalone parser.
+        parser (argparse.ArgumentParser): Owning parser for consistent error reporting.
+
+    Returns:
+        int: Selected operation status.
+    """
     root = args.repo.resolve()
     try:
         if args.command == "schema":

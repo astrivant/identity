@@ -1,7 +1,7 @@
 repository:
   name: identity
   description: A user-owned policy and learning layer for intelligent agents, powered by Witful
-  homepage: https://github.com/astrivant/identity#readme
+  homepage: https://github.com/astrivant/identity/blob/main/docs/CLI.md
   private: false
   has_issues: true
   has_wiki: false
@@ -17,6 +17,11 @@ branches:
         dismiss_stale_reviews: true
       required_status_checks:
         strict: true
-        contexts: [Python tests, Source checks, PII scan, Trivy security scan, Build distributions, orchestration]
+        checks:
+          - context: Required CI
+            app_id: 15368
+      required_conversation_resolution: true
+      allow_force_pushes: false
+      allow_deletions: false
       enforce_admins: false
       restrictions: null

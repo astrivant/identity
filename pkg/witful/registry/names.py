@@ -19,13 +19,16 @@ from typing import TYPE_CHECKING, Literal
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
+from witful.commands.registry import configure
+
+from .constants import DEFAULT_TTL
+
 if TYPE_CHECKING:
     from collections.abc import Callable, Sequence
 
 API = "https://pypi.org/pypi/{name}/json"
 NAME = re.compile(r"[A-Za-z0-9](?:[A-Za-z0-9._-]*[A-Za-z0-9])?")
 MAX_NAMES = 100
-DEFAULT_TTL = 6 * 60 * 60
 
 
 @dataclass(frozen=True)
@@ -285,16 +288,21 @@ def main(argv: Sequence[str] | None = None) -> int:
         int: Zero for determinate checks, two when any observation is unknown or input is invalid.
     """
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("names", nargs="*")
-    parser.add_argument("--stdin", action="store_true", help="Read one additional candidate per line, skipping blank lines")
-    parser.add_argument("--cache-dir", type=Path, default=Path.home() / ".cache" / "registry-names")
-    parser.add_argument("--ttl-seconds", type=int, default=DEFAULT_TTL)
-    parser.add_argument("--timeout-seconds", type=int, default=10)
-    modes = parser.add_mutually_exclusive_group()
-    modes.add_argument("--refresh", action="store_true", help="Recheck before publication; active cooldowns still apply")
-    modes.add_argument("--offline", action="store_true", help="Use only unexpired observations without making requests")
-    parser.add_argument("--only-unregistered", action="store_true", help="Print just missing project names; this does not reserve them")
-    args = parser.parse_args(argv)
+    configure(parser)
+    return execute(parser.parse_args(argv), parser)
+
+
+def execute(args: argparse.Namespace, parser: argparse.ArgumentParser) -> int:
+    """
+    Execute an already parsed domain command.
+
+    Args:
+        args (argparse.Namespace): Validated arguments from the shared hierarchy or standalone parser.
+        parser (argparse.ArgumentParser): Owning parser for consistent error reporting.
+
+    Returns:
+        int: Selected operation status.
+    """
     names = args.names
 
     if args.stdin:

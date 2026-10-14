@@ -6,7 +6,6 @@ from __future__ import annotations
 
 import argparse
 import json
-from pathlib import Path
 from typing import TYPE_CHECKING
 
 from jsonschema import ValidationError
@@ -15,6 +14,7 @@ from witful.awareness.github import push
 from witful.awareness.models import Bundle, PushConfig
 from witful.awareness.rendering import render
 from witful.collection.protection import check_collection
+from witful.commands.awareness import configure
 from witful.files import replace_file
 from witful.knowledge.contracts import schema, structure
 
@@ -33,11 +33,21 @@ def main(argv: Sequence[str] | None = None) -> int:
         int: Zero after local build or accepted dispatch; parser exit two on failure.
     """
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--repo", type=Path, default=Path.cwd())
-    parser.add_argument("--config", type=Path, default=Path("knowledge/awareness.json"))
-    parser.add_argument("--output", type=Path, default=Path(".witful/awareness.json"))
-    parser.add_argument("command", choices=["build", "push", "schema"])
-    args = parser.parse_args(argv)
+    configure(parser)
+    return execute(parser.parse_args(argv), parser)
+
+
+def execute(args: argparse.Namespace, parser: argparse.ArgumentParser) -> int:
+    """
+    Execute an already parsed domain command.
+
+    Args:
+        args (argparse.Namespace): Validated arguments from the shared hierarchy or standalone parser.
+        parser (argparse.ArgumentParser): Owning parser for consistent error reporting.
+
+    Returns:
+        int: Selected operation status.
+    """
 
     try:
         if args.command == "schema":

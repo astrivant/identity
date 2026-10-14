@@ -2,8 +2,7 @@
 
 <img src="docs/assets/identity-logo.png" alt="Identity logo" width="33%">
 
-[![Python coverage](https://raw.githubusercontent.com/astrivant/identity/gh-pages/badges/coverage.svg)](https://github.com/astrivant/identity/actions/workflows/ci.yml)
-
+[![Python coverage](https://raw.githubusercontent.com/astrivant/identity/gh-pages/badges/coverage.svg)](https://github.com/astrivant/identity/blob/gh-pages/badges/coverage.json)
 
 Identity is a **user-owned policy and learning layer for intelligent agents**.
 It gives engineers and their agents a shared, reviewable record of how to work,
@@ -33,6 +32,8 @@ execution; people retain authority over accepted guidance and publication.
   - [Install Witful](#install-witful)
   - [Create a private identity](#create-a-private-identity)
   - [Work with an AI agent](#work-with-an-ai-agent)
+- [Agent chat commands](#agent-chat-commands)
+- [Inputs and configuration](#inputs-and-configuration)
 - [How it works](#how-it-works)
 - [Your collection](#your-collection)
   - [Lessons and decisions](#lessons-and-decisions)
@@ -45,7 +46,6 @@ execution; people retain authority over accepted guidance and publication.
   - [Git and GitOps](#git-and-gitops)
   - [Storage and orchestration](#storage-and-orchestration)
   - [Privacy and data protection](#privacy-and-data-protection)
-  - [Inputs](#inputs)
   - [Development and releases](#development-and-releases)
 <!-- toc:end -->
 
@@ -92,12 +92,79 @@ keys while retaining historical recovery.
 
 ### Work with an AI agent
 
-Use the [agent skill](SKILL.md) to find relevant lessons, record actual applications,
-and respect publication boundaries. Start with this prompt:
+For an AI-assisted workflow, read the [agent skill locally](SKILL.md) or
+[on GitHub](https://github.com/astrivant/identity/blob/main/SKILL.md). The hosted
+copy explains the workflow; collection operations still require an installed
+Witful CLI and an explicitly selected local collection. Use this prompt:
 
 > Read SKILL.md in this checkout and help me maintain my existing Identity collection using Witful.
 > Preserve its configuration, validate the relevant sources, and use the documented
 > commands. Create a collection or publish selected figures only when I request it.
+
+## Agent chat commands
+
+Load [SKILL.md](SKILL.md) for these portable agent conventions. They are chat
+instructions, not shell commands. The [command contract](docs/agent-commands.md)
+defines scope, review ordering, publication and durable upstream/collection storage.
+
+- `Push`: checked, signed publication of selected work.
+  - Alias: `push`.
+- `Tag`: release the selected project under its release contract.
+  - Alias: `tag`.
+- `Tag All`: release explicitly selected active projects.
+  - Alias: `tag all`.
+- `search soul`: review all applicable standards in the active awareness tree.
+  - Alias: `soul search`.
+- `project pr rebase`: rebase open PRs safely and return their review order using the [delivery helpers](docs/delivery.md).
+  - Aliases: none currently defined.
+- `project pr show`: display clickable PRs, dependencies, sizes and CI in review order.
+  - Aliases: none currently defined.
+- `identity deactivate`: suspend optional collection guidance for this conversation.
+  - Aliases: none currently defined.
+- `identity activate <name>`: load an existing, explicitly identified collection.
+  - Aliases: none currently defined.
+- `Lesson: <teaching>`: record a sourced reusable teaching.
+  - Alias: `New Lesson: <teaching>`.
+- `Insight: <finding>`: record supported evidence under a sourced Lesson.
+  - Aliases: `Insight. Record this`, `New insight: <finding>`.
+- `Insight -> Lesson`: promote a finding while preserving its history.
+  - Aliases: none currently defined.
+- `New command: <definition>`: persist a durable command and its aliases.
+  - Aliases: none currently defined.
+
+## Inputs and configuration
+
+Commands select an existing collection with `--repo PATH`; the default is the
+current directory. An explicit command-line option overrides its corresponding
+environment default. Source journals and reviewed configuration stay in the
+collection, while local indexes and caches remain outside its published records.
+
+| Input | Default | Purpose |
+| --- | --- | --- |
+| `--repo PATH` | Current directory | Collection containing `lessons.jsonl` and `knowledge/` sources. |
+| `WITFUL_HOME` / `lessons --home PATH` | Current directory's `.witful/` | Local lesson SQLite index; independent of `--repo`. |
+| `WITFUL_DATABASE_URL` | Unset, SQLite | PostgreSQL connection URI for lesson indexing and explicitly requested Life/checkpoint mirroring. Treat as a secret. |
+| `WITFUL_DATABASE_NAMESPACE` / `--namespace` | `default` | Partition used by cooperating PostgreSQL clients. |
+| `WITFUL_PII_TERMS_FILE` / `privacy scan --terms-file` | Unset | Local UTF-8 literal deny terms, one per line; never publish this file. |
+| `CODEX_HOME` / `collection setup --home` | `~/.codex` | Destination for explicitly requested collection setup. |
+| `XDG_DATA_HOME` | `~/.local/share` | Default parent for repository-scoped key backups under `witful/collections/`; `collection setup --key-dir` overrides it. |
+| `delivery --remote [PROVIDER:]REMOTE` | `origin` | Select GitHub or GitLab remotes; repeat for combined inventories. [Authentication and inputs](docs/delivery.md#inputs-and-prerequisites). |
+| `knowledge/context.json` | Optional | Reviewed rules and budgets for [working-context resolution](docs/context.md). |
+| `knowledge/catalog.json` | Collection file | Reviewed classification, concepts, and sourced relationships. |
+| `knowledge/awareness.json` | Collection file | Optional figure selection and publication configuration. |
+
+| `collection export --recipient-key` | See linked guide | Optional recipient public PEM; defaults to the operating encryption key, preserving the signer |
+| `collection export --output` | See linked guide | Required new encrypted export directory; [defaults and recovery inputs](docs/identity-exports.md#inputs-and-key-lifecycle) |
+| `WITFUL_COLLECTION_NEXT_KEYS` | See linked guide | Optional Actions secret containing a complete reviewed candidate generation |
+| `.config/collection.json: rotate_by` | See linked guide | UTC deadline for new protected writes; retained historical reads remain available |
+| `.config/collection.json: managed_files` | See linked guide | Reviewed opaque files participating alongside source and figure bundles |
+
+Collection rotation, expiry and managed-file inputs are detailed in [key rotation](docs/key-rotation.md).
+
+See [CLI options](docs/CLI.md), [database and Helm inputs](docs/storage.md),
+[private collection secrets and CI opt-in](docs/private-collections.md), and
+[release credentials](docs/releases.md) for operation-specific inputs. Tests alone
+use `WITFUL_TEST_DATABASE_URL`; ordinary commands never read that variable.
 
 ## How it works
 
@@ -234,22 +301,6 @@ and [SECURITY.md](SECURITY.md) for publication review and reporting vulnerabilit
 [Signed encrypted exports](docs/identity-exports.md) use the operating key by
 default, with an optional recipient public key for sharing. Verify the sender
 independently and restore with only the recipient's decryption key.
-
-### Inputs
-
-Collection rotation inputs are documented in [key rotation](docs/key-rotation.md):
-
-| Input | Purpose |
-| --- | --- |
-| `knowledge/context.json` | Optional reviewed rules and budgets for [working-context resolution](docs/context.md) |
-| `collection export --recipient-key` | Optional recipient public PEM; defaults to the operating encryption key, preserving the signer |
-| `collection export --output` | Required new encrypted export directory; [defaults and recovery inputs](docs/identity-exports.md#inputs-and-key-lifecycle) |
-| `WITFUL_COLLECTION_NEXT_KEYS` | Optional Actions secret containing a complete reviewed candidate generation |
-| `.config/collection.json: rotate_by` | UTC deadline for new protected writes; retained historical reads remain available |
-| `.config/collection.json: managed_files` | Reviewed opaque files participating alongside source and figure bundles |
-
-See [all collection secrets and permissions](docs/private-collections.md#workflow-and-permissions)
-and [CLI inputs](docs/CLI.md) for the remaining configuration.
 
 ### Development and releases
 

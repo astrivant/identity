@@ -29,32 +29,40 @@ spec:
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
       automountServiceAccountToken: false
+      terminationGracePeriodSeconds: {{ .Values.postgresql.terminationGracePeriodSeconds }}
+      {{- with .Values.postgresql.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.postgresql.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.postgresql.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: postgres
           image: {{ .Values.postgresql.image | quote }}
           env:
             - name: POSTGRES_DB
-              value: witful
+              value: {{ .Values.postgresql.database | quote }}
             - name: POSTGRES_USER
-              value: witful
+              value: {{ .Values.postgresql.username | quote }}
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.postgresql.existingSecret | quote }}
-                  key: password
+                  key: {{ .Values.postgresql.passwordKey | quote }}
           ports:
             - containerPort: 5432
           readinessProbe:
             exec:
-              command: [pg_isready, -U, witful, -d, witful]
-            periodSeconds: 5
+              command: [pg_isready, -U, {{ .Values.postgresql.username | quote }}, -d, {{ .Values.postgresql.database | quote }}]
+            {{- toYaml .Values.postgresql.readinessProbe | nindent 12 }}
           resources:
-            requests:
-              cpu: 100m
-              memory: 128Mi
-            limits:
-              cpu: "1"
-              memory: 512Mi
+            {{- toYaml .Values.postgresql.resources | nindent 12 }}
           volumeMounts:
             - name: data
               mountPath: /var/lib/postgresql
@@ -63,6 +71,11 @@ spec:
         name: data
       spec:
         accessModes: [ReadWriteOnce]
+        {{- if eq .Values.postgresql.storageClass "-" }}
+        storageClassName: ""
+        {{- else if .Values.postgresql.storageClass }}
+        storageClassName: {{ .Values.postgresql.storageClass | quote }}
+        {{- end }}
         resources:
           requests:
             storage: {{ .Values.postgresql.storageSize | quote }}

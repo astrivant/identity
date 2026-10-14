@@ -7,11 +7,11 @@ from __future__ import annotations
 import argparse
 import json
 import subprocess
-from pathlib import Path
 from typing import TYPE_CHECKING
 
 from jsonschema import ValidationError
 
+from witful.commands.instances import configure
 from witful.files import replace_file
 from witful.instances.journal import check_references, instance_resource, pending_tasks, read, record, require_ready, start
 from witful.instances.models import Audit, Event, Task
@@ -33,51 +33,21 @@ def main(argv: Sequence[str] | None = None) -> int:
         int: Zero on success; parser exit two on invalid provenance, incomplete coverage, or source corruption.
     """
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--repo", type=Path, default=Path.cwd())
-    commands = parser.add_subparsers(dest="command", required=True)
-    creation = commands.add_parser("start", help="Reuse a known boundary or record a new observed instance")
-    creation.add_argument("--boundary-id", required=True)
-    creation.add_argument("--boundary-kind", choices=("runtime", "logical-session"), required=True)
-    for name in (
-        "session-id",
-        "served-model",
-        "model-evidence",
-        "requested-model",
-        "template-revision",
-        "parent-instance-id",
-        "predecessor-instance-id",
-    ):
-        creation.add_argument("--" + name)
-    creation.add_argument("--coverage", choices=("incomplete", "complete"), default="incomplete")
-    creation.add_argument("--coverage-source")
-    for command in ("reconcile", "task", "audit", "observe", "stop"):
-        operation = commands.add_parser(command)
-        operation.add_argument("--instance-id", required=True)
-        operation.add_argument("--operation-id", required=True)
-        if command == "reconcile":
-            operation.add_argument("--coverage", choices=("incomplete", "complete"), required=True)
-            operation.add_argument("--coverage-source")
-        if command == "task":
-            operation.add_argument("--task-id", required=True)
-            operation.add_argument("--status", choices=("pending", "running", "blocked", "succeeded", "failed", "cancelled"), required=True)
-            operation.add_argument("--summary", required=True)
-            operation.add_argument("--source", required=True)
-            operation.add_argument("--previous", help="Exact preceding task event ID, required for updates")
-        if command == "audit":
-            operation.add_argument("--action", required=True)
-            operation.add_argument("--outcome", default="unknown")
-            operation.add_argument("--request-id")
-            operation.add_argument("--trace-id")
-            operation.add_argument("--span-id")
-    for command in ("guard", "resource"):
-        operation = commands.add_parser(command)
-        operation.add_argument("--instance-id", required=True)
-    for command in ("status", "check", "schemas", "logs"):
-        commands.add_parser(command)
-    render = commands.add_parser("build")
-    render.add_argument("--output-dir", type=Path, default=Path("docs/assets"))
-    render.add_argument("--limit", type=int, default=8)
-    args = parser.parse_args(argv)
+    configure(parser)
+    return execute(parser.parse_args(argv), parser)
+
+
+def execute(args: argparse.Namespace, parser: argparse.ArgumentParser) -> int:
+    """
+    Execute an already parsed domain command.
+
+    Args:
+        args (argparse.Namespace): Validated arguments from the shared hierarchy or standalone parser.
+        parser (argparse.ArgumentParser): Owning parser for consistent error reporting.
+
+    Returns:
+        int: Selected operation status.
+    """
     root = args.repo.resolve()
     try:
         result: object

@@ -161,6 +161,13 @@ and stale state. `schema` emits its closed source contract. `hook-config --ident
 NAME` prepares a synchronous Codex hook definition for native user review and trust.
 See [coverage, handoff, storage, and hook behavior](completion.md).
 
+## Repository delivery
+
+`witful delivery` provides read-only `pr show`, isolated `pr rebase`, reviewed
+`pr publish`, and resumable `recovery plan` / `recovery apply`. Read the
+[delivery contract](delivery.md) for required inputs, exact-head leases, signed
+small-first batches, review boundaries, and interrupted-run recovery.
+
 ## Collection storage verification
 
 `collection check-storage --path PATH` verifies host encryption evidence. Repeat
@@ -186,3 +193,36 @@ verified previous/current snapshots without editing the active checkout.
 `prepare-refresh` and `publish-refresh` are trusted CI stages. `promote-keys`
 explicitly projects adopted keys to existing primary Actions secrets.
 See [inputs, limits, recovery and publication](key-rotation.md).
+
+## Command composition
+
+The root command builds one argparse hierarchy from `witful.commands` and parses
+once. [`Command`](../pkg/witful/commands/builder.py) is an immutable recursive node:
+a group owns `children`, and an executable leaf names a lazy runtime `module`
+implementing `execute(args, parser)`. Each node can declare local arguments and
+aliases. The same `register`/`populate` contract works at every tier, including
+standalone entrypoints; only the selected leaf's runtime is imported.
+
+The [delivery tree](../pkg/witful/commands/delivery.py) demonstrates
+`delivery -> pr/mr -> show/rebase/publish` and `delivery -> recovery -> plan/apply`.
+Register a tree beneath another group with `register(subparsers)`, or populate a
+fresh standalone parser with `populate(parser)`. Parse once at the entrypoint and
+call `dispatch(namespace)`. Existing domain builders with their own subparsers can
+remain executable leaves during incremental adoption.
+
+Groups require a child, while leaf handlers receive their own parser so domain
+errors identify the complete command path. Set `destination` only when the runtime
+needs a child selection field, and use distinct fields at different levels.
+Declare shared options once at the owning ancestor, before its child token; avoid
+redeclaring defaults on descendants where they can overwrite explicit values.
+Keep declarations free of runtime imports, network calls and storage writes.
+
+Follow [argparse's subcommand contract](https://docs.python.org/3/library/argparse.html#sub-commands).
+Extend the [builder regressions](../pkg/witful/commands/tests/test_builder.py) for
+new nesting behavior, including aliases, reusable mounts, parent options, required
+children and runtime-free help. Keep dispatch out of manual `sys.argv` slicing.
+
+`witful delivery --remote github:origin --remote gitlab:mirror pr show` combines
+provider inventories. `mr` is an alias for `pr`; rebase preparation selects one
+remote and publication uses its bound receipt. See [delivery inputs](delivery.md#inputs-and-prerequisites)
+for SDK authentication, provider evidence and operation boundaries.

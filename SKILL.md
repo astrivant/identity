@@ -38,6 +38,24 @@ never reconstruct undocumented past use or infer learning from a repository swit
 Commit the reviewed checkpoint journal; let the collection main workflow render
 its plots and synchronize its SQLite mirror. Remote database writes remain explicit.
 
+## Durable agent commands
+
+Follow [the chat command contract](docs/agent-commands.md) for `project pr rebase`,
+`project pr show`, `Push`, release requests, awareness reviews and teaching capture.
+Use the tested [`witful delivery` helpers](docs/delivery.md) for PR inventories,
+isolated rebase preparation/publication, and small-first recovery pushes. Link
+reusable helpers from the applicable Skill and sourced Lesson/Insight so later
+instances execute reviewed code instead of reconstructing it. These chat conventions
+and the explicit helper subcommands have separate side-effect boundaries. Honor explicit
+invocation, aliases and side-effect boundaries; preserve PR dependencies and exact
+remote-head leases when rebasing. Return clickable review order and current evidence.
+
+Persist user-defined commands in the owning collection and keep its README alias
+catalog and relevant Skill/Lesson aligned. By default, contribute reusable generic
+behavior to this upstream project through review, updating its README, this guide
+and the collection template. Keep personal bindings and records private. Do not
+claim a proposed definition has shipped to consumers before release/adoption.
+
 ## Runtime provenance and startup reconciliation
 
 Read [the instance contract](docs/instances.md). Before authorized identity work,
@@ -219,3 +237,16 @@ exports with locked tools. Validate the source/output receipt and actual publish
 result. Preserve collection separation and required reviews. A successful job or an
 unchanged image alone does not establish freshness. See
 [view freshness](docs/view-freshness.md) in the upstream repository.
+
+## Compose repository delivery operations
+
+Use the shared `witful delivery` command for GitHub PRs and GitLab MRs. Select
+existing remotes explicitly; repeated selectors combine read-only review inventories.
+Prepare one signed rebase at a time and publish only its reviewed receipt-bound
+candidate. The maintained Python SDK backends own host metadata and verification;
+shared orchestration owns Git, checks and recovery. Refer to the
+[delivery contract](https://github.com/astrivant/identity/blob/main/docs/delivery.md).
+
+For CLI maintenance, compose lightweight argparse builders and typed handlers.
+Reuse those builders for standalone entrypoints and parse once; preserve existing
+syntax, help and input validation through the public command tests.

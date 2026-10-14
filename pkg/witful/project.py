@@ -6,10 +6,10 @@ from __future__ import annotations
 
 import argparse
 import json
-from pathlib import Path
 from typing import TYPE_CHECKING
 
 from witful.checkpoints.models import Checkpoint
+from witful.commands.project import configure
 from witful.instances.models import Event as InstanceEvent
 from witful.knowledge.contracts import as_data, schema
 from witful.knowledge.models import Application, Catalog
@@ -17,6 +17,7 @@ from witful.life.models import Decision, Event, Snapshot
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
+    from pathlib import Path
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -30,8 +31,21 @@ def main(argv: Sequence[str] | None = None) -> int:
         int: Zero on success; parser exit two for an occupied destination.
     """
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("path", type=Path)
-    args = parser.parse_args(argv)
+    configure(parser)
+    return execute(parser.parse_args(argv), parser)
+
+
+def execute(args: argparse.Namespace, parser: argparse.ArgumentParser) -> int:
+    """
+    Execute an already parsed domain command.
+
+    Args:
+        args (argparse.Namespace): Validated arguments from the shared hierarchy or standalone parser.
+        parser (argparse.ArgumentParser): Owning parser for consistent error reporting.
+
+    Returns:
+        int: Selected operation status.
+    """
 
     if args.path.exists():
         parser.error("Choose a new directory; existing collections are never overwritten")

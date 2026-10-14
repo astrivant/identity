@@ -1,6 +1,35 @@
 apiVersion: v2
 name: witful
-description: Synchronize reviewed lessons into a shared PostgreSQL index.
+description: Synchronize reviewed agent guidance into a shared PostgreSQL index with bounded, retryable Witful workers.
 type: application
 version: 0.1.0
 appVersion: "0.1.0"
+home: https://github.com/astrivant/identity/blob/main/docs/storage.md
+sources:
+  - https://github.com/astrivant/identity
+  - https://github.com/astrivant/identity/tree/main/helm/witful
+keywords:
+  - ai-agents
+  - knowledge
+  - policy
+  - lessons
+  - postgresql
+  - synchronization
+maintainers:
+  - name: emmeowzing
+    url: https://github.com/emmeowzing
+# Registry extensions use Artifact Hub's documented annotation names and string values.
+# https://artifacthub.io/docs/topics/annotations/helm/
+annotations:
+  artifacthub.io/category: ai-machine-learning
+  artifacthub.io/license: GPL-3.0-only
+  artifacthub.io/operator: "false"
+  artifacthub.io/links: |
+    - name: Documentation
+      url: https://github.com/astrivant/identity/blob/main/docs/storage.md
+    - name: Configuration
+      url: https://github.com/astrivant/identity/blob/main/helm/witful/README.md
+    - name: support
+      url: https://github.com/astrivant/identity/issues
+    - name: Security
+      url: https://github.com/astrivant/identity/blob/main/SECURITY.md

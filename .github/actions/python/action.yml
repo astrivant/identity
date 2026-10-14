@@ -13,7 +13,7 @@ runs:
         path: |
           .venv
           .cache/poetry-cli
-        key: witful-v1-${{ runner.os }}-${{ runner.arch }}-${{ steps.python.outputs.python-version }}-${{ hashFiles('pyproject.toml', 'poetry.lock') }}
+        key: witful-v1-${{ runner.os }}-${{ runner.arch }}-${{ steps.python.outputs.python-version }}-${{ hashFiles('pyproject.toml', 'poetry.lock', '.github/actions/python/action.yml') }}
     - name: Install locked dependencies on cache miss
       if: steps.cache.outputs.cache-hit != 'true'
       shell: bash
@@ -26,6 +26,7 @@ runs:
       shell: bash
       run: |
         VIRTUAL_ENV="$PWD/.venv" .cache/poetry-cli/bin/poetry install --only-root --no-interaction
-        echo "$PWD/.venv/bin" >> "$GITHUB_PATH"
+        # GitHub prepends later path entries first; the project interpreter must win.
         echo "$PWD/.cache/poetry-cli/bin" >> "$GITHUB_PATH"
+        echo "$PWD/.venv/bin" >> "$GITHUB_PATH"
         echo "VIRTUAL_ENV=$PWD/.venv" >> "$GITHUB_ENV"
