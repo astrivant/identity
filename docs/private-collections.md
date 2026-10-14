@@ -182,7 +182,7 @@ See [instance provenance and startup reconciliation](instances.md).
 
 ## Managed remote storage
 
-Managed collection remote database and MCP operations now fail closed because the
+Managed collection remote database operations now fail closed because the
 client cannot verify those services' at-rest protection. See the
 [protection contract and migration steps](data-protection.md).
 

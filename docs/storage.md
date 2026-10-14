@@ -32,10 +32,6 @@ under `services/`. The single multi-stage Dockerfile remains at the repository r
 Projects with multiple service images place each Dockerfile under
 `services/<service>/Dockerfile`.
 
-The Witful journal-worker chart is separate from the persistent MCP service.
-For shared writable memory replicas, use the Sapience fork's controller and chart
-as described in [the integration guide](sapience.md#shared-kubernetes-replicas).
-
 ## Private working storage
 
 Managed collections require encrypted source, index, output, and temporary volumes.

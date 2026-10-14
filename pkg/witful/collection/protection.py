@@ -152,7 +152,7 @@ def check_collection(root: Path, *outputs: Path, remote: bool = False) -> None:
     # TLS cannot attest to the database host's disks, replicas, or backups. Do not silently weaken the private mode.
     if remote:
         raise StorageProtectionError(
-            "Managed private collections cannot verify external storage encryption. Remote database and MCP writes are blocked; "
+            "Managed private collections cannot verify external storage encryption. Remote database writes are blocked; "
             "use local encrypted storage until a verified server-side protection contract is available."
         )
 

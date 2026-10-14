@@ -19,7 +19,7 @@ COPY pkg ./pkg
 RUN /opt/poetry/bin/poetry build --format wheel     && pip install --no-deps dist/*.whl
 
 FROM dependencies AS development
-RUN /opt/poetry/bin/poetry install --extras postgres --extras sapience --no-root --no-interaction
+RUN /opt/poetry/bin/poetry install --extras postgres --no-root --no-interaction
 ENTRYPOINT ["/usr/bin/tini", "-g", "--", "witful"]
 CMD ["--help"]
 
