@@ -32,10 +32,7 @@ Use `witful init ./my-collection` to create an empty collection when you need a 
 one. Keep existing collections in place and pass `--repo` to the relevant commands.
 See [CLI contracts and first run](https://github.com/astrivant/identity/blob/main/docs/CLI.md).
 
-Optional extras are `postgres` for PostgreSQL and `sapience` for MCP transport.
-The Sapience adapter is under development in this checkout until the next release;
-use `pip install '.[sapience]'` here to try it. The core package does not install
-Sapience or its vector database.
+Install `witful[postgres]` to enable the optional PostgreSQL storage adapter.
 
 ## Responsibilities
 
@@ -52,7 +49,6 @@ record and review steps through these capabilities:
 - Check publication inputs with the PII scanner and configurable deny terms.
 - Install and synchronize encrypted, signed private collections.
 - Isolate concurrent sleeves, sign backups, and reconcile their histories before closure.
-- Optionally project reviewed concepts into Sapience and save generated review proposals.
 
 Source journals remain owned by the collection. Generated proposals require review
 before they become accepted lessons. Application counts describe recorded use;
@@ -66,7 +62,6 @@ using those outputs.
 
 [Architecture and collection conventions](https://github.com/astrivant/identity#readme),
 [CLI](https://github.com/astrivant/identity/blob/main/docs/CLI.md),
-[Sapience integration](https://github.com/astrivant/identity/blob/main/docs/sapience.md),
 [awareness figures](https://github.com/astrivant/identity/blob/main/docs/awareness.md),
 [private collection setup](https://github.com/astrivant/identity/blob/main/docs/private-collections.md),
 [multisleeving](https://github.com/astrivant/identity/blob/main/docs/multisleeving.md),
@@ -88,6 +83,6 @@ change its version to 2 and rename each annotation's `lemmas` key to `insights`
 together. Keep concept IDs unchanged. Do not edit historical journals or snapshots.
 
 Checkpoint comparisons retain their existing digest representation, so the rename
-alone does not count as learning. Current plots, CLI output, and MCP projections
-use Insight; existing projected memory IDs remain stable. Historical replay still
+alone does not count as learning. Current plots and CLI output
+use Insight; existing concept IDs remain stable. Historical replay still
 requires acknowledgment of renderer changes before producing different plot bytes.

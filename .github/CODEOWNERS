@@ -35,3 +35,10 @@
 /pkg/witful/context/ @emmeowzing
 /docs/context.md @emmeowzing
 /pkg/witful/knowledge/compiler.py @emmeowzing
+/Dockerfile @emmeowzing
+/poetry.lock @emmeowzing
+/.github/actions/python/ @emmeowzing
+/SECURITY.md @emmeowzing
+/docs/storage.md @emmeowzing
+/pkg/witful/knowledge/cli.py @emmeowzing
+/pkg/witful/knowledge/tests/ @emmeowzing

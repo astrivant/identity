@@ -31,11 +31,6 @@ def main() -> int:
 
         return instances_main(sys.argv[2:])
 
-    if len(sys.argv) > 1 and sys.argv[1] == "sapience":
-        from witful.sapience.cli import main as sapience_main
-
-        return sapience_main(sys.argv[2:])
-
     if len(sys.argv) > 1 and sys.argv[1] == "sleeve":
         from witful.sleeves.cli import main as sleeve_main
 

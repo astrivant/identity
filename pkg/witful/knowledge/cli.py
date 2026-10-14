@@ -52,7 +52,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(
         description=__doc__,
         epilog=(
-            "Additional commands: init, lessons, life, repertoire, checkpoints, reflection, awareness, collection, sapience, "
+            "Additional commands: init, lessons, life, repertoire, checkpoints, reflection, awareness, collection, "
             "privacy scan, registry; each accepts --help."
         ),
     )

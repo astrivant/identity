@@ -1,11 +1,10 @@
 """
-Preserve historical provenance while exposing Insights in current models and projections.
+Preserve historical provenance while exposing Insights in current models.
 """
 
 from __future__ import annotations
 
 import hashlib
-import json
 from copy import deepcopy
 from typing import TYPE_CHECKING
 
@@ -19,7 +18,6 @@ from witful.knowledge.models import Annotation, Catalog, DisciplineSpec, Insight
 from witful.lessons import append_lesson, new_lesson
 from witful.life.contracts import canonical, content_id, snapshot_identity
 from witful.life.models import Snapshot
-from witful.sapience.projection import project
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -152,29 +150,3 @@ def test_rename_does_not_count_as_revised_checkpoint_guidance() -> None:
     original = as_data(lesson)
     original["lemmas"] = original.pop("insights")
     assert snapshot(identity, ())[0].lessons[0].digest == digest(original)
-
-
-def test_projection_reuses_ids_and_labels_insights_after_catalog_migration(tmp_path: Path) -> None:
-    """
-    Keep external memory ownership stable while updating the visible type and source vocabulary.
-
-    Args:
-        tmp_path (Path): Isolated synthetic collection directory.
-
-    Returns:
-        None: Both source versions project the same Insights without duplicating memory IDs.
-    """
-    record = new_lesson("Review", "Retain inputs", "Fixture", "2026-01-01T00:00:00Z")
-    (tmp_path / "lessons.jsonl").touch()
-    append_lesson(tmp_path / "lessons.jsonl", record)
-    (tmp_path / "knowledge").mkdir()
-    path = tmp_path / "knowledge/catalog.json"
-    catalog = _catalog(record.id)
-    path.write_text(json.dumps(as_data(evolve(catalog, version=1))))
-    legacy = project(tmp_path, "fixture", "reviewed")
-    path.write_text(json.dumps(as_data(catalog)))
-    current = project(tmp_path, "fixture", "reviewed")
-    assert current == legacy
-    insight = next(memory for memory in current.memories if memory.metadata.source_id == "detail")
-    assert insight.metadata.kind == "insight"
-    assert insight.content.startswith("Insight:")
