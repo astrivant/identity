@@ -48,8 +48,25 @@ if [[ -n $(git diff --cached --name-only --diff-filter=D) ]]; then
     exit 1
 fi
 
-payload=$(mktemp "$RUNNER_TEMP/identity-views.XXXXXX")
-trap 'rm -f "$payload" "$payload.rows" "$payload.response" "$payload.encoded"' EXIT
+payload="$(mktemp "$RUNNER_TEMP/identity-views.XXXXXX")"
+
+# Remove this publication's temporary payload files without changing an existing failure.
+# payload::path (owned global), status::exit_code ($?) -> exit::exit_code
+# Exit with the original failure, or 1 when cleanup alone fails.
+cleanup_view_payload() {
+    local exit_status="$?"
+    trap - EXIT
+
+    if ! rm -f -- "$payload" "$payload.rows" "$payload.response" "$payload.encoded"; then
+        printf '%s\n' 'Failed to remove temporary view payloads.' >&2
+        if [ "$exit_status" -eq 0 ]; then
+            exit_status=1
+        fi
+    fi
+    exit "$exit_status"
+}
+trap cleanup_view_payload EXIT
+
 : >"$payload.rows"
 while IFS= read -r -d '' name; do
     if ! allowed "$name"; then
