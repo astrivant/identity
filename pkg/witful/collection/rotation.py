@@ -91,8 +91,9 @@ def rotate(checkout: Path, current: Material, candidate: Candidate, output: Path
         rotate_by=candidate.rotate_by,
     )
     deadline_check(new, today)
-    if (old.encryption_fingerprint, old.signing_fingerprint) == (new.encryption_fingerprint, new.signing_fingerprint):
-        raise ValueError("Candidate must replace at least one key, not extend an existing key's deadline")
+    # This policy date belongs to the whole generation; retaining either key must not reset its lifetime.
+    if old.encryption_fingerprint == new.encryption_fingerprint or old.signing_fingerprint == new.signing_fingerprint:
+        raise ValueError("Replace both keys before establishing a new generation deadline")
     if output.resolve().is_relative_to(checkout.resolve()) or output.exists() or output.is_symlink():
         raise ValueError("Choose a new rotation output outside the active checkout")
     output.mkdir(mode=0o700, parents=True)

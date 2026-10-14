@@ -490,3 +490,32 @@ def test_candidate_export_is_private_exclusive_and_outside_git(
     with pytest.raises(ValueError, match="outside Git"):
         material.export_candidate(generations[1], "example/collection", DEADLINE, repository / "secret.json", TODAY)
     assert not (repository / "secret.json").exists()
+
+
+@pytest.mark.parametrize("retained", ["encryption", "signing"])
+def test_a_shared_deadline_cannot_renew_a_retained_key(
+    collection: Path,
+    generations: tuple[Path, Path],
+    tmp_path: Path,
+    retained: str,
+) -> None:
+    """
+    Reject partial replacement that would extend the retained member of a generation.
+
+    Args:
+        collection (Path): Synthetic active collection.
+        generations (tuple[Path, Path]): Independently generated pairs.
+        tmp_path (Path): Candidate output parent.
+        retained (str): Key purpose deliberately kept from the old generation.
+
+    Returns:
+        None: Neither partial key replacement can silently renew the other's shared deadline.
+    """
+    old, new = read_keys(generations[0]), read_keys(generations[1])
+    if retained == "encryption":
+        mixed = evolve(new, private=old.private, public=old.public, password=old.password)
+    else:
+        mixed = evolve(new, signing_private=old.signing_private, signing_public=old.signing_public, signing_password=old.signing_password)
+    with pytest.raises(ValueError, match="Replace both keys"):
+        rotate(collection, old, Candidate("example/collection", DEADLINE, mixed), tmp_path / "renewal", TODAY)
+    assert not (tmp_path / "renewal").exists()

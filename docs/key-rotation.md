@@ -71,7 +71,9 @@ it outside Git, logs and artifact uploads. No secret is uploaded by this command
 
 A local `READY` marker is not publication. Failed or interrupted candidates lack
 that marker. Keep the original active and retry into a new directory. Never publish
-partial output. Changing only a deadline does not rotate a key.
+partial output. This first rotation policy uses one deadline per generation and
+requires replacement of both keys. Reusing either key cannot extend its lifetime;
+independent per-key schedules are not implemented.
 
 ## CI adoption
 
