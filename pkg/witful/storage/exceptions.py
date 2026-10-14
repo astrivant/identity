@@ -1,13 +1,9 @@
 """
-Expose credential-safe storage failures at the package boundary.
+Retain the original storage exception import path for existing callers.
 """
 
 from __future__ import annotations
 
+from witful.exceptions import StorageError
+
 __all__ = ["StorageError"]
-
-
-class StorageError(RuntimeError):
-    """
-    Report an invalid backend or database failure without exposing connection credentials.
-    """

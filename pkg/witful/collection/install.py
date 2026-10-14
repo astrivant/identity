@@ -12,13 +12,12 @@ import sys
 from importlib.resources import files
 from typing import TYPE_CHECKING
 
-from attrs import evolve
-
 from witful.collection.crypto import fingerprint
 from witful.collection.keys import prepare, project
 from witful.collection.models import CONFIG, load_config
 from witful.collection.operations import restore, seal
 from witful.collection.process import private_repository, run
+from witful.collection.protection import require_protected
 from witful.files import replace_file
 from witful.knowledge.contracts import as_data
 from witful.project import main as initialize
@@ -57,6 +56,10 @@ def setup(repository: str, checkout: Path, home: Path, keys: Path, *, create: bo
     if home.is_relative_to(checkout) or keys.is_relative_to(checkout) or keys.is_relative_to(source):
         raise ValueError("Codex home and key backups must stay outside the repository checkout")
 
+    # Verify all persistent private working paths before keys, sources, or remote setup changes.
+    require_protected(home)
+    require_protected(keys)
+
     origin = run(["git", "remote", "get-url", "origin"], cwd=checkout).decode().strip().removesuffix(".git")
     expected = {f"git@github.com:{repository}", f"https://github.com/{repository}"}
 
@@ -85,6 +88,12 @@ def setup(repository: str, checkout: Path, home: Path, keys: Path, *, create: bo
             initialize([str(source)])
         (source / ".gitignore").write_text("*\n")
 
+    replace_file(
+        source / ".witful-protected",
+        b"encrypted-working-storage-v1\n",
+        expected=(source / ".witful-protected").read_bytes() if (source / ".witful-protected").exists() else None,
+    )
+
     archive_skill = files("witful.collection").joinpath("resources/SKILL.md").read_bytes()
     target_skill = home / "skills/witful-collection/SKILL.md"
 
@@ -99,7 +108,7 @@ def setup(repository: str, checkout: Path, home: Path, keys: Path, *, create: bo
             config.signing_fingerprint,
         ):
             raise ValueError("Setup cannot rotate a configured collection's keys; reuse the original backup")
-        config = evolve(config, publish_figures=previous.publish_figures)
+        config = previous
 
     config_path.parent.mkdir(parents=True, exist_ok=True)
     replace_file(

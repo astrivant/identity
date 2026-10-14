@@ -42,3 +42,11 @@ Projects with multiple service images place each Dockerfile under
 The Witful journal-worker chart is separate from the persistent MCP service.
 For shared writable memory replicas, use the Sapience fork's controller and chart
 as described in [the integration guide](sapience.md#shared-kubernetes-replicas).
+
+## Private working storage
+
+Managed collections require encrypted source, index, output, and temporary volumes.
+Their PostgreSQL operations are blocked until server-side encryption can be verified;
+TLS alone is insufficient. Standalone adapters retain their existing operator-owned
+storage contract. See [data protection](data-protection.md) for supported checks and
+backups, migration, and remote-service requirements.

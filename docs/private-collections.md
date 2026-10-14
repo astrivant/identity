@@ -6,9 +6,11 @@ private repository also works when its organization permits it.
 [GitHub fork visibility rules](https://docs.github.com/en/pull-requests/reference/forks).
 The public library ships no personal collection, and its collection job stays disabled.
 
+For replacement keys, follow [current-file rotation and retained-history recovery](key-rotation.md).
+
 ## First setup
 
-Requires macOS or Linux, Python 3.12+ excluding 3.14.1, Git, `gh`, OpenSSL,
+Requires protected local working and key-backup volumes, macOS or Linux, Python 3.12+ excluding 3.14.1, Git, `gh`, OpenSSL,
 `ssh-keygen`, and Cosign 3.x. Authenticate `gh` for GitHub.com with access to create
 the selected repository and manage its Actions secrets and variables. For example,
 Homebrew provides `python`, `gh`, `openssl`, and `cosign`; OpenSSH supplies `ssh-keygen`.
@@ -65,8 +67,8 @@ publishes only signed ciphertext. Main CI continues to generate the shared figur
 ## Record and synchronize
 
 Use the installed executable (`witful` below) for ordinary lesson, application,
-Life, repertoire, and checkpoint commands. The local collection is plaintext
-under your account. Its nested `.gitignore` excludes all its contents from a
+Life, repertoire, and checkpoint commands. The local collection is readable by the running application on a verified encrypted
+working volume. See [working storage checks](data-protection.md#verify-working-storage). Its nested `.gitignore` excludes all its contents from a
 surrounding checkout; never force-add them.
 
 ```bash
@@ -86,6 +88,13 @@ saved snapshots, repertoire, tool uses, checkpoints, generated source schemas,
 and optional `instructions.md`. Put reviewed portable prose in `instructions.md`;
 full Codex TOML, credentials, browser state, SQLite files, and arbitrary dotfiles
 are deliberately excluded. Active model settings are not automatically imported.
+
+## Encrypted exports
+
+Use [signed encrypted exports](identity-exports.md) for a portable current snapshot.
+The operating encryption key is the default; `--recipient-key` creates a copy for
+another recipient while retaining the sender signature. Seal current reviewed
+records first. Exporting is separate from publishing or changing active keys.
 
 ## Figures and README
 
@@ -135,8 +144,8 @@ collection secrets through this job. PyPI publication is restricted to upstream.
 
 The refresh verifies the pinned signing key, decrypts a bounded source snapshot
 into runner-local temporary storage, validates it, regenerates all views, encrypts
-and signs them, and updates README. Only encrypted outputs and verification metadata
-enter the artifact store. `GITHUB_TOKEN` commits the named generated outputs;
+and signs them, and updates README. Encrypted outputs, verification metadata, and any explicitly approved readable figures
+enter the artifact store. `GITHUB_TOKEN` publishes a verified complete candidate with an optimistic GitHub API commit;
 its push does not start another workflow. A newer `main` revision or branch protection
 causes a visible push failure, never a force push. Retrieve the encrypted artifact
 and integrate it through your repository's review process, or explicitly allow
@@ -151,8 +160,10 @@ repository Actions secrets are:
 | `WITFUL_COLLECTION_PRIVATE_KEY` | Password-encrypted dedicated RSA PEM key |
 | `WITFUL_COLLECTION_PUBLIC_KEY` | Matching RSA PEM public key |
 | `WITFUL_COLLECTION_KEY_PASSWORD` | Exact RSA private-key password |
+| `WITFUL_COLLECTION_SIGNING_FINGERPRINT` | Independently retained SHA-256 signing public-key fingerprint |
 | `WITFUL_COLLECTION_SIGNING_KEY` | Password-encrypted Cosign private key |
 | `WITFUL_COLLECTION_SIGNING_PASSWORD` | Exact Cosign key password |
+| `WITFUL_COLLECTION_NEXT_KEYS` | Optional complete candidate JSON from `rotation-keys`, with a future rotation deadline |
 
 No new GitHub token is generated; setup uses the authenticated `gh` client and CI
 uses the job token. See [data handling and threat boundaries](../SECURITY.md#private-collection-data-handling).
@@ -168,3 +179,9 @@ never choose one side or rewrite their causal history. Collection refresh render
 Readable-figure opt-in applies to these labels too. Exported private OTLP logs and
 full instance JSON chart exports are not additional encrypted source inputs.
 See [instance provenance and startup reconciliation](instances.md).
+
+## Managed remote storage
+
+Managed collection remote database and MCP operations now fail closed because the
+client cannot verify those services' at-rest protection. See the
+[protection contract and migration steps](data-protection.md).

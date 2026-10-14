@@ -125,3 +125,7 @@ def project(directory: Path, repository: str) -> None:
 
     for secret, filename in mapping.items():
         run(["gh", "secret", "set", secret, "--repo", repository], data=(directory / filename).read_bytes())
+
+    # A separate Actions secret pins the signing identity independently of files downloaded from Git.
+    trusted = fingerprint((directory / "cosign.pub").read_bytes()).encode()
+    run(["gh", "secret", "set", "WITFUL_COLLECTION_SIGNING_FINGERPRINT", "--repo", repository], data=trusted)

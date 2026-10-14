@@ -13,7 +13,7 @@ import pytest
 import yaml
 
 ROOT = Path(__file__).resolve().parents[3]
-REQUIRED = ("distributions", "lint", "orchestration", "privacy", "tests")
+REQUIRED = ("distributions", "lint", "orchestration", "privacy", "security", "tests", "views")
 
 
 def gate_result(payload: str) -> int:

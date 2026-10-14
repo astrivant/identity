@@ -19,13 +19,25 @@ Append sourced lessons and record verified applications without inventing histor
 Read the local `collection/.setup.json` setup receipt for the checkout, repository,
 key backup paths, and installed command path. Use that command instead of assuming
 a global installation is current. The receipt contains no secret values. Preserve existing settings.
-The collection is private plaintext locally; never stage its directory, runtime
+The managed collection requires verified encrypted working storage and remains readable
+to the running process. Keep the protection marker and place temporary files, caches,
+and exports on protected volumes. Storage checks fail closed; see docs/data-protection.md
+in CHECKOUT. Managed remote database/MCP operations currently cannot verify server
+at-rest protection and are blocked. A clean PII or Trivy scan is not encryption.
+Never claim old Git history was encrypted by updating the library.
+Never stage its directory, runtime
 Codex configuration, authentication, SQLite databases, or key backup.
 
 For an explicitly requested sync, run `witful collection seal --checkout CHECKOUT
 --source COLLECTION --key-dir KEYS`, inspect the named encrypted outputs, then
 commit and push them to that private repository. Publication is separate from
 recording lessons. Do not rotate keys or change GitHub permissions implicitly.
+For explicitly requested rotation, follow docs/key-rotation.md in CHECKOUT:
+verify every current managed file, restore-test the backup and replacement, and
+publish one complete generation. Keep old keys for retained-history recovery.
+Verify ciphertext with `collection verify --signing-fingerprint TRUSTED_SHA256`
+using the fingerprint retained separately from the downloaded artifact. CI also
+compares the signing identity with its independent Actions secret before decryption.
 CI verifies, decrypts, and regenerates figures; default outputs remain encrypted.
 Use `witful collection restore --help` to recover sources or figures into a new
 local directory. Accepted Git pushes are not proof of successful hosted refreshes.
@@ -119,3 +131,27 @@ Use the tested [delivery helpers](https://github.com/astrivant/identity/blob/mai
 for PR ordering, isolated rebases and small-first recovery pushes when present in
 the installed release. Link reusable scripts from their Skill and sourced learning
 records; preserve publication authority and inspect receipts before claiming success.
+
+## Signed encrypted exports
+
+For requested identity copies, follow [the export contract](https://github.com/astrivant/identity/blob/main/docs/identity-exports.md). Use
+`collection export` with the active key by default, or an explicitly trusted
+`--recipient-key` public PEM for sharing. Seal reviewed local records first:
+exports read the current managed ciphertext snapshot. Preserve the sender's
+signing identity, verify the complete bundle with an independently obtained
+fingerprint, and restore into a new protected directory before adopting records.
+Do not export private keys, activate received instructions, publish copies, or
+change live keys merely because export tooling is available.
+
+## Keep evidence sources and plots current
+
+Populate the selected collection's sourced Lessons, observed applications, decisions,
+tool uses, runtime boundaries, and project checkpoints during execution. Record only
+actual evidence and retain unknowns. Publish reviewed canonical inputs under that
+collection's policy; an archive that the renderer never consumes is only a backup.
+
+On every main source revision, regenerate all applicable views and matching data
+exports with locked tools. Validate the source/output receipt and actual published
+result. Preserve collection separation and required reviews. A successful job or an
+unchanged image alone does not establish freshness. See
+[view freshness](https://github.com/astrivant/identity/blob/main/docs/view-freshness.md) in the upstream repository.

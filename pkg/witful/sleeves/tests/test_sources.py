@@ -13,11 +13,11 @@ import pytest
 from witful.collection import operations as collection
 from witful.collection.keys import prepare
 from witful.collection.models import CONFIG, SOURCE
+from witful.exceptions import SleeveError
 from witful.knowledge.contracts import as_data
 from witful.project import main as initialize
 from witful.sleeves import operations, state
 from witful.sleeves.git import git
-from witful.sleeves.models import SleeveError
 
 if TYPE_CHECKING:
     import subprocess
@@ -43,6 +43,7 @@ def test_encrypted_instances_preserve_snapshots_and_block_unsaved_closure(
         None: Plaintext never enters Git and a conflicting encrypted snapshot cannot silently win.
     """
     monkeypatch.setattr(collection, "private_repository", lambda repository: None)
+    monkeypatch.setattr(collection, "require_protected", lambda path: None)
     source, keys = tmp_path / "seed", tmp_path / "keys"
     initialize([str(source)])
     (source / "instructions.md").write_text("SYNTHETIC_PRIVATE_BASE")

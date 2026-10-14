@@ -14,8 +14,8 @@ import time
 from pathlib import Path
 from typing import TYPE_CHECKING
 
+from witful.exceptions import SleeveError
 from witful.sleeves import state
-from witful.sleeves.models import SleeveError
 
 if TYPE_CHECKING:
     from types import FrameType

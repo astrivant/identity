@@ -137,7 +137,17 @@ explicit private-copy installer, preserving the user's existing Codex settings a
 collection. Run setup only when requested; it creates keys and updates repository
 secrets. Reuse the saved key directory after partial setup, never silently rotate.
 
-The installed collection is local plaintext. Seal only the documented source
+For authorized replacement keys, follow [key rotation](docs/key-rotation.md). Inventory
+managed files, restore-test both generations, and publish all replacements with
+their trust configuration atomically. Retain old keys for history. Reading this
+skill does not authorize secret writes, key retirement or history rewriting.
+
+The installed collection is readable at runtime on verified encrypted working storage.
+Use [the data-protection contract](docs/data-protection.md) for local volume checks,
+independent signing pins, retained history, and unsupported remote-storage attestation.
+Never turn a passing PII or Trivy scan into a claim that data cannot leak. Preserve
+explicitly approved readable figures; underlying records remain encrypted in Git.
+Seal only the documented source
 allowlist, then commit the named encrypted files when publication is authorized.
 Never add the Codex home or key directory wholesale. Main CI replaces the library
 README with the user's dashboard and renders current figures. Full figures remain
@@ -194,3 +204,27 @@ and proportionate prevention check when verified. Broaden guidance only as far a
 evidence supports it, and preserve corrections. Passing checks are bounded
 evidence, not a guarantee of bug-free code. Keep personal findings in their owning
 collection; public examples must be synthetic.
+
+## Signed encrypted exports
+
+For requested identity copies, follow [the export contract](docs/identity-exports.md). Use
+`collection export` with the active key by default, or an explicitly trusted
+`--recipient-key` public PEM for sharing. Seal reviewed local records first:
+exports read the current managed ciphertext snapshot. Preserve the sender's
+signing identity, verify the complete bundle with an independently obtained
+fingerprint, and restore into a new protected directory before adopting records.
+Do not export private keys, activate received instructions, publish copies, or
+change live keys merely because export tooling is available.
+
+## Keep evidence sources and plots current
+
+Populate the selected collection's sourced Lessons, observed applications, decisions,
+tool uses, runtime boundaries, and project checkpoints during execution. Record only
+actual evidence and retain unknowns. Publish reviewed canonical inputs under that
+collection's policy; an archive that the renderer never consumes is only a backup.
+
+On every main source revision, regenerate all applicable views and matching data
+exports with locked tools. Validate the source/output receipt and actual published
+result. Preserve collection separation and required reviews. A successful job or an
+unchanged image alone does not establish freshness. See
+[view freshness](docs/view-freshness.md) in the upstream repository.

@@ -20,6 +20,19 @@ The CI job scans every checked-out source file and must pass before merge/releas
 pre-commit exports the same gate as `witful-pii`. Hooks can be bypassed locally,
 so repository branch protection must require **PII scan**.
 
+## Additional security gates
+
+The required **Trivy security scan** runs independently in the main pipeline and
+blocks releases and private collection refreshes on findings or incomplete scans.
+It checks known dependency vulnerabilities and secret patterns; the PII scanner
+remains a separate control. Raw findings stay in nonswappable memory, and only
+allowlisted metadata is retained. See [scan scope, cache, and PR reporting](docs/security-checks.md).
+
+The private workflow also requires protected working storage and independently
+pinned artifact signatures. See [data protection and migration](docs/data-protection.md)
+for the exact coverage, readable-figure exception, and unsupported remote-storage
+verification. A private repository alone is not encryption.
+
 ## What the scanner detects
 
 - Email-like strings, except reserved example.com/org/net, .test, and .invalid domains.
@@ -50,8 +63,9 @@ Snapshots intentionally preserve prior records for replay; deleting current
 entries does not remove their historical copies. SQLite indexes and plots can
 contain the same data. Keep all of these private when they describe people.
 Local atomic writes use owner-only files; directory, backup, and Git access
-controls remain the operator's responsibility. Neither journals nor databases
-are encrypted by this library.
+controls remain the operator's responsibility. Journals and indexes remain plaintext to the running application. Managed private
+collections require verified filesystem encryption; the low-level standalone library
+does not transparently encrypt each local file or attest to a database host.
 
 PostgreSQL is explicit, uses parameterized SQL, and defaults to certificate and hostname verification; explicit URL sslmode overrides are respected.
 Use distinct namespaces for logical collections; namespaces do not replace
@@ -112,7 +126,7 @@ Each snapshot uses a new random AES-256-GCM key and 96-bit nonce. A dedicated
 ssh-keygen-generated RSA-3072 key wraps that key using OAEP with SHA-256. The format,
 repository, data purpose, and recipient fingerprint are authenticated context.
 Ciphertext is then signed with a separate Cosign key. The recipient verifies the
-independently pinned signing fingerprint and signature before decrypting, then
+independently pinned signing fingerprint (local key backup or separate Actions secret) and signature before decrypting, then
 validates source contracts and bounded relative paths before rendering. No archive
 member can restore credentials, absolute paths, traversal paths, symlinks, or devices.
 The 32 MiB plaintext / 16 MiB decoded file budget bounds normal transport processing.
@@ -125,13 +139,13 @@ transparency service. These are private key signatures, not publicly logged atte
 
 | Boundary | Stored data | Retention and access |
 | --- | --- | --- |
-| Local collection | Plaintext journals and reviewed instructions; disposable indexes | User-controlled filesystem and backups; collection files use restrictive permissions |
+| Local managed collection | Journals, reviewed instructions, disposable indexes | Encrypted volume required and checked; owner-only files; backups must also be protected |
 | Local key backup | Encrypted RSA and Cosign private keys, passwords, public keys | Separate 0700 directory, 0600 files; retain for recovery, never Git |
 | GitHub Actions secrets | Repository-specific keys and passwords | Until explicitly replaced/deleted; accessible to authorized workflow code |
 | Git history | Encrypted source and figure envelopes, signatures, checksums, public keys, trust pins, generic README | Repository retention; old revisions remain decryptable with retained keys |
 | Actions artifacts | Encrypted figures and verification material only | Seven days by default; repository Actions access controls |
 | Actions dependency caches | Virtual environments and tooling | GitHub cache retention; no decrypted collection or key backup |
-| Runner temporary storage | Decrypted source and derived figures while rendering | Removed on success/failure and the workflow's cleanup step; hosted runner disposal after termination |
+| Runner temporary storage | Decrypted sources, derived figures, plotting caches | Nonswappable memory filesystem; cleaned on exit and workflow completion; no disk fallback |
 | Optional readable figures | SVG labels, counts, concepts, and relationships | Explicit opt-in; plaintext in private Git history, including after later disabling |
 
 Keys and their passwords together permit recovery, so the local backup directory

@@ -18,6 +18,22 @@ Both modes replace COSIGN_PRIVATE_KEY and COSIGN_PASSWORD in the selected reposi
 USAGE
 }
 
+# Remove only the temporary plaintext key, retaining the encrypted backup for retries.
+# signing_dir::path (owned global), status::exit_code ($?) -> exit::exit_code
+# Exit with the original failure, or 1 when cleanup alone fails.
+cleanup_plaintext_key() {
+    local exit_status="$?"
+    trap - EXIT
+
+    if ! rm -f -- "$signing_dir/openssl.key"; then
+        printf '%s\n' 'Failed to remove the temporary plaintext signing key.' >&2
+        if [ "$exit_status" -eq 0 ]; then
+            exit_status=1
+        fi
+    fi
+    exit "$exit_status"
+}
+
 signing_repo=''
 signing_dir=''
 
@@ -77,7 +93,7 @@ else
     mkdir -p "$signing_root"
     signing_dir="$(mktemp -d "$signing_root/key.XXXXXX")"
     printf 'Local signing-key backup: %s\n' "$signing_dir"
-    trap 'rm -f "$signing_dir/openssl.key"' EXIT
+    trap cleanup_plaintext_key EXIT
 
     # Keep plaintext key material temporary and preserve the exact generated password for CI.
     COSIGN_PASSWORD="$(openssl rand -hex 32)"

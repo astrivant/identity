@@ -14,6 +14,7 @@ from typing import TYPE_CHECKING
 from attrs import evolve
 from jsonschema import ValidationError
 
+from witful.collection.protection import check_collection
 from witful.files import replace_file
 from witful.knowledge.compiler import compile_identity, index
 from witful.knowledge.contracts import as_data, schema, structure
@@ -48,6 +49,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     root = args.repo.resolve()
 
     try:
+        check_collection(root, root / "docs/assets")
         inventory_path = root / "knowledge/repertoire.json"
         inventory = structure(json.loads(inventory_path.read_text()), Inventory) if inventory_path.exists() else Inventory()
         catalog = structure(json.loads((root / "knowledge/catalog.json").read_text()), Catalog)

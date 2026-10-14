@@ -12,7 +12,7 @@ from typing import TYPE_CHECKING
 from witful.collection import archive
 from witful.collection.models import CONFIG, SOURCE, load_config
 from witful.collection.operations import restore, seal
-from witful.sleeves.models import SleeveError
+from witful.exceptions import SleeveError
 
 if TYPE_CHECKING:
     from witful.sleeves.models import Sleeve

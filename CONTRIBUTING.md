@@ -5,9 +5,30 @@ Use Poetry 2.5.1 and the committed lockfile:
 ```bash
 poetry install --extras postgres --extras sapience
 poetry run pre-commit install
-poetry run pytest -n 4
+poetry run pytest -n 4 pkg/witful scripts/ci/tests --cov=witful --cov-branch --cov-report=term-missing
 poetry run pre-commit run --all-files
 ```
+
+ShellCheck and shfmt validate standalone shell scripts. The pinned Actionlint hook
+also validates every workflow and sends inline `run:` shell to ShellCheck; missing
+ShellCheck fails the hook. CI runs this same hook with
+`pre-commit run actionlint --all-files`. Pre-commit builds Actionlint using Go
+(the minimum is defined in its pinned upstream `go.mod`). Keep the project environment
+on `PATH` so local hooks and CI use the locked ShellCheck installation.
+
+Quote scalar command substitutions, including assignment values, for consistent
+readability: `value="$(command)"`. Plain Bash assignments already suppress word
+splitting and glob expansion; this style is stricter than ShellCheck's required
+quoting checks. Prefer `[ ... ]` for simple tests and retain `[[ ... ]]` for
+pattern/regex matching. Preserve behavior when changing syntax.
+
+Register named Bash functions as trap handlers, including in CI. Give each handler
+an intent comment and typed signature describing its inputs or owned state, cleanup
+scope, and exit contract. Capture the incoming status before any other command,
+disable a trap before explicitly exiting its handler, and keep cleanup failures
+visible. These EXIT handlers preserve an existing failure and exit with status 1 if
+cleanup alone fails. Exercise success, command failure, and cleanup failure paths;
+document signal handling separately when a script installs signal traps.
 
 Keep Python implementation and tests under `pkg/witful/`. Use strict types,
 attrs/cattrs contracts, multiline Google docstrings, and pure transformations
@@ -15,7 +36,17 @@ with explicit inputs. Add focused regressions for behavior changes. Tests use
 synthetic data; never copy personal records into fixtures. Live PostgreSQL tests
 use `WITFUL_TEST_DATABASE_URL` and skip when it is not configured locally.
 
-Independent CI checks start in parallel: Python tests, lint, PII, distributions,
+Define custom package exceptions in `witful.exceptions` and import them directly
+from there in implementation code and tests. Keep operational functions, such as
+`require_protected`, in their domain modules. The exception module has no domain
+imports, so low-level callers can import failure types without circular dependencies.
+Existing storage, protection, and sleeve-model exception paths remain aliases to
+the same classes for compatibility; preserve their base types and catch behavior.
+
+See [measured coverage](#measured-coverage) for the combined line/branch report,
+provenance, and verified API publication contract.
+
+Independent CI checks start in parallel: Python tests, lint, PII, Trivy, distributions,
 and orchestration. Tag publication consumes the verified distributions after
 all checks pass; it does not rebuild them. See [release operations](docs/releases.md).
 
@@ -23,6 +54,7 @@ Non-Python pins live beside their consumers: action commit SHAs and documented
 versions in `.github/workflows/ci.yml`; Python/PostgreSQL image digests in the
 Dockerfile and chart; Composer commit in CI and pre-commit; Bitnami README/schema
 generator 2.7.2 (with glob 13.0.6 using its compatible synchronous API) in `scripts/chart/package-lock.json`; Poetry 2.5.1 in CI/Docker.
+Coverage publication uses the pinned GitHub SDK action in the workflow.
 The release signing job pins Cosign. Update consumer and lock/schema outputs
 together. Check JavaScript actions' own Node runtime when upgrading.
 

@@ -17,3 +17,6 @@ services/.compose-generated/
 
 # Instance writer bookkeeping is not identity source state.
 .instances.lock
+
+# Synthetic raster previews are CI artifacts; reviewed SVGs remain the source view.
+docs/assets/project-chapters/*.png

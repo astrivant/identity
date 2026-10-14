@@ -14,7 +14,7 @@ from typing import TYPE_CHECKING
 from attrs import frozen
 from jsonschema import ValidationError
 
-from witful.collection.models import MAX_BYTES, Envelope
+from witful.collection.models import CONFIG, MAX_BYTES, Envelope, file_path, parse_config
 from witful.knowledge.contracts import structure
 
 if TYPE_CHECKING:
@@ -138,7 +138,12 @@ def scan(root: Path, *, staged: bool = False, terms: Sequence[str] = (), paths: 
     listing = (
         _git(root, "ls-files", "-z", "--cached") if staged else _git(root, "ls-files", "-z", "--cached", "--others", "--exclude-standard")
     )
+    envelopes = set(_ENVELOPES)
     names = sorted({name.decode("utf-8", errors="surrogateescape") for name in listing.split(b"\0") if name})
+    if CONFIG in names:
+        # Ownership policy must come from the same snapshot as the bytes being checked.
+        configuration = _git(root, "show", f":{CONFIG}") if staged else (root / CONFIG).read_bytes()
+        envelopes.update(file_path(name) for name in parse_config(configuration).managed_files)
 
     if paths:
         if not set(paths).issubset(names):
@@ -162,16 +167,14 @@ def scan(root: Path, *, staged: bool = False, terms: Sequence[str] = (), paths: 
                 data = str(path.readlink()).encode()
             elif not path.exists():
                 continue
-            elif not path.resolve().is_relative_to(root) or path.stat().st_size > (
-                MAX_BYTES * 2 if name in _ENVELOPES else 5 * 1024 * 1024
-            ):
+            elif not path.resolve().is_relative_to(root) or path.stat().st_size > (MAX_BYTES * 2 if name in envelopes else 5 * 1024 * 1024):
                 findings.append(Finding(label, 0, "unscannable-file"))
                 continue
             else:
                 data = path.read_bytes()
 
-            # Only the fixed encrypted transport paths accept opaque content, with a closed envelope schema.
-            if name in _ENVELOPES:
+            # Only configured encrypted transport paths accept opaque content, with a closed envelope schema.
+            if name in envelopes:
                 validate_envelope(data)
                 continue
 

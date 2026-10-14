@@ -24,3 +24,20 @@
 /docs/agent-commands.md @emmeowzing
 /pkg/witful/delivery/ @emmeowzing
 /docs/delivery.md @emmeowzing
+
+/pkg/witful/collection/ @emmeowzing
+/pkg/witful/privacy/ @emmeowzing
+/scripts/collection/ @emmeowzing
+/docs/key-rotation.md @emmeowzing
+/docs/private-collections.md @emmeowzing
+/docs/data-protection.md @emmeowzing
+/docs/identity-exports.md @emmeowzing
+/pkg/witful/exceptions.py @emmeowzing
+/pkg/witful/storage/ @emmeowzing
+/pkg/witful/sleeves/ @emmeowzing
+/pkg/witful/checkpoints/storage.py @emmeowzing
+/.github/workflows/ @emmeowzing
+/scripts/ci/checks/ @emmeowzing
+/docs/view-freshness.md @emmeowzing
+/.gitignore @emmeowzing
+/scripts/release/setup-signing.sh @emmeowzing

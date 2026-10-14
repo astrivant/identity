@@ -33,7 +33,8 @@ sources and schema drift.
 | `awareness [--repo PATH] [--config PATH] [--output PATH] build/push/schema` | Render selected figures, explicitly dispatch a resume rebuild, or print wire schemas |
 | `sapience [--repo PATH] export/sync/propose/schema` | Optional MCP projection, stable readback-verified synchronization, and pending review briefs |
 | `sleeve start/checkpoint/backup/finish/status/guard/run/schema` | Isolated sessions, signed backup, termination handling, and verified reconciliation |
-| `collection setup/seal/restore/refresh/schema` | Private-copy installation, authenticated encryption, and CI figure refresh |
+| `collection export/verify-export/restore-export` | Signed encrypted current identity copies with an optional recipient public key; [export contract](identity-exports.md) |
+| `collection setup/seal/restore/refresh/verify/check-storage/schema` | Private-copy installation, authenticated encryption, and CI figure refresh |
 | `registry NAME... [--stdin] [--refresh] [--offline]` | Batched PyPI observations, cached for six hours; exit 2 for unknown results |
 
 Life decisions contain `key`, `title`, `task`, `choice`, `rationale`, `source`,
@@ -178,3 +179,20 @@ See [coverage, handoff, storage, and hook behavior](completion.md).
 `pr publish`, and resumable `recovery plan` / `recovery apply`. Read the
 [delivery contract](delivery.md) for required inputs, exact-head leases, signed
 small-first batches, review boundaries, and interrupted-run recovery.
+
+## Collection storage verification
+
+`collection check-storage --path PATH` verifies host encryption evidence. Repeat
+`--path` for keys, indexes, and temporary storage. `collection verify --checkout PATH
+--signing-fingerprint TRUSTED_SHA256 [--figures]` authenticates ciphertext against
+an independently retained signing identity. See [data protection](data-protection.md).
+
+## Collection key rotation
+
+`witful collection inventory` lists current managed ciphertext. `seal-file` and
+`restore-file` explicitly register and recover opaque files outside the source
+archive allowlist. `rotation-keys` writes a private candidate; `rotate` prepares
+verified previous/current snapshots without editing the active checkout.
+`prepare-refresh` and `publish-refresh` are trusted CI stages. `promote-keys`
+explicitly projects adopted keys to existing primary Actions secrets.
+See [inputs, limits, recovery and publication](key-rotation.md).
