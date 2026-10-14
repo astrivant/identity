@@ -4,10 +4,9 @@
     "properties": {
         "workers": {
             "type": "integer",
-            "description": "Number of concurrent one-shot sync workers, from 1 through 16",
+            "description": "Number of concurrent one-shot sync workers; positive integer with no chart-imposed maximum",
             "default": 1,
-            "minimum": 1,
-            "maximum": 16
+            "minimum": 1
         },
         "image": {
             "type": "object",

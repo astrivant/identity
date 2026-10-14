@@ -11,7 +11,7 @@ transactionally. `life replay --from-database` reads the remote archive.
 Connections default to `sslmode=verify-full`. An explicit URL `sslmode`
 overrides that default; use `disable` only for local disposable development. Supply the appropriate CA using PostgreSQL's client settings.
 
-`helm/witful` runs bounded one-shot workers (1-16), mounting a source
+`helm/witful` runs a configurable positive number of one-shot workers, mounting a source
 journal and endpoint from existing Secrets. Repeated workers synchronize the
 same immutable source, not independently evolve it. The chart exposes placement, priority, resources, retry/deadline and termination
 controls. See the [complete parameter table](../helm/witful/README.md) and

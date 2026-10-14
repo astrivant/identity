@@ -52,6 +52,10 @@ adapted for cluster policy. Pod labels cannot override the chart's identity labe
 Use the [HA reference](references/ha/README.md) for three workers on separate nodes,
 zone spread preferences and bounded recovery. `workers` controls parallelism and
 completion count for a one-shot Job, not a continuously running replica set.
+The chart requires a positive integer and sets no maximum worker count. Kubernetes
+API limits, cluster quotas and available capacity still apply; see
+[Job parallelism](https://kubernetes.io/docs/concepts/workloads/controllers/job/#controlling-parallelism).
+Use `job.suspend` to pause the Job.
 Each worker reads the same journal, and PostgreSQL serializes writes; increasing
 workers increases redundant attempts rather than write throughput. Database locks
 and network round trips are likely constraints; there is no capacity benchmark.
@@ -73,20 +77,20 @@ separately reviewed volume migration. Changing values does not migrate stored da
 
 ### Synchronization workers
 
-| Name                      | Description                                                                      | Value             |
-| ------------------------- | -------------------------------------------------------------------------------- | ----------------- |
-| `workers`                 | Number of concurrent one-shot sync workers, from 1 through 16                    | `1`               |
-| `image.repository`        | Image built from this checkout; publish to a private registry before cluster use | `witful`          |
-| `image.tag`               | Immutable application release or source tag                                      | `0.1.0`           |
-| `image.pullPolicy`        | Kubernetes image pull policy                                                     | `IfNotPresent`    |
-| `imagePullSecrets`        | Existing registry credential Secret names                                        | `[]`              |
-| `source.existingSecret`   | Secret containing the reviewed journal, mounted read-only                        | `witful-source`   |
-| `source.journalKey`       | Secret key projected as lessons.jsonl                                            | `lessons.jsonl`   |
-| `database.existingSecret` | Secret containing the PostgreSQL URI; never place credentials in values          | `witful-database` |
-| `database.urlKey`         | Key holding the PostgreSQL URI in that Secret                                    | `url`             |
-| `database.namespace`      | Shared identity partition; all cooperating workers must use the same value       | `default`         |
-| `database.caSecret`       | Optional Secret containing a private PostgreSQL CA                               | `""`              |
-| `database.caKey`          | Secret key projected as root.crt                                                 | `root.crt`        |
+| Name                      | Description                                                                                | Value             |
+| ------------------------- | ------------------------------------------------------------------------------------------ | ----------------- |
+| `workers`                 | Number of concurrent one-shot sync workers; positive integer with no chart-imposed maximum | `1`               |
+| `image.repository`        | Image built from this checkout; publish to a private registry before cluster use           | `witful`          |
+| `image.tag`               | Immutable application release or source tag                                                | `0.1.0`           |
+| `image.pullPolicy`        | Kubernetes image pull policy                                                               | `IfNotPresent`    |
+| `imagePullSecrets`        | Existing registry credential Secret names                                                  | `[]`              |
+| `source.existingSecret`   | Secret containing the reviewed journal, mounted read-only                                  | `witful-source`   |
+| `source.journalKey`       | Secret key projected as lessons.jsonl                                                      | `lessons.jsonl`   |
+| `database.existingSecret` | Secret containing the PostgreSQL URI; never place credentials in values                    | `witful-database` |
+| `database.urlKey`         | Key holding the PostgreSQL URI in that Secret                                              | `url`             |
+| `database.namespace`      | Shared identity partition; all cooperating workers must use the same value                 | `default`         |
+| `database.caSecret`       | Optional Secret containing a private PostgreSQL CA                                         | `""`              |
+| `database.caKey`          | Secret key projected as root.crt                                                           | `root.crt`        |
 
 ### Job lifecycle
 

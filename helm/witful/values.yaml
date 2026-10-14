@@ -1,5 +1,5 @@
 ## @section Synchronization workers
-## @param workers Number of concurrent one-shot sync workers, from 1 through 16
+## @param workers Number of concurrent one-shot sync workers; positive integer with no chart-imposed maximum
 workers: 1
 ## @param image.repository Image built from this checkout; publish to a private registry before cluster use
 ## @param image.tag Immutable application release or source tag

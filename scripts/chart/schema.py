@@ -19,7 +19,7 @@ def main() -> None:
     """
     schema: dict[str, object] = json.loads((_CHART / "values.schema.json").read_text())
     rules: dict[str, dict[str, object]] = {
-        "workers": {"type": "integer", "minimum": 1, "maximum": 16},
+        "workers": {"type": "integer", "minimum": 1},
         "image.pullPolicy": {"enum": ["Always", "IfNotPresent", "Never"]},
         "imagePullSecrets": {"default": [], "items": {"type": "string", "minLength": 1}},
         "database.namespace": {"pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$"},

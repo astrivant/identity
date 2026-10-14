@@ -17,7 +17,7 @@ _CHART = _ROOT / "helm/witful"
 
 class ChartContracts(unittest.TestCase):
     """
-    Check worker bounds, secret projection, and local replica configuration.
+    Check worker counts, secret projection, and local replica configuration.
     """
 
     def test_worker_mounts_and_privileges(self) -> None:
@@ -25,7 +25,7 @@ class ChartContracts(unittest.TestCase):
         Render secret-backed workers with private CA and registry credentials.
 
         Returns:
-            None: The chart preserves the non-root, read-only, and bounded-worker contract.
+            None: The chart preserves the non-root, read-only worker contract.
         """
         result = subprocess.run(
             ["helm", "template", "witful", str(_CHART), "--set", "workers=3,database.caSecret=ca,imagePullSecrets[0]=registry"],
@@ -75,12 +75,12 @@ class ChartContracts(unittest.TestCase):
 
     def test_invalid_worker_counts_fail_rendering(self) -> None:
         """
-        Reject fractional, negative, zero, or excessive concurrency at the chart boundary.
+        Reject fractional, negative, zero, or nonnumeric worker counts at the chart boundary.
 
         Returns:
             None: Invalid configurations fail before a workload is created.
         """
-        for value in ("0", "-1", "17", "1.5"):
+        for value in ("0", "-1", "1.5", "true", "many"):
             with self.subTest(workers=value):
                 result = subprocess.run(
                     ["helm", "template", "witful", str(_CHART), "--set", f"workers={value}"],
@@ -90,6 +90,26 @@ class ChartContracts(unittest.TestCase):
                     timeout=30,
                 )
                 assert result.returncode != 0
+
+    def test_worker_counts_above_the_former_limit_render_unchanged(self) -> None:
+        """
+        Preserve operator-selected counts without a chart-imposed concurrency ceiling.
+
+        Returns:
+            None: Parallelism and completions retain each positive worker count.
+        """
+        for workers in (1, 17, 256, 10000):
+            with self.subTest(workers=workers):
+                result = subprocess.run(
+                    ["helm", "template", "witful", str(_CHART), "--set", f"workers={workers}"],
+                    check=True,
+                    capture_output=True,
+                    text=True,
+                    timeout=30,
+                )
+                job = yaml.safe_load(result.stdout)
+                assert job["spec"]["parallelism"] == workers
+                assert job["spec"]["completions"] == workers
 
     def test_compose_keeps_secrets_runtime_only_and_allows_scaling(self) -> None:
         """

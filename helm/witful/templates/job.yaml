@@ -1,7 +1,4 @@
 {{- include "witful.validatePlacement" . }}
-{{- if or (lt (int .Values.workers) 1) (gt (int .Values.workers) 16) (ne (float64 .Values.workers) (float64 (int .Values.workers))) }}
-{{- fail "workers must be an integer from 1 through 16" }}
-{{- end }}
 apiVersion: batch/v1
 kind: Job
 metadata:
