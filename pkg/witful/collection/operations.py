@@ -7,6 +7,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+from datetime import UTC, datetime
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from typing import TYPE_CHECKING, Literal
@@ -15,8 +16,9 @@ from witful.awareness.models import FIGURES as FIGURE_CATALOG
 from witful.checkpoints.journal import read as read_checkpoints
 from witful.checkpoints.plotting import build as checkpoint_plots
 from witful.collection import archive
-from witful.collection.crypto import decrypt, encrypt, fingerprint, sign, verify
+from witful.collection.crypto import decrypt, encrypt, fingerprint, save, verify
 from witful.collection.keys import signing_environment
+from witful.collection.managed import deadline_check
 from witful.collection.models import FIGURES, SOURCE, load_config
 from witful.collection.process import private_repository
 from witful.collection.protection import require_protected
@@ -43,39 +45,6 @@ if TYPE_CHECKING:
     from witful.collection.models import Config
 
 
-def _save(root: Path, relative: str, content: bytes, public: bytes, config: Config, env: dict[str, str]) -> None:
-    """
-    Finalize and verify ciphertext before replacing the committed envelope and verification set.
-
-    Args:
-        root (Path): Repository checkout receiving opaque files.
-        relative (str): Fixed output path.
-        content (bytes): Canonical encrypted bytes.
-        public (bytes): Cosign verification key.
-        config (Config): Independently trusted key fingerprints.
-        env (dict[str, str]): Scoped signing environment.
-
-    Returns:
-        None: Verified ciphertext, signature, and checksum are written without plaintext staging.
-    """
-    with TemporaryDirectory(prefix="witful-seal-") as temporary:
-        staged = Path(temporary) / "payload.json"
-        staged.write_bytes(content)
-        verification = Path(temporary) / "cosign.pub"
-        verification.write_bytes(public)
-        sign(staged, env)
-        verify(staged, verification, config)
-        outputs = {
-            relative: content,
-            relative + ".sigstore.json": Path(str(staged) + ".sigstore.json").read_bytes(),
-            relative + ".sha256": (hashlib.sha256(content).hexdigest() + "\n").encode(),
-        }
-
-        for name, data in outputs.items():
-            path = root / name
-            replace_file(path, data, expected=path.read_bytes() if path.exists() else None)
-
-
 def seal(checkout: Path, source: Path, keys: Path) -> None:
     """
     Validate and encrypt the latest local source collection for a private repository push.
@@ -89,6 +58,7 @@ def seal(checkout: Path, source: Path, keys: Path) -> None:
         None: Only the encrypted source and its signature/checksum change in the checkout.
     """
     config = load_config(checkout)
+    deadline_check(config, datetime.now(UTC).date())
     private_repository(config.repository)
 
     if source.resolve().is_relative_to(checkout.resolve()) or keys.resolve().is_relative_to(checkout.resolve()):
@@ -98,7 +68,7 @@ def seal(checkout: Path, source: Path, keys: Path) -> None:
     require_protected(keys)
     archive.validate(source)
     payload = encrypt(archive.pack(source), (keys / "collection.pub").read_bytes(), config, "sources")
-    _save(checkout, SOURCE, payload, (keys / "cosign.pub").read_bytes(), config, signing_environment(keys))
+    save(checkout, SOURCE, payload, (keys / "cosign.pub").read_bytes(), config, signing_environment(keys))
 
 
 def restore(checkout: Path, keys: Path, output: Path, purpose: Literal["sources", "figures"]) -> None:
@@ -204,12 +174,14 @@ def readme(config: Config, source_digest: str, *, reflection_enabled: bool = Tru
     )
 
 
-def refresh(checkout: Path) -> None:
+def refresh(checkout: Path, environment: dict[str, str] | None = None, *, history: Path | None = None) -> None:
     """
     Run the trusted main-branch refresh while retaining plaintext only in temporary local storage.
 
     Args:
         checkout (Path): Verified private repository checkout.
+        environment (dict[str, str] | None): Explicit selected key generation, or the current process environment.
+        history (Path | None): Original full Git checkout for review cadence; defaults to checkout for direct refreshes.
 
     Returns:
         None: Encrypted figures and a generated README replace prior outputs after full validation.
@@ -217,32 +189,34 @@ def refresh(checkout: Path) -> None:
     Raises:
         ValueError: Event identity, repository visibility, trust pins, or source validation fail.
     """
+    env = dict(os.environ) if environment is None else environment
     config = load_config(checkout)
+    deadline_check(config, datetime.now(UTC).date())
 
     if (
-        os.environ.get("GITHUB_REPOSITORY", "").lower() != config.repository.lower()
-        or os.environ.get("GITHUB_EVENT_NAME") not in {"push", "workflow_dispatch"}
-        or os.environ.get("GITHUB_REF") != "refs/heads/main"
+        env.get("GITHUB_REPOSITORY", "").lower() != config.repository.lower()
+        or env.get("GITHUB_EVENT_NAME") not in {"push", "workflow_dispatch"}
+        or env.get("GITHUB_REF") != "refs/heads/main"
     ):
         raise ValueError("Collection refresh is restricted to the configured private main branch")
 
     private_repository(config.repository)
-    if config.signing_fingerprint != os.environ["WITFUL_COLLECTION_SIGNING_FINGERPRINT"]:
+    if config.signing_fingerprint != env["WITFUL_COLLECTION_SIGNING_FINGERPRINT"]:
         raise ValueError("Downloaded signing configuration differs from the independent Actions trust pin")
     path = checkout / SOURCE
     verify(path, checkout / "collection/cosign.pub", config)
-    public = os.environ["WITFUL_COLLECTION_PUBLIC_KEY"].encode()
+    public = env["WITFUL_COLLECTION_PUBLIC_KEY"].encode()
 
     if fingerprint(public) != config.encryption_fingerprint:
         raise ValueError("CI encryption secret differs from the configured recipient")
 
     # The CI launcher supplies a nonswappable memory filesystem; never fall back to runner disk.
-    temporary_root = Path(os.environ["WITFUL_SECURE_TEMP"])
+    temporary_root = Path(env["WITFUL_SECURE_TEMP"])
     require_protected(temporary_root)
     data = decrypt(
         path.read_bytes(),
-        os.environ["WITFUL_COLLECTION_PRIVATE_KEY"].encode(),
-        os.environ["WITFUL_COLLECTION_KEY_PASSWORD"].encode(),
+        env["WITFUL_COLLECTION_PRIVATE_KEY"].encode(),
+        env["WITFUL_COLLECTION_KEY_PASSWORD"].encode(),
         config,
         "sources",
     )
@@ -255,14 +229,14 @@ def refresh(checkout: Path) -> None:
         review_settings = reflection_config(root)
         if review_settings.enabled:
             # The plan contains private decision text and travels only inside the signed encrypted figure archive.
-            plan = reflection_plan(root, checkout)
+            plan = reflection_plan(root, checkout if history is None else history)
             (figures / "reflection-plan.json").write_text(json.dumps(plan, indent=2) + "\n")
             print(json.dumps({"reflection_due": plan["due"], "review_decisions": plan["decision_count"]}))
         (figures / "provenance.json").write_text(
             json.dumps(
                 {
                     "source_ciphertext_sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
-                    "source_commit": os.environ.get("GITHUB_SHA", ""),
+                    "source_commit": env.get("GITHUB_SHA", ""),
                     "repository": config.repository,
                 },
                 sort_keys=True,
@@ -270,7 +244,7 @@ def refresh(checkout: Path) -> None:
             + "\n"
         )
         encrypted = encrypt(archive.pack(figures, figures=True), public, config, "figures")
-        _save(checkout, FIGURES, encrypted, (checkout / "collection/cosign.pub").read_bytes(), config, dict(os.environ))
+        save(checkout, FIGURES, encrypted, (checkout / "collection/cosign.pub").read_bytes(), config, dict(env))
 
         # Readable plots are a separate explicit disclosure. Scan vector labels before placing them in Git.
         readable = checkout / "docs/collection"

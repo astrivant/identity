@@ -8,6 +8,8 @@ import base64
 import hashlib
 import json
 import os
+from pathlib import Path
+from tempfile import TemporaryDirectory
 from typing import TYPE_CHECKING, Literal
 
 from cryptography.hazmat.primitives import hashes, serialization
@@ -16,12 +18,11 @@ from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 
 from witful.collection.models import MAX_BYTES, Envelope
 from witful.collection.process import run
+from witful.files import replace_file
 from witful.knowledge.contracts import as_data, structure
 from witful.life.contracts import canonical
 
 if TYPE_CHECKING:
-    from pathlib import Path
-
     from witful.collection.models import Config
 
 
@@ -39,13 +40,13 @@ def fingerprint(public: bytes) -> str:
     return hashlib.sha256(key.public_bytes(serialization.Encoding.DER, serialization.PublicFormat.SubjectPublicKeyInfo)).hexdigest()
 
 
-def context(config: Config, purpose: Literal["sources", "figures"]) -> bytes:
+def context(config: Config, purpose: Literal["sources", "figures", "files"]) -> bytes:
     """
     Bind encryption to its intended repository, purpose, format, and recipient.
 
     Args:
         config (Config): Reviewed repository trust configuration.
-        purpose (Literal["sources", "figures"]): Expected data category.
+        purpose (Literal["sources", "figures", "files"]): Expected data category.
 
     Returns:
         bytes: Canonical authenticated context.
@@ -53,7 +54,7 @@ def context(config: Config, purpose: Literal["sources", "figures"]) -> bytes:
     return canonical(["witful-collection", 1, config.repository.lower(), purpose, config.encryption_fingerprint])
 
 
-def encrypt(data: bytes, public: bytes, config: Config, purpose: Literal["sources", "figures"]) -> bytes:
+def encrypt(data: bytes, public: bytes, config: Config, purpose: Literal["sources", "figures", "files"]) -> bytes:
     """
     Use a fresh AES-256 key and nonce for each RSA-wrapped collection snapshot.
 
@@ -61,7 +62,7 @@ def encrypt(data: bytes, public: bytes, config: Config, purpose: Literal["source
         data (bytes): Bounded plaintext file map.
         public (bytes): Trusted RSA PEM public key with at least 3072 bits.
         config (Config): Reviewed repository trust configuration.
-        purpose (Literal["sources", "figures"]): Data category authenticated with the payload.
+        purpose (Literal["sources", "figures", "files"]): Data category authenticated with the payload.
 
     Returns:
         bytes: Canonical JSON envelope suitable for Git and artifact storage.
@@ -90,7 +91,7 @@ def encrypt(data: bytes, public: bytes, config: Config, purpose: Literal["source
     return canonical(as_data(envelope)) + b"\n"
 
 
-def decrypt(data: bytes, private: bytes, password: bytes, config: Config, purpose: Literal["sources", "figures"]) -> bytes:
+def decrypt(data: bytes, private: bytes, password: bytes, config: Config, purpose: Literal["sources", "figures", "files"]) -> bytes:
     """
     Authenticate context and ciphertext before returning any private bytes.
 
@@ -99,7 +100,7 @@ def decrypt(data: bytes, private: bytes, password: bytes, config: Config, purpos
         private (bytes): Encrypted RSA PEM private key.
         password (bytes): Exact private key password, supplied through a scoped environment or local backup.
         config (Config): Trusted repository identity and recipient fingerprint.
-        purpose (Literal["sources", "figures"]): Required payload category.
+        purpose (Literal["sources", "figures", "files"]): Required payload category.
 
     Returns:
         bytes: Authenticated plaintext file map.
@@ -201,3 +202,36 @@ def verify(path: Path, public: Path, config: Config) -> None:
             str(path),
         ]
     )
+
+
+def save(root: Path, relative: str, content: bytes, public: bytes, config: Config, env: dict[str, str]) -> None:
+    """
+    Finalize and verify ciphertext before replacing the committed envelope and verification set.
+
+    Args:
+        root (Path): Repository checkout receiving opaque files.
+        relative (str): Fixed output path.
+        content (bytes): Canonical encrypted bytes.
+        public (bytes): Cosign verification key.
+        config (Config): Independently trusted key fingerprints.
+        env (dict[str, str]): Scoped signing environment.
+
+    Returns:
+        None: Verified ciphertext, signature, and checksum are written without plaintext staging.
+    """
+    with TemporaryDirectory(prefix="witful-seal-") as temporary:
+        staged = Path(temporary) / "payload.json"
+        staged.write_bytes(content)
+        verification = Path(temporary) / "cosign.pub"
+        verification.write_bytes(public)
+        sign(staged, env)
+        verify(staged, verification, config)
+        outputs = {
+            relative: content,
+            relative + ".sigstore.json": Path(str(staged) + ".sigstore.json").read_bytes(),
+            relative + ".sha256": (hashlib.sha256(content).hexdigest() + "\n").encode(),
+        }
+
+        for name, data in outputs.items():
+            path = root / name
+            replace_file(path, data, expected=path.read_bytes() if path.exists() else None)

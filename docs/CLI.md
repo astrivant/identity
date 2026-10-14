@@ -188,3 +188,13 @@ accepts its complete reviewed batch; `build --output-dir PATH` renders current
 assessments, and `check` validates the journal. `schema` prints generated contracts.
 `example --output-dir PATH` renders synthetic public demonstration data only.
 See [cadence, rubric, and evidence requirements](continual-learning.md).
+
+## Collection key rotation
+
+`witful collection inventory` lists current managed ciphertext. `seal-file` and
+`restore-file` explicitly register and recover opaque files outside the source
+archive allowlist. `rotation-keys` writes a private candidate; `rotate` prepares
+verified previous/current snapshots without editing the active checkout.
+`prepare-refresh` and `publish-refresh` are trusted CI stages. `promote-keys`
+explicitly projects adopted keys to existing primary Actions secrets.
+See [inputs, limits, recovery and publication](key-rotation.md).

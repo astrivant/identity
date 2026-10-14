@@ -9,7 +9,7 @@ import subprocess
 from typing import TYPE_CHECKING
 
 from witful.collection.process import private_repository
-from witful.sleeves.models import SleeveError
+from witful.exceptions import SleeveError
 
 if TYPE_CHECKING:
     from pathlib import Path

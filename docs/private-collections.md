@@ -6,6 +6,8 @@ private repository also works when its organization permits it.
 [GitHub fork visibility rules](https://docs.github.com/en/pull-requests/reference/forks).
 The public library ships no personal collection, and its collection job stays disabled.
 
+For replacement keys, follow [current-file rotation and retained-history recovery](key-rotation.md).
+
 ## First setup
 
 Requires protected local working and key-backup volumes, macOS or Linux, Python 3.12+ excluding 3.14.1, Git, `gh`, OpenSSL,
@@ -135,8 +137,8 @@ collection secrets through this job. PyPI publication is restricted to upstream.
 
 The refresh verifies the pinned signing key, decrypts a bounded source snapshot
 into runner-local temporary storage, validates it, regenerates all views, encrypts
-and signs them, and updates README. Only encrypted outputs and verification metadata
-enter the artifact store. `GITHUB_TOKEN` commits the named generated outputs;
+and signs them, and updates README. Encrypted outputs, verification metadata, and any explicitly approved readable figures
+enter the artifact store. `GITHUB_TOKEN` publishes a verified complete candidate with an optimistic GitHub API commit;
 its push does not start another workflow. A newer `main` revision or branch protection
 causes a visible push failure, never a force push. Retrieve the encrypted artifact
 and integrate it through your repository's review process, or explicitly allow
@@ -154,6 +156,7 @@ repository Actions secrets are:
 | `WITFUL_COLLECTION_SIGNING_FINGERPRINT` | Independently retained SHA-256 signing public-key fingerprint |
 | `WITFUL_COLLECTION_SIGNING_KEY` | Password-encrypted Cosign private key |
 | `WITFUL_COLLECTION_SIGNING_PASSWORD` | Exact Cosign key password |
+| `WITFUL_COLLECTION_NEXT_KEYS` | Optional complete candidate JSON from `rotation-keys`, with a future rotation deadline |
 
 No new GitHub token is generated; setup uses the authenticated `gh` client and CI
 uses the job token. See [data handling and threat boundaries](../SECURITY.md#private-collection-data-handling).

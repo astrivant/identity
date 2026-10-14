@@ -13,9 +13,10 @@ from typing import TYPE_CHECKING
 from cryptography.exceptions import InvalidTag, UnsupportedAlgorithm
 from jsonschema import ValidationError
 
+from witful.exceptions import SleeveError
 from witful.knowledge.contracts import as_data, schema
 from witful.sleeves import operations, state, supervisor
-from witful.sleeves.models import Sleeve, SleeveError
+from witful.sleeves.models import Sleeve
 
 if TYPE_CHECKING:
     from collections.abc import Sequence

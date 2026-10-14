@@ -14,9 +14,9 @@ from attrs import frozen
 
 from witful.checkpoints.journal import validate
 from witful.checkpoints.models import Checkpoint
+from witful.exceptions import StorageError
 from witful.knowledge.contracts import as_data, structure
 from witful.storage import validate_endpoint
-from witful.storage.exceptions import StorageError
 
 if TYPE_CHECKING:
     from collections.abc import Sequence

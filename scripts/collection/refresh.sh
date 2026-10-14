@@ -9,4 +9,4 @@ export TMPDIR="$WITFUL_SECURE_TEMP"
 export MPLCONFIGDIR="$WITFUL_SECURE_TEMP/matplotlib"
 export XDG_CACHE_HOME="$WITFUL_SECURE_TEMP/cache"
 witful collection check-storage --path "$WITFUL_SECURE_TEMP"
-witful collection refresh
+witful collection prepare-refresh --output "$WITFUL_SECURE_TEMP/publication"

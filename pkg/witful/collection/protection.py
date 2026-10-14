@@ -10,13 +10,9 @@ import plistlib
 import subprocess
 from pathlib import Path
 
+from witful.exceptions import StorageProtectionError
+
 __all__ = ["StorageProtectionError", "check_collection", "require_protected"]
-
-
-class StorageProtectionError(ValueError):
-    """
-    Reject private processing when its working filesystem cannot be verified.
-    """
 
 
 def _read(arguments: list[str]) -> bytes:

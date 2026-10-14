@@ -30,6 +30,10 @@ This rotates through larger histories without repeatedly choosing only recent wi
 The plan also identifies earlier choices for each subject. A shared subject does
 not prove identical context: read the actual task, rationale, and original snapshot.
 
+The encrypted refresh pipeline keeps cadence anchored to the original source
+checkout while rendering into a separate staged directory, including during key
+rotation.
+
 Use complete Git history. Shallow clones and a missing or divergent previous review
 anchor fail visibly instead of inventing a commit count. CI uses `fetch-depth: 0`.
 Encrypted installations pass their transport checkout as `--history-repo`; their
