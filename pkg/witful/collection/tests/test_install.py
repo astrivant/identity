@@ -91,6 +91,7 @@ def test_setup_preserves_home_and_reuses_configuration(tmp_path: Path, monkeypat
         calls.append(" ".join(arguments[:3]))
         return b""
 
+    monkeypatch.setattr(install, "require_protected", lambda path: None)
     config = Config("example/private", "a" * 64, "b" * 64)
     monkeypatch.setattr(shutil, "which", lambda tool: tool)
     monkeypatch.setattr(install, "run", tool)

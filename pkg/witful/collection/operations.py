@@ -19,6 +19,7 @@ from witful.collection.crypto import decrypt, encrypt, fingerprint, sign, verify
 from witful.collection.keys import signing_environment
 from witful.collection.models import FIGURES, SOURCE, load_config
 from witful.collection.process import private_repository
+from witful.collection.protection import require_protected
 from witful.files import replace_file
 from witful.instances.reporting import build as instance_plots
 from witful.knowledge.applications import read_applications
@@ -86,6 +87,8 @@ def seal(checkout: Path, source: Path, keys: Path) -> None:
     if source.resolve().is_relative_to(checkout.resolve()) or keys.resolve().is_relative_to(checkout.resolve()):
         raise ValueError("Plaintext sources and key backups must stay outside the Git checkout")
 
+    require_protected(source)
+    require_protected(keys)
     archive.validate(source)
     payload = encrypt(archive.pack(source), (keys / "collection.pub").read_bytes(), config, "sources")
     _save(checkout, SOURCE, payload, (keys / "cosign.pub").read_bytes(), config, signing_environment(keys))
@@ -107,11 +110,17 @@ def restore(checkout: Path, keys: Path, output: Path, purpose: Literal["sources"
     if output.resolve().is_relative_to(checkout.resolve()):
         raise ValueError("Restore private data outside the repository checkout")
 
+    require_protected(output)
+    require_protected(keys)
     config = load_config(checkout)
     path = checkout / (SOURCE if purpose == "sources" else FIGURES)
+    if fingerprint((keys / "cosign.pub").read_bytes()) != config.signing_fingerprint:
+        raise ValueError("Local signing identity differs from the downloaded trust configuration")
     verify(path, checkout / "collection/cosign.pub", config)
     data = decrypt(path.read_bytes(), (keys / "collection.key").read_bytes(), (keys / "collection.password").read_bytes(), config, purpose)
     archive.unpack(data, output, figures=purpose == "figures")
+    if purpose == "sources":
+        replace_file(output / ".witful-protected", b"encrypted-working-storage-v1\n", expected=None)
 
 
 def render(root: Path, destination: Path) -> None:
@@ -202,6 +211,8 @@ def refresh(checkout: Path) -> None:
         raise ValueError("Collection refresh is restricted to the configured private main branch")
 
     private_repository(config.repository)
+    if config.signing_fingerprint != os.environ["WITFUL_COLLECTION_SIGNING_FINGERPRINT"]:
+        raise ValueError("Downloaded signing configuration differs from the independent Actions trust pin")
     path = checkout / SOURCE
     verify(path, checkout / "collection/cosign.pub", config)
     public = os.environ["WITFUL_COLLECTION_PUBLIC_KEY"].encode()
@@ -209,6 +220,9 @@ def refresh(checkout: Path) -> None:
     if fingerprint(public) != config.encryption_fingerprint:
         raise ValueError("CI encryption secret differs from the configured recipient")
 
+    # The CI launcher supplies a nonswappable memory filesystem; never fall back to runner disk.
+    temporary_root = Path(os.environ["WITFUL_SECURE_TEMP"])
+    require_protected(temporary_root)
     data = decrypt(
         path.read_bytes(),
         os.environ["WITFUL_COLLECTION_PRIVATE_KEY"].encode(),
@@ -218,7 +232,7 @@ def refresh(checkout: Path) -> None:
     )
 
     # This tree is never cached or uploaded. Exit, validation failure, and ordinary cancellation remove it.
-    with TemporaryDirectory(prefix="witful-plain-", dir=os.environ.get("RUNNER_TEMP")) as temporary:
+    with TemporaryDirectory(prefix="witful-plain-", dir=temporary_root) as temporary:
         root, figures = Path(temporary) / "sources", Path(temporary) / "figures"
         archive.unpack(data, root)
         render(root, figures)

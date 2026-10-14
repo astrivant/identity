@@ -18,6 +18,7 @@ from witful.checkpoints.journal import read, record
 from witful.checkpoints.models import Checkpoint
 from witful.checkpoints.plotting import build
 from witful.checkpoints.storage import SQLiteCheckpointStore, open_store
+from witful.collection.protection import check_collection
 from witful.files import replace_file
 from witful.knowledge.contracts import as_data, schema
 
@@ -61,6 +62,12 @@ def main(argv: Sequence[str] | None = None) -> int:
     database = args.database or root / ".witful/checkpoints.sqlite3"
 
     try:
+        check_collection(
+            root,
+            database,
+            root / args.output_dir if args.command == "build" else root,
+            remote=os.environ.get("WITFUL_DATABASE_URL") is not None and (args.command == "sync" or getattr(args, "from_database", False)),
+        )
         if args.command == "schemas":
             path = root / "knowledge/schemas/checkpoint.schema.json"
             path.parent.mkdir(parents=True, exist_ok=True)

@@ -119,7 +119,12 @@ explicit private-copy installer, preserving the user's existing Codex settings a
 collection. Run setup only when requested; it creates keys and updates repository
 secrets. Reuse the saved key directory after partial setup, never silently rotate.
 
-The installed collection is local plaintext. Seal only the documented source
+The installed collection is readable at runtime on verified encrypted working storage.
+Use [the data-protection contract](docs/data-protection.md) for local volume checks,
+independent signing pins, retained history, and unsupported remote-storage attestation.
+Never turn a passing PII or Trivy scan into a claim that data cannot leak. Preserve
+explicitly approved readable figures; underlying records remain encrypted in Git.
+Seal only the documented source
 allowlist, then commit the named encrypted files when publication is authorized.
 Never add the Codex home or key directory wholesale. Main CI replaces the library
 README with the user's dashboard and renders current figures. Full figures remain

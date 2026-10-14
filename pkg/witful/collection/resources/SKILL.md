@@ -19,13 +19,22 @@ Append sourced lessons and record verified applications without inventing histor
 Read the local `collection/.setup.json` setup receipt for the checkout, repository,
 key backup paths, and installed command path. Use that command instead of assuming
 a global installation is current. The receipt contains no secret values. Preserve existing settings.
-The collection is private plaintext locally; never stage its directory, runtime
+The managed collection requires verified encrypted working storage and remains readable
+to the running process. Keep the protection marker and place temporary files, caches,
+and exports on protected volumes. Storage checks fail closed; see docs/data-protection.md
+in CHECKOUT. Managed remote database/MCP operations currently cannot verify server
+at-rest protection and are blocked. A clean PII or Trivy scan is not encryption.
+Never claim old Git history was encrypted by updating the library.
+Never stage its directory, runtime
 Codex configuration, authentication, SQLite databases, or key backup.
 
 For an explicitly requested sync, run `witful collection seal --checkout CHECKOUT
 --source COLLECTION --key-dir KEYS`, inspect the named encrypted outputs, then
 commit and push them to that private repository. Publication is separate from
 recording lessons. Do not rotate keys or change GitHub permissions implicitly.
+Verify ciphertext with `collection verify --signing-fingerprint TRUSTED_SHA256`
+using the fingerprint retained separately from the downloaded artifact. CI also
+compares the signing identity with its independent Actions secret before decryption.
 CI verifies, decrypts, and regenerates figures; default outputs remain encrypted.
 Use `witful collection restore --help` to recover sources or figures into a new
 local directory. Accepted Git pushes are not proof of successful hosted refreshes.

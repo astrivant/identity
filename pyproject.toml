@@ -59,6 +59,7 @@ pydoclint = "0.11.0"
 pre-commit = "4.6.2"
 pytest = "9.1.1"
 pytest-xdist = "3.8.0"
+pytest-cov = "7.1.0"
 shellcheck-py = "0.11.0.1"
 shfmt-py = "4.2.0"
 types-networkx = "3.6.1.20261006"
@@ -119,6 +120,12 @@ pythonpath = ["scripts", "pkg"]
 addopts = "-ra -n auto --import-mode=importlib"
 
 markers = ["postgres: live PostgreSQL contract tests (WITFUL_TEST_DATABASE_URL required)"]
+
+[tool.coverage.run]
+relative_files = true
+source = ["pkg/witful"]
+omit = ["*/tests/*"]
+data_file = ".cache/coverage/.coverage"
 
 [tool.sqlfluff.core]
 templater = "placeholder"
