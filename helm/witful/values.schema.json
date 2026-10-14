@@ -3,9 +3,11 @@
     "type": "object",
     "properties": {
         "workers": {
-            "type": "number",
+            "type": "integer",
             "description": "Number of concurrent one-shot sync workers, from 1 through 16",
-            "default": 1
+            "default": 1,
+            "minimum": 1,
+            "maximum": 16
         },
         "image": {
             "type": "object",
@@ -13,26 +15,40 @@
                 "repository": {
                     "type": "string",
                     "description": "Image built from this checkout; publish to a private registry before cluster use",
-                    "default": "witful"
+                    "default": "witful",
+                    "minLength": 1
                 },
                 "tag": {
                     "type": "string",
                     "description": "Immutable application release or source tag",
-                    "default": "0.1.0"
+                    "default": "0.1.0",
+                    "minLength": 1
                 },
                 "pullPolicy": {
                     "type": "string",
                     "description": "Kubernetes image pull policy",
-                    "default": "IfNotPresent"
+                    "default": "IfNotPresent",
+                    "enum": [
+                        "Always",
+                        "IfNotPresent",
+                        "Never"
+                    ]
                 }
-            }
+            },
+            "additionalProperties": false,
+            "required": [
+                "repository",
+                "tag",
+                "pullPolicy"
+            ]
         },
         "imagePullSecrets": {
             "type": "array",
             "description": "Existing registry credential Secret names",
-            "default": "[]",
+            "default": [],
             "items": {
-                "type": "string"
+                "type": "string",
+                "minLength": 1
             }
         },
         "source": {
@@ -40,10 +56,22 @@
             "properties": {
                 "existingSecret": {
                     "type": "string",
-                    "description": "Secret containing the reviewed lessons.jsonl, mounted read-only",
-                    "default": "witful-source"
+                    "description": "Secret containing the reviewed journal, mounted read-only",
+                    "default": "witful-source",
+                    "minLength": 1
+                },
+                "journalKey": {
+                    "type": "string",
+                    "description": "Secret key projected as lessons.jsonl",
+                    "default": "lessons.jsonl",
+                    "minLength": 1
                 }
-            }
+            },
+            "additionalProperties": false,
+            "required": [
+                "existingSecret",
+                "journalKey"
+            ]
         },
         "database": {
             "type": "object",
@@ -51,44 +79,83 @@
                 "existingSecret": {
                     "type": "string",
                     "description": "Secret containing the PostgreSQL URI; never place credentials in values",
-                    "default": "witful-database"
+                    "default": "witful-database",
+                    "minLength": 1
                 },
                 "urlKey": {
                     "type": "string",
                     "description": "Key holding the PostgreSQL URI in that Secret",
-                    "default": "url"
+                    "default": "url",
+                    "minLength": 1
                 },
                 "namespace": {
                     "type": "string",
                     "description": "Shared identity partition; all cooperating workers must use the same value",
-                    "default": "default"
+                    "default": "default",
+                    "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$"
                 },
                 "caSecret": {
                     "type": "string",
-                    "description": "Optional Secret containing root.crt for a private PostgreSQL CA",
+                    "description": "Optional Secret containing a private PostgreSQL CA",
                     "default": ""
+                },
+                "caKey": {
+                    "type": "string",
+                    "description": "Secret key projected as root.crt",
+                    "default": "root.crt",
+                    "minLength": 1
                 }
-            }
+            },
+            "additionalProperties": false,
+            "required": [
+                "existingSecret",
+                "urlKey",
+                "namespace",
+                "caSecret",
+                "caKey"
+            ]
         },
         "job": {
             "type": "object",
             "properties": {
+                "suspend": {
+                    "type": "boolean",
+                    "description": "Suspend creation of worker pods",
+                    "default": false
+                },
+                "terminationGracePeriodSeconds": {
+                    "type": "integer",
+                    "description": "Time allowed before Kubernetes forcibly terminates a worker",
+                    "default": 30,
+                    "minimum": 1
+                },
                 "backoffLimit": {
-                    "type": "number",
+                    "type": "integer",
                     "description": "Number of failed pod retries",
-                    "default": 2
+                    "default": 2,
+                    "minimum": 0
                 },
                 "activeDeadlineSeconds": {
-                    "type": "number",
+                    "type": "integer",
                     "description": "Maximum total job duration",
-                    "default": 300
+                    "default": 300,
+                    "minimum": 1
                 },
                 "ttlSecondsAfterFinished": {
-                    "type": "number",
+                    "type": "integer",
                     "description": "Retain completed job status for this many seconds",
-                    "default": 3600
+                    "default": 3600,
+                    "minimum": 0
                 }
-            }
+            },
+            "additionalProperties": false,
+            "required": [
+                "suspend",
+                "terminationGracePeriodSeconds",
+                "backoffLimit",
+                "activeDeadlineSeconds",
+                "ttlSecondsAfterFinished"
+            ]
         },
         "resources": {
             "type": "object",
@@ -125,6 +192,182 @@
                 }
             }
         },
+        "scheduling": {
+            "type": "object",
+            "properties": {
+                "nodeSelector": {
+                    "type": "object",
+                    "description": "Worker node labels required for scheduling",
+                    "default": {},
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "tolerations": {
+                    "type": "array",
+                    "description": "Worker pod tolerations",
+                    "default": [],
+                    "items": {
+                        "type": "object"
+                    }
+                },
+                "affinity": {
+                    "type": "object",
+                    "description": "Native worker affinity; mutually exclusive with the anti-affinity preset",
+                    "default": {}
+                },
+                "podAntiAffinityPreset": {
+                    "type": "string",
+                    "description": "Worker separation by topologyKey; empty, soft preference, or hard requirement",
+                    "default": "",
+                    "enum": [
+                        "",
+                        "soft",
+                        "hard"
+                    ]
+                },
+                "topologyKey": {
+                    "type": "string",
+                    "description": "Failure domain used by the anti-affinity preset",
+                    "default": "kubernetes.io/hostname",
+                    "minLength": 1
+                },
+                "topologySpreadConstraints": {
+                    "type": "array",
+                    "description": "Native spread constraints; omitted selectors default to this release and Job revision",
+                    "default": [],
+                    "items": {
+                        "type": "object",
+                        "required": [
+                            "maxSkew",
+                            "topologyKey",
+                            "whenUnsatisfiable"
+                        ],
+                        "properties": {
+                            "maxSkew": {
+                                "type": "integer",
+                                "minimum": 1
+                            },
+                            "topologyKey": {
+                                "type": "string",
+                                "minLength": 1
+                            },
+                            "whenUnsatisfiable": {
+                                "enum": [
+                                    "DoNotSchedule",
+                                    "ScheduleAnyway"
+                                ]
+                            },
+                            "labelSelector": {
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "priorityClassName": {
+                    "type": "string",
+                    "description": "Existing PriorityClass for worker pods",
+                    "default": ""
+                },
+                "schedulerName": {
+                    "type": "string",
+                    "description": "Optional scheduler override",
+                    "default": ""
+                }
+            },
+            "additionalProperties": false,
+            "required": [
+                "nodeSelector",
+                "tolerations",
+                "affinity",
+                "podAntiAffinityPreset",
+                "topologyKey",
+                "topologySpreadConstraints",
+                "priorityClassName",
+                "schedulerName"
+            ]
+        },
+        "podLabels": {
+            "type": "object",
+            "description": "Additional worker pod labels; chart identity labels are reserved",
+            "default": {},
+            "additionalProperties": {
+                "type": "string"
+            }
+        },
+        "podAnnotations": {
+            "type": "object",
+            "description": "Additional worker pod annotations",
+            "default": {},
+            "additionalProperties": {
+                "type": "string"
+            }
+        },
+        "podSecurityContext": {
+            "type": "object",
+            "properties": {
+                "runAsNonRoot": {
+                    "type": "boolean",
+                    "description": "Require non-root worker execution",
+                    "default": true
+                },
+                "runAsUser": {
+                    "type": "number",
+                    "description": "Worker user ID",
+                    "default": 10001
+                },
+                "runAsGroup": {
+                    "type": "number",
+                    "description": "Worker group ID",
+                    "default": 10001
+                },
+                "fsGroup": {
+                    "type": "number",
+                    "description": "Group allowed to read mounted Secrets",
+                    "default": 10001
+                },
+                "seccompProfile": {
+                    "type": "object",
+                    "properties": {
+                        "type": {
+                            "type": "string",
+                            "description": "Worker seccomp profile",
+                            "default": "RuntimeDefault"
+                        }
+                    }
+                }
+            }
+        },
+        "containerSecurityContext": {
+            "type": "object",
+            "properties": {
+                "allowPrivilegeEscalation": {
+                    "type": "boolean",
+                    "description": "Allow privilege escalation in worker containers",
+                    "default": false
+                },
+                "readOnlyRootFilesystem": {
+                    "type": "boolean",
+                    "description": "Require a read-only worker root filesystem",
+                    "default": true
+                },
+                "capabilities": {
+                    "type": "object",
+                    "properties": {
+                        "drop": {
+                            "type": "array",
+                            "description": "Linux capabilities removed from workers",
+                            "default": [
+                                "ALL"
+                            ],
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "postgresql": {
             "type": "object",
             "properties": {
@@ -136,19 +379,176 @@
                 "image": {
                     "type": "string",
                     "description": "Pinned PostgreSQL development and test image",
-                    "default": "postgres:18.6-alpine@sha256:77f585114c32fbca283dc835b0596f4e52b51b4c6662d7810b2f4084f60a1873"
+                    "default": "postgres:18.6-alpine@sha256:77f585114c32fbca283dc835b0596f4e52b51b4c6662d7810b2f4084f60a1873",
+                    "minLength": 1
                 },
                 "existingSecret": {
                     "type": "string",
                     "description": "Secret with a password key for the development database",
-                    "default": "witful-postgres"
+                    "default": "witful-postgres",
+                    "minLength": 1
+                },
+                "passwordKey": {
+                    "type": "string",
+                    "description": "Password key in the development database Secret",
+                    "default": "password",
+                    "minLength": 1
+                },
+                "database": {
+                    "type": "string",
+                    "description": "Development database name; align with the connection URI Secret",
+                    "default": "witful",
+                    "minLength": 1
+                },
+                "username": {
+                    "type": "string",
+                    "description": "Development database user; align with the connection URI Secret",
+                    "default": "witful",
+                    "minLength": 1
                 },
                 "storageSize": {
                     "type": "string",
                     "description": "Persistent data volume capacity",
-                    "default": "1Gi"
+                    "default": "1Gi",
+                    "minLength": 1
+                },
+                "storageClass": {
+                    "type": "string",
+                    "description": "StorageClass name; empty uses the cluster default, a dash disables dynamic provisioning",
+                    "default": ""
+                },
+                "resources": {
+                    "type": "object",
+                    "properties": {
+                        "requests": {
+                            "type": "object",
+                            "properties": {
+                                "cpu": {
+                                    "type": "string",
+                                    "description": "Requested database CPU",
+                                    "default": "100m"
+                                },
+                                "memory": {
+                                    "type": "string",
+                                    "description": "Requested database memory",
+                                    "default": "128Mi"
+                                }
+                            }
+                        },
+                        "limits": {
+                            "type": "object",
+                            "properties": {
+                                "cpu": {
+                                    "type": "string",
+                                    "description": "Maximum database CPU",
+                                    "default": "1"
+                                },
+                                "memory": {
+                                    "type": "string",
+                                    "description": "Maximum database memory",
+                                    "default": "512Mi"
+                                }
+                            }
+                        }
+                    }
+                },
+                "readinessProbe": {
+                    "type": "object",
+                    "properties": {
+                        "initialDelaySeconds": {
+                            "type": "integer",
+                            "description": "Delay before the first database readiness check",
+                            "default": 0,
+                            "minimum": 0
+                        },
+                        "periodSeconds": {
+                            "type": "integer",
+                            "description": "Interval between database readiness checks",
+                            "default": 5,
+                            "minimum": 1
+                        },
+                        "timeoutSeconds": {
+                            "type": "integer",
+                            "description": "Timeout for each database readiness check",
+                            "default": 1,
+                            "minimum": 1
+                        },
+                        "successThreshold": {
+                            "type": "integer",
+                            "description": "Successes needed to mark the database ready",
+                            "default": 1,
+                            "minimum": 1
+                        },
+                        "failureThreshold": {
+                            "type": "integer",
+                            "description": "Failures needed to mark the database unready",
+                            "default": 3,
+                            "minimum": 1
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "nodeSelector": {
+                    "type": "object",
+                    "description": "Development database node selection",
+                    "default": {},
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "tolerations": {
+                    "type": "array",
+                    "description": "Development database pod tolerations",
+                    "default": [],
+                    "items": {
+                        "type": "object"
+                    }
+                },
+                "affinity": {
+                    "type": "object",
+                    "description": "Development database native pod affinity",
+                    "default": {}
+                },
+                "terminationGracePeriodSeconds": {
+                    "type": "integer",
+                    "description": "Development database shutdown grace period",
+                    "default": 30,
+                    "minimum": 1
                 }
-            }
+            },
+            "additionalProperties": false,
+            "required": [
+                "enabled",
+                "image",
+                "existingSecret",
+                "passwordKey",
+                "database",
+                "username",
+                "storageSize",
+                "storageClass",
+                "resources",
+                "readinessProbe",
+                "nodeSelector",
+                "tolerations",
+                "affinity",
+                "terminationGracePeriodSeconds"
+            ]
         }
-    }
+    },
+    "additionalProperties": false,
+    "required": [
+        "workers",
+        "image",
+        "imagePullSecrets",
+        "source",
+        "database",
+        "job",
+        "resources",
+        "scheduling",
+        "podLabels",
+        "podAnnotations",
+        "podSecurityContext",
+        "containerSecurityContext",
+        "postgresql"
+    ]
 }

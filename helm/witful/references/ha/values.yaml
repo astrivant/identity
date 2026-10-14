@@ -1,0 +1,20 @@
+## @section Resilient synchronization
+## @param workers Concurrent copies of the same immutable journal; requires at least three eligible nodes
+workers: 3
+## @param scheduling.podAntiAffinityPreset Require each worker in this Job to run on a different node
+## @param scheduling.topologyKey Node label used to separate workers
+## @param scheduling.topologySpreadConstraints [array] Prefer balancing workers across zones; a selector is generated per Job revision
+scheduling:
+  podAntiAffinityPreset: hard
+  topologyKey: kubernetes.io/hostname
+  topologySpreadConstraints:
+    - maxSkew: 1
+      topologyKey: topology.kubernetes.io/zone
+      whenUnsatisfiable: ScheduleAnyway
+## @param job.backoffLimit Allow replacement attempts after failed workers
+## @param job.activeDeadlineSeconds Bound the entire Job, including scheduling, retries and lock contention
+## @param job.terminationGracePeriodSeconds Allow time for process termination before forced removal
+job:
+  backoffLimit: 6
+  activeDeadlineSeconds: 600
+  terminationGracePeriodSeconds: 30

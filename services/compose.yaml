@@ -20,6 +20,7 @@ services:
       - default
     cpus: 1.0
     mem_limit: 536870912
+    stop_grace_period: 30s
     read_only: true
     cap_drop:
       - ALL
@@ -54,8 +55,10 @@ services:
       interval: 5s
       timeout: 3s
       retries: 12
+      start_period: 0s
     cpus: 1.0
     mem_limit: 536870912
+    stop_grace_period: 30s
     expose:
       - '5432'
     environment:

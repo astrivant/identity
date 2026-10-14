@@ -1,3 +1,4 @@
+{{- include "witful.validatePlacement" . }}
 {{- if or (lt (int .Values.workers) 1) (gt (int .Values.workers) 16) (ne (float64 .Values.workers) (float64 (int .Values.workers))) }}
 {{- fail "workers must be an integer from 1 through 16" }}
 {{- end }}
@@ -9,6 +10,7 @@ metadata:
     app.kubernetes.io/name: witful
     app.kubernetes.io/instance: {{ .Release.Name }}
 spec:
+  suspend: {{ .Values.job.suspend }}
   parallelism: {{ .Values.workers }}
   completions: {{ .Values.workers }}
   backoffLimit: {{ .Values.job.backoffLimit }}
@@ -17,9 +19,63 @@ spec:
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: witful
-        app.kubernetes.io/instance: {{ .Release.Name }}
+        {{- include "witful.workerSelector" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
     spec:
+      terminationGracePeriodSeconds: {{ .Values.job.terminationGracePeriodSeconds }}
+      {{- with .Values.scheduling.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.scheduling.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.scheduling.priorityClassName }}
+      priorityClassName: {{ . | quote }}
+      {{- end }}
+      {{- with .Values.scheduling.schedulerName }}
+      schedulerName: {{ . | quote }}
+      {{- end }}
+      {{- if .Values.scheduling.affinity }}
+      affinity:
+        {{- toYaml .Values.scheduling.affinity | nindent 8 }}
+      {{- else if .Values.scheduling.podAntiAffinityPreset }}
+      affinity:
+        podAntiAffinity:
+          {{- if eq .Values.scheduling.podAntiAffinityPreset "hard" }}
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - topologyKey: {{ .Values.scheduling.topologyKey | quote }}
+              labelSelector:
+                matchLabels:
+                  {{- include "witful.workerSelector" . | nindent 18 }}
+          {{- else }}
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                topologyKey: {{ .Values.scheduling.topologyKey | quote }}
+                labelSelector:
+                  matchLabels:
+                    {{- include "witful.workerSelector" . | nindent 20 }}
+          {{- end }}
+      {{- end }}
+      {{- with .Values.scheduling.topologySpreadConstraints }}
+      topologySpreadConstraints:
+        {{- range . }}
+        {{/* Preserve caller selectors; default only missing selectors to this exact Job. */}}
+        {{- $constraint := deepCopy . }}
+        {{- if not (hasKey $constraint "labelSelector") }}
+        {{- $_ := set $constraint "labelSelector" (dict "matchLabels" (include "witful.workerSelector" $ | fromYaml)) }}
+        {{- end }}
+        - {{- toYaml $constraint | nindent 10 }}
+        {{- end }}
+      {{- end }}
       restartPolicy: Never
       automountServiceAccountToken: false
       {{- with .Values.imagePullSecrets }}
@@ -29,12 +85,7 @@ spec:
         {{- end }}
       {{- end }}
       securityContext:
-        runAsNonRoot: true
-        runAsUser: 10001
-        runAsGroup: 10001
-        fsGroup: 10001
-        seccompProfile:
-          type: RuntimeDefault
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
         - name: witful
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -54,10 +105,7 @@ spec:
               value: /etc/postgres/root.crt
             {{- end }}
           securityContext:
-            allowPrivilegeEscalation: false
-            readOnlyRootFilesystem: true
-            capabilities:
-              drop: [ALL]
+            {{- toYaml .Values.containerSecurityContext | nindent 12 }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
@@ -73,10 +121,16 @@ spec:
         - name: source
           secret:
             secretName: {{ .Values.source.existingSecret | quote }}
+            items:
+              - key: {{ .Values.source.journalKey | quote }}
+                path: lessons.jsonl
             defaultMode: 0440
         {{- if .Values.database.caSecret }}
         - name: ca
           secret:
             secretName: {{ .Values.database.caSecret | quote }}
+            items:
+              - key: {{ .Values.database.caKey | quote }}
+                path: root.crt
             defaultMode: 0440
         {{- end }}

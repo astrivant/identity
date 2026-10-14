@@ -12,6 +12,7 @@ private source records remain runtime inputs.
 
 | Reference | Purpose | Values |
 | --- | --- | --- |
+| [Resilient synchronization](ha/README.md) | Three workers separated across nodes against an external HA PostgreSQL endpoint. | [ha/values.yaml](ha/values.yaml) |
 | [Local development](local/README.md) | Single-node PostgreSQL and generated Compose services for a disposable environment. | [local/values.yaml](local/values.yaml) |
 
 Run `npm --prefix scripts/chart run generate` after changing annotated values,

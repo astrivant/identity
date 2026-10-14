@@ -13,8 +13,11 @@ overrides that default; use `disable` only for local disposable development. Sup
 
 `helm/witful` runs bounded one-shot workers (1-16), mounting a source
 journal and endpoint from existing Secrets. Repeated workers synchronize the
-same immutable source, not independently evolve it. Production uses a managed
-PostgreSQL endpoint. The optional single-node database is for development.
+same immutable source, not independently evolve it. The chart exposes placement, priority, resources, retry/deadline and termination
+controls. See the [complete parameter table](../helm/witful/README.md) and
+[HA reference](../helm/witful/references/ha/README.md). PostgreSQL serializes writes
+under an advisory lock; redundant workers do not increase write throughput.
+Production uses a managed HA PostgreSQL endpoint. The optional single-node database is for development.
 
 Compose is generated from that chart using the pinned
 [Composer action](https://github.com/astrivant/composer). Edit chart values and
