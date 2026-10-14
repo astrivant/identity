@@ -10,7 +10,11 @@ import re
 import subprocess
 from contextlib import contextmanager
 from typing import TYPE_CHECKING
+from urllib.parse import urlsplit
 from uuid import uuid4
+
+from .providers import backend
+from .providers.base import Repository, object_value
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
@@ -93,39 +97,90 @@ def branch_name(root: Path, name: str) -> str:
     return name
 
 
-def destination(root: Path) -> str:
+def destination(root: Path, selector: str = "origin") -> Repository:
     """
-    Bind fetch and push to one credential-free GitHub origin.
+    Bind one credential-free fetch/push remote to an explicit API provider.
 
     Args:
         root (Path): Existing repository.
+        selector (str): Remote name, or github:REMOTE / gitlab:REMOTE for explicit host selection.
 
     Returns:
-        str: GitHub owner/repository.
+        Repository: Provider, host, namespace and transport binding.
 
     Raises:
-        ValueError: Origin is missing, ambiguous, or points elsewhere for pushes.
+        ValueError: Remote is missing, ambiguous, credential-bearing, or unsupported.
     """
-    fetch = git(root, "remote", "get-url", "--all", "origin")
-    push = git(root, "remote", "get-url", "--push", "--all", "origin")
-    match = re.fullmatch(r"(?:git@github\.com:|https://github\.com/)([\w.-]+/[\w.-]+?)(?:\.git)?", fetch)
-    if fetch != push or match is None:
-        raise ValueError("Expected one matching GitHub fetch/push origin without credentials")
-    return match[1]
+    provider, separator, remote = selector.partition(":")
+    if not separator:
+        remote, provider = provider, ""
+    if not re.fullmatch(r"[A-Za-z0-9_][\w.-]*", remote) or provider not in ("", "github", "gitlab"):
+        raise ValueError("Select a remote, optionally qualified as github:REMOTE or gitlab:REMOTE")
+    fetch = git(root, "remote", "get-url", "--all", remote)
+    push = git(root, "remote", "get-url", "--push", "--all", remote)
+    if fetch != push or any(character in fetch for character in "\n\r\t"):
+        raise ValueError("Expected one matching credential-free fetch/push URL")
+    # Normalize SSH transport for parsing; preserve the exact original URL in the receipt.
+    normalized = re.sub(r"^git@([^/:]+):", r"ssh://git@\1/", fetch)
+    parsed = urlsplit(normalized)
+    if (
+        parsed.scheme not in ("https", "ssh")
+        or not parsed.hostname
+        or parsed.password is not None
+        or parsed.query
+        or parsed.fragment
+        or (parsed.scheme == "https" and parsed.username is not None)
+        or (parsed.scheme == "ssh" and parsed.username not in (None, "git"))
+        or (parsed.scheme == "ssh" and parsed.port is not None)
+    ):
+        raise ValueError("Use a credential-free HTTPS or standard SSH Git remote")
+    host = parsed.netloc if parsed.scheme == "https" else parsed.hostname
+    project = parsed.path.removeprefix("/").removesuffix(".git")
+    parts = project.split("/")
+    if len(parts) < 2 or any(not re.fullmatch(r"[\w.-]+", part) or part in (".", "..") for part in parts):
+        raise ValueError("Expected a namespaced Git project")
+    provider = provider or {"github.com": "github", "gitlab.com": "gitlab"}.get(host, "")
+    if not provider or (provider == "github" and len(parts) != 2):
+        raise ValueError("Self-managed hosts require an explicit provider and supported project path")
+    return Repository(provider, host, project, remote, fetch)
 
 
-def remote_head(root: Path, branch: str) -> str:
+def saved_destination(root: Path, value: object) -> Repository:
+    """
+    Revalidate the complete receipt binding against current Git configuration.
+
+    Args:
+        root (Path): Source or candidate worktree.
+        value (object): Stored repository binding.
+
+    Returns:
+        Repository: Matching current destination.
+
+    Raises:
+        ValueError: The receipt is legacy, malformed, or any destination field changed.
+    """
+    if not isinstance(value, dict):
+        raise ValueError("Legacy receipt lacks a provider binding; prepare a new reviewed receipt")
+    data = object_value(value)
+    repository = destination(root, text(data["provider"]) + ":" + text(data["remote"]))
+    if repository.data() != data:
+        raise ValueError("Delivery destination changed since preparation")
+    return repository
+
+
+def remote_head(root: Path, branch: str, remote: str = "origin") -> str:
     """
     Observe the actual remote ref instead of a potentially stale tracking branch.
 
     Args:
         root (Path): Existing checkout.
         branch (str): Validated branch name.
+        remote (str): Validated selected remote.
 
     Returns:
         str: Remote object identifier, or empty when the branch does not exist.
     """
-    rows = git(root, "ls-remote", "--refs", "origin", "refs/heads/" + branch).splitlines()
+    rows = git(root, "ls-remote", "--refs", remote, "refs/heads/" + branch).splitlines()
     return rows[0].split()[0] if rows else ""
 
 
@@ -175,39 +230,44 @@ def checks(root: Path, commands: list[list[str]]) -> None:
         raise ValueError("Checks changed the candidate; review and commit those changes before continuing")
 
 
-def publish(root: Path, repository: str, branch: str, expected: str, head: str) -> None:
+def publish(root: Path, repository: Repository, branch: str, expected: str, head: str) -> None:
     """
-    Publish one signed revision with an exact lease, then verify remote identity and GitHub signing.
+    Publish one signed revision with an exact lease, then verify remote identity and provider signing.
 
     Args:
         root (Path): Candidate worktree.
-        repository (str): Previously bound GitHub owner/repository.
+        repository (Repository): Previously bound provider and Git destination.
         branch (str): Explicit destination branch.
         expected (str): Observed original head; empty means the branch must be absent.
         head (str): Signed candidate commit.
 
     Returns:
-        None: The remote ref and GitHub signature match the candidate.
+        None: The remote ref and provider signature match the candidate.
 
     Raises:
         ValueError: Origin changed, another writer advanced the ref, or verification failed.
     """
-    if destination(root) != repository:
+    if destination(root, repository.provider + ":" + repository.remote) != repository:
         raise ValueError("Origin changed since preparation")
     git(root, "verify-commit", head)
-    current = remote_head(root, branch)
+    current = remote_head(root, branch, repository.remote)
     if current not in (expected, head):
         raise ValueError("Remote head changed; refresh and reassess instead of overwriting it")
     # A lost response can follow a successful push. Readback makes that retry idempotent.
     if current != head:
-        git(root, "push", "--no-follow-tags", f"--force-with-lease=refs/heads/{branch}:{expected}", "origin", f"{head}:refs/heads/{branch}")
-    if remote_head(root, branch) != head:
+        git(
+            root,
+            "push",
+            "--no-follow-tags",
+            f"--force-with-lease=refs/heads/{branch}:{expected}",
+            repository.remote,
+            f"{head}:refs/heads/{branch}",
+        )
+    if remote_head(root, branch, repository.remote) != head:
         raise ValueError("Remote readback did not match the candidate")
-    verified = run(
-        root, "gh", "api", "--hostname", "github.com", f"repos/{repository}/commits/{head}", "--jq", ".commit.verification.verified"
-    )
-    if verified != "true":
-        raise ValueError("Ref was pushed, but GitHub has not verified its signature; receipt remains pending")
+    with backend(repository) as provider:
+        if not provider.verified(head):
+            raise ValueError("Ref was pushed, but the provider has not verified its signature; receipt remains pending")
 
 
 def save(path: Path, values: dict[str, object], *, create: bool = False) -> None:

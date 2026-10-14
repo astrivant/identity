@@ -53,11 +53,13 @@ inactive collection receives no automatic observations; explicit maintenance of
 that collection remains a separate authorized task. Private collection publication
 follows its existing encryption and review policy.
 
-## PR inventory and review order
+## PR and MR inventory and review order
 
 Select the current or explicitly named existing repository. Use its established
-GitHub/GitLab API or CLI to read open PRs, their exact heads, bases, descriptions,
-comments and review state. Preserve explicit exclusions and holds.
+GitHub/GitLab SDK to read open PRs and MRs, their exact heads, bases, descriptions,
+comments and review state. Preserve explicit exclusions and holds. The executable
+helper accepts repeated `--remote` selectors for combined inventories and `pr`/`mr`
+aliases. It binds each mutation to one provider destination. See [delivery](delivery.md).
 
 Order prerequisites before dependents. Among independent eligible PRs, sort by
 added plus deleted lines, then changed-file count and PR number. Include the metric

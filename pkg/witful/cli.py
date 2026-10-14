@@ -1,96 +1,155 @@
 """
-Route lightweight lesson lookup independently of optional analytics dependencies.
+Compose one argparse command hierarchy while loading runtime services only for the selected domain.
 """
 
 from __future__ import annotations
 
-import sys
+import argparse
+from importlib import import_module
+from typing import TYPE_CHECKING, Protocol, runtime_checkable
 
-__all__ = ["main"]
+from attrs import frozen
+
+from witful.commands import (
+    awareness,
+    checkpoints,
+    collection,
+    completion,
+    context,
+    delivery,
+    instances,
+    knowledge,
+    life,
+    privacy,
+    reflection,
+    registry,
+    repertoire,
+    sleeves,
+    storage,
+)
+from witful.commands.project import configure as project
+
+if TYPE_CHECKING:
+    from collections.abc import Callable, Sequence
+
+__all__ = ["build_parser", "main"]
 
 
-def main() -> int:
+@runtime_checkable
+class Executable(Protocol):
     """
-    Dispatch lesson operations or the existing hierarchy commands.
+    Describe a lazily imported domain command module.
+    """
+
+    def execute(self, args: argparse.Namespace, parser: argparse.ArgumentParser) -> int:
+        """
+        Dispatch an already validated namespace without parsing again.
+
+        Args:
+            args (argparse.Namespace): Selected domain arguments.
+            parser (argparse.ArgumentParser): Owning parser for actionable errors.
+
+        Returns:
+            int: Operation status.
+        """
+        ...
+
+
+@frozen
+class Command:
+    """
+    Assemble a command from lightweight argument declarations and its runtime module.
+
+    Attributes:
+        name (str): Public subcommand name.
+        description (str): Root help description.
+        configure (Callable[[argparse.ArgumentParser], object]): Parser composition function.
+        module (str): Runtime module implementing the typed execute contract.
+    """
+
+    name: str
+    description: str
+    configure: Callable[[argparse.ArgumentParser], object]
+    module: str
+
+    def register(self, commands: argparse._SubParsersAction[argparse.ArgumentParser]) -> None:
+        """
+        Add this command and its selected handler to a parent group.
+
+        Args:
+            commands (argparse._SubParsersAction[argparse.ArgumentParser]): Parent-owned subparser collection.
+
+        Returns:
+            None: Parser and handler are registered; runtime code remains unloaded.
+        """
+        parser = commands.add_parser(self.name, help=self.description, description=self.description)
+        self.configure(parser)
+        parser.set_defaults(handler=self, command_parser=parser)
+
+    def invoke(self, args: argparse.Namespace, parser: argparse.ArgumentParser) -> int:
+        """
+        Load and execute only the selected command module.
+
+        Args:
+            args (argparse.Namespace): Namespace parsed once by the root.
+            parser (argparse.ArgumentParser): Selected parser for domain errors.
+
+        Returns:
+            int: Domain status without altering its error semantics.
+        """
+        module: object = import_module(self.module)
+        if not isinstance(module, Executable):
+            raise TypeError("Command module does not implement execute")
+        return module.execute(args, parser)
+
+
+def build_parser() -> argparse.ArgumentParser:
+    """
+    Build the complete public hierarchy with existing top-level knowledge commands.
 
     Returns:
-        int: Selected command status; database failures remain credential-safe.
+        argparse.ArgumentParser: Root parser with domain-owned subparsers and handlers.
     """
-    if len(sys.argv) > 1 and sys.argv[1] == "delivery":
-        from witful.delivery.cli import main as delivery_main
+    parser = argparse.ArgumentParser(description="Manage reviewed knowledge, evidence and delivery workflows")
+    commands = knowledge.configure(parser)
+    parser.set_defaults(
+        handler=Command("knowledge", "Knowledge operations", knowledge.configure, "witful.knowledge.cli"), command_parser=parser
+    )
+    for command in (
+        Command("init", "Initialize a collection", project, "witful.project"),
+        Command("lessons", "Search and record sourced lessons", storage.configure, "witful.storage.cli"),
+        Command("life", "Record and replay decisions", life.configure, "witful.life.cli"),
+        Command("repertoire", "Curate observed tools and problems", repertoire.configure, "witful.repertoire.cli"),
+        Command("checkpoints", "Track project chapters", checkpoints.configure, "witful.checkpoints.cli"),
+        Command("reflection", "Review decisions against current evidence", reflection.configure, "witful.reflection.cli"),
+        Command("awareness", "Publish selected figures", awareness.configure, "witful.awareness.cli"),
+        Command("collection", "Manage protected collections", collection.configure, "witful.collection.cli"),
+        Command("privacy", "Scan publication inputs", privacy.configure, "witful.privacy.cli"),
+        Command("registry", "Inspect Python package names", registry.configure, "witful.registry.names"),
+        Command("instances", "Record runtime provenance", instances.configure, "witful.instances.cli"),
+        Command("sleeve", "Isolate concurrent work", sleeves.configure, "witful.sleeves.cli"),
+        Command("completion", "Review completion coverage", completion.configure, "witful.completion.cli"),
+        Command("context", "Resolve advisory working context", context.configure, "witful.context.cli"),
+        Command("delivery", "Review and prepare PRs and MRs", delivery.configure, "witful.delivery.cli"),
+    ):
+        command.register(commands)
+    return parser
 
-        return delivery_main(sys.argv[2:])
 
-    if len(sys.argv) > 1 and sys.argv[1] == "completion":
-        from witful.completion.cli import main as completion_main
+def main(argv: Sequence[str] | None = None) -> int:
+    """
+    Parse the command hierarchy once and invoke the selected domain handler.
 
-        return completion_main(sys.argv[2:])
+    Args:
+        argv (Sequence[str] | None): Explicit arguments, or the current process command line.
 
-    if len(sys.argv) > 1 and sys.argv[1] == "instances":
-        from witful.instances.cli import main as instances_main
-
-        return instances_main(sys.argv[2:])
-
-    if len(sys.argv) > 1 and sys.argv[1] == "sapience":
-        from witful.sapience.cli import main as sapience_main
-
-        return sapience_main(sys.argv[2:])
-
-    if len(sys.argv) > 1 and sys.argv[1] == "sleeve":
-        from witful.sleeves.cli import main as sleeve_main
-
-        return sleeve_main(sys.argv[2:])
-
-    if len(sys.argv) > 1 and sys.argv[1] == "collection":
-        from witful.collection.cli import main as collection_main
-
-        return collection_main(sys.argv[2:])
-
-    if len(sys.argv) > 1 and sys.argv[1] == "awareness":
-        from witful.awareness.cli import main as awareness_main
-
-        return awareness_main(sys.argv[2:])
-
-    if len(sys.argv) > 1 and sys.argv[1] == "checkpoints":
-        from witful.checkpoints.cli import main as checkpoints_main
-
-        return checkpoints_main(sys.argv[2:])
-
-    if len(sys.argv) > 1 and sys.argv[1] == "repertoire":
-        from witful.repertoire.cli import main as repertoire_main
-
-        return repertoire_main(sys.argv[2:])
-
-    if len(sys.argv) > 1 and sys.argv[1] == "privacy":
-        from witful.privacy.cli import main as privacy_main
-
-        return privacy_main(sys.argv[2:])
-
-    if len(sys.argv) > 1 and sys.argv[1] == "registry":
-        from witful.registry.names import main as registry_main
-
-        return registry_main(sys.argv[2:])
-
-    if len(sys.argv) > 1 and sys.argv[1] == "init":
-        from witful.project import main as init_main
-
-        return init_main(sys.argv[2:])
-
-    if len(sys.argv) > 1 and sys.argv[1] == "lessons":
-        from witful.storage.cli import main as lessons_main
-
-        return lessons_main(sys.argv[2:])
-
-    if len(sys.argv) > 1 and sys.argv[1] == "reflection":
-        from witful.reflection.cli import main as reflection_main
-
-        return reflection_main(sys.argv[2:])
-
-    if len(sys.argv) > 1 and sys.argv[1] == "life":
-        from witful.life.cli import main as life_main
-
-        return life_main(sys.argv[2:])
-
-    from witful.knowledge.cli import main as knowledge_main
-
-    return knowledge_main()
+    Returns:
+        int: Selected domain status; argparse handles help and invalid syntax.
+    """
+    parser = build_parser()
+    args = parser.parse_args(argv)
+    handler: object = args.handler
+    selected_parser: object = args.command_parser
+    if not isinstance(handler, Command) or not isinstance(selected_parser, argparse.ArgumentParser):
+        raise TypeError("Command registration is incomplete")
+    return handler.invoke(args, selected_parser)

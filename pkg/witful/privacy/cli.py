@@ -6,12 +6,11 @@ from __future__ import annotations
 
 import argparse
 import json
-import os
-from pathlib import Path
 from typing import TYPE_CHECKING
 
 from attrs import asdict
 
+from witful.commands.privacy import configure
 from witful.privacy.scanner import scan
 
 if TYPE_CHECKING:
@@ -31,14 +30,21 @@ def main(argv: Sequence[str] | None = None) -> int:
         int: Zero when clear, one for findings, or parser exit two for an incomplete scan.
     """
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("command", choices=["scan"])
-    parser.add_argument("paths", nargs="*")
-    parser.add_argument("--repo", type=Path, default=Path.cwd())
-    parser.add_argument("--staged", action="store_true", help="Inspect the complete index, not unstaged working-tree replacements")
-    parser.add_argument(
-        "--terms-file", type=Path, default=os.environ.get("WITFUL_PII_TERMS_FILE"), help="Private UTF-8 literals, one per line"
-    )
-    args = parser.parse_args(argv)
+    configure(parser)
+    return execute(parser.parse_args(argv), parser)
+
+
+def execute(args: argparse.Namespace, parser: argparse.ArgumentParser) -> int:
+    """
+    Execute an already parsed domain command.
+
+    Args:
+        args (argparse.Namespace): Validated arguments from the shared hierarchy or standalone parser.
+        parser (argparse.ArgumentParser): Owning parser for consistent error reporting.
+
+    Returns:
+        int: Selected operation status.
+    """
 
     try:
         terms = tuple(line.strip() for line in args.terms_file.read_text().splitlines() if line.strip()) if args.terms_file else ()

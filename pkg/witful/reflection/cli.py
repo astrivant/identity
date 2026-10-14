@@ -7,12 +7,12 @@ from __future__ import annotations
 import argparse
 import json
 from importlib.resources import files
-from pathlib import Path
 from typing import TYPE_CHECKING
 
 from jsonschema import ValidationError
 
 from witful.collection.protection import check_collection
+from witful.commands.reflection import configure
 from witful.files import replace_file
 from witful.knowledge.contracts import as_data, schema, structure
 from witful.reflection.journal import config, read, record
@@ -37,20 +37,21 @@ def main(argv: Sequence[str] | None = None) -> int:
         int: Zero on success; parser exit two for invalid or unavailable sources.
     """
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--repo", type=Path, default=Path.cwd())
-    commands = parser.add_subparsers(dest="command", required=True)
-    commands.add_parser("check")
-    commands.add_parser("schema")
-    planning = commands.add_parser("plan")
-    planning.add_argument("--history-repo", type=Path)
-    planning.add_argument("--output", type=Path, default=Path(".cache/reflection-plan.json"))
-    recording = commands.add_parser("record")
-    recording.add_argument("--input", type=Path, required=True, help="JSON array of reviewed Assessment objects")
-    recording.add_argument("--history-repo", type=Path)
-    for name in ("build", "example"):
-        rendering = commands.add_parser(name)
-        rendering.add_argument("--output-dir", type=Path, default=Path("docs/assets"))
-    args = parser.parse_args(argv)
+    configure(parser)
+    return execute(parser.parse_args(argv), parser)
+
+
+def execute(args: argparse.Namespace, parser: argparse.ArgumentParser) -> int:
+    """
+    Execute an already parsed domain command.
+
+    Args:
+        args (argparse.Namespace): Validated arguments from the shared hierarchy or standalone parser.
+        parser (argparse.ArgumentParser): Owning parser for consistent error reporting.
+
+    Returns:
+        int: Selected operation status.
+    """
     root = args.repo.resolve()
     try:
         if args.command == "schema":

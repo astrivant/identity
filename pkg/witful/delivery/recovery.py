@@ -7,7 +7,21 @@ from __future__ import annotations
 from pathlib import Path, PurePosixPath
 from uuid import uuid4
 
-from .common import arrays, branch_name, checks, commit, destination, git, publish, read, remote_head, save, signing, text
+from .common import (
+    arrays,
+    branch_name,
+    checks,
+    commit,
+    destination,
+    git,
+    publish,
+    read,
+    remote_head,
+    save,
+    saved_destination,
+    signing,
+    text,
+)
 
 
 def batches(root: Path, source: str, selected: list[list[str]]) -> list[list[str]]:
@@ -50,7 +64,7 @@ def batches(root: Path, source: str, selected: list[list[str]]) -> list[list[str
     return [list(group) for _, group in sorted(measured)]
 
 
-def plan(root: Path, specification: Path, worktree: Path, receipt: Path) -> dict[str, object]:
+def plan(root: Path, specification: Path, worktree: Path, receipt: Path, remote: str = "origin") -> dict[str, object]:
     """
     Create a reviewable small-first plan from immutable source and a currently published base.
 
@@ -59,6 +73,7 @@ def plan(root: Path, specification: Path, worktree: Path, receipt: Path) -> dict
         specification (Path): JSON with source, base_branch, recovery branch, and coherent batches.
         worktree (Path): New isolated worktree to create only when applying the plan.
         receipt (Path): New private receipt outside that worktree.
+        remote (str): Selected provider-qualified remote.
 
     Returns:
         dict[str, object]: Planned groups bound to exact source and base commits.
@@ -67,15 +82,15 @@ def plan(root: Path, specification: Path, worktree: Path, receipt: Path) -> dict
         ValueError: Destination exists, base is absent, or the plan is unsuitable.
     """
     spec = read(specification)
-    repository = destination(root)
+    repository = destination(root, remote)
     branch = branch_name(root, text(spec["branch"]))
     if not branch.startswith("recovery/"):
         raise ValueError("Use an explicit recovery/ branch after reviewing its CI triggers")
     base_branch = branch_name(root, text(spec["base_branch"]))
-    if branch == base_branch or remote_head(root, branch):
+    if branch == base_branch or remote_head(root, branch, repository.remote):
         raise ValueError("Select a new recovery branch distinct from the published base")
-    git(root, "fetch", "--no-tags", "origin", base_branch)
-    base = commit(root, remote_head(root, base_branch))
+    git(root, "fetch", "--no-tags", repository.remote, base_branch)
+    base = commit(root, remote_head(root, base_branch, repository.remote))
     source = commit(root, text(spec["source"]))
     groups = batches(root, source, arrays(spec["batches"]))
     if worktree.exists() or receipt.resolve().is_relative_to(worktree.resolve()):
@@ -87,7 +102,7 @@ def plan(root: Path, specification: Path, worktree: Path, receipt: Path) -> dict
     state: dict[str, object] = {
         "kind": "recovery",
         "root": str(root.resolve()),
-        "repository": repository,
+        "repository": repository.data(),
         "branch": branch,
         "base": base,
         "source": source,
@@ -120,8 +135,8 @@ def apply(receipt: Path, commands: list[list[str]]) -> dict[str, object]:
     if state.get("kind") != "recovery":
         raise ValueError("Expected a recovery receipt")
     source_root, root = Path(text(state["root"])), Path(text(state["worktree"]))
-    repository, branch = text(state["repository"]), text(state["branch"])
-    if destination(source_root) != repository or not branch.startswith("recovery/"):
+    repository, branch = saved_destination(source_root, state["repository"]), text(state["branch"])
+    if not branch.startswith("recovery/"):
         raise ValueError("Recovery destination changed")
     groups = arrays(state["batches"])
     completed = state["completed"]
@@ -134,13 +149,13 @@ def apply(receipt: Path, commands: list[list[str]]) -> dict[str, object]:
             raise ValueError("The pending worktree is missing; recover it before retrying")
         git(source_root, "update-ref", "refs/witful/delivery/" + uuid4().hex, text(state["source"]), "0" * 40)
         git(source_root, "worktree", "add", "--detach", str(root), text(state["base"]))
-    if destination(root) != repository:
+    if saved_destination(root, state["repository"]) != repository:
         raise ValueError("Worktree origin changed")
     while len(accepted) < len(groups):
         previous = accepted[-1] if accepted else text(state["base"])
         pending = text(state["pending"])
         expected = accepted[-1] if accepted else ""
-        if remote_head(root, branch) not in ({expected, pending} if pending else {expected}):
+        if remote_head(root, branch, repository.remote) not in ({expected, pending} if pending else {expected}):
             raise ValueError("Recovery branch changed; do not overwrite another writer")
         if not pending:
             if commit(root, "HEAD") != previous or git(root, "status", "--porcelain", "--untracked-files=all"):
@@ -161,7 +176,7 @@ def apply(receipt: Path, commands: list[list[str]]) -> dict[str, object]:
         state.update(completed=accepted, pending="", status="partial")
         save(receipt, state)
     # Even a completed retry must verify the currently observed remote, not trust an old receipt.
-    if remote_head(root, branch) != accepted[-1]:
+    if remote_head(root, branch, repository.remote) != accepted[-1]:
         raise ValueError("Completed recovery ref changed; prior receipt is historical evidence only")
     state["status"] = "selected-batches-published"
     save(receipt, state)

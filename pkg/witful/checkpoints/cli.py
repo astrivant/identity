@@ -8,7 +8,6 @@ import argparse
 import json
 import os
 import subprocess
-from pathlib import Path
 from typing import TYPE_CHECKING
 
 from jsonschema import ValidationError
@@ -19,6 +18,7 @@ from witful.checkpoints.models import Checkpoint
 from witful.checkpoints.plotting import build
 from witful.checkpoints.storage import SQLiteCheckpointStore, open_store
 from witful.collection.protection import check_collection
+from witful.commands.checkpoints import configure
 from witful.files import replace_file
 from witful.knowledge.contracts import as_data, schema
 
@@ -39,25 +39,21 @@ def main(argv: Sequence[str] | None = None) -> int:
         int: Zero on success; parser exit two for invalid data, references, or unavailable storage.
     """
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--repo", type=Path, default=Path.cwd())
-    parser.add_argument("--namespace", default=os.environ.get("WITFUL_DATABASE_NAMESPACE", "default"))
-    parser.add_argument("--database", type=Path, help="Local SQLite mirror, default .witful/checkpoints.sqlite3")
-    commands = parser.add_subparsers(dest="command", required=True)
-    capture = commands.add_parser("record", help="Snapshot reviewed evidence at a project's committed HEAD")
-    capture.add_argument("--project", type=Path, required=True)
-    capture.add_argument("--project-id", required=True, help="Stable chosen alias; remote URLs and machine paths are never inferred")
-    commands.add_parser("check", help="Validate the journal without creating data or plots")
-    commands.add_parser("schemas", help="Generate the authoritative checkpoint schema")
-    commands.add_parser("sync", help="Seed the SQLite mirror, or explicitly selected WITFUL_DATABASE_URL")
-    difference = commands.add_parser("diff", help="Compare two snapshots, defaulting to the last two checkpoints")
-    difference.add_argument("--before")
-    difference.add_argument("--after")
-    difference.add_argument("--from-database", action="store_true")
-    render = commands.add_parser("build", help="Compute all differences and refresh recent-project plots")
-    render.add_argument("--from-database", action="store_true")
-    render.add_argument("--output-dir", type=Path, default=Path("docs/assets"))
-    render.add_argument("--limit", type=int, default=8)
-    args = parser.parse_args(argv)
+    configure(parser)
+    return execute(parser.parse_args(argv), parser)
+
+
+def execute(args: argparse.Namespace, parser: argparse.ArgumentParser) -> int:
+    """
+    Execute an already parsed domain command.
+
+    Args:
+        args (argparse.Namespace): Validated arguments from the shared hierarchy or standalone parser.
+        parser (argparse.ArgumentParser): Owning parser for consistent error reporting.
+
+    Returns:
+        int: Selected operation status.
+    """
     root = args.repo.resolve()
     database = args.database or root / ".witful/checkpoints.sqlite3"
 

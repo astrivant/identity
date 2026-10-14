@@ -16,6 +16,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 from witful.collection.protection import check_collection
+from witful.commands.storage import configure
 from witful.lessons import append_lesson, new_lesson, read_journal, rebuild_database
 from witful.storage import open_store
 
@@ -34,23 +35,21 @@ def main(argv: Sequence[str] | None = None) -> int:
         int: Zero on success, two for actionable input or filesystem failures.
     """
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--home", type=Path, default=Path(os.environ.get("WITFUL_HOME", Path.cwd() / ".witful")))
-    parser.add_argument("--repo", type=Path, default=Path.cwd())
-    parser.add_argument("--namespace", default=os.environ.get("WITFUL_DATABASE_NAMESPACE", "default"))
-    commands = parser.add_subparsers(dest="command", required=True)
-    commands.add_parser("sync", help="Synchronize the selected lesson index from the versioned export")
-    commands.add_parser("status", help="Show locations, provenance count, and retained history size")
-    commands.add_parser("check", help="Validate JSONL and SQL in a temporary database without updating runtime state")
-    lookup = commands.add_parser("search", help="Find relevant lessons; terms are literal words")
-    lookup.add_argument("terms")
-    lookup.add_argument("--history", action="store_true")
-    lookup.add_argument("--limit", type=int, default=10)
-    add = commands.add_parser("add", help="Append sourced guidance or a correction; Git publication is separate")
-    add.add_argument("--topic", required=True)
-    add.add_argument("--lesson", required=True)
-    add.add_argument("--source", required=True)
-    add.add_argument("--supersedes")
-    args = parser.parse_args(argv)
+    configure(parser)
+    return execute(parser.parse_args(argv), parser)
+
+
+def execute(args: argparse.Namespace, parser: argparse.ArgumentParser) -> int:
+    """
+    Execute an already parsed domain command.
+
+    Args:
+        args (argparse.Namespace): Validated arguments from the shared hierarchy or standalone parser.
+        parser (argparse.ArgumentParser): Owning parser for consistent error reporting.
+
+    Returns:
+        int: Selected operation status.
+    """
     repo = Path(args.repo).resolve()
     home = Path(args.home).expanduser().resolve()
     journal = repo / "lessons.jsonl"

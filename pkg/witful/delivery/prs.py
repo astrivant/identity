@@ -1,14 +1,16 @@
 """
-Order pull requests and prepare signed, reviewable rebases without merging them.
+Order pull and merge requests and prepare signed, reviewable rebases without merging them.
 """
 
 from __future__ import annotations
 
-import json
 from pathlib import Path
 from uuid import uuid4
 
-from .common import branch_name, checks, commit, destination, git, publish, read, remote_head, run, save, signing, text
+import networkx as nx
+
+from .common import branch_name, checks, commit, destination, git, publish, read, remote_head, save, saved_destination, signing, text
+from .providers import backend
 
 
 def number(value: object) -> int:
@@ -34,8 +36,8 @@ def ordered(rows: list[dict[str, object]], dependencies: dict[str, object]) -> l
     Topologically order base relationships and explicitly reviewed dependencies, smallest ready diff first.
 
     Args:
-        rows (list[dict[str, object]]): Open PR metadata.
-        dependencies (dict[str, object]): Explicit PR-number keys mapped to prerequisite-number arrays.
+        rows (list[dict[str, object]]): Normalized PR and MR metadata.
+        dependencies (dict[str, object]): Qualified request keys or unique numeric aliases mapped to prerequisite arrays.
 
     Returns:
         list[dict[str, object]]: Stable review order retaining source metadata.
@@ -43,76 +45,90 @@ def ordered(rows: list[dict[str, object]], dependencies: dict[str, object]) -> l
     Raises:
         ValueError: Dependencies are missing, cyclic, or ambiguous.
     """
-    by_number = {number(row["number"]): row for row in rows}
-    heads = {text(row["headRefName"]): number(row["number"]) for row in rows if not row["isCrossRepository"]}
-    if len(by_number) != len(rows) or len(heads) != sum(not row["isCrossRepository"] for row in rows):
-        raise ValueError("Duplicate PR numbers or ambiguous branch heads")
-    required: dict[int, set[int]] = {key: set() for key in by_number}
-    for key, row in by_number.items():
-        parent = heads.get(text(row["baseRefName"]))
+    by_key = {text(row.get("key", str(number(row["number"])))): row for row in rows}
+    heads = {
+        (text(row.get("repository", "")), text(row["headRefName"])): key for key, row in by_key.items() if not row["isCrossRepository"]
+    }
+    if len(by_key) != len(rows) or len(heads) != sum(not row["isCrossRepository"] for row in rows):
+        raise ValueError("Duplicate request identifiers or ambiguous branch heads")
+    graph: nx.DiGraph[str, dict[str, object], dict[str, object]] = nx.DiGraph()
+    graph.add_nodes_from(by_key)
+    for key, row in by_key.items():
+        parent = heads.get((text(row.get("repository", "")), text(row["baseRefName"])))
         if parent is not None:
-            required[key].add(parent)
-    for dependency_key, value in dependencies.items():
-        identifier = int(dependency_key)
-        if identifier not in required or not isinstance(value, list):
-            raise ValueError("Dependency keys must name open PRs with prerequisite arrays")
+            graph.add_edge(parent, key)
+
+    # Numeric aliases are usable only when they identify exactly one request across selected projects.
+    def resolve(value: object) -> str:
+        """
+        Resolve a qualified request key or an unambiguous numeric shorthand.
+
+        Args:
+            value (object): Reviewed dependency reference.
+
+        Returns:
+            str: Unique inventory key.
+        """
+        reference = str(value) if type(value) is int else text(value)
+        if reference in by_key:
+            return reference
+        matches = [key for key, row in by_key.items() if str(row["number"]) == reference]
+        if len(matches) != 1:
+            raise ValueError("Dependency is ambiguous or not in the open request inventory; use a qualified key")
+        return matches[0]
+
+    for key, value in dependencies.items():
+        target = resolve(key)
+        if not isinstance(value, list):
+            raise ValueError("Dependency prerequisites must be arrays")
         for item in value:
-            dependency = number(item)
-            if dependency not in by_number:
-                raise ValueError("A prerequisite is not in the open PR inventory; inspect its state")
-            required[identifier].add(dependency)
-    result: list[dict[str, object]] = []
-    while required:
-        ready = [key for key, parents in required.items() if not parents]
-        if not ready:
-            raise ValueError("PR dependencies contain a cycle")
-        selected = min(
-            ready,
-            key=lambda key: (
-                number(by_number[key]["additions"]) + number(by_number[key]["deletions"]),
-                number(by_number[key]["changedFiles"]),
-                key,
-            ),
-        )
-        result.append(by_number[selected])
-        del required[selected]
-        for parents in required.values():
-            parents.discard(selected)
-    return result
+            graph.add_edge(resolve(item), target)
+
+    def size(key: str) -> tuple[bool, int, int, str, int]:
+        """
+        Sort known small changes first without treating missing GitLab counts as zero.
+
+        Args:
+            key (str): Qualified request identifier.
+
+        Returns:
+            tuple[bool, int, int, str, int]: Stable size and identity tie breakers.
+        """
+        row = by_key[key]
+        missing = any(row[field] is None for field in ("additions", "deletions", "changedFiles"))
+        lines = 0 if missing else number(row["additions"]) + number(row["deletions"])
+        files = 0 if missing else number(row["changedFiles"])
+        return missing, lines, files, text(row.get("repository", "")), number(row["number"])
+
+    try:
+        return [by_key[key] for key in nx.lexicographical_topological_sort(graph, key=size)]
+    except nx.NetworkXUnfeasible:
+        raise ValueError("Request dependencies contain a cycle") from None
 
 
-def inventory(root: Path, dependencies: dict[str, object]) -> list[dict[str, object]]:
+def inventory(root: Path, dependencies: dict[str, object], remotes: tuple[str, ...] = ("origin",)) -> list[dict[str, object]]:
     """
-    Fetch current PR metadata in one bounded GitHub CLI request.
+    Collect a complete bounded review inventory from one or both hosting providers.
 
     Args:
         root (Path): Selected existing repository.
-        dependencies (dict[str, object]): Reviewed extra dependencies, never inferred from arbitrary mentions.
+        dependencies (dict[str, object]): Explicit reviewed prerequisites.
+        remotes (tuple[str, ...]): Selected remote names with optional provider qualifiers.
 
     Returns:
-        list[dict[str, object]]: Ordered rows including links, drafts, body intent, and check evidence.
-
-    Raises:
-        ValueError: The response is malformed or potentially truncated.
+        list[dict[str, object]]: Globally ordered rows with qualified identities and provider evidence.
     """
-    fields = (
-        "number,title,url,headRefName,headRefOid,baseRefName,baseRefOid,isCrossRepository,"
-        "additions,deletions,changedFiles,isDraft,body,reviewDecision,statusCheckRollup"
-    )
-    value: object = json.loads(
-        run(root, "gh", "pr", "list", "--repo", "github.com/" + destination(root), "--state", "open", "--limit", "1000", "--json", fields)
-    )
-    if not isinstance(value, list) or len(value) >= 1000:
-        raise ValueError("Invalid or capped PR inventory; narrow the project outside this helper")
     rows: list[dict[str, object]] = []
-    for item in value:
-        if not isinstance(item, dict):
-            raise ValueError("Invalid PR row")
-        rows.append({str(key): field for key, field in item.items()})
+    repositories = [destination(root, remote) for remote in remotes]
+    if not repositories or len({repository.key for repository in repositories}) != len(repositories):
+        raise ValueError("Select distinct provider projects")
+    for repository in repositories:
+        with backend(repository) as provider:
+            rows.extend(provider.requests())
     return ordered(rows, dependencies)
 
 
-def prepare(root: Path, identifier: int, old_base: str, worktree: Path, receipt: Path) -> dict[str, object]:
+def prepare(root: Path, identifier: int, old_base: str, worktree: Path, receipt: Path, remote: str = "origin") -> dict[str, object]:
     """
     Prepare one PR on its current remote base, retaining conflicts and an immutable recovery reference.
 
@@ -122,6 +138,7 @@ def prepare(root: Path, identifier: int, old_base: str, worktree: Path, receipt:
         old_base (str): Original replay boundary captured before any parent rewrite.
         worktree (Path): New isolated worktree path.
         receipt (Path): New receipt outside the worktree.
+        remote (str): One explicitly selected provider-qualified remote.
 
     Returns:
         dict[str, object]: Prepared receipt; publication is a separate reviewed step.
@@ -129,27 +146,28 @@ def prepare(root: Path, identifier: int, old_base: str, worktree: Path, receipt:
     Raises:
         ValueError: The PR, source boundary, signing, or rebase is unsuitable.
     """
-    repository = destination(root)
-    selected = [row for row in inventory(root, {}) if number(row["number"]) == identifier]
+    repository = destination(root, remote)
+    selected = [row for row in inventory(root, {}, (remote,)) if number(row["number"]) == identifier]
     if len(selected) != 1 or selected[0]["isCrossRepository"]:
-        raise ValueError("Select one open same-repository PR")
+        raise ValueError("Select one open same-repository PR or MR")
     row = selected[0]
     branch = branch_name(root, text(row["headRefName"]))
-    default = run(root, "gh", "repo", "view", "github.com/" + repository, "--json", "defaultBranchRef", "--jq", ".defaultBranchRef.name")
+    with backend(repository) as provider:
+        default = provider.default_branch()
     if branch in (default, "main", "master"):
         raise ValueError("Refusing to rewrite an integration branch")
     base_branch = branch_name(root, text(row["baseRefName"]))
-    git(root, "fetch", "--no-tags", "origin", branch, base_branch)
+    git(root, "fetch", "--no-tags", repository.remote, branch, base_branch)
     original = commit(root, text(row["headRefOid"]))
-    if remote_head(root, branch) != original:
+    if remote_head(root, branch, repository.remote) != original:
         raise ValueError("PR head changed during preparation")
-    base = commit(root, remote_head(root, base_branch))
+    base = commit(root, remote_head(root, base_branch, repository.remote))
     previous = commit(root, old_base)
     git(root, "merge-base", "--is-ancestor", previous, original)
     signing(root)
     state: dict[str, object] = {
         "kind": "pr",
-        "repository": repository,
+        "repository": repository.data(),
         "branch": branch,
         "base_branch": base_branch,
         "original": original,
@@ -191,13 +209,14 @@ def publish_pr(receipt: Path, reviewed_head: str, commands: list[list[str]]) -> 
     if state.get("kind") != "pr":
         raise ValueError("Expected a PR receipt")
     root = Path(text(state["worktree"]))
+    repository = saved_destination(root, state["repository"])
     head = commit(root, "HEAD")
     if reviewed_head != head:
         raise ValueError("Review the exact candidate SHA before publishing")
     for name in ("rebase-merge", "rebase-apply"):
         if Path(git(root, "rev-parse", "--git-path", name)).exists():
             raise ValueError("Finish the retained rebase before publication")
-    if remote_head(root, text(state["base_branch"])) != state["base"]:
+    if remote_head(root, text(state["base_branch"]), repository.remote) != state["base"]:
         raise ValueError("PR base moved; prepare and review against its new head")
     git(root, "merge-base", "--is-ancestor", text(state["base"]), head)
     checks(root, commands)
@@ -205,7 +224,7 @@ def publish_pr(receipt: Path, reviewed_head: str, commands: list[list[str]]) -> 
         raise ValueError("Validation changed HEAD")
     for revision in git(root, "rev-list", text(state["base"]) + ".." + head).splitlines():
         git(root, "verify-commit", revision)
-    publish(root, text(state["repository"]), text(state["branch"]), text(state["original"]), head)
+    publish(root, repository, text(state["branch"]), text(state["original"]), head)
     state.update(status="published", head=head)
     save(receipt, state)
     return state

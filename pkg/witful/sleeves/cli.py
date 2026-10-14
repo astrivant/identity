@@ -7,12 +7,12 @@ from __future__ import annotations
 import argparse
 import json
 import os
-from pathlib import Path
 from typing import TYPE_CHECKING
 
 from cryptography.exceptions import InvalidTag, UnsupportedAlgorithm
 from jsonschema import ValidationError
 
+from witful.commands.sleeves import configure
 from witful.exceptions import SleeveError
 from witful.knowledge.contracts import as_data, schema
 from witful.sleeves import operations, state, supervisor
@@ -33,38 +33,21 @@ def main(argv: Sequence[str] | None = None) -> int:
         int: Zero for success; nonzero for incomplete reconciliation or invalid input.
     """
     parser = argparse.ArgumentParser(description=__doc__)
-    commands = parser.add_subparsers(dest="command", required=True)
-    starting = commands.add_parser("start", help="Create and back up a private isolated session from current remote main")
-    starting.add_argument("--repo", type=Path, required=True)
-    starting.add_argument("--directory", type=Path, required=True)
-    starting.add_argument("--name", required=True)
-    starting.add_argument("--base", default="main")
-    starting.add_argument("--remote", default="origin")
-    starting.add_argument("--key-dir", type=Path)
-    checkpoint = commands.add_parser("checkpoint", help="Validate, sign, and push named changes to this sleeve")
-    checkpoint.add_argument("--repo", type=Path, default=Path.cwd())
-    checkpoint.add_argument("--paths", nargs="*", default=[])
-    checkpoint.add_argument("--message", default="Checkpoint identity sleeve")
-    finishing = commands.add_parser("finish", help="Reconcile and close only after remote integration is verified")
-    finishing.add_argument("--repo", type=Path, default=Path.cwd())
-    finishing.add_argument("--pull-request", action="store_true", help="Propose review instead of directly pushing the integration branch")
-    supervised = commands.add_parser("run", help="Supervise a workload and checkpoint/reconcile on exit or termination")
-    supervised.add_argument("--repo", type=Path, default=Path.cwd())
-    supervised.add_argument("--paths", nargs="*", default=[])
-    supervised.add_argument("--shutdown-seconds", type=float, default=90)
-    supervised.add_argument("--stop-seconds", type=float, default=10)
-    supervised.add_argument("--pull-request", action="store_true")
-    supervised.add_argument("workload", nargs=argparse.REMAINDER)
-    for name in ("status", "guard", "backup"):
-        descriptions = {
-            "status": "List local sleeves",
-            "guard": "Fail normal session shutdown until closed",
-            "backup": "Push existing sleeve commits without staging incomplete source edits",
-        }
-        command = commands.add_parser(name, help=descriptions[name])
-        command.add_argument("--repo", type=Path, default=Path.cwd())
-    commands.add_parser("schema", help="Print the closed local receipt schema")
-    args = parser.parse_args(argv)
+    configure(parser)
+    return execute(parser.parse_args(argv), parser)
+
+
+def execute(args: argparse.Namespace, parser: argparse.ArgumentParser) -> int:
+    """
+    Execute an already parsed domain command.
+
+    Args:
+        args (argparse.Namespace): Validated arguments from the shared hierarchy or standalone parser.
+        parser (argparse.ArgumentParser): Owning parser for consistent error reporting.
+
+    Returns:
+        int: Selected operation status.
+    """
     os.umask(0o077)
 
     try:

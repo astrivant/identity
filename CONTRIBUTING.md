@@ -36,6 +36,11 @@ with explicit inputs. Add focused regressions for behavior changes. Tests use
 synthetic data; never copy personal records into fixtures. Live PostgreSQL tests
 use `WITFUL_TEST_DATABASE_URL` and skip when it is not configured locally.
 
+Use NetworkX consistently for graph operations, including cycle validation and
+prerequisite ordering. Keep the graph vocabulary uniform across modules. A
+`source requires target` relation becomes a `target -> source` edge for ordering;
+retain isolated nodes and canonical-ID tie breaks when constructing selected graphs.
+
 Define custom package exceptions in `witful.exceptions` and import them directly
 from there in implementation code and tests. Keep operational functions, such as
 `require_protected`, in their domain modules. The exception module has no domain
@@ -158,3 +163,16 @@ Review renderer changes locally with `witful reflection example --output-dir
 .cache/continual-learning`. Preserve the question subtitles and explicit synthetic
 labels. Reflection tests use temporary Git histories and cover cadence boundaries,
 retry identity, provenance, unknown outcomes, and deterministic output.
+
+## Command and provider composition
+
+Declare CLI arguments in `pkg/witful/commands/`, register the domain with the
+immutable root builder, and expose `execute(args, parser)` in its runtime module.
+Reuse the declaration from standalone entrypoints; parse once at each entrypoint,
+without command-name tests against `sys.argv`. Keep parser imports lightweight.
+Exercise public help, input errors, legacy syntax and selected runtime imports.
+
+Delivery providers implement one interface using the maintained Python SDKs.
+Keep host-specific metadata in the backend and shared Git lifecycle in orchestration.
+Test the real SDK parsers with synthetic HTTP responses, as well as signed local
+Git histories; fixture passes do not establish live host publication.

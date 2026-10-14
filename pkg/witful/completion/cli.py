@@ -8,11 +8,11 @@ import argparse
 import json
 import subprocess
 import sys
-from pathlib import Path
 from typing import TYPE_CHECKING
 
 from jsonschema import ValidationError
 
+from witful.commands.completion import configure
 from witful.completion.core import check, plan
 from witful.completion.hooks import configuration, handle
 from witful.completion.models import Audit
@@ -22,6 +22,7 @@ from witful.knowledge.contracts import as_data, schema, structure
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
+    from pathlib import Path
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -35,20 +36,21 @@ def main(argv: Sequence[str] | None = None) -> int:
         int: Zero for successful coverage or acknowledged handoff, one for gaps, and two for malformed input.
     """
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--repo", type=Path, required=True)
-    commands = parser.add_subparsers(dest="command", required=True)
-    for name in ("plan", "check"):
-        command = commands.add_parser(name)
-        command.add_argument("--task", required=True)
-        command.add_argument("--workspace", type=Path, action="append", default=[])
-        command.add_argument("--output" if name == "plan" else "--input", type=Path, required=True)
-        if name == "plan":
-            command.add_argument("--replace", action="store_true", help="Discard previous attestations and capture a fresh plan")
-    commands.add_parser("schema")
-    for name in ("hook-config", "codex-hook"):
-        command = commands.add_parser(name)
-        command.add_argument("--identity", required=True)
-    args = parser.parse_args(argv)
+    configure(parser)
+    return execute(parser.parse_args(argv), parser)
+
+
+def execute(args: argparse.Namespace, parser: argparse.ArgumentParser) -> int:
+    """
+    Execute an already parsed domain command.
+
+    Args:
+        args (argparse.Namespace): Validated arguments from the shared hierarchy or standalone parser.
+        parser (argparse.ArgumentParser): Owning parser for consistent error reporting.
+
+    Returns:
+        int: Selected operation status.
+    """
     root = args.repo.resolve()
     result: object
     try:

@@ -6,25 +6,30 @@ from __future__ import annotations
 
 import json
 import sys
+from contextlib import contextmanager
 from pathlib import Path
 from typing import TYPE_CHECKING
 
 import pytest
 from witful.delivery import common, prs, recovery
 from witful.delivery.cli import main
+from witful.delivery.providers.base import Backend, Repository, bounded
 
 if TYPE_CHECKING:
-    from pytest import CaptureFixture, MonkeyPatch
+    from collections.abc import Iterator
+
+    from pytest import CaptureFixture, FixtureRequest, MonkeyPatch
 
 
-@pytest.fixture
-def repository(tmp_path: Path, monkeypatch: MonkeyPatch) -> Path:
+@pytest.fixture(params=["github", "gitlab"])
+def repository(tmp_path: Path, monkeypatch: MonkeyPatch, request: FixtureRequest) -> Path:
     """
     Isolate Git configuration and create an SSH-signed local repository with a bare remote.
 
     Args:
         tmp_path (Path): Temporary fixture directory.
-        monkeypatch (MonkeyPatch): Replace only GitHub identity/signature responses and ambient Git configuration.
+        monkeypatch (MonkeyPatch): Replace only host evidence and ambient Git configuration.
+        request (FixtureRequest): Hosting provider whose shared Git lifecycle is exercised.
 
     Returns:
         Path: Real source checkout with a published signed baseline.
@@ -53,28 +58,62 @@ def repository(tmp_path: Path, monkeypatch: MonkeyPatch) -> Path:
     write_commit(root, "base.txt", "baseline\n")
     common.git(root, "remote", "add", "origin", str(remote))
     common.git(root, "push", "origin", "main")
+    binding = Repository(str(request.param), str(request.param) + ".com", "example/project", "origin", str(remote))
     for module in (common, prs, recovery):
-        monkeypatch.setattr(module, "destination", lambda root: "example/project")
-    original = common.run
+        monkeypatch.setattr(module, "destination", lambda root, selector="origin": binding)
+    monkeypatch.setattr(common, "backend", fake_backend)
+    monkeypatch.setattr(prs, "backend", fake_backend)
+    return root
 
-    def host(root: Path, *args: str) -> str:
+
+class FixtureBackend:
+    """
+    Supply provider evidence while fixture Git operations remain real.
+    """
+
+    def requests(self) -> list[dict[str, object]]:
         """
-        Replace host verification while keeping all Git and signature operations real.
-
-        Args:
-            root (Path): Selected checkout.
-            *args (str): Requested command arguments.
+        Return an empty default inventory.
 
         Returns:
-            str: Synthetic host result or actual local process output.
+            list[dict[str, object]]: Tests inject request metadata separately.
         """
-        if args[0] == "gh":
-            return "true" if args[1] == "api" else "main"
-        return original(root, *args)
+        return []
 
-    monkeypatch.setattr(common, "run", host)
-    monkeypatch.setattr(prs, "run", host)
-    return root
+    def default_branch(self) -> str:
+        """
+        Preserve the fixture integration branch.
+
+        Returns:
+            str: Default branch name.
+        """
+        return "main"
+
+    def verified(self, revision: str) -> bool:
+        """
+        Acknowledge a remotely read-back fixture signature.
+
+        Args:
+            revision (str): Candidate commit already verified locally by real Git.
+
+        Returns:
+            bool: Synthetic host signature evidence.
+        """
+        return True
+
+
+@contextmanager
+def fake_backend(repository: Repository) -> Iterator[Backend]:
+    """
+    Isolate provider calls from the real local Git fixture.
+
+    Args:
+        repository (Repository): Selected destination.
+
+    Yields:
+        Backend: Fixture evidence only.
+    """
+    yield FixtureBackend()
 
 
 def write_commit(root: Path, path: str, content: str) -> str:
@@ -171,7 +210,7 @@ def test_stack_rebase_uses_original_parent_sha(repository: Path, tmp_path: Path,
     common.git(repository, "add", "unrelated.txt")
     staged = common.git(repository, "diff", "--cached")
     rows = [row(5, "parent", "main", parent), row(6, "child", "parent", child)]
-    monkeypatch.setattr(prs, "inventory", lambda root, dependencies: rows)
+    monkeypatch.setattr(prs, "inventory", lambda root, dependencies, remotes=("origin",): rows)
     first, second = tmp_path / "parent.json", tmp_path / "child.json"
     parent_state = prs.prepare(repository, 5, base, tmp_path / "parent-work", first)
     parent_head = common.text(parent_state["head"])
@@ -207,7 +246,7 @@ def test_conflict_preserves_receipt_and_original_remote(repository: Path, tmp_pa
     common.git(repository, "switch", "main")
     write_commit(repository, "base.txt", "main policy\n")
     common.git(repository, "push", "origin", "main")
-    monkeypatch.setattr(prs, "inventory", lambda root, dependencies: [row(1, "feature", "main", feature)])
+    monkeypatch.setattr(prs, "inventory", lambda root, dependencies, remotes=("origin",): [row(1, "feature", "main", feature)])
     receipt, worktree = tmp_path / "conflict.json", tmp_path / "conflict"
     with pytest.raises(ValueError, match="git exited"):
         prs.prepare(repository, 1, base, worktree, receipt)
@@ -357,7 +396,7 @@ def test_cli_catalog_and_receipt_exclusion(tmp_path: Path, monkeypatch: MonkeyPa
     Returns:
         None: Read-only output and exclusive local state contracts hold.
     """
-    monkeypatch.setattr(prs, "inventory", lambda root, dependencies: [row(5, "feature", "main")])
+    monkeypatch.setattr(prs, "inventory", lambda root, dependencies, remotes=("origin",): [row(5, "feature", "main")])
     assert main(["pr", "show"]) == 0
     assert "[#5 Fixture](https://github.com/example/project/pull/5)" in capsys.readouterr().out
     receipt = tmp_path / "receipt.json"
@@ -452,16 +491,16 @@ def test_inventory_rejects_truncation_and_preserves_metadata(tmp_path: Path, mon
 
     Args:
         tmp_path (Path): Existing working directory.
-        monkeypatch (MonkeyPatch): Provide controlled GitHub CLI responses.
+        monkeypatch (MonkeyPatch): Provide controlled backend inventory responses.
 
     Returns:
         None: Complete inventories retain review context; capped inventories fail.
     """
     metadata = row(5, "feature", "main")
     metadata["body"] = "Reviewed dependency intent"
-    monkeypatch.setattr(prs, "destination", lambda root: "example/project")
-    monkeypatch.setattr(prs, "run", lambda root, *args: json.dumps([metadata]))
+    monkeypatch.setattr(prs, "destination", lambda root, remote: Repository("github", "github.com", "example/project"))
+    monkeypatch.setattr(prs, "backend", fake_backend)
+    monkeypatch.setattr(FixtureBackend, "requests", lambda self: [metadata])
     assert prs.inventory(tmp_path, {})[0]["body"] == "Reviewed dependency intent"
-    monkeypatch.setattr(prs, "run", lambda root, *args: json.dumps([metadata] * 1000))
-    with pytest.raises(ValueError, match="capped"):
-        prs.inventory(tmp_path, {})
+    with pytest.raises(ValueError, match="Capped"):
+        bounded([metadata] * 1000)

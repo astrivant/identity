@@ -17,6 +17,7 @@ sources and schema drift.
 
 | Command | Purpose |
 | --- | --- |
+| `context --repo PATH snapshot/schema/plan/resolve/check` | Explicit offline working context, individual applicability, and freshness checks; [contract and inputs](context.md) |
 | `init PATH` | Create an empty collection; never overwrite an existing directory |
 | `lessons [--repo PATH] add/search/check/sync/status` | Source journal and SQLite/PostgreSQL search |
 | `[--repo PATH] show [ID]` | Inspect the hierarchy and observed counts |
@@ -206,3 +207,16 @@ verified previous/current snapshots without editing the active checkout.
 `prepare-refresh` and `publish-refresh` are trusted CI stages. `promote-keys`
 explicitly projects adopted keys to existing primary Actions secrets.
 See [inputs, limits, recovery and publication](key-rotation.md).
+
+## Command composition
+
+The root command builds one argparse hierarchy from `witful.commands` and parses
+once. Immutable registrations bind domain argument builders to typed handlers;
+only the selected runtime module is imported. Standalone entrypoints reuse the
+same builders. Add options to the owning builder and keep dispatch out of manual
+`sys.argv` indexing or slicing.
+
+`witful delivery --remote github:origin --remote gitlab:mirror pr show` combines
+provider inventories. `mr` is an alias for `pr`; rebase preparation selects one
+remote and publication uses its bound receipt. See [delivery inputs](delivery.md#inputs-and-prerequisites)
+for SDK authentication, provider evidence and operation boundaries.

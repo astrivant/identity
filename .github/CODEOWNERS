@@ -43,3 +43,16 @@
 /docs/security-checks.md @emmeowzing
 /pkg/witful/collection/tests/test_operations.py @emmeowzing
 /scripts/release/setup-signing.sh @emmeowzing
+/pkg/witful/context/ @emmeowzing
+/docs/context.md @emmeowzing
+/pkg/witful/knowledge/compiler.py @emmeowzing
+/pkg/witful/commands/ @emmeowzing
+/pkg/witful/delivery/providers/ @emmeowzing
+/pkg/witful/project.py @emmeowzing
+/pkg/witful/registry/ @emmeowzing
+/pkg/witful/awareness/cli.py @emmeowzing
+/pkg/witful/checkpoints/cli.py @emmeowzing
+/pkg/witful/life/cli.py @emmeowzing
+/pkg/witful/reflection/cli.py @emmeowzing
+/pkg/witful/repertoire/cli.py @emmeowzing
+/pkg/witful/instances/cli.py @emmeowzing

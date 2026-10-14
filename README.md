@@ -147,6 +147,8 @@ collection, while local indexes and caches remain outside its published records.
 | `WITFUL_SAPIENCE_TOKEN` / `sapience --token-env NAME` | Unset | Optional HTTP MCP authentication; the option selects an environment variable name. |
 | `CODEX_HOME` / `collection setup --home` | `~/.codex` | Destination for explicitly requested collection setup. |
 | `XDG_DATA_HOME` | `~/.local/share` | Default parent for repository-scoped key backups under `witful/collections/`; `collection setup --key-dir` overrides it. |
+| `delivery --remote [PROVIDER:]REMOTE` | `origin` | Select GitHub or GitLab remotes; repeat for combined inventories. [Authentication and inputs](docs/delivery.md#inputs-and-prerequisites). |
+| `knowledge/context.json` | Optional | Reviewed rules and budgets for [working-context resolution](docs/context.md). |
 | `knowledge/catalog.json` | Collection file | Reviewed classification, concepts, and sourced relationships. |
 | `knowledge/awareness.json` | Collection file | Optional figure selection and publication configuration. |
 
@@ -179,6 +181,8 @@ new evidence warrants a change.
 
 A policy-agent workflow connects these responsibilities: consult guidance, act,
 record the outcome, then review the applicable requirements before handoff.
+[Working-context resolution](docs/context.md) reviews the applicable neighborhood and
+directed prerequisites before each work step. Its offline CLI is advisory.
 [Completion audits](docs/completion.md) check review coverage against the current
 source state. Enforcement depends on the checks installed in the agent's runtime
 and delivery pipeline; reviewers still assess whether the evidence supports each
