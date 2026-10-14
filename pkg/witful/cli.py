@@ -16,6 +16,11 @@ def main() -> int:
     Returns:
         int: Selected command status; database failures remain credential-safe.
     """
+    if len(sys.argv) > 1 and sys.argv[1] == "context":
+        from witful.context.cli import main as context_main
+
+        return context_main(sys.argv[2:])
+
     if len(sys.argv) > 1 and sys.argv[1] == "completion":
         from witful.completion.cli import main as completion_main
 

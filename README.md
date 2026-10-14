@@ -113,6 +113,8 @@ new evidence warrants a change.
 
 A policy-agent workflow connects these responsibilities: consult guidance, act,
 record the outcome, then review the applicable requirements before handoff.
+[Working-context resolution](docs/context.md) reviews the applicable neighborhood and
+directed prerequisites before each work step. Its offline CLI is advisory.
 [Completion audits](docs/completion.md) check review coverage against the current
 source state. Enforcement depends on the checks installed in the agent's runtime
 and delivery pipeline; reviewers still assess whether the evidence supports each
@@ -241,6 +243,7 @@ Collection rotation inputs are documented in [key rotation](docs/key-rotation.md
 
 | Input | Purpose |
 | --- | --- |
+| `knowledge/context.json` | Optional reviewed rules and budgets for [working-context resolution](docs/context.md) |
 | `collection export --recipient-key` | Optional recipient public PEM; defaults to the operating encryption key, preserving the signer |
 | `collection export --output` | Required new encrypted export directory; [defaults and recovery inputs](docs/identity-exports.md#inputs-and-key-lifecycle) |
 | `WITFUL_COLLECTION_NEXT_KEYS` | Optional Actions secret containing a complete reviewed candidate generation |
