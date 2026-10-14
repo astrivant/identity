@@ -8,9 +8,9 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 import pytest
+from witful.exceptions import SleeveError
 from witful.sleeves import operations, state
 from witful.sleeves.git import git
-from witful.sleeves.models import SleeveError
 
 if TYPE_CHECKING:
     import subprocess

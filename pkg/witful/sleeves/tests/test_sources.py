@@ -13,11 +13,11 @@ import pytest
 from witful.collection import operations as collection
 from witful.collection.keys import prepare
 from witful.collection.models import CONFIG, SOURCE
+from witful.exceptions import SleeveError
 from witful.knowledge.contracts import as_data
 from witful.project import main as initialize
 from witful.sleeves import operations, state
 from witful.sleeves.git import git
-from witful.sleeves.models import SleeveError
 
 if TYPE_CHECKING:
     import subprocess

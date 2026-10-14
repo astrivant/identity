@@ -27,9 +27,10 @@ from witful.collection.models import CONFIG, FIGURES, SOURCE, Config, Envelope, 
 from witful.collection.operations import refresh, restore, seal
 from witful.collection.pipeline import prepare as prepare_refresh
 from witful.collection.process import private_repository, run
-from witful.collection.protection import StorageProtectionError, require_protected
+from witful.collection.protection import require_protected
 from witful.collection.publication import publish
 from witful.collection.rotation import rotate, verify_snapshot
+from witful.exceptions import StorageProtectionError
 from witful.knowledge.contracts import schema
 
 if TYPE_CHECKING:

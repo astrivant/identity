@@ -9,8 +9,8 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING, Protocol
 from urllib.parse import urlsplit
 
+from witful.exceptions import StorageError
 from witful.lessons import rebuild_database, search
-from witful.storage.exceptions import StorageError
 
 if TYPE_CHECKING:
     from pathlib import Path
