@@ -51,7 +51,7 @@ jobs:
           cosign-release: v3.1.3
       - name: Measure package line and branch coverage
         run: >-
-          pytest -n 4 pkg/witful scripts/ci/tests --cov=witful --cov-branch
+          pytest -n 4 pkg/witful scripts/ci/tests tests --cov=witful --cov-branch
           --cov-report=term-missing:skip-covered --cov-report=json:.cache/coverage/report.json
           --cov-report=xml:.cache/coverage/report.xml
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
