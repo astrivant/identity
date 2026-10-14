@@ -215,12 +215,18 @@ and configured deny terms; it cannot prove text is free of personal data. Trivy
 adds dependency-vulnerability and secret checks in CI. See [security checks](docs/security-checks.md)
 and [SECURITY.md](SECURITY.md) for publication review and reporting vulnerabilities.
 
+[Signed encrypted exports](docs/identity-exports.md) use the operating key by
+default, with an optional recipient public key for sharing. Verify the sender
+independently and restore with only the recipient's decryption key.
+
 ### Inputs
 
 Collection rotation inputs are documented in [key rotation](docs/key-rotation.md):
 
 | Input | Purpose |
 | --- | --- |
+| `collection export --recipient-key` | Optional recipient public PEM; defaults to the operating encryption key, preserving the signer |
+| `collection export --output` | Required new encrypted export directory; [defaults and recovery inputs](docs/identity-exports.md#inputs-and-key-lifecycle) |
 | `WITFUL_COLLECTION_NEXT_KEYS` | Optional Actions secret containing a complete reviewed candidate generation |
 | `.config/collection.json: rotate_by` | UTC deadline for new protected writes; retained historical reads remain available |
 | `.config/collection.json: managed_files` | Reviewed opaque files participating alongside source and figure bundles |

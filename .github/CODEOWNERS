@@ -16,6 +16,7 @@
 /docs/key-rotation.md @emmeowzing
 /docs/private-collections.md @emmeowzing
 /docs/data-protection.md @emmeowzing
+/docs/identity-exports.md @emmeowzing
 /pkg/witful/exceptions.py @emmeowzing
 /pkg/witful/storage/ @emmeowzing
 /pkg/witful/sleeves/ @emmeowzing
