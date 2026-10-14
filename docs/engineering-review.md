@@ -42,7 +42,7 @@ No live branch policy, release, credential, or deployment is changed by this PR.
 | Dependencies | Reused public tooling and verified current registry versions before adoption. Mermaid updated to 12.2.0 with its npm lockfile; the documentation dependency audit reported no known vulnerabilities at installation. This is not a complete dependency/image vulnerability assessment. |
 | Current release | v0.3.1's signed wheel, sdist, checksum manifest, source provenance, and independently trusted key fingerprint were verified during its release; PyPI hashes and isolated installation were checked. [Tag CI](https://github.com/astrivant/identity/actions/runs/38478362871) passed. This prior observation does not prove future release failure paths. |
 | Plots and state | Public synthetic example refresh is already proposed in [PR #12](https://github.com/astrivant/identity/pull/12). Do not duplicate it or substitute personal records for fixtures. That work and a successful main run are still needed to establish ongoing refresh. |
-| Deployment | Chart and Compose are local build/deployment inputs. No cluster, live MCP endpoint, production database, load profile, or shutdown-under-load experiment was exercised for this audit. |
+| Deployment | Chart and Compose are local build/deployment inputs. No cluster, production database, load profile, or shutdown-under-load experiment was exercised for this audit. |
 
 ## Remaining work, in priority order
 

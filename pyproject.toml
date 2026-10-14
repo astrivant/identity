@@ -35,7 +35,6 @@ Documentation = "https://github.com/astrivant/identity/tree/main/docs"
 Issues = "https://github.com/astrivant/identity/issues"
 
 [project.optional-dependencies]
-sapience = ["mcp>=2.3.0,<3"]
 postgres = ["psycopg[binary]>=3.3.6,<3.4"]
 
 [project.scripts]

@@ -32,7 +32,6 @@ sources and schema drift.
 | `checkpoints check/diff/build/schemas/sync` | Validate, compare, render, or explicitly mirror checkpoint history |
 | `privacy scan [--repo PATH] [--staged] [--terms-file PATH]` | Scan publishable source; redacted findings, exit 1 for matches, 2 for incomplete scans |
 | `awareness [--repo PATH] [--config PATH] [--output PATH] build/push/schema` | Render selected figures, explicitly dispatch a resume rebuild, or print wire schemas |
-| `sapience [--repo PATH] export/sync/propose/schema` | Optional MCP projection, stable readback-verified synchronization, and pending review briefs |
 | `sleeve start/checkpoint/backup/finish/status/guard/run/schema` | Isolated sessions, signed backup, termination handling, and verified reconciliation |
 | `collection export/verify-export/restore-export` | Signed encrypted current identity copies with an optional recipient public key; [export contract](identity-exports.md) |
 | `collection setup/seal/restore/refresh/verify/check-storage/schema` | Private-copy installation, authenticated encryption, and CI figure refresh |
@@ -95,19 +94,6 @@ never commits or pushes. `restore` takes `--checkout`, `--key-dir`, and a new
 `--output`, with optional `--figures`. `refresh` is reserved for the trusted private
 main workflow. `schema` prints the closed configuration and envelope contracts.
 See [private collection operations](private-collections.md).
-
-## Sapience projection
-
-See [the Sapience guide](sapience.md) for installation, provider configuration,
-examples, and recovery. `export` and `sync` require `--collection-id` and `--namespace`.
-`sync` and `propose` require either `--server` or `--url`. Stdio uses repeated
-`--server-arg` values; use `--server-arg=-m` for arguments starting with a dash.
-HTTP takes `--token-env NAME` (default `WITFUL_SAPIENCE_TOKEN`) and permits HTTPS
-or loopback HTTP. `--allow-insecure-http` explicitly permits other HTTP endpoints.
-`propose` requires
-`--topic` and `--namespace`; it never appends to the lesson journal. `--output` overrides
-the collection-relative export or proposal destination. `schema` prints the projection
-contract without reading a collection or contacting a server.
 
 ## Multisleeving
 

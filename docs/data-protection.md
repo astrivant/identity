@@ -14,7 +14,7 @@ for that audience. Encryption is not a promise that data cannot leak while in us
 | Local managed collection, SQLite indexes, exports, and key backup | Required encrypted filesystem | FileVault on macOS or encrypted block-device ancestry on Linux; unavailable evidence blocks the managed operation |
 | CI decrypted sources, render output, caches, and raw Trivy report | Memory filesystem with swap disabled | Host metadata is checked before collection decryption; memory is released after the job |
 | Reviewed README graphs and selected resume figures | Readable, intentionally published | Labels and relationships remain visible to their audience and in history |
-| Remote PostgreSQL or MCP storage | Requires separate server-side protection | Managed collections block these operations because the client cannot verify disks, replicas, logs, or backups |
+| Remote PostgreSQL storage | Requires separate server-side protection | Managed collections block these operations because the client cannot verify disks, replicas, logs, or backups |
 | Existing standalone collections and old Git history | Existing storage policy | Updating the library does not encrypt or erase historical records; migration is required |
 
 Filesystem encryption protects offline media. An unlocked host, authorized user,
@@ -49,8 +49,8 @@ not enroll a private collection or establish an encryption guarantee.
 For a remote PostgreSQL deployment, independently verify data volumes, tablespaces,
 WAL, replicas, snapshots, exports, backups, and key access through the database
 operator or hosting provider. A TLS connection and a client-side boolean cannot
-prove these properties. Managed collections currently refuse remote database and
-MCP processing; standalone adapters remain available under their documented operator
+prove these properties. Managed collections currently refuse remote database
+processing; standalone adapters remain available under their documented operator
 storage contract. Server-side encryption attestation is not implemented.
 
 ## Authenticate an encrypted artifact

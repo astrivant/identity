@@ -14,7 +14,7 @@ execution; people retain authority over accepted guidance and publication.
 - **Make every project teach the next.** Capture the work you do, the decisions you
   make, and the lessons worth reusing. Keep the evidence behind your choices within reach.
 - **Give your agents a shared understanding of how you work.** Bring reviewed knowledge
-  into [agent workflows](SKILL.md) and [MCP-compatible clients through Sapience](docs/sapience.md).
+  into [agent workflows](SKILL.md).
   Run your collection services on [Kubernetes or Docker Compose](docs/storage.md).
 - **Let your resume grow with your experience.** Publish selected skill and decision
   figures to [resumeme](https://github.com/astrivant/resumeme) and trigger an automated
@@ -42,7 +42,7 @@ execution; people retain authority over accepted guidance and publication.
   - [Optional resume figures](#optional-resume-figures)
 - [Integrations and operations](#integrations-and-operations)
   - [Git and GitOps](#git-and-gitops)
-  - [Retrieval and storage](#retrieval-and-storage)
+  - [Storage and orchestration](#storage-and-orchestration)
   - [Privacy and data protection](#privacy-and-data-protection)
   - [Development and releases](#development-and-releases)
 <!-- toc:end -->
@@ -144,7 +144,6 @@ collection, while local indexes and caches remain outside its published records.
 | `WITFUL_DATABASE_URL` | Unset, SQLite | PostgreSQL connection URI for lesson indexing and explicitly requested Life/checkpoint mirroring. Treat as a secret. |
 | `WITFUL_DATABASE_NAMESPACE` / `--namespace` | `default` | Partition used by cooperating PostgreSQL clients. |
 | `WITFUL_PII_TERMS_FILE` / `privacy scan --terms-file` | Unset | Local UTF-8 literal deny terms, one per line; never publish this file. |
-| `WITFUL_SAPIENCE_TOKEN` / `sapience --token-env NAME` | Unset | Optional HTTP MCP authentication; the option selects an environment variable name. |
 | `CODEX_HOME` / `collection setup --home` | `~/.codex` | Destination for explicitly requested collection setup. |
 | `XDG_DATA_HOME` | `~/.local/share` | Default parent for repository-scoped key backups under `witful/collections/`; `collection setup --key-dir` overrides it. |
 | `delivery --remote [PROVIDER:]REMOTE` | `origin` | Select GitHub or GitLab remotes; repeat for combined inventories. [Authentication and inputs](docs/delivery.md#inputs-and-prerequisites). |
@@ -177,7 +176,6 @@ new evidence warrants a change.
 | Identity collection | Owns reviewed guidance, lessons, decisions, and their provenance. |
 | Witful | Validates and searches records, tracks applications, and checks completion-review coverage. |
 | Executing agent | Consults applicable guidance, performs authorized work, and records evidence. |
-| Optional Sapience integration | Provides MCP retrieval and generated review proposals from selected records. |
 
 A policy-agent workflow connects these responsibilities: consult guidance, act,
 record the outcome, then review the applicable requirements before handoff.
@@ -279,10 +277,7 @@ rebuilds derived dashboards under your [publication policy](docs/private-collect
 By default, personal source snapshots and full figures stay encrypted in Git;
 readable figures require explicit opt-in.
 
-### Retrieval and storage
-
-[Sapience](docs/sapience.md) adds optional MCP retrieval and generated review
-proposals with stable IDs and provenance. Reviewed local journals remain authoritative.
+### Storage and orchestration
 
 SQLite is the default index and needs no server. Install `witful[postgres]` for the
 optional PostgreSQL adapter. See [storage and orchestration](docs/storage.md) for

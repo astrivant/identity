@@ -174,27 +174,6 @@ encrypted unless the user explicitly enables readable figures; explain that thei
 labels then remain in Git history. Keep hosted refresh verification distinct from
 local signature, encryption, or schema checks.
 
-## Optional Sapience integration
-
-Read [Sapience operations](docs/sapience.md) before using `witful sapience`.
-Export first for inspection; synchronize only when the task authorizes sending the
-selected collection to the configured server and embedding provider. Keep collection
-ID and namespace stable across retries. Inspect interrupted operations through
-readback; do not fall back to random-ID `save_memory` calls.
-
-Generated briefs are pending proposals. Review their claims and source memories,
-then use ordinary lesson commands for an explicitly accepted teaching. Never rewrite
-journals with generated summaries. Awareness figures serve an optional professional
-signature and personal reflection; preserve disabled defaults and record evidence
-rather than inventing measures of capability.
-
-For a shared MCP deployment, use the Sapience guide's authenticated `--url` transport
-and bearer-token environment variable. Keep PostgreSQL memory and ledger ownership
-in the Sapience service; do not share local SQLite/Chroma files between replicas.
-Identity owns its journal-worker chart under `helm/witful/` and generated service
-configuration under `services/`. Regenerate Compose from the chart/profile and
-validate moved paths in CI and pre-commit when changing this layout.
-
 ## Maintain project chapters
 
 Treat maintaining project chapters as a Skill. Record each meaningfully touched

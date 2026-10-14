@@ -56,3 +56,6 @@
 /pkg/witful/reflection/cli.py @emmeowzing
 /pkg/witful/repertoire/cli.py @emmeowzing
 /pkg/witful/instances/cli.py @emmeowzing
+/SECURITY.md @emmeowzing
+/pkg/witful/knowledge/cli.py @emmeowzing
+/pkg/witful/knowledge/tests/ @emmeowzing

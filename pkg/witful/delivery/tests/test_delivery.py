@@ -504,3 +504,36 @@ def test_inventory_rejects_truncation_and_preserves_metadata(tmp_path: Path, mon
     assert prs.inventory(tmp_path, {})[0]["body"] == "Reviewed dependency intent"
     with pytest.raises(ValueError, match="Capped"):
         bounded([metadata] * 1000)
+
+
+def test_rebase_and_publication_use_selected_named_remote(repository: Path, tmp_path: Path, monkeypatch: MonkeyPatch) -> None:
+    """
+    Exercise a GitLab mirror without relying on any origin remote during mutation.
+
+    Args:
+        repository (Path): Real signed Git fixture.
+        tmp_path (Path): Private receipt and candidate paths.
+        monkeypatch (MonkeyPatch): Supply host metadata for the named mirror.
+
+    Returns:
+        None: The selected mirror receives the signed candidate and signature failures retain pending state.
+    """
+    base = common.commit(repository, "HEAD")
+    common.git(repository, "switch", "-c", "feature")
+    head = write_commit(repository, "feature.txt", "reviewed\n")
+    common.git(repository, "push", "origin", "feature")
+    url = common.git(repository, "remote", "get-url", "origin")
+    common.git(repository, "remote", "rename", "origin", "mirror")
+    binding = Repository("gitlab", "gitlab.com", "group/project", "mirror", url)
+    for module in (common, prs, recovery):
+        monkeypatch.setattr(module, "destination", lambda root, selector="origin": binding)
+    monkeypatch.setattr(prs, "inventory", lambda root, dependencies, remotes: [row(5, "feature", "main", head)])
+    receipt = tmp_path / "mirror.json"
+    state = prs.prepare(repository, 5, base, tmp_path / "mirror-work", receipt, "gitlab:mirror")
+    monkeypatch.setattr(FixtureBackend, "verified", lambda self, revision: False)
+    with pytest.raises(ValueError, match="signature"):
+        prs.publish_pr(receipt, common.text(state["head"]), [[sys.executable, "-V"]])
+    assert common.read(receipt)["status"] == "review"
+    monkeypatch.setattr(FixtureBackend, "verified", lambda self, revision: True)
+    assert prs.publish_pr(receipt, head, [[sys.executable, "-V"]])["status"] == "published"
+    assert common.remote_head(repository, "feature", "mirror") == head

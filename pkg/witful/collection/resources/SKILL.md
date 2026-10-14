@@ -22,7 +22,7 @@ a global installation is current. The receipt contains no secret values. Preserv
 The managed collection requires verified encrypted working storage and remains readable
 to the running process. Keep the protection marker and place temporary files, caches,
 and exports on protected volumes. Storage checks fail closed; see docs/data-protection.md
-in CHECKOUT. Managed remote database/MCP operations currently cannot verify server
+in CHECKOUT. Managed remote database operations currently cannot verify server
 at-rest protection and are blocked. A clean PII or Trivy scan is not encryption.
 Never claim old Git history was encrypted by updating the library.
 Never stage its directory, runtime

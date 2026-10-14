@@ -138,7 +138,7 @@ def test_private_policy_covers_outputs_and_refuses_unverified_remote_storage(tmp
     assert tmp_path in inspected and output in inspected
     inspected.clear()
 
-    with pytest.raises(StorageProtectionError, match="Remote database and MCP writes are blocked"):
+    with pytest.raises(StorageProtectionError, match="Remote database writes are blocked"):
         check_collection(tmp_path, remote=True)
 
     assert not inspected

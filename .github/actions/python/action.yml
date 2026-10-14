@@ -21,7 +21,7 @@ runs:
         python -m venv .cache/poetry-cli
         .cache/poetry-cli/bin/python -m pip install poetry==2.5.1
         python -m venv .venv
-        VIRTUAL_ENV="$PWD/.venv" .cache/poetry-cli/bin/poetry install --no-root --extras postgres --extras sapience --no-interaction
+        VIRTUAL_ENV="$PWD/.venv" .cache/poetry-cli/bin/poetry install --no-root --extras postgres --no-interaction
     - name: Install current entry points
       shell: bash
       run: |

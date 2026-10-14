@@ -21,7 +21,7 @@ COPY pkg ./pkg
 RUN /opt/poetry/bin/poetry build --format wheel     && pip install --no-deps dist/*.whl
 
 FROM dependencies AS development
-RUN /opt/poetry/bin/poetry install --extras postgres --extras sapience --no-root --no-interaction \
+RUN /opt/poetry/bin/poetry install --extras postgres --no-root --no-interaction \
     && chown -R witful:witful /build /opt/witful
 USER 10001:10001
 WORKDIR /build

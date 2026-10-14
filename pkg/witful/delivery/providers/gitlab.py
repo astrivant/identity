@@ -45,7 +45,7 @@ class GitLab:
         Returns:
             str: Integration branch name.
         """
-        return string(self.api.projects.get(self.repository.project).attributes["default_branch"])
+        return string(self.api.projects.get(self.repository.project, max_retries=0).attributes["default_branch"])
 
     def requests(self) -> list[dict[str, object]]:
         """
@@ -55,7 +55,7 @@ class GitLab:
             list[dict[str, object]]: Normalized requests; unavailable line counts remain null.
         """
         result: list[dict[str, object]] = []
-        project = self.api.projects.get(self.repository.project)
+        project = self.api.projects.get(self.repository.project, max_retries=0)
         for summary in bounded(project.mergerequests.list(state="opened", order_by="created_at", sort="asc", iterator=True, max_retries=0)):
             identifier = integer(summary.attributes["iid"])
             path = self.path + f"/merge_requests/{identifier}"

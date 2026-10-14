@@ -10,8 +10,7 @@ This project contains code, schemas, and synthetic fixtures. Keep actual lessons
 decisions, prompts, tool-use records, model configuration, and generated personal
 graphs in a separately controlled collection. Application users own access and
 retention decisions for that collection. Ordinary collection operations do not upload records to a model or telemetry
-service. The optional Sapience adapter has an explicit external-processing boundary
-described below.
+service.
 
 `witful privacy scan` scans tracked and nonignored untracked UTF-8 sources.
 `--staged` inspects the complete Git index, so unstaged clean files cannot hide
@@ -170,28 +169,6 @@ Git objects or downloads. Rotation requires decrypting with the retained old key
 establishing and independently recording new trust pins, resealing, and replacing
 secrets; the installer deliberately refuses silent rotation. Losing all copies of
 the private keys and passwords prevents recovery.
-
-## Optional Sapience processing
-
-`witful sapience export` writes plaintext concept text and provenance locally.
-`sync` sends those records to the explicitly selected MCP server, which stores
-plaintext content, metadata, and embeddings. Sapience uses OpenAI embeddings by
-default; configure its local embedding provider before synchronization to avoid
-sending concept text to OpenAI. Initial local model installation can download files.
-`propose` asks Sapience to send retrieved memories to Anthropic for synthesis.
-Provider terms, retention, credentials, and the server's access controls apply.
-
-The adapter launches the selected executable without a shell. It forwards only
-its documented provider/storage settings plus the MCP SDK's minimal process
-environment. Trust that executable and its Python import path. Namespace checks
-avoid accidental ID collisions; they do not provide authentication or tenant isolation.
-The private collection's encrypted Git transport does not encrypt Sapience's database.
-
-Generated briefs are plaintext pending-review files under ignored `.witful/proposals/`.
-They never update reviewed journals automatically. Review claims and cited source IDs
-before recording an accepted lesson. Stable upserts support resuming partial writes;
-there is no automatic deletion of remote records removed from a local catalog.
-See [Sapience operations and recovery](docs/sapience.md).
 
 ## Multisleeving and termination
 

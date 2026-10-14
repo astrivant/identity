@@ -139,7 +139,10 @@ def destination(root: Path, selector: str = "origin") -> Repository:
     parts = project.split("/")
     if len(parts) < 2 or any(not re.fullmatch(r"[\w.-]+", part) or part in (".", "..") for part in parts):
         raise ValueError("Expected a namespaced Git project")
-    provider = provider or {"github.com": "github", "gitlab.com": "gitlab"}.get(host, "")
+    known_provider = {"github.com": "github", "gitlab.com": "gitlab"}.get(host, "")
+    if provider and known_provider and provider != known_provider:
+        raise ValueError("Provider does not match the selected hosted domain")
+    provider = provider or known_provider
     if not provider or (provider == "github" and len(parts) != 2):
         raise ValueError("Self-managed hosts require an explicit provider and supported project path")
     return Repository(provider, host, project, remote, fetch)

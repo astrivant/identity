@@ -288,3 +288,19 @@ def test_unsafe_or_implicit_unknown_hosts_are_rejected(tmp_path: Path, monkeypat
     monkeypatch.setattr(common, "git", lambda root, *args: url)
     with pytest.raises(ValueError):
         common.destination(tmp_path)
+
+
+def test_known_host_rejects_mismatched_provider(tmp_path: Path, monkeypatch: MonkeyPatch) -> None:
+    """
+    Prevent a provider override from sending the wrong platform credential to a known hosted domain.
+
+    Args:
+        tmp_path (Path): Existing directory.
+        monkeypatch (MonkeyPatch): Supply one reviewed GitLab remote.
+
+    Returns:
+        None: Validation fails before SDK authentication is selected.
+    """
+    monkeypatch.setattr(common, "git", lambda root, *args: "https://gitlab.com/group/project")
+    with pytest.raises(ValueError, match="does not match"):
+        common.destination(tmp_path, "github:origin")
