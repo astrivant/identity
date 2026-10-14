@@ -262,7 +262,24 @@ jobs:
           test -d /dev/shm
           sudo swapoff -a
           raw_directory="$(mktemp -d /dev/shm/witful-trivy.XXXXXX)"
-          trap 'rm -rf -- "$raw_directory"' EXIT
+
+          # Remove only this scan's temporary directory, including raw findings and logs.
+          # raw_directory::path (owned global), status::exit_code ($?) -> exit::exit_code
+          # Exit with the original failure, or 1 when cleanup alone fails.
+          cleanup_raw_directory() {
+              local exit_status="$?"
+              trap - EXIT
+
+              if ! rm -rf -- "$raw_directory"; then
+                  printf '%s\n' 'Failed to remove temporary scan data.' >&2
+                  if [ "$exit_status" -eq 0 ]; then
+                      exit_status=1
+                  fi
+              fi
+              exit "$exit_status"
+          }
+          trap cleanup_raw_directory EXIT
+
           docker run --rm --pull=always \
             --mount "type=bind,source=$GITHUB_WORKSPACE,target=/src,readonly" \
             --mount "type=bind,source=$raw_directory,target=/tmp" \
