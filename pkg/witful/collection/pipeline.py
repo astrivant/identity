@@ -89,7 +89,8 @@ def prepare(checkout: Path, output: Path, env: dict[str, str], today: date) -> P
         output.mkdir(mode=0o700, parents=True)
         current = output / "current"
         write_snapshot(current, before)
-    refresh(current, keys.environment(env))
+    # Prepared ciphertext has no Git metadata; cadence must use the authorized source checkout.
+    refresh(current, keys.environment(env), history=checkout)
     verify_snapshot(current, keys)
     if snapshot(checkout) != before:
         raise RuntimeError("Source changed during preparation; rerun against current main")

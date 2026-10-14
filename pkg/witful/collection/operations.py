@@ -30,7 +30,14 @@ from witful.knowledge.contracts import structure
 from witful.knowledge.models import Catalog
 from witful.knowledge.plotting import write_plots as knowledge_plots
 from witful.lessons import read_journal
+from witful.life.journal import read_archive
+from witful.life.plotting import write_influences
 from witful.privacy.scanner import scan_text
+from witful.reflection.journal import config as reflection_config
+from witful.reflection.journal import read as read_reviews
+from witful.reflection.planning import plan as reflection_plan
+from witful.reflection.plotting import FIGURES as REVIEW_FIGURES
+from witful.reflection.plotting import build as reflection_plots
 from witful.repertoire.models import Inventory, Use
 from witful.repertoire.plotting import write_plots as repertoire_plots
 
@@ -116,14 +123,20 @@ def render(root: Path, destination: Path) -> None:
     checkpoint_plots(read_checkpoints(root / "knowledge/checkpoints.jsonl"), destination)
     instance_plots(root, destination)
 
+    write_influences(read_archive(root), destination)
+    if reflection_config(root).enabled:
+        latest = {item.decision_id: item for event in read_reviews(root) for item in event.assessments}
+        reflection_plots(tuple(latest[key] for key in sorted(latest)), destination)
 
-def readme(config: Config, source_digest: str) -> str:
+
+def readme(config: Config, source_digest: str, *, reflection_enabled: bool = True) -> str:
     """
     Replace library onboarding with the owner's private collection dashboard.
 
     Args:
         config (Config): Reviewed publication choices.
         source_digest (str): SHA-256 of ciphertext, never plaintext or private labels.
+        reflection_enabled (bool): Whether the collection enables periodic reviews and their figures.
 
     Returns:
         str: Repository-specific README with no source records or inferred personal metadata.
@@ -143,6 +156,9 @@ def readme(config: Config, source_digest: str) -> str:
     if config.publish_figures:
         for identifier, (_, title) in FIGURE_CATALOG.items():
             text += f"![{title}](docs/collection/{identifier}.svg)\n\n"
+        if reflection_enabled:
+            for identifier, title in REVIEW_FIGURES.items():
+                text += f"![{title}](docs/collection/{identifier}.svg)\n\n"
     else:
         text += (
             "Full figures are encrypted in `collection/figures.enc.json`. "
@@ -158,13 +174,14 @@ def readme(config: Config, source_digest: str) -> str:
     )
 
 
-def refresh(checkout: Path, environment: dict[str, str] | None = None) -> None:
+def refresh(checkout: Path, environment: dict[str, str] | None = None, *, history: Path | None = None) -> None:
     """
     Run the trusted main-branch refresh while retaining plaintext only in temporary local storage.
 
     Args:
         checkout (Path): Verified private repository checkout.
         environment (dict[str, str] | None): Explicit selected key generation, or the current process environment.
+        history (Path | None): Original full Git checkout for review cadence; defaults to checkout for direct refreshes.
 
     Returns:
         None: Encrypted figures and a generated README replace prior outputs after full validation.
@@ -209,6 +226,12 @@ def refresh(checkout: Path, environment: dict[str, str] | None = None) -> None:
         root, figures = Path(temporary) / "sources", Path(temporary) / "figures"
         archive.unpack(data, root)
         render(root, figures)
+        review_settings = reflection_config(root)
+        if review_settings.enabled:
+            # The plan contains private decision text and travels only inside the signed encrypted figure archive.
+            plan = reflection_plan(root, checkout if history is None else history)
+            (figures / "reflection-plan.json").write_text(json.dumps(plan, indent=2) + "\n")
+            print(json.dumps({"reflection_due": plan["due"], "review_decisions": plan["decision_count"]}))
         (figures / "provenance.json").write_text(
             json.dumps(
                 {
@@ -226,8 +249,9 @@ def refresh(checkout: Path, environment: dict[str, str] | None = None) -> None:
         # Readable plots are a separate explicit disclosure. Scan vector labels before placing them in Git.
         readable = checkout / "docs/collection"
 
+        figure_ids = (*FIGURE_CATALOG, *(REVIEW_FIGURES if review_settings.enabled else {}))
         if config.publish_figures:
-            for identifier in FIGURE_CATALOG:
+            for identifier in figure_ids:
                 content = (figures / f"{identifier}.svg").read_text()
 
                 if scan_text(content):
@@ -235,12 +259,15 @@ def refresh(checkout: Path, environment: dict[str, str] | None = None) -> None:
 
             readable.mkdir(parents=True, exist_ok=True)
 
-            for identifier in FIGURE_CATALOG:
+            for identifier in figure_ids:
                 (readable / f"{identifier}.svg").write_bytes((figures / f"{identifier}.svg").read_bytes())
+            if not review_settings.enabled:
+                for identifier in REVIEW_FIGURES:
+                    (readable / f"{identifier}.svg").unlink(missing_ok=True)
         elif readable.exists():
-            for identifier in FIGURE_CATALOG:
+            for identifier in (*FIGURE_CATALOG, *REVIEW_FIGURES):
                 (readable / f"{identifier}.svg").unlink(missing_ok=True)
 
-    dashboard = readme(config, hashlib.sha256(path.read_bytes()).hexdigest()).encode()
+    dashboard = readme(config, hashlib.sha256(path.read_bytes()).hexdigest(), reflection_enabled=review_settings.enabled).encode()
     target = checkout / "README.md"
     replace_file(target, dashboard, expected=target.read_bytes() if target.exists() else None)

@@ -28,6 +28,9 @@
 /scripts/ci/ @emmeowzing
 /docs/view-freshness.md @emmeowzing
 /.gitignore @emmeowzing
+/docs/private-collections.md @emmeowzing
+/docs/security-checks.md @emmeowzing
+/pkg/witful/collection/tests/test_operations.py @emmeowzing
 /scripts/release/setup-signing.sh @emmeowzing
 /pkg/witful/context/ @emmeowzing
 /docs/context.md @emmeowzing

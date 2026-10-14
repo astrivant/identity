@@ -79,6 +79,25 @@ storage remain necessary: abrupt process/node loss cannot run cleanup. Resume op
 receipts after interruption and report the last verified remote state, not assumed
 recovery. Setup, key creation, and unrelated agent launches still require task scope.
 
+
+## Continual learning
+
+Use [periodic decision reviews](docs/continual-learning.md) at session boundaries
+and after meaningful work. `witful reflection --repo COLLECTION plan` checks the
+configurable cadence, defaulting to 100 first-parent commits. For encrypted sources,
+pass `--history-repo CHECKOUT`. A due plan is a bounded review request, not a completed
+assessment. Existing reviews remain immutable; source journals stay authoritative.
+
+Reconsider each original choice using current knowledge while keeping its recorded
+task and constraints fixed. Cite current concepts and evidence; describe subsequent
+context changes separately. Never present an unexecuted alternative as an observed
+outcome, infer missing ratings, or silently promote proposed lessons. Surface useful
+findings and uncertainty to the user, especially repeated poor outcomes or a need
+for assistance. Record the complete reviewed batch with `reflection record`; run
+`reflection build` for the XY views. Do not call model providers or other agents
+merely because a review is due. Keep personal plans and reviews inside encrypted
+collection transport; public upstream figures use synthetic examples only.
+
 ## Publish awareness figures
 
 For a requested figure export or resume rebuild, read [awareness publication](docs/awareness.md)
