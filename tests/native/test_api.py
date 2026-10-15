@@ -12,7 +12,7 @@ from witful.native import codec, domains
 from witful.native.api.admission import Admission
 from witful.native.api.builder import Builder
 
-from tests.native.runtime import lesson
+from tests.native.runtime import branches, lesson
 
 if TYPE_CHECKING:
     from tests.native.runtime import Runtime
@@ -140,3 +140,32 @@ def test_invalid_requests_are_bounded_and_redacted(runtime: Runtime) -> None:
         assert b"sensitive" not in response.data
     assert admission.snapshot()["in_flight"] == 0
     assert admission.snapshot()["failures"] == 2
+
+
+def test_reviewed_merge_api_retains_candidate(runtime: Runtime) -> None:
+    """
+    Exercise the authenticated wire mapping for an explicit branch review.
+
+    Args:
+        runtime (Runtime): Real supported backend and current grant.
+
+    Returns:
+        None: The review route preserves the candidate and rejects a stale target.
+    """
+    target, candidate = branches(runtime)
+    original = runtime.service.history(runtime.access, "candidate")
+    client = Builder(runtime.service, Admission(1), lambda: True, lambda: runtime.access.subject).build().test_client()
+    arguments = {
+        "operation": str(uuid4()),
+        "target": "main",
+        "candidate": "candidate",
+        "expected": target,
+        "reviewed": candidate,
+        "reason": "Reviewed without automatic journal union",
+        "selections": [],
+    }
+    response = client.post("/v1/merge", data=body(runtime, arguments), content_type="application/cbor")
+    assert response.status_code == HTTPStatus.OK
+    assert runtime.service.history(runtime.access, "candidate") == original
+    arguments["operation"] = str(uuid4())
+    assert client.post("/v1/merge", data=body(runtime, arguments), content_type="application/cbor").status_code == HTTPStatus.CONFLICT

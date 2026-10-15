@@ -15,7 +15,7 @@ from witful.exceptions import NativeError, StorageError
 from witful.native import codec
 from witful.native.context import identifier
 from witful.native.postgres import head_row, sql
-from witful.native.wire import binary, decode_batch, encode_batch, integer, text
+from witful.native.wire import binary, decode_batch, encode_batch, integer, mapping, text
 from witful.storage.connection import connect
 
 if TYPE_CHECKING:
@@ -97,6 +97,7 @@ class Registration:
         policy (str): Current policy revision UUID.
         head (Head): Last acknowledged durable frontier.
         pending (bytes | None): Exact ciphertext-only prepared transaction requiring reconciliation.
+        transition (bytes | None): Durable migration fence; only current migration admission may continue it.
     """
 
     backend: str
@@ -104,6 +105,7 @@ class Registration:
     policy: str
     head: Head
     pending: bytes | None = field(repr=False)
+    transition: bytes | None = field(default=None, repr=False)
 
 
 class Evaluator(Protocol):
@@ -141,7 +143,7 @@ class Authority:
 
     @contextmanager
     def guard(
-        self, access: Access, action: str, record: str, now: int
+        self, access: Access, action: str, record: str, now: int, requirements: tuple[str, ...] = ()
     ) -> Iterator[tuple[psycopg.Connection[tuple[object, ...]], Registration]]:
         """
         Serialize current authorization and backend fencing; never call the key service inside this boundary.
@@ -151,6 +153,7 @@ class Authority:
             action (str): Native policy action.
             record (str): Exact logical UUID or explicit whole-identity request.
             now (int): Fresh trusted clock observation at this admission or release boundary.
+            requirements (tuple[str, ...]): Additional maintained policy evaluations required at the same locked boundary.
 
         Yields:
             tuple[psycopg.Connection[tuple[object, ...]], Registration]: Locked control transaction and current registry state.
@@ -163,13 +166,20 @@ class Authority:
                 if connection.execute(sql("durability")).fetchone() != ("on", "on"):
                     raise NativeError("denied")
                 row = connection.execute(sql("authority-lock"), (access.scope.tenant, access.scope.identity)).fetchone()
-                if row is None or len(row) != 7:
+                if row is None or len(row) != 8:
                     raise NativeError("denied")
                 registration = Registration(
-                    str(row[0]), integer(row[1]), str(row[2]), head_row(row[3:6]), None if row[6] is None else binary(row[6])
+                    str(row[0]),
+                    integer(row[1]),
+                    str(row[2]),
+                    head_row(row[3:6]),
+                    None if row[6] is None else binary(row[6]),
+                    None if row[7] is None else binary(row[7]),
                 )
                 if registration.backend != self.backend or registration.epoch != access.epoch or registration.policy != access.policy:
                     raise NativeError("conflict")
+                if registration.transition is not None and action != "migrate":
+                    raise NativeError("unknown")
                 grant_row = connection.execute(
                     sql("authority-grant"), (access.scope.tenant, access.scope.identity, access.policy, access.grant)
                 ).fetchone()
@@ -188,8 +198,13 @@ class Authority:
                 )
                 with as_file(files("witful.native").joinpath("resources", "authorization.conf")) as model:
                     evaluator: Evaluator = Enforcer(str(model), enable_log=False)
-                if evaluator.enforce(grant, access.subject, access.task, action, record, now) is not True:
-                    raise NativeError("denied")
+                permissions = (action, *requirements)
+                if action == "write" and registration.pending is not None:
+                    permission, _ = self.candidate(registration.pending)
+                    permissions += (permission,)
+                for permission in permissions:
+                    if evaluator.enforce(grant, access.subject, access.task, permission, record, now) is not True:
+                        raise NativeError("denied")
                 yield connection, registration
         except StorageError as error:
             if isinstance(error, NativeError):
@@ -214,7 +229,23 @@ class Authority:
                 raise NativeError("unknown")
             return registration
 
-    def prepare(self, access: Access, batch: Batch, now: int) -> None:
+    def candidate(self, payload: bytes) -> tuple[str, Batch]:
+        """
+        Recover the exact sealed candidate and its additional mutation permission from the trusted control plane.
+
+        Args:
+            payload (bytes): Durable control-plane preparation; domain values remain encrypted.
+
+        Returns:
+            tuple[str, Batch]: Required policy action and exact ciphertext bytes.
+        """
+        body = mapping(codec.decode(payload, self.limits), {"permission", "batch"})
+        permission = text(body["permission"])
+        if permission not in {"write", "review", "rotate", "import"}:
+            raise NativeError("invalid")
+        return permission, decode_batch(binary(body["batch"]), self.limits)
+
+    def prepare(self, access: Access, batch: Batch, now: int, permission: str = "write") -> None:
         """
         Durably retain exact sealed bytes before the data store can observe any mutation.
 
@@ -222,12 +253,15 @@ class Authority:
             access (Access): Current whole-identity writer grant.
             batch (Batch): Complete candidate sealed outside all database locks.
             now (int): Current admission time.
+            permission (str): Additional action required for this mutation, retained by the independent control plane.
 
         Returns:
             None: Candidate is durable; no data-store mutation is implied.
         """
-        payload = encode_batch(batch, self.limits)
-        with self.guard(access, "write", "*", now) as (connection, registration):
+        if permission not in {"write", "review", "rotate", "import"}:
+            raise NativeError("invalid")
+        payload = codec.encode({"permission": permission, "batch": encode_batch(batch, self.limits)}, self.limits)
+        with self.guard(access, "write", "*", now, (permission,)) as (connection, registration):
             if registration.head != batch.expected:
                 raise NativeError("conflict")
             if registration.pending is not None and registration.pending != payload:
@@ -249,7 +283,7 @@ class Authority:
         with self.guard(access, "write", "*", now) as (connection, registration):
             if registration.pending is None:
                 raise NativeError("conflict")
-            batch = decode_batch(registration.pending, self.limits)
+            _, batch = self.candidate(registration.pending)
             if batch.expected != registration.head:
                 raise NativeError("conflict")
             target = store.commit(access.scope, batch)
@@ -278,7 +312,7 @@ class Authority:
                 if current != registration.head:
                     raise NativeError("conflict")
                 return current
-            batch = decode_batch(registration.pending, self.limits)
+            _, batch = self.candidate(registration.pending)
             current, receipt = store.resolve(access.scope, batch.operation)
             if receipt == batch.receipt and current == batch.target:
                 target = batch.target

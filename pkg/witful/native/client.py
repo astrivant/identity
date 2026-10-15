@@ -129,7 +129,7 @@ class Client:
                 or any(ord(char) < 33 or ord(char) == 127 for char in settings.url)
             ):
                 raise NativeError("invalid")
-            if operation not in {"append", "read", "history", "search", "branch", "recover"}:
+            if operation not in {"append", "read", "history", "search", "branch", "merge", "recover"}:
                 raise NativeError("unsupported")
             context = ssl.create_default_context(cafile=settings.ca)
             context.minimum_version = ssl.TLSVersion.TLSv1_3

@@ -115,18 +115,40 @@ def execute(args: argparse.Namespace, parser: argparse.ArgumentParser) -> int:
             require_protected(args.output.parent)
             if args.output.exists():
                 raise NativeError("conflict")
-        if operation == "append":
+        if operation in {"append", "merge"}:
             require_protected(args.input)
             with args.input.open("rb") as source:
                 raw = source.read(client.settings.max_bytes + 1)
             if len(raw) > client.settings.max_bytes:
                 raise NativeError("incomplete")
-            records = [mapping(value, {"domain", "value"}) for value in sequence(json.loads(raw))]
+            imported = json.loads(raw)
+        if operation == "append":
+            records = [mapping(value, {"domain", "value"}) for value in sequence(imported)]
             arguments = {
                 "operation": args.operation,
                 "ref": args.ref,
                 "expected": args.expected,
                 "entries": [domains.encode(Entry(text(item["domain"]), item["value"])) for item in records],
+            }
+        elif operation == "merge":
+            review = mapping(imported, {"reason", "selections"})
+            selections: list[dict[str, object]] = []
+            for value in sequence(review["selections"]):
+                selection = mapping(value, {"sources", "domain", "value"})
+                selections.append(
+                    {
+                        "sources": [text(source) for source in sequence(selection["sources"])],
+                        "entry": domains.encode(Entry(text(selection["domain"]), selection["value"])),
+                    }
+                )
+            arguments = {
+                "operation": args.operation,
+                "target": args.target,
+                "candidate": args.candidate,
+                "expected": args.expected,
+                "reviewed": args.reviewed,
+                "selections": selections,
+                "reason": text(review["reason"]),
             }
         elif operation == "read":
             arguments = {"record": args.record}

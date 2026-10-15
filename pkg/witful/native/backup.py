@@ -12,7 +12,7 @@ from attrs import field, frozen
 from witful.exceptions import NativeError
 from witful.native import codec, domains
 from witful.native.context import Context, identifier
-from witful.native.models import Frontier, Receipt, parse
+from witful.native.models import Frontier, Pointer, Receipt, parse
 from witful.native.service import FRONTIER, RECEIPT, Service
 from witful.native.storage import Batch, Head, Object, Scope
 from witful.native.wire import binary, decode_batch, encode_batch, integer, mapping, sequence, text
@@ -229,22 +229,22 @@ def verify(service: Service, access: Access, archive: Archive) -> None:
     if archive.scope != access.scope:
         raise NativeError("denied")
     reader = evolve(service, store=SnapshotStore(archive))
-    previous = None
     for batch in archive.batches:
         root_context = Context(access.scope.tenant, access.scope.identity, batch.root.id, FRONTIER)
         frontier = parse(service.keys(access).open(root_context, batch.root.payload), Frontier)
         if frontier.version != 1:
             raise NativeError("unsupported")
-        if (frontier.previous.object if frontier.previous else None) != previous:
+        old = batch.expected
+        expected_previous = Pointer(old.root, old.root, FRONTIER, old.digest.hex()) if old.root is not None else None
+        if frontier.previous != expected_previous:
             raise NativeError("invalid")
-        previous = batch.root.id
         receipt = parse(
             service.keys(access).open(Context(access.scope.tenant, access.scope.identity, batch.operation, RECEIPT), batch.receipt.payload),
             Receipt,
         )
         if receipt.operation != batch.operation or receipt.generation != batch.target.generation or receipt.root.object != batch.root.id:
             raise NativeError("invalid")
-        if receipt.root.digest != batch.root.digest.hex():
+        if receipt.root != Pointer(batch.root.id, batch.root.id, FRONTIER, batch.root.digest.hex()):
             raise NativeError("invalid")
         for pointer in (*frontier.archives, *frontier.outbox):
             reader.open(access, pointer)

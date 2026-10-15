@@ -75,7 +75,7 @@ def runtime(request: pytest.FixtureRequest, databases: Databases, fixture: Fixtu
                 access.grant,
                 access.subject,
                 access.task,
-                ["read", "write", "traverse", "recover", "export"],
+                ["read", "write", "traverse", "recover", "export", "review", "rotate", "import", "migrate"],
                 ["*"],
             ),
         )
@@ -99,3 +99,22 @@ def lesson(label: str = "synthetic-native-canary-3897") -> Entry:
         Entry: Individually typed lesson.
     """
     return Entry("lesson", asdict(new_lesson("Synthetic", label, "contract test", "2026-10-15T00:00:00+00:00")))
+
+
+def branches(runtime: Runtime) -> tuple[str, str]:
+    """
+    Create competing valid branches with a shared immutable base.
+
+    Args:
+        runtime (Runtime): Real service fixture.
+
+    Returns:
+        tuple[str, str]: Current target and candidate logical heads.
+    """
+    service, access = runtime.service, runtime.access
+    service.append(access, str(uuid4()), "main", None, (lesson("base"),))
+    base = service.history(access, "main")[-1][0].id
+    service.branch(access, str(uuid4()), "candidate", base)
+    service.append(access, str(uuid4()), "main", base, (lesson("target"),))
+    service.append(access, str(uuid4()), "candidate", base, (lesson("candidate"),))
+    return service.history(access, "main")[-1][0].id, service.history(access, "candidate")[-1][0].id

@@ -349,30 +349,22 @@ class Service:
             raise NativeError("conflict")
         return receipt
 
-    def commit(
-        self,
-        access: Access,
-        operation: str,
-        request: str,
-        registration: Registration,
-        frontier: Frontier,
-        objects: tuple[Object, ...],
-        started: float,
-    ) -> Receipt:
+    def candidate(
+        self, access: Access, operation: str, request: str, registration: Registration, frontier: Frontier, objects: tuple[Object, ...]
+    ) -> tuple[Batch, Receipt]:
         """
-        Seal a complete frontier and receipt before the durable prepare and final fenced commit.
+        Seal an exact candidate outside locks without making it authoritative or publishing any effect.
 
         Args:
-            access (Access): Current authenticated writer.
-            operation (str): Stable logical operation UUID.
-            request (str): Protected semantic request digest.
-            registration (Registration): Expected current authority snapshot.
-            frontier (Frontier): Complete candidate refs and retained pointers.
-            objects (tuple[Object, ...]): Newly sealed individual domain and metadata records.
-            started (float): Operation start for bounded work.
+            access (Access): Admitted request and intended receipt epoch.
+            operation (str): Stable caller operation UUID.
+            request (str): Encrypted semantic request binding.
+            registration (Registration): Expected committed source frontier.
+            frontier (Frontier): Complete candidate metadata.
+            objects (tuple[Object, ...]): Newly sealed records.
 
         Returns:
-            Receipt: Durable native acknowledgment, distinct from remote Git verification.
+            tuple[Batch, Receipt]: Immutable prepared bytes and their logical acknowledgment.
         """
         if len(frontier.revisions) > self.budget.revisions or len(frontier.refs) > self.budget.refs:
             raise NativeError("incomplete")
@@ -385,13 +377,43 @@ class Service:
         pointer = Pointer(root_id, root_id, FRONTIER, root.digest.hex())
         receipt = Receipt(1, operation, request, access.epoch, access.policy, old.generation + 1, pointer, "durable")
         _, sealed = self.seal(access, operation, RECEIPT, as_data(receipt))
-        batch = Batch(operation, old, root, objects, sealed)
+        return Batch(operation, old, root, objects, sealed), receipt
+
+    def commit(
+        self,
+        access: Access,
+        operation: str,
+        request: str,
+        registration: Registration,
+        frontier: Frontier,
+        objects: tuple[Object, ...],
+        started: float,
+        permission: str = "write",
+    ) -> Receipt:
+        """
+        Seal a complete frontier and receipt before the durable prepare and final fenced commit.
+
+        Args:
+            access (Access): Current authenticated writer.
+            operation (str): Stable logical operation UUID.
+            request (str): Protected semantic request digest.
+            registration (Registration): Expected current authority snapshot.
+            frontier (Frontier): Complete candidate refs and retained pointers.
+            objects (tuple[Object, ...]): Newly sealed individual domain and metadata records.
+            started (float): Operation start for bounded work.
+            permission (str): Additional action rechecked at the durable prepare, apply and response boundaries.
+
+        Returns:
+            Receipt: Durable native acknowledgment, distinct from remote Git verification.
+        """
+        batch, receipt = self.candidate(access, operation, request, registration, frontier, objects)
         self.release(access, "write", "*", registration, started)
-        self.authority.prepare(access, batch, int(self.clock()))
+        self.authority.prepare(access, batch, int(self.clock()), permission)
         self.authority.apply(access, self.store, int(self.clock()))
         # A policy change after commit can deny the response without undoing the durable receipt.
         self.protection()
-        self.authority.check(access, "write", "*", int(self.clock()))
+        with self.authority.guard(access, "write", "*", int(self.clock()), (permission,)):
+            pass
         return receipt
 
     def append(
@@ -415,6 +437,8 @@ class Service:
         identifier(operation)
         if not ref or len(ref.encode()) > 1024 or not entries or len(entries) > self.budget.revisions:
             raise NativeError("invalid")
+        if any(entry.domain == "reconciliation" for entry in entries):
+            raise NativeError("denied")
         request = hashlib.sha256(
             b"witful-native-append-v1\0"
             + codec.encode(

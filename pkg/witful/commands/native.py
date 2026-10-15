@@ -44,13 +44,19 @@ def options(operation: str) -> Callable[[argparse.ArgumentParser], None]:
             return
         parser.add_argument("--client", type=Path, required=True)
         parser.add_argument("--output", type=Path, required=operation in {"read", "history"})
-        if operation in {"append", "branch"}:
+        if operation in {"append", "branch", "merge"}:
             parser.add_argument("--operation", required=True, help="Stable operation UUID; reuse unchanged after an unknown outcome")
         if operation in {"append", "history", "search"}:
             parser.add_argument("--ref", default="main")
         if operation == "append":
             parser.add_argument("--expected", help="Exact current logical head; omit only to create an absent branch")
             parser.add_argument("--input", type=Path, required=True, help="Explicit protected JSON import array of domain/value records")
+        if operation == "merge":
+            parser.add_argument("--target", required=True)
+            parser.add_argument("--candidate", required=True)
+            parser.add_argument("--expected", required=True, help="Exact reviewed target logical head")
+            parser.add_argument("--reviewed", required=True, help="Exact reviewed candidate logical head")
+            parser.add_argument("--input", type=Path, required=True, help="Protected review document containing reason and selections")
         if operation == "branch":
             parser.add_argument("--name", required=True)
             parser.add_argument("--immutable", action="store_true")
@@ -110,7 +116,10 @@ def command() -> Command:
             Command(
                 "ref",
                 "Manage native branch and retained tag refs",
-                children=(leaf("create", "Create a branch or immutable tag only when absent", "branch"),),
+                children=(
+                    leaf("create", "Create a branch or immutable tag only when absent", "branch"),
+                    leaf("merge", "Apply explicit reviewed adoptions while retaining both histories", "merge"),
+                ),
             ),
             Command(
                 "recovery",

@@ -10,12 +10,16 @@ CREATE TABLE IF NOT EXISTS witful_native_registry (
     root UUID,
     digest BYTEA NOT NULL DEFAULT ''::BYTEA,
     pending BYTEA,
+    transition BYTEA,
     PRIMARY KEY (tenant, identity_id),
     CHECK (
         (generation = 0 AND root IS NULL AND octet_length(digest) = 0)
         OR (generation > 0 AND root IS NOT NULL AND octet_length(digest) = 32)
     )
 );
+-- Existing native deployments add the independent migration fence without changing retained history.
+ALTER TABLE witful_native_registry ADD COLUMN IF NOT EXISTS transition BYTEA;
+
 CREATE TABLE IF NOT EXISTS witful_native_grants (
     tenant UUID NOT NULL,
     identity_id UUID NOT NULL,

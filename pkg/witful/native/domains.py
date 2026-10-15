@@ -22,6 +22,7 @@ from witful.knowledge.models import Application, Catalog
 from witful.lessons import parse_journal
 from witful.life.contracts import validate_archive
 from witful.life.models import Archive, Event, Snapshot
+from witful.native.models import Reconciliation
 from witful.native.values import pack, unpack
 from witful.native.wire import mapping, text
 from witful.reflection import journal as reflection
@@ -32,6 +33,7 @@ from witful.repertoire.models import Inventory, Use
 __all__ = ["Entry", "decode", "encode", "validate"]
 
 MODELS: dict[str, type[object]] = {
+    "reconciliation": Reconciliation,
     "catalog": Catalog,
     "application": Application,
     "life-event": Event,

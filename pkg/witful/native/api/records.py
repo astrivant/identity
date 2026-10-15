@@ -13,6 +13,7 @@ from witful.exceptions import NativeError
 from witful.knowledge.contracts import as_data
 from witful.native import codec, domains
 from witful.native.authority import Access
+from witful.native.reconciliation import Selection, merge
 from witful.native.storage import Scope
 from witful.native.wire import integer, mapping, sequence, text
 
@@ -90,6 +91,27 @@ def routes(service: Service, authenticate: Callable[[], str]) -> Blueprint:
             if type(args["immutable"]) is not bool:
                 raise NativeError("invalid")
             result = as_data(service.branch(access, text(args["operation"]), text(args["name"]), text(args["record"]), args["immutable"]))
+        elif operation == "merge":
+            args = mapping(body["arguments"], {"operation", "target", "candidate", "expected", "reviewed", "selections", "reason"})
+            selections: list[Selection] = []
+            for item in sequence(args["selections"]):
+                selected = mapping(item, {"sources", "entry"})
+                selections.append(
+                    Selection(tuple(text(source) for source in sequence(selected["sources"])), domains.decode(selected["entry"]))
+                )
+            result = as_data(
+                merge(
+                    service,
+                    access,
+                    text(args["operation"]),
+                    text(args["target"]),
+                    text(args["candidate"]),
+                    text(args["expected"]),
+                    text(args["reviewed"]),
+                    tuple(selections),
+                    text(args["reason"]),
+                )
+            )
         elif operation == "recover":
             mapping(body["arguments"], set())
             head = service.authority.recover(access, service.store, int(service.clock()))

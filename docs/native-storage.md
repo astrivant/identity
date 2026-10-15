@@ -5,8 +5,7 @@ PostgreSQL or a local bare Git store. It implements the shared binary and encryp
 contracts proposed in [RFC 74](https://github.com/astrivant/product-research/pull/74)
 and [RFC 75](https://github.com/astrivant/product-research/pull/75).
 
-Implementation is under review. Controller deployment, projection, migration
-cutover, operational evidence and the full acceptance report are being completed
+Implementation is under review. Controller deployment, projection, operational evidence and the full acceptance report are being completed
 on the implementation branch. Existing managed collections retain their remote
 storage block. This document does not authorize a migration or a private pilot.
 
@@ -69,6 +68,40 @@ encrypted with current custody or explicitly selected recipient custody. Restore
 accepts an empty destination or an exact existing prefix, independently verifies
 retained histories and checks the final target. Restoring bytes does not change
 which backend the authority selects.
+
+## Reviewed reconciliation
+
+`witful native ref merge` requires exact target and reviewed candidate heads,
+a protected review document and a current `review` grant as well as `write`.
+The document contains `reason` and `selections`; each selection names candidate
+revision UUIDs in `sources` and an explicitly authored `domain`/`value` record.
+An empty selection records reviewed non-adoption. Ordered parents and the
+candidate remain intact. The target's existing journal hashes are never rewritten
+to make a competing chain fit. The durable prepared operation retains its review
+permission, so ordinary write permission cannot finish a revoked review.
+
+## Migration and reverse migration
+
+The native migration library accepts an explicit inactive destination sharing
+the same independently administered authority and identity scope. It verifies a
+signed encrypted full-history backup, freezes the source at that exact frontier,
+and copies only into an empty or identical-prefix destination. Ordinary access
+blocks while the durable migration fence is active. Configuration alone cannot
+select a new authority.
+
+The exact sealed cutover batch becomes durable in the control plane before its
+first destination effect. That batch retains the encrypted backup, a migration
+manifest and a receipt for the next epoch. Independent destination readback
+precedes the routing update. An interrupted acknowledgment resumes the same bytes;
+a prepared cutover cannot be silently canceled. Explicit cancellation is allowed
+before candidate preparation and retains the inactive partial copy.
+
+Reverse migration uses the same protocol. It copies all new destination writes
+back to the retained original backend before advancing the epoch again. It does
+not restore an old snapshot over acknowledged work. The tests exercise this in
+both directions and inject failure after the real destination commit. The CLI
+and deployment workflow for migration are still being integrated; these library
+contracts do not constitute a production migration or private pilot.
 
 ## Controller boundaries
 
