@@ -99,6 +99,21 @@ def read(root: Path) -> tuple[Review, ...]:
     path = root / "knowledge/reflections.jsonl"
     events = tuple(structure(json.loads(line), Review) for line in path.read_text().splitlines()) if path.exists() else ()
     decisions = {event.id for event in read_archive(root).events}
+    validate(events, decisions)
+    return events
+
+
+def validate(events: tuple[Review, ...], decisions: set[str]) -> None:
+    """
+    Validate native or file-backed review history against its retained decisions.
+
+    Args:
+        events (tuple[Review, ...]): Complete immutable review chain.
+        decisions (set[str]): Preserved Life decision identifiers.
+
+    Returns:
+        None: Every review retains valid hashes, chronology and evidence.
+    """
     previous = None
     seen: set[str] = set()
 
@@ -111,7 +126,6 @@ def read(root: Path) -> tuple[Review, ...]:
         validate_assessments(event.assessments, decisions, concepts)
         previous = event.id
         seen.add(event.id)
-    return events
 
 
 def record(root: Path, history: Path, assessments: tuple[Assessment, ...]) -> Review:

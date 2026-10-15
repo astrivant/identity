@@ -1,0 +1,310 @@
+"""
+Export and restore complete encrypted native history with independent signature checks and exact receipt preservation.
+"""
+
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+from uuid import uuid4
+
+from attrs import field, frozen
+
+from witful.exceptions import NativeError
+from witful.native import codec, domains
+from witful.native.context import Context, identifier
+from witful.native.models import Frontier, Receipt, parse
+from witful.native.service import FRONTIER, RECEIPT, Service
+from witful.native.storage import Batch, Head, Object, Scope
+from witful.native.wire import binary, decode_batch, encode_batch, integer, mapping, sequence, text
+
+if TYPE_CHECKING:
+    from witful.native.authority import Access
+    from witful.native.envelope import EnvelopeService
+    from witful.native.storage import Store
+
+__all__ = ["Archive", "archive", "restore", "verify"]
+
+BACKUP = 6
+
+
+@frozen
+class Archive:
+    """
+    Hold a bounded immutable recovery package in trusted process memory only.
+
+    Attributes:
+        scope (Scope): Authenticated original identity scope.
+        batches (tuple[Batch, ...]): Complete original transactions with immutable receipts and outbox bytes.
+    """
+
+    scope: Scope
+    batches: tuple[Batch, ...] = field(repr=False)
+
+    @property
+    def head(self) -> Head:
+        """
+        Select the exact final retained frontier.
+
+        Returns:
+            Head: Last transaction target or the empty state.
+        """
+        return self.batches[-1].target if self.batches else Head()
+
+    def objects(self) -> dict[str, Object]:
+        """
+        Validate complete transaction continuity and immutable object identity before any destination mutation.
+
+        Returns:
+            dict[str, Object]: Complete opaque object index, built from ciphertext only.
+        """
+        expected = Head()
+        operations: set[str] = set()
+        objects: dict[str, Object] = {}
+        for batch in self.batches:
+            if batch.expected != expected or batch.operation in operations:
+                raise NativeError("invalid")
+            operations.add(batch.operation)
+            for item in (batch.root, batch.receipt, *batch.objects, *batch.outbox):
+                if item.id in objects and objects[item.id] != item:
+                    raise NativeError("invalid")
+                objects[item.id] = item
+            expected = batch.target
+        return objects
+
+    def encode(self, limits: codec.Limits) -> bytes:
+        """
+        Serialize only encrypted records and approved opaque metadata for outer authenticated encryption.
+
+        Args:
+            limits (codec.Limits): Aggregate archival resource budget.
+
+        Returns:
+            bytes: Deterministic versioned recovery bytes, never a plaintext journal export.
+        """
+        self.objects()
+        return codec.encode(
+            {
+                "v": 1,
+                "tenant": self.scope.tenant,
+                "identity": self.scope.identity,
+                "batches": [encode_batch(batch, limits) for batch in self.batches],
+            },
+            limits,
+        )
+
+    @classmethod
+    def decode(cls, payload: bytes, limits: codec.Limits) -> Archive:
+        """
+        Reject malformed or incomplete recovery history before trusting its target frontier.
+
+        Args:
+            payload (bytes): Authenticated decrypted package bytes.
+            limits (codec.Limits): Aggregate archival resource budget.
+
+        Returns:
+            Archive: Complete structurally validated ciphertext history.
+        """
+        value = mapping(codec.decode(payload, limits), {"v", "tenant", "identity", "batches"})
+        if integer(value["v"]) != 1:
+            raise NativeError("unsupported")
+        result = cls(
+            Scope(text(value["tenant"]), text(value["identity"])),
+            tuple(decode_batch(binary(item), limits) for item in sequence(value["batches"])),
+        )
+        result.objects()
+        return result
+
+
+@frozen
+class SnapshotStore:
+    """
+    Read an independently retained recovery snapshot without mutating a live source or allocating a plaintext database.
+
+    Attributes:
+        archive (Archive): Authenticated complete history under review.
+    """
+
+    archive: Archive = field(repr=False)
+
+    def head(self, scope: Scope) -> Head:
+        """
+        Require the original identity binding before exposing the recovery frontier.
+
+        Args:
+            scope (Scope): Independently expected scope.
+
+        Returns:
+            Head: Exact retained frontier.
+        """
+        if scope != self.archive.scope:
+            raise NativeError("denied")
+        return self.archive.head
+
+    def get(self, scope: Scope, identifiers: tuple[str, ...]) -> tuple[Object, ...]:
+        """
+        Read exact immutable ciphertext from the independent snapshot.
+
+        Args:
+            scope (Scope): Independently expected scope.
+            identifiers (tuple[str, ...]): Exact authorized UUIDs.
+
+        Returns:
+            tuple[Object, ...]: Complete requested ciphertext.
+        """
+        self.head(scope)
+        objects = self.archive.objects()
+        try:
+            return tuple(objects[item] for item in identifiers)
+        except KeyError:
+            raise NativeError("incomplete") from None
+
+    def receipt(self, scope: Scope, operation: str) -> Object | None:
+        """
+        Resolve an exact original receipt in retained history.
+
+        Args:
+            scope (Scope): Expected identity scope.
+            operation (str): Original operation UUID.
+
+        Returns:
+            Object | None: Original encrypted receipt.
+        """
+        self.head(scope)
+        return next((batch.receipt for batch in self.archive.batches if batch.operation == operation), None)
+
+    def history(self, scope: Scope) -> tuple[Batch, ...]:
+        """
+        Return the complete immutable transaction sequence.
+
+        Args:
+            scope (Scope): Expected scope.
+
+        Returns:
+            tuple[Batch, ...]: Retained encrypted history.
+        """
+        self.head(scope)
+        return self.archive.batches
+
+    def commit(self, scope: Scope, batch: Batch) -> Head:
+        """
+        Reject every mutation of a recovery snapshot.
+
+        Args:
+            scope (Scope): Requested scope.
+            batch (Batch): Candidate that must not alter the archive.
+
+        Returns:
+            Head: Never returned; the archive is read-only.
+        """
+        raise NativeError("denied")
+
+
+def verify(service: Service, access: Access, archive: Archive) -> None:
+    """
+    Restore the complete snapshot into an independent reader and validate every retained frontier and selected domain view.
+
+    Args:
+        service (Service): Current trusted key and validation boundaries.
+        access (Access): Current export or migration admission.
+        archive (Archive): Ciphertext history to verify independently of live tables.
+
+    Returns:
+        None: Every retained transaction, ref, domain chain, receipt and original representation is authenticated.
+    """
+    from attrs import evolve
+
+    if archive.scope != access.scope:
+        raise NativeError("denied")
+    reader = evolve(service, store=SnapshotStore(archive))
+    previous = None
+    for batch in archive.batches:
+        root_context = Context(access.scope.tenant, access.scope.identity, batch.root.id, FRONTIER)
+        frontier = parse(service.keys(access).open(root_context, batch.root.payload), Frontier)
+        if frontier.version != 1:
+            raise NativeError("unsupported")
+        if (frontier.previous.object if frontier.previous else None) != previous:
+            raise NativeError("invalid")
+        previous = batch.root.id
+        receipt = parse(
+            service.keys(access).open(Context(access.scope.tenant, access.scope.identity, batch.operation, RECEIPT), batch.receipt.payload),
+            Receipt,
+        )
+        if receipt.operation != batch.operation or receipt.generation != batch.target.generation or receipt.root.object != batch.root.id:
+            raise NativeError("invalid")
+        if receipt.root.digest != batch.root.digest.hex():
+            raise NativeError("invalid")
+        for pointer in (*frontier.archives, *frontier.outbox):
+            reader.open(access, pointer)
+        for pointer in frontier.revisions:
+            revision = reader.revision(access, frontier, pointer.record)
+            if revision.source is not None:
+                binary(reader.open(access, revision.source))
+        for ref in frontier.refs:
+            history = reader.lineage(access, frontier, ref.revision)
+            domains.validate(tuple(entry for _, entry in history))
+
+
+def archive(service: Service, access: Access, recipient: EnvelopeService | None = None) -> tuple[Context, bytes]:
+    """
+    Produce a signed encrypted full-history export with the current keys or an explicitly configured recipient.
+
+    Args:
+        service (Service): Authenticated native runtime.
+        access (Access): Whole-identity export grant.
+        recipient (EnvelopeService | None): Explicit independently pinned sharing keys; None uses current operational keys.
+
+    Returns:
+        tuple[Context, bytes]: Expected opaque context and signed encrypted export, verified before release.
+    """
+    started = service.monotonic()
+    registration, _ = service.snapshot(access, "export", "*")
+    retained = Archive(access.scope, service.store.history(access.scope))
+    if retained.head != registration.head:
+        raise NativeError("conflict")
+    verify(service, access, retained)
+    keys = recipient or service.keys(access)
+    payload = retained.encode(keys.limits)
+    context = Context(access.scope.tenant, access.scope.identity, str(uuid4()), BACKUP)
+    sealed = keys.seal(context, payload)
+    keys.verify(context, sealed)
+    service.release(access, "export", "*", registration, started)
+    return context, sealed
+
+
+def restore(
+    service: Service, access: Access, context: Context, sealed: bytes, target: Store, recipient: EnvelopeService | None = None
+) -> Head:
+    """
+    Restore-test a signed encrypted backup into an empty or identical-prefix inactive destination without changing authority.
+
+    Args:
+        service (Service): Current trusted runtime; production cutover is a separate fenced operation.
+        access (Access): Current export or migration grant.
+        context (Context): Independently expected source context, not inferred from an untrusted envelope.
+        sealed (bytes): Complete signed encrypted export.
+        target (Store): Explicit inactive destination, never selected automatically by configuration.
+        recipient (EnvelopeService | None): Explicit backup custody, or current operational custody.
+
+    Returns:
+        Head: Independently read-back restored frontier; registry authority is unchanged.
+    """
+    identifier(context.record)
+    if context.tenant != access.scope.tenant or context.identity != access.scope.identity or context.kind != BACKUP:
+        raise NativeError("denied")
+    started = service.monotonic()
+    registration = service.authority.check(access, "export", "*", int(service.clock()))
+    if target is service.store:
+        raise NativeError("denied")
+    keys = recipient or service.keys(access)
+    retained = Archive.decode(binary(keys.open(context, sealed)), keys.limits)
+    verify(service, access, retained)
+    existing = target.history(access.scope)
+    if retained.batches[: len(existing)] != existing:
+        raise NativeError("conflict")
+    # An interrupted restore resumes only an exact prefix; it never overwrites divergence.
+    for batch in retained.batches[len(existing) :]:
+        target.commit(access.scope, batch)
+    if target.history(access.scope) != retained.batches or target.head(access.scope) != retained.head:
+        raise NativeError("incomplete")
+    service.release(access, "export", "*", registration, started)
+    return retained.head
