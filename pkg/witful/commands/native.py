@@ -37,13 +37,15 @@ def options(operation: str) -> Callable[[argparse.ArgumentParser], None]:
         """
         parser.set_defaults(native_operation=operation)
         if operation == "schema":
-            parser.add_argument("--kind", choices=("server", "client", "evidence"), default="server")
+            parser.add_argument("--kind", choices=("server", "client", "evidence", "recipient"), default="server")
             return
         if operation in {"serve", "check", "health"}:
             parser.add_argument("--config", type=Path, required=True)
             return
         parser.add_argument("--client", type=Path, required=True)
-        parser.add_argument("--output", type=Path, required=operation in {"read", "history", "export", "original-list", "original-restore"})
+        parser.add_argument(
+            "--output", type=Path, required=operation in {"read", "history", "export", "share", "original-list", "original-restore"}
+        )
         if operation in {"append", "branch", "merge", "rotate", "migrate", "migration-abort", "original-capture"}:
             parser.add_argument("--operation", required=True, help="Stable operation UUID; reuse unchanged after an unknown outcome")
         if operation in {"append", "history", "search"}:
@@ -61,6 +63,8 @@ def options(operation: str) -> Callable[[argparse.ArgumentParser], None]:
             parser.add_argument("--destination", required=True, help="Explicit configured inactive backend UUID")
         if operation == "restore":
             parser.add_argument("--input", type=Path, required=True, help="Signed encrypted binary export")
+        if operation == "share":
+            parser.add_argument("--recipient", help="Configured identity-bound public recipient alias; omitted uses current custody")
         if operation == "rotate":
             parser.add_argument("--mode", choices=("rewrap", "reseal", "resign"), required=True)
         if operation == "branch":
@@ -79,6 +83,23 @@ def options(operation: str) -> Callable[[argparse.ArgumentParser], None]:
             parser.add_argument("--query", required=True)
 
     return configure
+
+
+def disclosure_options(parser: argparse.ArgumentParser) -> None:
+    """
+    Configure offline recipient verification without requesting a controller connection or source credentials.
+
+    Args:
+        parser (argparse.ArgumentParser): Parent-owned leaf parser.
+
+    Returns:
+        None: Only explicit file paths are accepted; secret values never appear as command arguments.
+    """
+    parser.add_argument("--input", type=Path, required=True, help="Signed encrypted native sharing package")
+    parser.add_argument("--trust", type=Path, required=True, help="Independently supplied context, frontier and sender public-key pins")
+    parser.add_argument("--private-key", type=Path, required=True, help="Protected encrypted recipient RSA PEM")
+    parser.add_argument("--password-file", type=Path, required=True, help="Protected owner-only file containing the exact PEM password")
+    parser.add_argument("--output", type=Path, required=True, help="New protected JSON file; exact original source bytes use base64")
 
 
 def leaf(name: str, description: str, operation: str) -> Command:
@@ -140,6 +161,13 @@ def command() -> Command:
                 children=(
                     leaf("reconcile", "Resolve an exact pending prepared transaction", "recover"),
                     leaf("export", "Write a signed encrypted complete-history recovery package", "export"),
+                    leaf("share", "Write a sender-signed export recoverable with only the recipient key", "share"),
+                    Command(
+                        "inspect",
+                        "Verify a recipient export offline into protected storage",
+                        disclosure_options,
+                        "witful.native.sharing_cli",
+                    ),
                     leaf("restore", "Restore into an inactive configured backend without cutover", "restore"),
                 ),
             ),
@@ -149,6 +177,13 @@ def command() -> Command:
                 children=(
                     leaf("capture", "Capture an explicitly configured original Git directory", "original-capture"),
                     leaf("list", "List complete archive inventories into protected storage", "original-list"),
+                    leaf("share", "Write a sender-signed export recoverable with only the recipient key", "share"),
+                    Command(
+                        "inspect",
+                        "Verify a recipient export offline into protected storage",
+                        disclosure_options,
+                        "witful.native.sharing_cli",
+                    ),
                     leaf("restore", "Restore into a configured absent protected path", "original-restore"),
                 ),
             ),

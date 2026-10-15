@@ -142,6 +142,7 @@ class Client:
                 "migration-abort",
                 "rotate",
                 "export",
+                "share",
                 "restore",
                 "original-capture",
                 "original-list",

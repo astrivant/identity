@@ -115,3 +115,45 @@ def test_configuration_errors_do_not_disclose_values(settings: Settings, tmp_pat
         load(path)
     assert "canary" not in str(failure.value)
     assert "unexpected" not in str(failure.value)
+
+
+def test_recipient_configuration_is_scoped_and_pinned(settings: Settings, tmp_path: Path) -> None:
+    """
+    Reject duplicate aliases, wrong public-key fingerprints and malformed scopes before a controller starts.
+
+    Args:
+        settings (Settings): Synthetic complete operator configuration.
+        tmp_path (Path): Synthetic reviewed configuration file.
+
+    Returns:
+        None: Only closed, scoped public encryption recipients are accepted.
+    """
+    from cryptography.hazmat.primitives.asymmetric import rsa
+    from witful.native.config import ExportRecipient
+
+    public = (
+        rsa.generate_private_key(public_exponent=65537, key_size=3072)
+        .public_key()
+        .public_bytes(serialization.Encoding.DER, serialization.PublicFormat.SubjectPublicKeyInfo)
+    )
+    recipient = ExportRecipient(
+        "reviewer",
+        settings.probe.tenant,
+        settings.probe.identity,
+        str(uuid4()),
+        base64.b64encode(public).decode(),
+        hashlib.sha256(public).hexdigest(),
+    )
+    configured = evolve(settings, recipients=(recipient,))
+    path = tmp_path / "config.json"
+    path.write_text(json.dumps(as_data(configured)))
+    assert load(path) == configured
+    for recipients in (
+        (recipient, recipient),
+        (evolve(recipient, fingerprint="0" * 64),),
+        (evolve(recipient, identity="not-a-uuid"),),
+        (evolve(recipient, public="invalid-base64"),),
+    ):
+        path.write_text(json.dumps(as_data(evolve(settings, recipients=recipients))))
+        with pytest.raises(NativeError):
+            load(path)

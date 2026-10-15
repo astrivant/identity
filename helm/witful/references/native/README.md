@@ -29,7 +29,10 @@ Replace every illustrative UUID, public-key placeholder, endpoint, Secret name a
 network selector in [values.yaml](values.yaml). No private key or credential goes
 in values. The projection selects explicit Secret keys. Configure independently
 signed, unexpired protection evidence covering the exact effective settings,
-including any inactive migration destinations. The runtime rejects missing or
+including any inactive migration destinations and public sharing recipients.
+Optional `configuration.recipients` entries bind a public RSA key and independent
+fingerprint to one tenant/identity and request-facing alias. Recipients keep their
+private keys and offline verification inputs outside this deployment. The runtime rejects missing or
 mismatched evidence. See [native storage](../../../../docs/native-storage.md).
 
 ```sh
@@ -112,6 +115,7 @@ controller is installed by this chart.
 | `controller.configuration.runtime.admission`                      | Reviewed reference input; replace placeholders to match the independently signed deployment configuration | `4`                                          |
 | `controller.configuration.runtime.working_directory`              | Reviewed reference input; replace placeholders to match the independently signed deployment configuration | `/run/witful`                                |
 | `controller.configuration.runtime.graceful_timeout`               | Reviewed reference input; replace placeholders to match the independently signed deployment configuration | `30`                                         |
+| `controller.configuration.recipients`                             | Reviewed identity-bound public export recipients; private recipient keys never enter this chart           | `[]`                                         |
 | `controller.configuration.budget.revisions`                       | Reviewed reference input; replace placeholders to match the independently signed deployment configuration | `4096`                                       |
 | `controller.configuration.budget.refs`                            | Reviewed reference input; replace placeholders to match the independently signed deployment configuration | `256`                                        |
 | `controller.configuration.budget.seconds`                         | Reviewed reference input; replace placeholders to match the independently signed deployment configuration | `30`                                         |

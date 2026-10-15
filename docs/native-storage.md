@@ -152,9 +152,58 @@ projection intents and does not create, revoke or retire custodial keys.
 `native recovery restore` verifies it into a configured inactive destination and
 requires current `export` and `import` permissions. Neither command changes
 routing. Read/history compatibility outputs remain restricted to protected
-working storage. Exports under separate recipient custody are available through
-the library's explicit recipient parameter; the retained inner history still
-requires its original key custody and grants.
+working storage. Recovery packages retain their original key requirements; use
+the separate sharing format when a recipient must recover without that custody.
+
+## Recipient-only sharing
+
+`native recovery share` creates a complete, sender-signed encrypted disclosure.
+Without `--recipient`, it uses the operating wrapping generation. An explicit
+recipient selects a reviewed entry in `controller.configuration.recipients`:
+`name`, `tenant`, `identity`, `generation`, base64 DER RSA `public`, and its
+independently obtained SHA-256 `fingerprint`. The controller accepts an alias only
+for the admitted identity. Recipient private keys never enter its configuration
+or API. Changes to this configuration require renewed protection evidence.
+
+```sh
+witful native recovery share --client CLIENT --recipient REVIEWED_ALIAS \
+  --output shared.cbor
+witful native schema --kind recipient > recipient-trust.schema.json
+witful native recovery inspect --input shared.cbor --trust trusted-export.json \
+  --private-key recipient-encrypted.pem --password-file recipient-password \
+  --output reviewed-records.json
+```
+
+The export preserves every original encrypted transaction and signature. Its
+outer encryption also contains the per-record data keys needed to read that
+history, bound to exact contexts, generations and wrapped-key bytes. It never
+includes the sender's signing private key or original key-encryption keys. The
+recipient can verify and read it without the original broker, including archived
+original Git chunks. Complete verification rejects unexplained stored objects,
+missing keys, extra keys, altered scopes and invalid histories.
+
+Obtain `trusted-export.json` through an independently reviewed channel. Its closed
+schema selects the expected export `context`, exact frontier `generation`, `root`
+and hexadecimal `digest`, recipient `wrapping` generation, sender `signing`
+generation, and all historical `signers` with public DER keys and fingerprints.
+An acknowledged frontier can be obtained with `native recovery reconcile`; select
+the intended export context separately and retain both observations with the
+handoff. Concurrent source changes cause an exact-frontier mismatch, not silent
+acceptance of a different snapshot. Copying pins or expected state from an
+untrusted package does not establish provenance or freshness.
+
+Offline inspection requires protected owner-only trust, encrypted RSA PEM and
+password files, and a new output on protected working storage. It checks signatures
+before decrypting, verifies all retained history, then renders current refs and
+revisions once. Exact imported bytes use explicit `source_base64` fields in the
+JSON output. The encrypted package remains the complete history archive; the JSON
+view does not replace it. The CLI neither activates received instructions nor
+imports a disclosure into live authority.
+
+Sharing is an explicit disclosure of all retained history, including old revisions,
+archival metadata and recovery keys. Subsequent source revocation cannot revoke a
+recipient's existing copy. Review the recipient and retention policy before release;
+use a separately reviewed scoped fork/split when only selected content is intended.
 
 ## Controller boundaries
 

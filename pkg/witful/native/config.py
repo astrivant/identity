@@ -212,6 +212,28 @@ class ArchivePath:
 
 
 @frozen
+class ExportRecipient:
+    """
+    Bind a reviewed public export recipient to one identity instead of accepting arbitrary request keys.
+
+    Attributes:
+        name (str): Unique request-facing recipient alias.
+        tenant (str): Opaque admitted tenant UUID.
+        identity (str): Opaque admitted identity UUID.
+        generation (str): Recipient wrapping-generation UUID.
+        public (str): Base64 DER RSA public key; private recipient keys never enter controller configuration.
+        fingerprint (str): Independently reviewed SHA-256 of the public DER bytes.
+    """
+
+    name: str
+    tenant: str
+    identity: str
+    generation: str
+    public: str
+    fingerprint: str
+
+
+@frozen
 class Settings:
     """
     Compose the complete deployment-owned configuration; credentials are read from existing authoritative environment names.
@@ -226,6 +248,7 @@ class Settings:
         budget (Budget): Explicit native operation limits.
         destinations (tuple[Backend, ...]): Explicit inactive migration targets covered by the same signed deployment evidence.
         archives (tuple[ArchivePath, ...]): Identity-bound original Git source/restore locations, empty by default.
+        recipients (tuple[ExportRecipient, ...]): Explicit identity-bound public sharing recipients, empty by default.
         envelope (codec.Limits): Per-record binary payload and structural bounds, including explicit full-history package capacity.
         version (Literal[1]): Configuration schema version.
     """
@@ -239,6 +262,7 @@ class Settings:
     budget: Budget = Budget()
     destinations: tuple[Backend, ...] = ()
     archives: tuple[ArchivePath, ...] = ()
+    recipients: tuple[ExportRecipient, ...] = ()
     envelope: codec.Limits = codec.DEFAULT_LIMITS
     version: Literal[1] = 1
 
@@ -309,6 +333,19 @@ def load(path: Path) -> Settings:
         identifier(archive.identity)
         if not archive.name or not Path(archive.path).is_absolute():
             raise NativeError("invalid")
+    from witful.native.sharing import Recipient
+
+    if len({recipient.name for recipient in settings.recipients}) != len(settings.recipients):
+        raise NativeError("invalid")
+    for recipient in settings.recipients:
+        identifier(recipient.tenant)
+        identifier(recipient.identity)
+        if not recipient.name:
+            raise NativeError("invalid")
+        try:
+            Recipient(recipient.generation, base64.b64decode(recipient.public, validate=True), recipient.fingerprint).key()
+        except ValueError:
+            raise NativeError("invalid") from None
     runtime = settings.runtime
     if any(
         value < 1

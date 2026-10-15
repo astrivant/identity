@@ -19,12 +19,13 @@ from witful.native import codec
 from witful.native.api.archives import routes as archive_routes
 from witful.native.api.maintenance import routes as maintenance_routes
 from witful.native.api.records import routes
+from witful.native.api.sharing import routes as sharing_routes
 
 if TYPE_CHECKING:
     from collections.abc import Callable
 
     from witful.native.api.admission import Admission
-    from witful.native.config import ArchivePath
+    from witful.native.config import ArchivePath, ExportRecipient
     from witful.native.service import Service
 
 __all__ = ["Builder", "peer_fingerprint"]
@@ -58,6 +59,7 @@ class Builder:
         authenticate (Callable[[], str]): Trusted transport boundary; the production default requires verified mutual TLS.
         destinations (tuple[Service, ...]): Explicit inactive migration targets from verified deployment configuration.
         archives (tuple[ArchivePath, ...]): Explicit identity-bound filesystem locations from signed settings.
+        recipients (tuple[ExportRecipient, ...]): Explicit identity-bound public recipients from signed settings.
     """
 
     service: Service
@@ -66,6 +68,7 @@ class Builder:
     authenticate: Callable[[], str] = peer_fingerprint
     destinations: tuple[Service, ...] = ()
     archives: tuple[ArchivePath, ...] = ()
+    recipients: tuple[ExportRecipient, ...] = ()
 
     def build(self) -> Flask:
         """
@@ -79,6 +82,7 @@ class Builder:
         app.register_blueprint(routes(self.service, self.authenticate))
         app.register_blueprint(maintenance_routes(self.service, self.authenticate, self.destinations))
         app.register_blueprint(archive_routes(self.service, self.authenticate, self.archives))
+        app.register_blueprint(sharing_routes(self.service, self.authenticate, self.recipients))
         operational = Blueprint("native_operations", __name__)
 
         @app.before_request

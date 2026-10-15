@@ -6458,6 +6458,42 @@
                                         ]
                                     }
                                 },
+                                "recipients": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "title": "ExportRecipient",
+                                        "additionalProperties": false,
+                                        "properties": {
+                                            "name": {
+                                                "type": "string"
+                                            },
+                                            "tenant": {
+                                                "type": "string"
+                                            },
+                                            "identity": {
+                                                "type": "string"
+                                            },
+                                            "generation": {
+                                                "type": "string"
+                                            },
+                                            "public": {
+                                                "type": "string"
+                                            },
+                                            "fingerprint": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "required": [
+                                            "name",
+                                            "tenant",
+                                            "identity",
+                                            "generation",
+                                            "public",
+                                            "fingerprint"
+                                        ]
+                                    }
+                                },
                                 "envelope": {
                                     "type": "object",
                                     "title": "Limits",
@@ -7144,6 +7180,42 @@
                                                 "identity",
                                                 "path",
                                                 "mode"
+                                            ]
+                                        }
+                                    },
+                                    "recipients": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object",
+                                            "title": "ExportRecipient",
+                                            "additionalProperties": false,
+                                            "properties": {
+                                                "name": {
+                                                    "type": "string"
+                                                },
+                                                "tenant": {
+                                                    "type": "string"
+                                                },
+                                                "identity": {
+                                                    "type": "string"
+                                                },
+                                                "generation": {
+                                                    "type": "string"
+                                                },
+                                                "public": {
+                                                    "type": "string"
+                                                },
+                                                "fingerprint": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "name",
+                                                "tenant",
+                                                "identity",
+                                                "generation",
+                                                "public",
+                                                "fingerprint"
                                             ]
                                         }
                                     },

@@ -15,19 +15,21 @@ from witful.native import codec, domains
 from witful.native.context import Context, identifier
 from witful.native.models import Frontier, Pointer, Receipt, parse
 from witful.native.original_git import GIT_ARCHIVE, Repository
-from witful.native.original_git import validate as validate_original_git
+from witful.native.original_git import validate_view as validate_original_git
 from witful.native.service import FRONTIER, RECEIPT, Service
 from witful.native.storage import Batch, Head, Object, Scope
+from witful.native.views import View
 from witful.native.wire import binary, decode_batch, encode_batch, integer, mapping, sequence, text
 
 if TYPE_CHECKING:
-    from collections.abc import Mapping
+    from collections.abc import Callable, Mapping
 
     from witful.native.authority import Access
     from witful.native.envelope import EnvelopeService
+    from witful.native.service import Budget
     from witful.native.storage import Store
 
-__all__ = ["Archive", "archive", "restore", "verify"]
+__all__ = ["Archive", "archive", "inspect", "restore", "verify"]
 
 BACKUP = 6
 
@@ -238,44 +240,68 @@ def verify(service: Service, access: Access, archive: Archive) -> None:
     Returns:
         None: Every retained transaction, ref, domain chain, receipt and original representation is authenticated.
     """
-    from attrs import evolve
-
     if archive.scope != access.scope:
         raise NativeError("denied")
-    if sum(len(item.payload) for item in archive.objects().values()) > service.budget.bytes:
+    inspect(archive, service.keys(access), service.budget, service.monotonic)
+
+
+def inspect(archive: Archive, keys: EnvelopeService, budget: Budget, monotonic: Callable[[], float]) -> View:
+    """
+    Verify every retained representation through one reader usable by live recovery and recipient-only offline inspection.
+
+    Args:
+        archive (Archive): Complete immutable ciphertext history.
+        keys (EnvelopeService): Independently pinned envelope verifier and permitted decryption boundary.
+        budget (Budget): Explicit complete-operation resource limits.
+        monotonic (Callable[[], float]): Elapsed-time boundary supplied by the caller.
+
+    Returns:
+        View: Verified read-only snapshot with every stored object accounted for by an authenticated pointer.
+    """
+    objects = archive.objects()
+    if sum(len(item.payload) for item in objects.values()) > budget.bytes:
         raise NativeError("incomplete")
-    started = service.monotonic()
-    reader = evolve(service, store=SnapshotStore(archive))
+    started = monotonic()
+    view = View(archive.scope, SnapshotStore(archive), keys, budget, monotonic)
     for batch in archive.batches:
-        if service.monotonic() - started > service.budget.seconds:
+        if monotonic() - started > budget.seconds:
             raise NativeError("incomplete")
-        root_context = Context(access.scope.tenant, access.scope.identity, batch.root.id, FRONTIER)
-        frontier = parse(service.keys(access).open(root_context, batch.root.payload), Frontier)
-        if frontier.version != 1:
-            raise NativeError("unsupported")
+        frontier = parse(view.open(Pointer(batch.root.id, batch.root.id, FRONTIER, batch.root.digest.hex())), Frontier)
+        if len(frontier.refs) > budget.refs or len(frontier.revisions) > budget.revisions:
+            raise NativeError("incomplete")
+        if len({item.name for item in frontier.refs}) != len(frontier.refs):
+            raise NativeError("invalid")
+        if len({item.record for item in frontier.revisions}) != len(frontier.revisions):
+            raise NativeError("invalid")
         old = batch.expected
         expected_previous = Pointer(old.root, old.root, FRONTIER, old.digest.hex()) if old.root is not None else None
         if frontier.previous != expected_previous:
             raise NativeError("invalid")
-        receipt = parse(
-            service.keys(access).open(Context(access.scope.tenant, access.scope.identity, batch.operation, RECEIPT), batch.receipt.payload),
-            Receipt,
-        )
-        if receipt.operation != batch.operation or receipt.generation != batch.target.generation or receipt.root.object != batch.root.id:
+        receipt = parse(view.open(Pointer(batch.operation, batch.receipt.id, RECEIPT, batch.receipt.digest.hex())), Receipt)
+        if receipt.operation != batch.operation or receipt.generation != batch.target.generation:
             raise NativeError("invalid")
         if receipt.root != Pointer(batch.root.id, batch.root.id, FRONTIER, batch.root.digest.hex()):
             raise NativeError("invalid")
         for pointer in (*frontier.archives, *frontier.outbox):
-            value = reader.open(access, pointer)
+            value = view.open(pointer)
             if pointer.kind == GIT_ARCHIVE:
-                validate_original_git(reader, access, parse(value, Repository))
+                validate_original_git(view, parse(value, Repository))
         for pointer in frontier.revisions:
-            revision = reader.revision(access, frontier, pointer.record)
+            revision = view.revision(frontier, pointer.record)
+            entry = domains.decode(view.open(revision.payload))
+            if entry.domain != revision.domain:
+                raise NativeError("invalid")
             if revision.source is not None:
-                binary(reader.open(access, revision.source))
+                binary(view.open(revision.source))
         for ref in frontier.refs:
-            history = reader.lineage(access, frontier, ref.revision)
+            history = view.lineage(frontier, ref.revision)
             domains.validate(tuple(entry for _, entry in history))
+    # A complete backup cannot silently retain an unexplained or unverified object.
+    if set(view.observed) != set(objects):
+        raise NativeError("incomplete")
+    if monotonic() - started > budget.seconds:
+        raise NativeError("incomplete")
+    return view
 
 
 def archive(service: Service, access: Access, recipient: EnvelopeService | None = None) -> tuple[Context, bytes]:

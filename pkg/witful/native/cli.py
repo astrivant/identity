@@ -98,7 +98,9 @@ def execute(args: argparse.Namespace, parser: argparse.ArgumentParser) -> int:
     operation: str = args.native_operation
     try:
         if operation == "schema":
-            models = {"server": Settings, "client": ClientSettings, "evidence": Evidence}
+            from witful.native.sharing_cli import Expectation
+
+            models = {"server": Settings, "client": ClientSettings, "evidence": Evidence, "recipient": Expectation}
             print(json.dumps(schema(models[args.kind]), indent=2))
             return 0
         if operation in {"serve", "check", "health"}:
@@ -118,7 +120,7 @@ def execute(args: argparse.Namespace, parser: argparse.ArgumentParser) -> int:
         client = Client.load(args.client)
         arguments: object
         if args.output is not None:
-            if operation != "export":
+            if operation not in {"export", "share"}:
                 require_protected(args.output.parent)
             if args.output.exists():
                 raise NativeError("conflict")
@@ -163,6 +165,8 @@ def execute(args: argparse.Namespace, parser: argparse.ArgumentParser) -> int:
             arguments = {"operation": args.operation}
         elif operation == "rotate":
             arguments = {"operation": args.operation, "mode": args.mode}
+        elif operation == "share":
+            arguments = {"recipient": args.recipient}
         elif operation == "restore":
             with args.input.open("rb") as source:
                 raw = source.read(client.settings.max_bytes + 1)
@@ -194,7 +198,7 @@ def execute(args: argparse.Namespace, parser: argparse.ArgumentParser) -> int:
                 history.append({"revision": record["revision"], "domain": entry.domain, "value": entry.value})
             result = history
         if args.output is not None:
-            write(args.output, result, encrypted=operation == "export")
+            write(args.output, result, encrypted=operation in {"export", "share"})
         else:
             print(json.dumps(result, ensure_ascii=True))
         return 0

@@ -28,6 +28,7 @@ if TYPE_CHECKING:
     from witful.native.models import Receipt
     from witful.native.service import Service
     from witful.native.storage import Object
+    from witful.native.views import View
 
 __all__ = ["Repository", "capture", "restore"]
 
@@ -414,13 +415,27 @@ def materialize(service: Service, access: Access, payload: Payload) -> bytes:
     Returns:
         bytes: Complete verified original representation.
     """
-    if payload.size < 0 or payload.size > service.budget.bytes or len(payload.chunks) > service.budget.revisions:
+    return materialize_view(service.view(access), payload)
+
+
+def materialize_view(view: View, payload: Payload) -> bytes:
+    """
+    Reconstruct original chunks through the same bounded reader online or from an offline signed export.
+
+    Args:
+        view (View): Explicit authenticated ciphertext reader.
+        payload (Payload): Original byte length, digest and ordered chunk pointers.
+
+    Returns:
+        bytes: Exact verified original bytes.
+    """
+    if payload.size < 0 or payload.size > view.budget.bytes or len(payload.chunks) > view.budget.revisions:
         raise NativeError("incomplete")
     data = bytearray()
     for pointer in payload.chunks:
         if pointer.kind != GIT_BYTES:
             raise NativeError("invalid")
-        data.extend(binary(service.open(access, pointer)))
+        data.extend(binary(view.open(pointer)))
         if len(data) > payload.size:
             raise NativeError("invalid")
     result = bytes(data)
@@ -443,15 +458,29 @@ def validate(
     Returns:
         tuple[tuple[tuple[str, bytes], ...], tuple[tuple[str, int, bytes], ...]]: Exact object and metadata bytes within aggregate limits.
     """
-    if len(repository.objects) > service.budget.revisions or len(repository.files) > service.budget.revisions:
+    return validate_view(service.view(access), repository)
+
+
+def validate_view(view: View, repository: Repository) -> tuple[tuple[tuple[str, bytes], ...], tuple[tuple[str, int, bytes], ...]]:
+    """
+    Verify original objects and metadata using a reader with no implicit live authorization or filesystem effects.
+
+    Args:
+        view (View): Online admitted reader or independently verified offline disclosure reader.
+        repository (Repository): Authenticated original-Git inventory.
+
+    Returns:
+        tuple[tuple[tuple[str, bytes], ...], tuple[tuple[str, int, bytes], ...]]: Exact reconstructed objects and metadata.
+    """
+    if len(repository.objects) > view.budget.revisions or len(repository.files) > view.budget.revisions:
         raise NativeError("incomplete")
     if any(item.data.size < 0 for item in repository.objects) or any(item.data.size < 0 for item in repository.files):
         raise NativeError("invalid")
-    if sum(item.data.size for item in repository.objects) + sum(item.data.size for item in repository.files) > service.budget.bytes:
+    if sum(item.data.size for item in repository.objects) + sum(item.data.size for item in repository.files) > view.budget.bytes:
         raise NativeError("incomplete")
-    objects = tuple((item.oid, materialize(service, access, item.data)) for item in repository.objects)
-    metadata = tuple((item.path, item.mode, materialize(service, access, item.data)) for item in repository.files)
-    if sum(len(data) for _, data in objects) + sum(len(data) for _, _, data in metadata) > service.budget.bytes:
+    objects = tuple((item.oid, materialize_view(view, item.data)) for item in repository.objects)
+    metadata = tuple((item.path, item.mode, materialize_view(view, item.data)) for item in repository.files)
+    if sum(len(data) for _, data in objects) + sum(len(data) for _, _, data in metadata) > view.budget.bytes:
         raise NativeError("incomplete")
     for name, mode, _ in metadata:
         path = Path(name)

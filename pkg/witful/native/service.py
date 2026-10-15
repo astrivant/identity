@@ -10,15 +10,16 @@ from datetime import UTC, datetime
 from typing import TYPE_CHECKING
 from uuid import uuid4
 
-import networkx as nx
 from attrs import evolve, field, frozen
 
 from witful.exceptions import NativeError
 from witful.knowledge.contracts import as_data
 from witful.native import codec, domains
 from witful.native.context import Context, identifier
+from witful.native.kinds import DOMAIN, FRONTIER, ORIGINAL, RECEIPT, REVISION
 from witful.native.models import Frontier, Pointer, Receipt, Ref, Revision, parse
 from witful.native.storage import Batch, Object
+from witful.native.views import View
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -28,13 +29,7 @@ if TYPE_CHECKING:
     from witful.native.envelope import EnvelopeService
     from witful.native.storage import Store
 
-__all__ = ["Budget", "Service"]
-
-FRONTIER = 1
-REVISION = 2
-DOMAIN = 3
-RECEIPT = 4
-ORIGINAL = 5
+__all__ = ["Budget", "Service", "DOMAIN", "FRONTIER", "ORIGINAL", "RECEIPT", "REVISION"]
 
 
 @frozen
@@ -120,12 +115,19 @@ class Service:
         Returns:
             object: Authenticated bounded native value; callers still perform result-release authorization.
         """
-        identifier(pointer.record)
-        item = self.store.get(access.scope, (pointer.object,))[0]
-        if item.digest.hex() != pointer.digest:
-            raise NativeError("invalid")
-        context = Context(access.scope.tenant, access.scope.identity, pointer.record, pointer.kind)
-        return self.keys(access).open(context, item.payload)
+        return self.view(access).open(pointer)
+
+    def view(self, access: Access) -> View:
+        """
+        Compose an explicit inspection boundary after the calling operation has established authorization.
+
+        Args:
+            access (Access): Request-bound key context; constructing a reader does not grant live access.
+
+        Returns:
+            View: Bounded reader shared with independent signed-export verification.
+        """
+        return View(access.scope, self.store, self.keys(access), self.budget, self.monotonic)
 
     def snapshot(self, access: Access, action: str, record: str) -> tuple[Registration, Frontier]:
         """
@@ -188,13 +190,7 @@ class Service:
         Returns:
             Revision: Authenticated native metadata.
         """
-        pointer = next((item for item in frontier.revisions if item.record == record), None)
-        if pointer is None or pointer.kind != REVISION:
-            raise NativeError("denied")
-        revision = parse(self.open(access, pointer), Revision)
-        if revision.id != record or revision.payload.kind != DOMAIN:
-            raise NativeError("invalid")
-        return revision
+        return self.view(access).revision(frontier, record)
 
     def read(self, access: Access, record: str) -> Entry:
         """
@@ -228,49 +224,7 @@ class Service:
         Returns:
             tuple[tuple[Revision, Entry], ...]: Selected causal records in chronological order.
         """
-        started = self.monotonic()
-        metadata_bytes = 0
-        graph: nx.DiGraph[str, dict[str, object], dict[str, object]] = nx.DiGraph()
-        revisions: dict[str, Revision] = {}
-        pending = [record]
-        while pending:
-            if self.monotonic() - started > self.budget.seconds:
-                raise NativeError("incomplete")
-            current = pending.pop()
-            if current in revisions:
-                continue
-            if len(revisions) >= self.budget.revisions:
-                raise NativeError("incomplete")
-            revision = self.revision(access, frontier, current)
-            metadata_bytes += len(codec.encode(as_data(revision)))
-            if metadata_bytes > self.budget.bytes:
-                raise NativeError("incomplete")
-            if len(set(revision.parents)) != len(revision.parents):
-                raise NativeError("invalid")
-            revisions[current] = revision
-            graph.add_node(current)
-            for parent in revision.parents:
-                graph.add_edge(parent, current)
-                pending.append(parent)
-        if not nx.is_directed_acyclic_graph(graph):
-            raise NativeError("invalid")
-        selected: list[tuple[Revision, Entry]] = []
-        size = 0
-        current = record
-        while current:
-            if self.monotonic() - started > self.budget.seconds:
-                raise NativeError("incomplete")
-            revision = revisions[current]
-            payload = self.open(access, revision.payload)
-            size += len(codec.encode(payload))
-            if size > self.budget.bytes:
-                raise NativeError("incomplete")
-            entry = domains.decode(payload)
-            if entry.domain != revision.domain:
-                raise NativeError("invalid")
-            selected.append((revision, entry))
-            current = revision.parents[0] if revision.parents else ""
-        return tuple(reversed(selected))
+        return self.view(access).lineage(frontier, record)
 
     def history(self, access: Access, ref: str) -> tuple[tuple[Revision, Entry], ...]:
         """
