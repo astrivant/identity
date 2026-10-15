@@ -5,7 +5,10 @@ Add deployment constraints to the Bitnami-generated chart schema.
 from __future__ import annotations
 
 import json
+import tarfile
 from pathlib import Path
+
+import yaml
 
 _CHART = Path(__file__).resolve().parents[2] / "helm/witful"
 
@@ -45,7 +48,6 @@ def main() -> None:
         "job.activeDeadlineSeconds": 1,
         "job.ttlSecondsAfterFinished": 0,
         "job.terminationGracePeriodSeconds": 1,
-        "postgresql.terminationGracePeriodSeconds": 1,
     }.items():
         rules[path] = {"type": "integer", "minimum": minimum}
 
@@ -58,36 +60,25 @@ def main() -> None:
         "database.urlKey",
         "database.caKey",
         "scheduling.topologyKey",
-        "postgresql.image",
-        "postgresql.existingSecret",
-        "postgresql.passwordKey",
-        "postgresql.database",
-        "postgresql.username",
-        "postgresql.storageSize",
     ):
         rules[path] = {"minLength": 1}
 
     # Empty arrays have no element type for Bitnami to infer; these contain native objects.
-    for path in ("scheduling.tolerations", "postgresql.tolerations"):
+    for path in ("scheduling.tolerations",):
         rules[path] = {"default": [], "items": {"type": "object"}}
-    for path in ("podLabels", "podAnnotations", "scheduling.nodeSelector", "postgresql.nodeSelector"):
+    for path in ("podLabels", "podAnnotations", "scheduling.nodeSelector"):
         rules[path] = {"default": {}, "additionalProperties": {"type": "string"}}
-    for path in ("scheduling.affinity", "postgresql.affinity"):
+    for path in ("scheduling.affinity",):
         rules[path] = {"default": {}}
 
     rules["containerSecurityContext.capabilities.drop"] = {"default": ["ALL"], "items": {"type": "string"}}
-    rules["postgresql.readinessProbe"] = {"additionalProperties": False}
-    for name, minimum in {
-        "initialDelaySeconds": 0,
-        "periodSeconds": 1,
-        "timeoutSeconds": 1,
-        "successThreshold": 1,
-        "failureThreshold": 1,
-    }.items():
-        rules[f"postgresql.readinessProbe.{name}"] = {"type": "integer", "minimum": minimum}
-
     for path, constraints in rules.items():
         field(schema, path).update(constraints)
+
+    # Keep the complete native spec in sync with the operator instead of maintaining a parallel model.
+    spec = field(cluster_schema(), "spec")
+    field(schema, "postgresql.spec").update(spec)
+    field(schema, "cloudnative-pg")["additionalProperties"] = True
 
     # Catch misspelled chart-owned parameters, while native Kubernetes maps stay extensible.
     for path in ("", "image", "source", "database", "job", "scheduling", "postgresql"):
@@ -99,6 +90,41 @@ def main() -> None:
         target["required"] = list(properties)
 
     (_CHART / "values.schema.json").write_text(json.dumps(schema, indent=4) + "\n")
+
+
+def cluster_schema() -> dict[str, object]:
+    """
+    Load the authoritative Cluster admission schema from the locked operator chart.
+
+    Returns:
+        dict[str, object]: OpenAPI schema for the served v1 Cluster resource.
+
+    Raises:
+        ValueError: The dependency lock, archive or upstream CRD layout is unsupported.
+    """
+    lock = yaml.safe_load((_CHART / "Chart.lock").read_text())
+    dependency = next(item for item in lock["dependencies"] if item["name"] == "cloudnative-pg")
+    archive_path = _CHART / "charts" / f"cloudnative-pg-{dependency['version']}.tgz"
+    with tarfile.open(archive_path, "r:gz") as archive:
+        source = archive.extractfile("cloudnative-pg/templates/crds/crds.yaml")
+        if source is None:
+            raise ValueError("Locked operator chart has no CRD source")
+        raw = source.read().decode()
+
+    # The reviewed upstream file contains static CRDs inside one conditional; fail on a changed template contract.
+    prefix, suffix = "{{- if .Values.crds.create }}\n", "{{- end }}\n"
+    if not raw.startswith(prefix) or not raw.endswith(suffix):
+        raise ValueError("Review the operator CRD template before regenerating its schema")
+    payload = raw[len(prefix) : -len(suffix)]
+    if "{{" in payload or "}}" in payload:
+        raise ValueError("Operator CRDs contain unsupported template expressions")
+    for resource in yaml.safe_load_all(payload):
+        if resource["metadata"]["name"] == "clusters.postgresql.cnpg.io":
+            for version in resource["spec"]["versions"]:
+                if version["name"] == "v1" and version["served"]:
+                    result: dict[str, object] = version["schema"]["openAPIV3Schema"]
+                    return result
+    raise ValueError("Locked operator chart has no served v1 Cluster schema")
 
 
 def field(schema: dict[str, object], path: str) -> dict[str, object]:

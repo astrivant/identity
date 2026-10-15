@@ -1,5 +1,8 @@
-# A local development database is an explicit override, not the cluster default.
+# Composer maps this operator resource to a separate single-node local runtime.
 ## @section Local development database
 postgresql:
-  ## @param postgresql.enabled Enable the single-node database for disposable local development
+  ## @param postgresql.enabled Render the CloudNativePG Cluster for local Kubernetes or the explicit Compose mapping
   enabled: true
+  spec:
+    ## @param postgresql.spec.instances Use one database instance for disposable local development
+    instances: 1

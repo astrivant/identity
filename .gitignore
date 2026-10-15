@@ -20,3 +20,6 @@ services/.compose-generated/
 
 # Synthetic raster previews are CI artifacts; reviewed SVGs remain the source view.
 docs/assets/project-chapters/*.png
+
+# Locked third-party charts are restored before generation and validation.
+helm/witful/charts/

@@ -33,3 +33,8 @@ annotations:
       url: https://github.com/astrivant/identity/issues
     - name: Security
       url: https://github.com/astrivant/identity/blob/main/SECURITY.md
+dependencies:
+  - name: cloudnative-pg
+    version: "0.29.1"
+    repository: https://cloudnative-pg.github.io/charts
+    condition: cloudnative-pg.enabled

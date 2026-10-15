@@ -1,9 +1,11 @@
 # Witful chart
 
-Run one-shot synchronization workers against an existing PostgreSQL endpoint.
+Run one-shot synchronization workers against an external PostgreSQL endpoint or
+an operator-managed PostgreSQL Cluster.
 Build and push the application image, prepare the database and source Secrets, then
 install this chart. See [deployment and recovery](../../../docs/storage.md).
-No credentials or lesson records belong in Helm values. There are no subchart dependencies.
+No credentials or lesson records belong in Helm values. CloudNativePG is a locked,
+optional dependency; keep it disabled when your cluster already has an operator.
 
 <!-- toc:start -->
 **Table of contents**
@@ -15,7 +17,8 @@ No credentials or lesson records belong in Helm values. There are no subchart de
   - [Synchronization workers](#synchronization-workers)
   - [Job lifecycle](#job-lifecycle)
   - [Worker resources and placement](#worker-resources-and-placement)
-  - [Development PostgreSQL](#development-postgresql)
+  - [PostgreSQL operator](#postgresql-operator)
+  - [Managed PostgreSQL](#managed-postgresql)
 <!-- toc:end -->
 
 ## Configuration references
@@ -23,7 +26,8 @@ No credentials or lesson records belong in Helm values. There are no subchart de
 See [configuration references](references/README.md) for reviewed overrides with
 separate values files, generated input tables, and operating instructions.
 The default chart uses an existing PostgreSQL endpoint. The local reference
-explicitly enables a disposable single-node database.
+selects one database instance for disposable development; the PostgreSQL reference
+uses three operator-managed instances.
 
 ## Configure and install
 
@@ -35,6 +39,7 @@ Secret key selected by `database.caKey` is projected as `root.crt`. Only those s
 and CA keys are mounted. Keep credentials and journal contents out of values files.
 
 ```bash
+bash scripts/chart/dependencies.sh
 helm upgrade --install witful helm/witful \
   --set image.repository=REGISTRY/witful --set-string image.tag=REVIEWED_TAG \
   --set source.existingSecret=reviewed-source,database.existingSecret=database-connection
@@ -64,14 +69,22 @@ Size CPU and memory for journal parsing and batch size using observed workloads.
 Placement, node eligibility, tolerations, priority, retry/deadline budgets,
 termination grace and resource requests/limits are exposed below. Native affinity
 and the anti-affinity preset are mutually exclusive. Spread constraints without
-selectors target this release and Job revision automatically. The development
-PostgreSQL remains single-node; choose an external HA endpoint for durable failover.
+selectors target this release and Job revision automatically. For database HA, use
+an external HA endpoint or the [operator-managed reference](references/postgresql/README.md).
+`postgresql.spec` accepts the full native CloudNativePG Cluster specification,
+including storage classes, placement, replication policy, backups and resources.
+`cloudnative-pg` accepts upstream operator chart overrides. Three instances alone
+do not guarantee zero data loss; choose replication, backup and recovery policies
+for your workload and test them.
 Jobs use retry/replacement rather than a service PDB, HPA or rollout strategy.
 
 Helm upgrades create a new revision-specific Job. Database identity changes must
 also update the connection Secret; initialization variables do not rename an
-existing database or user on a retained volume. StorageClass changes require a
-separately reviewed volume migration. Changing values does not migrate stored data.
+existing database or user on a retained volume. Follow the reference migration
+procedure before replacing a StatefulSet or changing a storage class. Changing
+values does not migrate stored data. A Cluster is retained on Helm deletion by
+`helm.sh/resource-policy: keep`; retention is not a backup. Keep its operator and
+CRDs available until database recovery or intentional deletion is complete.
 
 ## Parameters
 
@@ -131,28 +144,32 @@ separately reviewed volume migration. Changing values does not migrate stored da
 | `containerSecurityContext.readOnlyRootFilesystem`   | Require a read-only worker root filesystem                                            | `true`                   |
 | `containerSecurityContext.capabilities.drop`        | Linux capabilities removed from workers                                               | `["ALL"]`                |
 
-### Development PostgreSQL
+### PostgreSQL operator
 
-| Name                                            | Description                                                                             | Value                                                                                          |
-| ----------------------------------------------- | --------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
-| `postgresql.enabled`                            | Deploy a single-node development database; production should use a managed endpoint     | `false`                                                                                        |
-| `postgresql.image`                              | Pinned PostgreSQL development and test image                                            | `postgres:18.6-alpine@sha256:77f585114c32fbca283dc835b0596f4e52b51b4c6662d7810b2f4084f60a1873` |
-| `postgresql.existingSecret`                     | Secret with a password key for the development database                                 | `witful-postgres`                                                                              |
-| `postgresql.passwordKey`                        | Password key in the development database Secret                                         | `password`                                                                                     |
-| `postgresql.database`                           | Development database name; align with the connection URI Secret                         | `witful`                                                                                       |
-| `postgresql.username`                           | Development database user; align with the connection URI Secret                         | `witful`                                                                                       |
-| `postgresql.storageSize`                        | Persistent data volume capacity                                                         | `1Gi`                                                                                          |
-| `postgresql.storageClass`                       | StorageClass name; empty uses the cluster default, a dash disables dynamic provisioning | `""`                                                                                           |
-| `postgresql.resources.requests.cpu`             | Requested database CPU                                                                  | `100m`                                                                                         |
-| `postgresql.resources.requests.memory`          | Requested database memory                                                               | `128Mi`                                                                                        |
-| `postgresql.resources.limits.cpu`               | Maximum database CPU                                                                    | `1`                                                                                            |
-| `postgresql.resources.limits.memory`            | Maximum database memory                                                                 | `512Mi`                                                                                        |
-| `postgresql.readinessProbe.initialDelaySeconds` | Delay before the first database readiness check                                         | `0`                                                                                            |
-| `postgresql.readinessProbe.periodSeconds`       | Interval between database readiness checks                                              | `5`                                                                                            |
-| `postgresql.readinessProbe.timeoutSeconds`      | Timeout for each database readiness check                                               | `1`                                                                                            |
-| `postgresql.readinessProbe.successThreshold`    | Successes needed to mark the database ready                                             | `1`                                                                                            |
-| `postgresql.readinessProbe.failureThreshold`    | Failures needed to mark the database unready                                            | `3`                                                                                            |
-| `postgresql.nodeSelector`                       | Development database node selection                                                     | `{}`                                                                                           |
-| `postgresql.tolerations`                        | Development database pod tolerations                                                    | `[]`                                                                                           |
-| `postgresql.affinity`                           | Development database native pod affinity                                                | `{}`                                                                                           |
-| `postgresql.terminationGracePeriodSeconds`      | Development database shutdown grace period                                              | `30`                                                                                           |
+| Name                     | Description                                                                                                | Value   |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------- | ------- |
+| `cloudnative-pg.enabled` | Install the locked CloudNativePG operator dependency; leave false when the cluster already has an operator | `false` |
+| `cloudnative-pg`         | Operator chart overrides; all upstream parameters remain available under this namespace                    |         |
+
+### Managed PostgreSQL
+
+| Name                                             | Description                                                                                                                       | Value                                                                                                                            |
+| ------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `postgresql.enabled`                             | Create a CloudNativePG Cluster; its CRDs and ready controller must exist before enabling this                                     | `false`                                                                                                                          |
+| `postgresql.spec`                                | Native CloudNativePG Cluster spec, validated from the locked dependency CRD; supports the complete upstream configuration surface |                                                                                                                                  |
+| `postgresql.spec.instances`                      | PostgreSQL instance count, including the primary; positive integer with no chart-imposed maximum                                  | `3`                                                                                                                              |
+| `postgresql.spec.imageName`                      | Operator-compatible PostgreSQL image pinned by OCI digest                                                                         | `ghcr.io/cloudnative-pg/postgresql:18.6-standard-trixie@sha256:c7747d8d1049fff9cf30d9cd83d14d609c957afb5ffbcd114145f393ea1850e1` |
+| `postgresql.spec.enableSuperuserAccess`          | Allow external superuser credentials; disabled by default                                                                         | `false`                                                                                                                          |
+| `postgresql.spec.bootstrap.initdb.database`      | Application database created on first bootstrap                                                                                   | `witful`                                                                                                                         |
+| `postgresql.spec.bootstrap.initdb.owner`         | Application database owner created on first bootstrap                                                                             | `witful`                                                                                                                         |
+| `postgresql.spec.bootstrap.initdb.secret.name`   | Existing kubernetes.io/basic-auth Secret with username and password keys; username must match owner                               | `witful-postgres`                                                                                                                |
+| `postgresql.spec.storage.size`                   | Persistent storage capacity per PostgreSQL instance                                                                               | `1Gi`                                                                                                                            |
+| `postgresql.spec.resources.requests.cpu`         | Requested CPU per database instance                                                                                               | `100m`                                                                                                                           |
+| `postgresql.spec.resources.requests.memory`      | Requested memory per database instance                                                                                            | `128Mi`                                                                                                                          |
+| `postgresql.spec.resources.limits.cpu`           | CPU limit per database instance                                                                                                   | `1`                                                                                                                              |
+| `postgresql.spec.resources.limits.memory`        | Memory limit per database instance                                                                                                | `512Mi`                                                                                                                          |
+| `postgresql.spec.affinity.enablePodAntiAffinity` | Spread database instances across eligible nodes                                                                                   | `true`                                                                                                                           |
+| `postgresql.spec.affinity.podAntiAffinityType`   | Preferred or required database pod anti-affinity                                                                                  | `preferred`                                                                                                                      |
+| `postgresql.spec.affinity.topologyKey`           | Failure domain label used for database separation                                                                                 | `kubernetes.io/hostname`                                                                                                         |
+| `postgresql.spec.smartShutdownTimeout`           | Seconds for the operator to wait for client disconnection before fast shutdown                                                    | `30`                                                                                                                             |
+| `postgresql.spec.stopDelay`                      | Total seconds allowed for PostgreSQL shutdown before forced termination                                                           | `60`                                                                                                                             |

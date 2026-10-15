@@ -27,19 +27,24 @@ services:
         replicas: {$values: /workers}
   postgres:
     source:
-      kind: StatefulSet
+      kind: Cluster
       name: witful-postgres
-    container: postgres
     remove: [/volumes, /environment, /ports, /container_name]
     set:
+      # Compose substitutes a local database; the Cluster controller only runs in Kubernetes.
+      image: postgres:18.6-alpine@sha256:77f585114c32fbca283dc835b0596f4e52b51b4c6662d7810b2f4084f60a1873
+      init: true
+      cpus: 1.0
+      mem_limit: 512m
+      stop_grace_period: 60s
       environment:
-        POSTGRES_DB: {$values: /postgresql/database}
-        POSTGRES_USER: {$values: /postgresql/username}
+        POSTGRES_DB: {$resource: /spec/bootstrap/initdb/database}
+        POSTGRES_USER: {$resource: /spec/bootstrap/initdb/owner}
         POSTGRES_PASSWORD: "${WITFUL_POSTGRES_PASSWORD:?Set the local database password}"
       volumes:
         - postgres-data:/var/lib/postgresql
       healthcheck:
-        test: [CMD, pg_isready, -U, {$values: /postgresql/username}, -d, {$values: /postgresql/database}]
+        test: [CMD, pg_isready, -U, {$resource: /spec/bootstrap/initdb/owner}, -d, {$resource: /spec/bootstrap/initdb/database}]
         interval: 5s
         timeout: 3s
         retries: 12

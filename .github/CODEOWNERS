@@ -19,6 +19,7 @@
 /docs/engineering-review.md @emmeowzing
 /helm/witful/ @emmeowzing
 /scripts/chart/ @emmeowzing
+/services/ @emmeowzing
 /docs/storage.md @emmeowzing
 /poetry.lock @emmeowzing
 /docs/agent-commands.md @emmeowzing
