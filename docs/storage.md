@@ -17,12 +17,19 @@ same immutable source, not independently evolve it. The chart exposes placement,
 controls. See the [complete parameter table](../helm/witful/README.md) and
 [HA reference](../helm/witful/references/ha/README.md). PostgreSQL serializes writes
 under an advisory lock; redundant workers do not increase write throughput.
-Production uses a managed HA PostgreSQL endpoint. The optional single-node database is for development.
+Use an external HA PostgreSQL endpoint or enable the chart's CloudNativePG
+`Cluster`. Kubernetes PostgreSQL is always operator-managed: the chart contains no
+database StatefulSet. The locked operator dependency is optional when an existing
+cluster operator owns those CRDs. Follow the
+[operator installation and migration guide](../helm/witful/references/postgresql/README.md)
+before enabling a Cluster or replacing an existing database.
 
 Compose is generated from that chart using the pinned
 [Composer action](https://github.com/astrivant/composer). Edit chart values and
 `services/compose.profile.yaml`, regenerate, and review `services/compose.yaml`.
-The local override is now [helm/witful/references/local/values.yaml](../helm/witful/references/local/values.yaml)
+The local profile explicitly substitutes a disposable PostgreSQL container for the
+rendered Cluster; it provides no operator reconciliation or HA. The local override is
+[helm/witful/references/local/values.yaml](../helm/witful/references/local/values.yaml)
 (previously `services/compose.values.yaml`); update any local generator command
 that names the old path. Its [reference guide](../helm/witful/references/local/README.md)
 documents the generated parameters and local run/cleanup commands.

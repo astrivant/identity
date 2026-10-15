@@ -1,82 +1,11 @@
 {{- if .Values.postgresql.enabled }}
-apiVersion: v1
-kind: Service
+# The operator owns Pods, Services, replication, failover, and volume lifecycle.
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
 metadata:
   name: {{ .Release.Name }}-postgres
+  annotations:
+    helm.sh/resource-policy: keep
 spec:
-  selector:
-    app.kubernetes.io/name: witful-postgres
-    app.kubernetes.io/instance: {{ .Release.Name }}
-  ports:
-    - port: 5432
-      targetPort: 5432
----
-apiVersion: apps/v1
-kind: StatefulSet
-metadata:
-  name: {{ .Release.Name }}-postgres
-spec:
-  serviceName: {{ .Release.Name }}-postgres
-  replicas: 1
-  selector:
-    matchLabels:
-      app.kubernetes.io/name: witful-postgres
-      app.kubernetes.io/instance: {{ .Release.Name }}
-  template:
-    metadata:
-      labels:
-        app.kubernetes.io/name: witful-postgres
-        app.kubernetes.io/instance: {{ .Release.Name }}
-    spec:
-      automountServiceAccountToken: false
-      terminationGracePeriodSeconds: {{ .Values.postgresql.terminationGracePeriodSeconds }}
-      {{- with .Values.postgresql.nodeSelector }}
-      nodeSelector:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.postgresql.tolerations }}
-      tolerations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.postgresql.affinity }}
-      affinity:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      containers:
-        - name: postgres
-          image: {{ .Values.postgresql.image | quote }}
-          env:
-            - name: POSTGRES_DB
-              value: {{ .Values.postgresql.database | quote }}
-            - name: POSTGRES_USER
-              value: {{ .Values.postgresql.username | quote }}
-            - name: POSTGRES_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.postgresql.existingSecret | quote }}
-                  key: {{ .Values.postgresql.passwordKey | quote }}
-          ports:
-            - containerPort: 5432
-          readinessProbe:
-            exec:
-              command: [pg_isready, -U, {{ .Values.postgresql.username | quote }}, -d, {{ .Values.postgresql.database | quote }}]
-            {{- toYaml .Values.postgresql.readinessProbe | nindent 12 }}
-          resources:
-            {{- toYaml .Values.postgresql.resources | nindent 12 }}
-          volumeMounts:
-            - name: data
-              mountPath: /var/lib/postgresql
-  volumeClaimTemplates:
-    - metadata:
-        name: data
-      spec:
-        accessModes: [ReadWriteOnce]
-        {{- if eq .Values.postgresql.storageClass "-" }}
-        storageClassName: ""
-        {{- else if .Values.postgresql.storageClass }}
-        storageClassName: {{ .Values.postgresql.storageClass | quote }}
-        {{- end }}
-        resources:
-          requests:
-            storage: {{ .Values.postgresql.storageSize | quote }}
+  {{- toYaml .Values.postgresql.spec | nindent 2 }}
 {{- end }}

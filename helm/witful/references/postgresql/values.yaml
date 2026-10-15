@@ -1,0 +1,13 @@
+## @section Operator-managed PostgreSQL
+## @param postgresql.enabled Create a PostgreSQL Cluster after the operator is ready
+## @param postgresql.spec.instances Primary and replicas; requires at least three eligible nodes
+## @param postgresql.spec.storage.size Persistent volume capacity per instance; select a StorageClass in your deployment override
+## @param postgresql.spec.affinity.podAntiAffinityType Require separate database nodes
+postgresql:
+  enabled: true
+  spec:
+    instances: 3
+    storage:
+      size: 10Gi
+    affinity:
+      podAntiAffinityType: required

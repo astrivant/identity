@@ -97,51 +97,55 @@ containerSecurityContext:
   capabilities:
     drop: [ALL]
 
-## @section Development PostgreSQL
-## @param postgresql.enabled Deploy a single-node development database; production should use a managed endpoint
-## @param postgresql.image Pinned PostgreSQL development and test image
-## @param postgresql.existingSecret Secret with a password key for the development database
-## @param postgresql.passwordKey Password key in the development database Secret
-## @param postgresql.database Development database name; align with the connection URI Secret
-## @param postgresql.username Development database user; align with the connection URI Secret
-## @param postgresql.storageSize Persistent data volume capacity
-## @param postgresql.storageClass StorageClass name; empty uses the cluster default, a dash disables dynamic provisioning
-## @param postgresql.resources.requests.cpu Requested database CPU
-## @param postgresql.resources.requests.memory Requested database memory
-## @param postgresql.resources.limits.cpu Maximum database CPU
-## @param postgresql.resources.limits.memory Maximum database memory
-## @param postgresql.readinessProbe.initialDelaySeconds Delay before the first database readiness check
-## @param postgresql.readinessProbe.periodSeconds Interval between database readiness checks
-## @param postgresql.readinessProbe.timeoutSeconds Timeout for each database readiness check
-## @param postgresql.readinessProbe.successThreshold Successes needed to mark the database ready
-## @param postgresql.readinessProbe.failureThreshold Failures needed to mark the database unready
-## @param postgresql.nodeSelector Development database node selection
-## @param postgresql.tolerations [array] Development database pod tolerations
-## @param postgresql.affinity Development database native pod affinity
-## @param postgresql.terminationGracePeriodSeconds Development database shutdown grace period
+## @section PostgreSQL operator
+## @param cloudnative-pg.enabled Install the locked CloudNativePG operator dependency; leave false when the cluster already has an operator
+## @extra cloudnative-pg Operator chart overrides; all upstream parameters remain available under this namespace
+cloudnative-pg:
+  enabled: false
+
+## @section Managed PostgreSQL
+## @param postgresql.enabled Create a CloudNativePG Cluster; its CRDs and ready controller must exist before enabling this
+## @extra postgresql.spec Native CloudNativePG Cluster spec, validated from the locked dependency CRD; supports the complete upstream configuration surface
+## @param postgresql.spec.instances PostgreSQL instance count, including the primary; positive integer with no chart-imposed maximum
+## @param postgresql.spec.imageName Operator-compatible PostgreSQL image pinned by OCI digest
+## @param postgresql.spec.enableSuperuserAccess Allow external superuser credentials; disabled by default
+## @param postgresql.spec.bootstrap.initdb.database Application database created on first bootstrap
+## @param postgresql.spec.bootstrap.initdb.owner Application database owner created on first bootstrap
+## @param postgresql.spec.bootstrap.initdb.secret.name Existing kubernetes.io/basic-auth Secret with username and password keys; username must match owner
+## @param postgresql.spec.storage.size Persistent storage capacity per PostgreSQL instance
+## @param postgresql.spec.resources.requests.cpu Requested CPU per database instance
+## @param postgresql.spec.resources.requests.memory Requested memory per database instance
+## @param postgresql.spec.resources.limits.cpu CPU limit per database instance
+## @param postgresql.spec.resources.limits.memory Memory limit per database instance
+## @param postgresql.spec.affinity.enablePodAntiAffinity Spread database instances across eligible nodes
+## @param postgresql.spec.affinity.podAntiAffinityType Preferred or required database pod anti-affinity
+## @param postgresql.spec.affinity.topologyKey Failure domain label used for database separation
+## @param postgresql.spec.smartShutdownTimeout Seconds for the operator to wait for client disconnection before fast shutdown
+## @param postgresql.spec.stopDelay Total seconds allowed for PostgreSQL shutdown before forced termination
 postgresql:
   enabled: false
-  image: postgres:18.6-alpine@sha256:77f585114c32fbca283dc835b0596f4e52b51b4c6662d7810b2f4084f60a1873
-  existingSecret: witful-postgres
-  storageSize: 1Gi
-  passwordKey: password
-  database: witful
-  username: witful
-  storageClass: ""
-  resources:
-    requests:
-      cpu: 100m
-      memory: 128Mi
-    limits:
-      cpu: "1"
-      memory: 512Mi
-  readinessProbe:
-    initialDelaySeconds: 0
-    periodSeconds: 5
-    timeoutSeconds: 1
-    successThreshold: 1
-    failureThreshold: 3
-  nodeSelector: {}
-  tolerations: []
-  affinity: {}
-  terminationGracePeriodSeconds: 30
+  spec:
+    instances: 3
+    imageName: ghcr.io/cloudnative-pg/postgresql:18.6-standard-trixie@sha256:c7747d8d1049fff9cf30d9cd83d14d609c957afb5ffbcd114145f393ea1850e1
+    enableSuperuserAccess: false
+    bootstrap:
+      initdb:
+        database: witful
+        owner: witful
+        secret:
+          name: witful-postgres
+    storage:
+      size: 1Gi
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: "1"
+        memory: 512Mi
+    affinity:
+      enablePodAntiAffinity: true
+      podAntiAffinityType: preferred
+      topologyKey: kubernetes.io/hostname
+    smartShutdownTimeout: 30
+    stopDelay: 60
