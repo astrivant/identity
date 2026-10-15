@@ -9,8 +9,9 @@ The [CLI reference](CLI.md) describes executable commands.
 ## Durable definitions
 
 Keep reusable command behavior in this public project by default through the normal
-reviewed contribution workflow. Update its README catalog, this contract, root
-agent entrypoint and collection template together. An owning collection records
+reviewed contribution workflow. Keep the canonical catalog in this guide and link
+it from the README. Update this contract, the root agent entrypoint and collection
+template together when behavior changes. An owning collection records
 its sourced teaching and any personal aliases/bindings separately. Never publish
 private records, profile names, local paths or teaching provenance as generic
 examples. A proposed upstream definition is not a released downstream capability.
