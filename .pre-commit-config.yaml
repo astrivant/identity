@@ -57,6 +57,12 @@ repos:
         entry: shfmt -d -i 4 -ci
         language: system
         types: [shell]
+      - id: chart-dependencies
+        name: Restore locked Helm dependencies
+        entry: bash scripts/chart/dependencies.sh
+        language: system
+        pass_filenames: false
+        files: '^(helm/|scripts/chart/|services/)'
       - id: chart-documentation
         name: Helm documentation and schema
         entry: npm --prefix scripts/chart run generate

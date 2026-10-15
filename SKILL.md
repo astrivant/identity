@@ -38,6 +38,18 @@ never reconstruct undocumented past use or infer learning from a repository swit
 Commit the reviewed checkpoint journal; let the collection main workflow render
 its plots and synchronize its SQLite mirror. Remote database writes remain explicit.
 
+## Maintain Kubernetes storage
+
+The [Witful chart](helm/witful/README.md) manages PostgreSQL through CloudNativePG
+Cluster resources. Restore its locked dependency with
+`bash scripts/chart/dependencies.sh` before generation, rendering, lint or packaging.
+Reuse a cluster's existing operator, or install the optional dependency and wait
+for its CRDs/controller before creating a Cluster. Expose database configuration
+through the native `postgresql.spec`; regenerate its schema from the locked CRD.
+Follow the [deployment and migration guide](helm/witful/references/postgresql/README.md)
+for credentials, readiness, data preservation and explicit volume migration.
+The Compose profile is a local substitution, not operator lifecycle validation.
+
 ## Durable agent commands
 
 Follow [the chat command contract](docs/agent-commands.md) for `project pr rebase`,

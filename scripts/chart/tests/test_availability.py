@@ -11,6 +11,7 @@ import unittest
 from pathlib import Path
 
 import yaml
+from jsonschema import Draft7Validator
 
 _ROOT = Path(__file__).resolve().parents[3]
 _CHART = _ROOT / "helm/witful"
@@ -170,43 +171,105 @@ class AvailabilityContracts(unittest.TestCase):
         assert preference["weight"] == 100
         assert preference["podAffinityTerm"]["topologyKey"] == "topology.kubernetes.io/zone"
 
-    def test_development_database_overrides(self) -> None:
+    def test_native_database_overrides_reach_operator(self) -> None:
         """
-        Keep single-node storage and connection settings aligned with operator inputs.
+        Preserve storage, placement, bootstrap, resources and shutdown settings in the Cluster.
 
         Returns:
-            None: Database settings reach the container, readiness command and volume claim.
+            None: Native fields reach the CR without a hand-maintained mapping.
         """
-        values: dict[str, object] = {
-            "postgresql": {
-                "enabled": True,
-                "username": "indexer",
-                "database": "records",
-                "passwordKey": "credential",
-                "storageSize": "4Gi",
-                "storageClass": "fast",
-                "nodeSelector": {"pool": "data"},
-                "resources": {"requests": {"cpu": "250m", "memory": "256Mi"}},
-                "readinessProbe": {"timeoutSeconds": 4},
-                "terminationGracePeriodSeconds": 60,
-            }
+        overrides = {
+            "instances": 5,
+            "bootstrap": {"initdb": {"database": "records", "owner": "indexer", "secret": {"name": "indexer-auth"}}},
+            "storage": {"size": "4Gi", "storageClass": "fast"},
+            "affinity": {"nodeSelector": {"pool": "data"}, "podAntiAffinityType": "required"},
+            "resources": {"requests": {"cpu": "250m", "memory": "256Mi"}},
+            "smartShutdownTimeout": 15,
+            "stopDelay": 120,
+            "postgresql": {"parameters": {"max_connections": "200"}},
         }
-        result = render(values)
+        result = render({"postgresql": {"enabled": True, "spec": overrides}})
         assert result.returncode == 0, result.stderr
-        stateful = next(item for item in yaml.safe_load_all(result.stdout) if item["kind"] == "StatefulSet")
-        assert stateful["spec"]["replicas"] == 1
-        pod = stateful["spec"]["template"]["spec"]
-        assert pod["nodeSelector"] == {"pool": "data"}
-        assert pod["terminationGracePeriodSeconds"] == 60
-        database = pod["containers"][0]
-        assert [item.get("value") for item in database["env"][:2]] == ["records", "indexer"]
-        assert database["env"][2]["valueFrom"]["secretKeyRef"]["key"] == "credential"
-        assert database["readinessProbe"]["exec"]["command"] == ["pg_isready", "-U", "indexer", "-d", "records"]
-        assert database["readinessProbe"]["timeoutSeconds"] == 4
-        assert database["resources"]["requests"] == {"cpu": "250m", "memory": "256Mi"}
-        claim = stateful["spec"]["volumeClaimTemplates"][0]["spec"]
-        assert claim["storageClassName"] == "fast"
-        assert claim["resources"]["requests"]["storage"] == "4Gi"
+        resources = [item for item in yaml.safe_load_all(result.stdout) if item is not None]
+        assert {item["kind"] for item in resources} == {"Cluster", "Job"}
+        cluster = next(item for item in resources if item["kind"] == "Cluster")
+        assert cluster["apiVersion"] == "postgresql.cnpg.io/v1"
+        assert cluster["metadata"]["annotations"]["helm.sh/resource-policy"] == "keep"
+        spec = cluster["spec"]
+        assert spec["instances"] == 5
+        assert spec["bootstrap"] == overrides["bootstrap"]
+        assert spec["storage"] == overrides["storage"]
+        assert spec["affinity"]["nodeSelector"] == {"pool": "data"}
+        assert spec["affinity"]["podAntiAffinityType"] == "required"
+        assert spec["resources"]["requests"] == {"cpu": "250m", "memory": "256Mi"}
+        assert spec["smartShutdownTimeout"] == 15
+        assert spec["stopDelay"] == 120
+        assert spec["postgresql"] == overrides["postgresql"]
+
+    def test_operator_dependency_is_opt_in_and_allows_native_overrides(self) -> None:
+        """
+        Render the operator bootstrap phase without creating a database prematurely.
+
+        Returns:
+            None: The optional controller, CRDs and suspended worker respect supplied configuration.
+        """
+        result = render({"cloudnative-pg": {"enabled": True, "replicaCount": 2}, "job": {"suspend": True}})
+        assert result.returncode == 0, result.stderr
+        resources = [item for item in yaml.safe_load_all(result.stdout) if item is not None]
+        assert not any(item["kind"] in {"Cluster", "StatefulSet"} for item in resources)
+        controller = next(item for item in resources if item["kind"] == "Deployment")
+        assert controller["metadata"]["name"] == "witful-cloudnative-pg"
+        assert controller["spec"]["replicas"] == 2
+        assert any(item["metadata"]["name"] == "clusters.postgresql.cnpg.io" for item in resources)
+        assert next(item for item in resources if item["kind"] == "Job")["spec"]["suspend"] is True
+
+    def test_generated_spec_matches_rendered_operator_crd(self) -> None:
+        """
+        Compare every upstream spec constraint with the schema consumed by Helm.
+
+        Returns:
+            None: The complete generated spec matches the independently rendered dependency CRD.
+        """
+        result = render({"cloudnative-pg": {"enabled": True}})
+        assert result.returncode == 0, result.stderr
+        crd = next(
+            item
+            for item in yaml.safe_load_all(result.stdout)
+            if item is not None and item["metadata"]["name"] == "clusters.postgresql.cnpg.io"
+        )
+        version = next(item for item in crd["spec"]["versions"] if item["name"] == "v1" and item["served"])
+        native = version["schema"]["openAPIV3Schema"]["properties"]["spec"]
+        schema = json.loads((_CHART / "values.schema.json").read_text())
+        generated = schema["properties"]["postgresql"]["properties"]["spec"]
+        for key, value in native.items():
+            with self.subTest(keyword=key):
+                assert generated[key] == value
+        Draft7Validator.check_schema(schema)
+        Draft7Validator(schema).validate(yaml.safe_load((_CHART / "values.yaml").read_text()))
+
+    def test_database_instance_counts_and_references(self) -> None:
+        """
+        Support positive instance counts without a local ceiling and render each reviewed reference.
+
+        Returns:
+            None: Cluster counts and required placement survive Helm merging.
+        """
+        for count in (1, 17, 100):
+            with self.subTest(instances=count):
+                result = render({"postgresql": {"enabled": True, "spec": {"instances": count}}})
+                assert result.returncode == 0, result.stderr
+                cluster = next(item for item in yaml.safe_load_all(result.stdout) if item["kind"] == "Cluster")
+                assert cluster["spec"]["instances"] == count
+        for reference, count in (("local", 1), ("postgresql", 3)):
+            with self.subTest(reference=reference):
+                result = render(yaml.safe_load((_CHART / f"references/{reference}/values.yaml").read_text()))
+                assert result.returncode == 0, result.stderr
+                resources = [item for item in yaml.safe_load_all(result.stdout) if item is not None]
+                assert {item["kind"] for item in resources} == {"Cluster", "Job"}
+                cluster = next(item for item in resources if item["kind"] == "Cluster")
+                assert cluster["spec"]["instances"] == count
+                if reference == "postgresql":
+                    assert cluster["spec"]["affinity"]["podAntiAffinityType"] == "required"
 
     def test_invalid_or_conflicting_inputs_fail_before_deployment(self) -> None:
         """
@@ -230,8 +293,14 @@ class AvailabilityContracts(unittest.TestCase):
             {"postgresql": {"readinessProbe": {"timeoutSeconds": 0}}},
             {"postgresql": {"readinessProbe": {"exec": {"command": ["true"]}}}},
             {"postgresql": {"replicas": 3}},
+            {"postgresql": {"spec": {"affinity": {"enablePodAntiAffinity": "always"}}}},
+            {"postgresql": {"spec": {"storage": {"size": 4}}}},
             {"scheduler": {"nodeSelector": {}}},
         ]
+        # The operator schema requires a positive integer, independently of worker count.
+        for value in (0, -1, 1.5, True, "many"):
+            fixtures.append({"postgresql": {"spec": {"instances": value}}})
+
         for values in fixtures:
             with self.subTest(values=values):
                 assert render(values).returncode != 0
