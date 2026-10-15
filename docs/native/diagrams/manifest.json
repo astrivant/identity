@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "source_commit": "15ba3e1fa3778da79573611ae2482fdfc33999bd",
+  "source_commit": "4f0e207cd53ff461e0602eeabbbfbfe1f10ad459",
   "verification_date": "2026-10-15",
   "scope": "Implemented synthetic/reference profiles; no production deployment or storage attestation asserted",
   "versions": {
