@@ -64,7 +64,14 @@ def git(
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
             stderr=subprocess.DEVNULL,
-            env={**os.environ, "GIT_TERMINAL_PROMPT": "0", **(environment or {})},
+            # Ignore ambient Git routing, injected config and trace destinations. Only this call may select Git-specific settings.
+            env={
+                **{name: value for name, value in os.environ.items() if not name.startswith("GIT_")},
+                "GIT_TERMINAL_PROMPT": "0",
+                "GIT_CONFIG_NOSYSTEM": "1",
+                "GIT_CONFIG_GLOBAL": "/dev/null",
+                **(environment or {}),
+            },
             start_new_session=True,
             pass_fds=(lock_fd,) if lock_fd is not None else (),
             bufsize=0,

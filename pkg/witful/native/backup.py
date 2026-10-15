@@ -4,6 +4,7 @@ Export and restore complete encrypted native history with independent signature 
 
 from __future__ import annotations
 
+from types import MappingProxyType
 from typing import TYPE_CHECKING
 from uuid import uuid4
 
@@ -13,11 +14,15 @@ from witful.exceptions import NativeError
 from witful.native import codec, domains
 from witful.native.context import Context, identifier
 from witful.native.models import Frontier, Pointer, Receipt, parse
+from witful.native.original_git import GIT_ARCHIVE, Repository
+from witful.native.original_git import validate as validate_original_git
 from witful.native.service import FRONTIER, RECEIPT, Service
 from witful.native.storage import Batch, Head, Object, Scope
 from witful.native.wire import binary, decode_batch, encode_batch, integer, mapping, sequence, text
 
 if TYPE_CHECKING:
+    from collections.abc import Mapping
+
     from witful.native.authority import Access
     from witful.native.envelope import EnvelopeService
     from witful.native.storage import Store
@@ -125,6 +130,16 @@ class SnapshotStore:
     """
 
     archive: Archive = field(repr=False)
+    _objects: Mapping[str, Object] = field(init=False, repr=False)
+
+    def __attrs_post_init__(self) -> None:
+        """
+        Build one immutable ciphertext index for the independent snapshot reader.
+
+        Returns:
+            None: Repeated verification reads reuse validated immutable object bindings.
+        """
+        object.__setattr__(self, "_objects", MappingProxyType(self.archive.objects()))
 
     def head(self, scope: Scope) -> Head:
         """
@@ -152,9 +167,8 @@ class SnapshotStore:
             tuple[Object, ...]: Complete requested ciphertext.
         """
         self.head(scope)
-        objects = self.archive.objects()
         try:
-            return tuple(objects[item] for item in identifiers)
+            return tuple(self._objects[item] for item in identifiers)
         except KeyError:
             raise NativeError("incomplete") from None
 
@@ -228,8 +242,13 @@ def verify(service: Service, access: Access, archive: Archive) -> None:
 
     if archive.scope != access.scope:
         raise NativeError("denied")
+    if sum(len(item.payload) for item in archive.objects().values()) > service.budget.bytes:
+        raise NativeError("incomplete")
+    started = service.monotonic()
     reader = evolve(service, store=SnapshotStore(archive))
     for batch in archive.batches:
+        if service.monotonic() - started > service.budget.seconds:
+            raise NativeError("incomplete")
         root_context = Context(access.scope.tenant, access.scope.identity, batch.root.id, FRONTIER)
         frontier = parse(service.keys(access).open(root_context, batch.root.payload), Frontier)
         if frontier.version != 1:
@@ -247,7 +266,9 @@ def verify(service: Service, access: Access, archive: Archive) -> None:
         if receipt.root != Pointer(batch.root.id, batch.root.id, FRONTIER, batch.root.digest.hex()):
             raise NativeError("invalid")
         for pointer in (*frontier.archives, *frontier.outbox):
-            reader.open(access, pointer)
+            value = reader.open(access, pointer)
+            if pointer.kind == GIT_ARCHIVE:
+                validate_original_git(reader, access, parse(value, Repository))
         for pointer in frontier.revisions:
             revision = reader.revision(access, frontier, pointer.record)
             if revision.source is not None:

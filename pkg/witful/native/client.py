@@ -132,6 +132,7 @@ class Client:
             if operation not in {
                 "append",
                 "read",
+                "read-conditional",
                 "history",
                 "search",
                 "branch",

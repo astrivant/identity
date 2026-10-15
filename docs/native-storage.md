@@ -69,6 +69,24 @@ accepts an empty destination or an exact existing prefix, independently verifies
 retained histories and checks the final target. Restoring bytes does not change
 which backend the authority selects.
 
+## Exact original Git preservation
+
+`witful.native.original_git.capture` inventories one explicitly selected protected
+Git directory and retains canonical object bytes, original OIDs, refs, symbolic
+HEAD, available local LFS/submodule assets and repository metadata in signed
+encrypted records. Reflogs and available unreachable objects require explicit
+retention choices. Import verifies Git connectivity and object IDs, rejects external
+links/alternate object stores and rechecks the source before committing.
+
+`original_git.restore` creates a new protected repository, recomputes the original
+object IDs, runs Git connectivity verification and reads back retained metadata.
+It preserves original commit/tag signature bytes without claiming that archival
+retention establishes signer trust. Restored configuration and hooks stay inert
+during verification; review them before activating that repository. Existing
+paths are never overwritten. The archive explicitly excludes working-tree files,
+pruned/provider-hidden objects, external LFS/submodule stores and original pack
+layout. These are library operations; controller transport is being completed.
+
 ## Reviewed reconciliation
 
 `witful native ref merge` requires exact target and reviewed candidate heads,
@@ -159,3 +177,22 @@ WITFUL_TEST_DATABASE_URL="$TEST_DATABASE_URL" pytest -n 0 tests/native
 The database fixtures create and remove uniquely named synthetic databases and
 roles. They never migrate a collection. Tests without that variable skip real
 database contracts; such a run is not evidence that the backends passed.
+
+## Optional microservice working cache
+
+`witful.native.cache.Reader` wraps the authenticated native client with an optional
+in-memory working set. Retention is disabled by default. Enabling it requires a
+current protection callback and explicit entry, byte, response and time limits.
+Each request contacts the controller, which verifies current authority, decrypts
+under current custody and rechecks permission before returning an unchanged token.
+The token binds the certificate, scope, grant, task, epoch, policy, frontier and
+payload representation. A TTL is never an authorization lease.
+
+The cache stores immutable encoded values and decodes a fresh result for callers.
+It has no disk spill, offline fallback or write-acknowledgment authority. Failure
+clears retained references. Process shutdown must call `clear`; Python reference
+release does not promise secure memory erasure. Expired entries are evicted on the
+next read. Rotation or changed frontiers cause fresh payload transfer. This saves
+response bytes on a hit, but still performs controller cryptography and a network
+round trip; performance claims require measurement. `status` exposes aggregate
+local occupancy for the owning microservice's metrics.

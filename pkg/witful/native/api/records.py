@@ -13,6 +13,7 @@ from witful.exceptions import NativeError
 from witful.knowledge.contracts import as_data
 from witful.native import codec, domains
 from witful.native.api.requests import decode
+from witful.native.cache import conditional_read
 from witful.native.reconciliation import Selection, merge
 from witful.native.wire import mapping, sequence, text
 
@@ -60,6 +61,9 @@ def routes(service: Service, authenticate: Callable[[], str]) -> Blueprint:
                     entries,
                 )
             )
+        elif operation == "read-conditional":
+            args = mapping(arguments, {"record", "token"})
+            result = conditional_read(service, access, text(args["record"]), None if args["token"] is None else text(args["token"]))
         elif operation == "read":
             args = mapping(arguments, {"record"})
             result = domains.encode(service.read(access, text(args["record"])))
