@@ -16,7 +16,7 @@ from witful.native import codec
 from witful.native.context import identifier
 from witful.native.postgres import head_row, sql
 from witful.native.storage import Scope  # noqa: TC001 - Access is serialized through runtime cattrs type resolution.
-from witful.native.wire import binary, decode_batch, encode_batch, integer, mapping, text
+from witful.native.wire import binary, decode_batch, encode_batch, integer, mapping, sequence, text
 from witful.storage.connection import connect
 
 if TYPE_CHECKING:
@@ -231,8 +231,8 @@ class Authority:
             evaluator: Evaluator = Enforcer(str(model), enable_log=False)
         permissions = (action, *requirements)
         if action == "write" and registration.pending is not None:
-            permission, _ = self.candidate(registration.pending)
-            permissions += (permission,)
+            retained_permissions, _ = self.candidate(registration.pending)
+            permissions += retained_permissions
         for permission in permissions:
             if evaluator.enforce(grant, access.subject, access.task, permission, record, now) is not True:
                 raise NativeError("denied")
@@ -298,7 +298,7 @@ class Authority:
                 raise NativeError("unknown")
             return registration
 
-    def candidate(self, payload: bytes) -> tuple[str, Batch]:
+    def candidate(self, payload: bytes) -> tuple[tuple[str, ...], Batch]:
         """
         Recover the exact sealed candidate and its additional mutation permission from the trusted control plane.
 
@@ -306,15 +306,32 @@ class Authority:
             payload (bytes): Durable control-plane preparation; domain values remain encrypted.
 
         Returns:
-            tuple[str, Batch]: Required policy action and exact ciphertext bytes.
+            tuple[tuple[str, ...], Batch]: Required policy actions and exact ciphertext bytes.
         """
-        body = mapping(codec.decode(payload, self.limits), {"permission", "batch"})
-        permission = text(body["permission"])
-        if permission not in {"write", "review", "rotate", "import"}:
+        value = codec.decode(payload, self.limits)
+        permissions: tuple[str, ...]
+        if isinstance(value, dict) and "permission" in value:
+            body = mapping(value, {"permission", "batch"})
+            permissions = (text(body["permission"]),)
+        else:
+            body = mapping(value, {"permissions", "batch"})
+            permissions = tuple(text(item) for item in sequence(body["permissions"]))
+        if (
+            not permissions
+            or len(set(permissions)) != len(permissions)
+            or not set(permissions) <= {"write", "review", "rotate", "import", "project", "export"}
+        ):
             raise NativeError("invalid")
-        return permission, decode_batch(binary(body["batch"]), self.limits)
+        return permissions, decode_batch(binary(body["batch"]), self.limits)
 
-    def prepare(self, access: Access, batch: Batch, now: int, permission: str = "write") -> None:
+    def prepare(
+        self,
+        access: Access,
+        batch: Batch,
+        now: int,
+        permission: str = "write",
+        requirements: tuple[str, ...] = (),
+    ) -> None:
         """
         Durably retain exact sealed bytes before the data store can observe any mutation.
 
@@ -323,14 +340,16 @@ class Authority:
             batch (Batch): Complete candidate sealed outside all database locks.
             now (int): Current admission time.
             permission (str): Additional action required for this mutation, retained by the independent control plane.
+            requirements (tuple[str, ...]): Additional current permissions, retained for apply and uncertain-outcome recovery.
 
         Returns:
             None: Candidate is durable; no data-store mutation is implied.
         """
-        if permission not in {"write", "review", "rotate", "import"}:
+        permissions = tuple(dict.fromkeys((permission, *requirements)))
+        if not set(permissions) <= {"write", "review", "rotate", "import", "project", "export"}:
             raise NativeError("invalid")
-        payload = codec.encode({"permission": permission, "batch": encode_batch(batch, self.limits)}, self.limits)
-        with self.guard(access, "write", "*", now, (permission,)) as (connection, registration):
+        payload = codec.encode({"permissions": list(permissions), "batch": encode_batch(batch, self.limits)}, self.limits)
+        with self.guard(access, "write", "*", now, permissions) as (connection, registration):
             if registration.head != batch.expected:
                 raise NativeError("conflict")
             if registration.pending is not None and registration.pending != payload:

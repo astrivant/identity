@@ -18,6 +18,7 @@ from witful.native import codec, domains
 from witful.native.context import Context, identifier
 from witful.native.kinds import DOMAIN, FRONTIER, ORIGINAL, RECEIPT, REVISION
 from witful.native.models import Frontier, Pointer, Receipt, Ref, Revision, parse
+from witful.native.projection.models import Policy
 from witful.native.storage import Batch, Object
 from witful.native.views import View
 
@@ -77,6 +78,7 @@ class Service:
         budget (Budget): Explicit service work limits.
         clock (Callable[[], float]): UTC epoch observation boundary.
         monotonic (Callable[[], float]): Elapsed-time boundary for bounded operations.
+        projection (Policy): Explicit durable outbox and remote-verification policy, disabled by default.
     """
 
     store: Store = field(repr=False)
@@ -86,6 +88,7 @@ class Service:
     budget: Budget = Budget()
     clock: Callable[[], float] = time.time
     monotonic: Callable[[], float] = time.monotonic
+    projection: Policy = Policy()
 
     def seal(self, access: Access, record: str, kind: int, value: object) -> tuple[Pointer, Object]:
         """
@@ -304,7 +307,14 @@ class Service:
         return receipt
 
     def candidate(
-        self, access: Access, operation: str, request: str, registration: Registration, frontier: Frontier, objects: tuple[Object, ...]
+        self,
+        access: Access,
+        operation: str,
+        request: str,
+        registration: Registration,
+        frontier: Frontier,
+        objects: tuple[Object, ...],
+        remote_required: bool = False,
     ) -> tuple[Batch, Receipt]:
         """
         Seal an exact candidate outside locks without making it authoritative or publishing any effect.
@@ -316,6 +326,7 @@ class Service:
             registration (Registration): Expected committed source frontier.
             frontier (Frontier): Complete candidate metadata.
             objects (tuple[Object, ...]): Newly sealed records.
+            remote_required (bool): Retained completion requirement accompanying this accepted operation.
 
         Returns:
             tuple[Batch, Receipt]: Immutable prepared bytes and their logical acknowledgment.
@@ -329,9 +340,12 @@ class Service:
         context = Context(access.scope.tenant, access.scope.identity, root_id, FRONTIER)
         root = Object(root_id, self.keys(access).seal(context, as_data(frontier)))
         pointer = Pointer(root_id, root_id, FRONTIER, root.digest.hex())
-        receipt = Receipt(1, operation, request, access.epoch, access.policy, old.generation + 1, pointer, "durable")
+        receipt = Receipt(1, operation, request, access.epoch, access.policy, old.generation + 1, pointer, "durable", remote_required)
         _, sealed = self.seal(access, operation, RECEIPT, as_data(receipt))
-        return Batch(operation, old, root, objects, sealed), receipt
+        pending = {item.object for item in frontier.outbox}
+        outbox = tuple(item for item in objects if item.id in pending)
+        retained = tuple(item for item in objects if item.id not in pending)
+        return Batch(operation, old, root, retained, sealed, outbox), receipt
 
     def commit(
         self,
@@ -343,6 +357,8 @@ class Service:
         objects: tuple[Object, ...],
         started: float,
         permission: str = "write",
+        project: bool = True,
+        requirements: tuple[str, ...] = (),
     ) -> Receipt:
         """
         Seal a complete frontier and receipt before the durable prepare and final fenced commit.
@@ -356,17 +372,27 @@ class Service:
             objects (tuple[Object, ...]): Newly sealed individual domain and metadata records.
             started (float): Operation start for bounded work.
             permission (str): Additional action rechecked at the durable prepare, apply and response boundaries.
+            project (bool): Queue configured projection with this logical mutation; internal projection bookkeeping passes False.
+            requirements (tuple[str, ...]): Current permissions retained in durable preparation, including internal delivery updates.
 
         Returns:
             Receipt: Durable native acknowledgment, distinct from remote Git verification.
         """
-        batch, receipt = self.candidate(access, operation, request, registration, frontier, objects)
+        from witful.native.projection.intents import enqueue
+
+        if project and self.projection.select(access.scope.tenant, access.scope.identity):
+            frontier, objects = enqueue(self, access, operation, registration, frontier, objects)
+            requirements = tuple(dict.fromkeys((*requirements, "project", "export")))
+        remote_required = bool(
+            project and self.projection.mode == "required" and self.projection.select(access.scope.tenant, access.scope.identity)
+        )
+        batch, receipt = self.candidate(access, operation, request, registration, frontier, objects, remote_required)
         self.release(access, "write", "*", registration, started)
-        self.authority.prepare(access, batch, int(self.clock()), permission)
+        self.authority.prepare(access, batch, int(self.clock()), permission, requirements)
         self.authority.apply(access, self.store, int(self.clock()))
         # A policy change after commit can deny the response without undoing the durable receipt.
         self.protection()
-        with self.authority.guard(access, "write", "*", int(self.clock()), (permission,)):
+        with self.authority.guard(access, "write", "*", int(self.clock()), (permission, *requirements)):
             pass
         return receipt
 

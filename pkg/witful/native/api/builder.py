@@ -80,13 +80,51 @@ class Builder:
         Returns:
             Flask: Complete application without starting a listener or background thread.
         """
-        app = Flask("witful.native")
-        app.config.update(MAX_CONTENT_LENGTH=self.service.budget.bytes, DEBUG=False, TESTING=False)
-        app.register_blueprint(routes(self.service, self.authenticate))
-        app.register_blueprint(maintenance_routes(self.service, self.authenticate, self.destinations))
-        app.register_blueprint(archive_routes(self.service, self.authenticate, self.archives))
-        app.register_blueprint(sharing_routes(self.service, self.authenticate, self.recipients))
-        app.register_blueprint(derivation_routes(self.service, self.authenticate, self.destinations, self.derivations))
+        return Boundary(
+            "witful.native",
+            self.service.budget.bytes,
+            self.admission,
+            self.readiness,
+            (
+                routes(self.service, self.authenticate),
+                maintenance_routes(self.service, self.authenticate, self.destinations),
+                archive_routes(self.service, self.authenticate, self.archives),
+                sharing_routes(self.service, self.authenticate, self.recipients),
+                derivation_routes(self.service, self.authenticate, self.destinations, self.derivations),
+            ),
+        ).build()
+
+
+@frozen
+class Boundary:
+    """
+    Consolidate transport, operational endpoints and error/admission ownership for each independently deployed role.
+
+    Attributes:
+        name (str): Fixed application identity.
+        bytes (int): Maximum request body bytes before decoding.
+        admission (Admission): Owned request lifecycle and local metrics.
+        readiness (Callable[[], bool]): Role-specific dependency readiness.
+        blueprints (tuple[Blueprint, ...]): Injected domain routes assembled into one application.
+    """
+
+    name: str
+    bytes: int
+    admission: Admission
+    readiness: Callable[[], bool]
+    blueprints: tuple[Blueprint, ...]
+
+    def build(self) -> Flask:
+        """
+        Build one application with shared error handling and operational boundaries.
+
+        Returns:
+            Flask: Complete role-specific app without starting listeners or background work.
+        """
+        app = Flask(self.name)
+        app.config.update(MAX_CONTENT_LENGTH=self.bytes, DEBUG=False, TESTING=False)
+        for blueprint in self.blueprints:
+            app.register_blueprint(blueprint)
         operational = Blueprint("native_operations", __name__)
 
         @app.before_request
@@ -136,6 +174,7 @@ class Builder:
                 "denied": HTTPStatus.FORBIDDEN,
                 "invalid": HTTPStatus.BAD_REQUEST,
                 "conflict": HTTPStatus.CONFLICT,
+                "diverged": HTTPStatus.CONFLICT,
                 "incomplete": HTTPStatus.REQUEST_ENTITY_TOO_LARGE,
                 "unsupported": HTTPStatus.UNPROCESSABLE_ENTITY,
                 "unknown": HTTPStatus.SERVICE_UNAVAILABLE,

@@ -114,6 +114,7 @@ class Receipt:
         generation (int): Commit-order watermark assigned by CAS.
         root (Pointer): Exact prepared frontier representation.
         outcome (Literal["durable"]): Durable storage acknowledgment, never implied remote publication.
+        remote_required (bool): Whether retained remote verification is also required for workload completion.
     """
 
     version: Literal[1]
@@ -124,6 +125,7 @@ class Receipt:
     generation: int
     root: Pointer
     outcome: Literal["durable"]
+    remote_required: bool = False
 
 
 def parse(value: object, model: type[T]) -> T:

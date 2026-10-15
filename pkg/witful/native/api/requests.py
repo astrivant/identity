@@ -31,11 +31,26 @@ def decode(service: Service, authenticate: Callable[[], str]) -> tuple[Access, o
     Returns:
         tuple[Access, object]: Typed authentication bindings and operation-owned arguments.
     """
+    return decode_request(authenticate, service.protection, service.budget.bytes)
+
+
+def decode_request(authenticate: Callable[[], str], protection: Callable[[], None], byte_limit: int) -> tuple[Access, object]:
+    """
+    Reuse the same authenticated wire boundary for independently deployed native and projection roles.
+
+    Args:
+        authenticate (Callable[[], str]): Verified TLS peer identity boundary.
+        protection (Callable[[], None]): Role-specific protected-working-storage check.
+        byte_limit (int): Explicit complete request byte budget.
+
+    Returns:
+        tuple[Access, object]: Closed request bindings derived from the actual authenticated peer.
+    """
     subject = authenticate()
-    service.protection()
+    protection()
     if request.mimetype != "application/cbor":
         raise NativeError("invalid")
-    body = mapping(codec.decode(request.get_data(), codec.Limits(bytes=service.budget.bytes)), {"access", "arguments"})
+    body = mapping(codec.decode(request.get_data(), codec.Limits(bytes=byte_limit)), {"access", "arguments"})
     binding = mapping(body["access"], {"tenant", "identity", "grant", "task", "epoch", "policy"})
     access = Access(
         Scope(text(binding["tenant"]), text(binding["identity"])),

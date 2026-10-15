@@ -14,10 +14,12 @@ from witful.exceptions import NativeError
 from witful.native import codec, domains
 from witful.native.context import Context, identifier
 from witful.native.derivation_models import validate as validate_derivation
-from witful.native.kinds import DERIVATION
+from witful.native.kinds import BACKUP, DERIVATION
 from witful.native.models import Frontier, Pointer, Receipt, parse
 from witful.native.original_git import GIT_ARCHIVE, Repository
 from witful.native.original_git import validate_view as validate_original_git
+from witful.native.projection.models import INTENT, PREPARED, RESULT, Intent, Prepared, Result
+from witful.native.projection.verification import candidate as verify_projection
 from witful.native.service import FRONTIER, RECEIPT, Service
 from witful.native.storage import Batch, Head, Object, Scope
 from witful.native.views import View
@@ -31,9 +33,7 @@ if TYPE_CHECKING:
     from witful.native.service import Budget
     from witful.native.storage import Store
 
-__all__ = ["Archive", "archive", "inspect", "restore", "verify"]
-
-BACKUP = 6
+__all__ = ["Archive", "archive", "inspect", "restore", "verify", "BACKUP"]
 
 
 @frozen
@@ -290,6 +290,17 @@ def inspect(archive: Archive, keys: EnvelopeService, budget: Budget, monotonic: 
                 validate_original_git(view, parse(value, Repository))
             elif pointer.kind == DERIVATION:
                 validate_derivation(value)
+            elif pointer.kind == INTENT:
+                parse(value, Intent)
+            elif pointer.kind == PREPARED:
+                prepared = parse(value, Prepared)
+                verify_projection(view, prepared)
+            elif pointer.kind == RESULT:
+                result = parse(value, Result)
+                prepared = parse(view.open(result.prepared), Prepared)
+                verify_projection(view, prepared)
+                if result.oid != prepared.oid or result.recorded < prepared.recorded:
+                    raise NativeError("invalid")
         for pointer in frontier.revisions:
             revision = view.revision(frontier, pointer.record)
             entry = domains.decode(view.open(revision.payload))

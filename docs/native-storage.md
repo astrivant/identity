@@ -9,6 +9,52 @@ Implementation is under review. Projection, operational evidence and the full ac
 on the implementation branch. Existing managed collections retain their remote
 storage block. This document does not authorize a migration or a private pilot.
 
+## Projection implementation
+
+The projection core retains an encrypted outbox intent in the same transaction as
+accepted records and their durable receipt. Preparation persists the exact encrypted
+history sidecar, Git blob/tree/commit bytes, expected remote parent and a signed
+encrypted publication permit before making a remote request. A required-delivery
+receipt retains its requirement even when later configuration disables scheduling.
+Completion checks use the originally accepted destination set and independently
+verified results, rather than assuming an empty queue means successful delivery.
+
+A separately operated gateway owns remote credentials. Its broker grant can unwrap
+only publication permits, with record kind 18, and cannot decrypt the exported
+identity history. Independent public signer pins authenticate that encrypted
+history. Current native policy checks both the gateway caller and the original
+writer's project/export permissions before publication and result release. No
+control-plane database lock is held across key-service or remote Git calls.
+
+The gateway supports one fenced writer per configured destination. It permits only
+an exact expected-old update whose new commit retains that parent, or an explicitly
+absent initial ref. It fetches into a fresh object database and compares the exact
+commit, tree, sidecar and advertised branch before acknowledgment. A lost response
+reuses the persisted candidate; competing remote history is reported as divergence.
+No automatic merge, ref deletion or unconditional force push is performed. These
+semantics follow Git's [explicit lease contract](https://git-scm.com/docs/git-push)
+and [fetch behavior](https://git-scm.com/docs/git-fetch).
+
+Retry attempts and backoff are durable. `unknown`, `blocked`, `diverged` and
+`remote_verified` remain distinct from the original `durable` receipt. An in-flight
+already authorized remote request cannot be recalled by subsequent grant revocation;
+revocation prevents new admission and result release. Local inherited process locks
+and remote expected-old checks must be paired with the deployment's single-writer
+fencing and remote access policy. External writers are outside this profile.
+
+The first projection format contains a bounded full encrypted history snapshot.
+Prior retained projection records remain part of that history, so repeated full
+snapshots amplify storage. Queue and aggregate archive byte limits refuse work
+before exceeding the configured envelope budget; incremental projection is a
+separate format change. Returned-object limits do not bound fetched Git packfiles:
+the gateway deployment must also bound scratch storage and transfer execution.
+
+The core is exercised with synthetic policy, cryptography and real Git remotes,
+including a lost successful acknowledgment. Controller configuration, operational
+CLI, scheduled delivery and gateway chart wiring are still under implementation
+in this review branch. These library tests do not establish a deployed service or
+production failover evidence.
+
 ## Transaction and trust boundaries
 
 The data store receives independently signed AES-GCM envelopes and opaque routing

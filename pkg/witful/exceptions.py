@@ -33,7 +33,7 @@ class CollectionConfigurationError(ValueError):
     """
 
 
-NativeCode = Literal["invalid", "denied", "conflict", "unknown", "unavailable", "incomplete", "unsupported"]
+NativeCode = Literal["invalid", "denied", "conflict", "diverged", "unknown", "unavailable", "incomplete", "unsupported"]
 
 
 class NativeError(StorageError):
