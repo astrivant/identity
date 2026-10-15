@@ -9,10 +9,10 @@
       "reviews": "/repos/{owner}/{repo}/pulls/{pull_number}/reviews",
       "statuses": "/repos/{owner}/{repo}/commits/{ref}/statuses"
     },
-    "latest_observed_at": "2026-10-14T08:33:07.795166+00:00",
-    "revision": "77ed1eaed167921d7de0aa476f1383bcaf2f88ef",
+    "latest_observed_at": "2026-10-15T22:07:02.571726+00:00",
+    "revision": "93c8981e7237e38ac78867b85805077ded92ab8b",
     "snapshot_sha256": "f274341dd11c455e1c8c49579013154a63841f282b0d052a6153d272d66c0c17",
-    "source_sha256": "7e81618beb08bec8cf692dffd28615a9c87a2db335bd425ce8ab5a7d3f949b21",
+    "source_sha256": "2d18c7b121c209aa40a5c92ea462af1f7955603fc3ec530ab0466549498d14cf",
     "url": "https://raw.githubusercontent.com/github/rest-api-description/{revision}/descriptions/api.github.com/api.github.com.json"
   },
   "gitlab": {
@@ -24,10 +24,10 @@
       "signature": "/api/v4/projects/{id}/repository/commits/{sha}/signature",
       "statuses": "/api/v4/projects/{id}/repository/commits/{sha}/statuses"
     },
-    "latest_observed_at": "2026-10-14T08:33:07.795166+00:00",
-    "revision": "d654be28c5229b998062992ddaa94c44adeb6aa5",
+    "latest_observed_at": "2026-10-15T22:07:02.571726+00:00",
+    "revision": "c0a7e5ecad923c6ed9b791e6dc5d9e230417b8e1",
     "snapshot_sha256": "d2ff4e0bcee599ad4cebf9d442abeb3407c0064e8163b77b73bbcdcbd5f86063",
-    "source_sha256": "49814091b80272031a36ae18ed374957aaaf7a67f687bdf5136c2a4eb5cb8033",
+    "source_sha256": "aecaf0b1d98fa0e1858a06529dc99b49ccb21886c10a6a246bfede749d3cefae",
     "url": "https://gitlab.com/gitlab-org/gitlab/-/raw/{revision}/doc/api/openapi/openapi_v3.yaml"
   }
 }

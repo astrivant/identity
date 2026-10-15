@@ -129,10 +129,11 @@ class Runtime:
         host (str): Private listener binding.
         port (int): TLS listener port.
         workers (int): Independent Gunicorn worker processes.
-        threads (int): Threads per worker.
+        threads (int): Execution thread capacity per worker; recovery slots and one operational thread are added by the runtime.
         worker_connections (int): Maximum simultaneous Gunicorn connections per worker, including idle keepalive sockets.
         backlog (int): Kernel socket backlog, separate from the application queue.
-        admission (int): Maximum actively owned requests per worker.
+        admission (int): Maximum actively owned ordinary requests per worker, at most the execution thread capacity.
+        recovery_admission (int): Reserved recovery/cancellation slots per worker, separate from ordinary execution.
         timeout (int): Gunicorn worker timeout seconds.
         graceful_timeout (int): Maximum worker drain seconds before runtime termination.
         keepalive (int): Idle keepalive seconds.
@@ -147,6 +148,7 @@ class Runtime:
     worker_connections: int = 64
     backlog: int = 128
     admission: int = 4
+    recovery_admission: int = 1
     timeout: int = 60
     graceful_timeout: int = 30
     keepalive: int = 2
@@ -433,6 +435,7 @@ def load(path: Path) -> Settings:
             runtime.backlog,
             runtime.worker_connections,
             runtime.admission,
+            runtime.recovery_admission,
             runtime.timeout,
             runtime.graceful_timeout,
             runtime.keepalive,
@@ -445,7 +448,12 @@ def load(path: Path) -> Settings:
         raise NativeError("invalid")
     if not Path(runtime.working_directory).is_absolute():
         raise NativeError("invalid")
-    if runtime.port > 65535 or runtime.timeout < runtime.graceful_timeout or runtime.worker_connections < runtime.threads:
+    if (
+        runtime.port > 65535
+        or runtime.timeout < runtime.graceful_timeout
+        or runtime.admission > runtime.threads
+        or runtime.worker_connections < runtime.threads + runtime.recovery_admission + 1
+    ):
         raise NativeError("invalid")
     if not settings.broker.signers or len({item.generation for item in settings.broker.signers}) != len(settings.broker.signers):
         raise NativeError("invalid")

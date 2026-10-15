@@ -21,7 +21,8 @@ if TYPE_CHECKING:
 settings = load(Path(os.environ["WITFUL_NATIVE_CONFIG"]))
 bind = f"{settings.runtime.host}:{settings.runtime.port}"
 workers = settings.runtime.workers
-threads = settings.runtime.threads
+# Ordinary admission cannot consume recovery slots or the additional operational thread.
+threads = settings.runtime.threads + settings.runtime.recovery_admission + 1
 worker_class = "gthread"
 worker_connections = settings.runtime.worker_connections
 backlog = settings.runtime.backlog

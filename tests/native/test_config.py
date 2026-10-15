@@ -282,6 +282,7 @@ def test_gunicorn_cleanup_handles_partial_startup(settings: Settings, tmp_path: 
     path.write_text(json.dumps(as_data(settings)))
     monkeypatch.setenv("WITFUL_NATIVE_CONFIG", str(path))
     namespace = runpy.run_module("witful.native.gunicorn")
+    assert namespace["threads"] == settings.runtime.threads + settings.runtime.recovery_admission + 1
     callback: object = namespace["worker_exit"]
     assert callable(callback)
     callback(None, object())
@@ -292,3 +293,30 @@ def test_gunicorn_cleanup_handles_partial_startup(settings: Settings, tmp_path: 
     callback(None, worker)
     callback(None, worker)
     assert admission.snapshot()["status"] == "draining"
+
+
+def test_runtime_reserves_recovery_and_operational_capacity(settings: Settings, tmp_path: Path) -> None:
+    """
+    Reject configurations whose execution quota consumes reserved threads or whose connection budget cannot serve them.
+
+    Args:
+        settings (Settings): Synthetic closed deployment configuration.
+        tmp_path (Path): Disposable settings file.
+
+    Returns:
+        None: Positive recovery slots and execution/connection relationships are required without an arbitrary upper limit.
+    """
+    runtime = settings.runtime
+    path = tmp_path / "capacity.json"
+    for invalid in (
+        evolve(runtime, recovery_admission=0),
+        evolve(runtime, recovery_admission=True),
+        evolve(runtime, admission=runtime.threads + 1),
+        evolve(runtime, worker_connections=runtime.threads + runtime.recovery_admission),
+    ):
+        path.write_text(json.dumps(as_data(evolve(settings, runtime=invalid))))
+        with pytest.raises(NativeError):
+            load(path)
+    large = evolve(runtime, threads=100, admission=100, recovery_admission=20, worker_connections=121)
+    path.write_text(json.dumps(as_data(evolve(settings, runtime=large))))
+    assert load(path).runtime == large

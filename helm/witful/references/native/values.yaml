@@ -31,6 +31,7 @@
 ## @param controller.configuration.runtime.workers Reviewed reference input; replace placeholders to match the independently signed deployment configuration
 ## @param controller.configuration.runtime.threads Reviewed reference input; replace placeholders to match the independently signed deployment configuration
 ## @param controller.configuration.runtime.admission Reviewed reference input; replace placeholders to match the independently signed deployment configuration
+## @param controller.configuration.runtime.recovery_admission Reserved recovery/cancellation slots per worker; one additional operational thread is also reserved
 ## @param controller.configuration.runtime.working_directory Reviewed reference input; replace placeholders to match the independently signed deployment configuration
 ## @param controller.configuration.runtime.graceful_timeout Reviewed reference input; replace placeholders to match the independently signed deployment configuration
 ## @param controller.configuration.derivations [array] Explicit independently provisioned fork/split target scopes and grant bindings
@@ -90,6 +91,7 @@ controller:
       workers: 2
       threads: 4
       admission: 4
+      recovery_admission: 1
       working_directory: /run/witful
       graceful_timeout: 30
     derivations: []

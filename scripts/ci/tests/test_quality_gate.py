@@ -159,21 +159,21 @@ def test_figure_publication_follows_both_current_run_producers() -> None:
     assert jobs["learning"]["steps"][-1]["with"]["name"] == "continual-learning-example"
 
 
-def test_tag_gate_refreshes_latest_contracts_before_testing_and_publication() -> None:
+def test_pr_and_tag_gate_requires_committed_latest_contracts() -> None:
     """
-    Prevent tag publication from silently relying on an older pinned API baseline.
+    Prevent PR merge or tag publication from relying on stale or uncommitted API inputs.
 
     Returns:
-        None: Every tag selects freshness and tests only after a successful refresh.
+        None: Every caller checks committed freshness before tests; no transient CI-only refresh can satisfy acceptance.
     """
     workflow = yaml.load((ROOT / ".github/workflows/ci.yml").read_text(), Loader=yaml.BaseLoader)
     gate = workflow["jobs"]["provider-contracts"]
-    assert gate["with"] == {"source": "${{ github.sha }}", "refresh-latest": "${{ startsWith(github.ref, 'refs/tags/') }}"}
+    assert gate["with"] == {"source": "${{ github.sha }}"}
     stage = yaml.load((ROOT / ".github/workflows/stage-provider-contracts.yml").read_text(), Loader=yaml.BaseLoader)
     steps = stage["jobs"]["contracts"]["steps"]
-    refresh = next(step for step in steps if step.get("run", "").endswith("refresh.py --latest"))
+    refresh = next(step for step in steps if "refresh.py --check --latest --observation" in step.get("run", ""))
     test = next(step for step in steps if step.get("run", "").startswith("pytest "))
-    assert refresh["if"] == "inputs.refresh-latest"
+    assert "if" not in refresh
     assert steps.index(refresh) < steps.index(test)
     assert "if" not in test and "continue-on-error" not in refresh and "continue-on-error" not in test
     assert "provider-contracts" in workflow["jobs"]["publish"]["needs"]

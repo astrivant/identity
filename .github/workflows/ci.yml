@@ -28,7 +28,6 @@ jobs:
     uses: ./.github/workflows/stage-provider-contracts.yml
     with:
       source: ${{ github.sha }}
-      refresh-latest: ${{ startsWith(github.ref, 'refs/tags/') }}
 
   tests:
     name: Python tests

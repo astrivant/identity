@@ -6,10 +6,6 @@ on:
         description: Immutable source revision to validate
         required: true
         type: string
-      refresh-latest:
-        description: Resolve and test current vendor specification heads before a tag release
-        type: boolean
-        default: false
 permissions:
   contents: read
 jobs:
@@ -25,11 +21,8 @@ jobs:
           ref: ${{ inputs.source }}
           persist-credentials: false
       - uses: ./.github/actions/python
-      - name: Verify snapshots against immutable vendor sources
-        run: python scripts/ci/provider_contracts/refresh.py --check
-      - name: Refresh current upstream contracts for tag acceptance
-        if: inputs.refresh-latest
-        run: python scripts/ci/provider_contracts/refresh.py --latest
+      - name: Require committed latest contracts before PR or release acceptance
+        run: python scripts/ci/provider_contracts/refresh.py --check --latest --observation .cache/provider-contracts/latest.json
       - name: Bind SDK versions and tested API contracts to this source
         env:
           SOURCE_REVISION: ${{ inputs.source }}

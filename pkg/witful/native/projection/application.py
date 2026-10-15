@@ -148,7 +148,7 @@ def build(settings: Settings) -> Runtime:
         require_profile(settings, int(time.time()))
 
     protection()
-    admission = Admission(settings.runtime.admission)
+    admission = Admission(settings.runtime.admission, recovery_limit=settings.runtime.recovery_admission)
     try:
         require_protected(Path(settings.runtime.working_directory))
         authority_url = os.environ["WITFUL_AUTHORITY_DATABASE_URL"]

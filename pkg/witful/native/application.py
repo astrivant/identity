@@ -221,7 +221,7 @@ def build(settings: Settings) -> Runtime:
         fingerprint = hashlib.sha256(certificate.public_bytes(serialization.Encoding.DER)).hexdigest()
     except (KeyError, OSError, ValueError, ProgrammingError, BrokerError, StorageProtectionError):
         raise NativeError("unavailable") from None
-    admission = Admission(settings.runtime.admission)
+    admission = Admission(settings.runtime.admission, recovery_limit=settings.runtime.recovery_admission)
 
     def keys(access: Access) -> EnvelopeService:
         """

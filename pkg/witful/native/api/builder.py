@@ -94,6 +94,7 @@ class Builder:
                 sharing_routes(self.service, self.authenticate, self.recipients),
                 derivation_routes(self.service, self.authenticate, self.destinations, self.derivations),
             ),
+            self.authenticate,
         ).build()
 
 
@@ -108,6 +109,7 @@ class Boundary:
         admission (Admission): Owned request lifecycle and local metrics.
         readiness (Callable[[], bool]): Role-specific dependency readiness.
         blueprints (tuple[Blueprint, ...]): Injected domain routes assembled into one application.
+        authenticate (Callable[[], str]): Verify listener-owned peer identity before quota-sensitive work.
     """
 
     name: str
@@ -115,6 +117,7 @@ class Boundary:
     admission: Admission
     readiness: Callable[[], bool]
     blueprints: tuple[Blueprint, ...]
+    authenticate: Callable[[], str] = peer_fingerprint
 
     def build(self) -> Flask:
         """
@@ -138,8 +141,11 @@ class Boundary:
                 Response | None: Immediate overload response or admission for normal routing.
             """
             if request.path.startswith("/v1/"):
-                if not self.admission.acquire():
+                self.authenticate()
+                recovery = request.path in {"/v1/recover", "/v1/migration-abort"}
+                if not self.admission.acquire(recovery):
                     return Response(status=HTTPStatus.SERVICE_UNAVAILABLE)
+                g.native_recovery = recovery
                 g.native_started = time.monotonic()
             return None
 
@@ -158,7 +164,9 @@ class Boundary:
             response.headers["X-Content-Type-Options"] = "nosniff"
             started: object = g.pop("native_started", None)
             if isinstance(started, float):
-                self.admission.release(time.monotonic() - started, response.status_code >= HTTPStatus.BAD_REQUEST)
+                self.admission.release(
+                    time.monotonic() - started, response.status_code >= HTTPStatus.BAD_REQUEST, bool(g.pop("native_recovery", False))
+                )
             return response
 
         @app.errorhandler(Exception)
@@ -234,7 +242,17 @@ class Boundary:
             snapshot = self.admission.snapshot()
             lines = [
                 f"witful_native_{name} {snapshot[name]}"
-                for name in ("queue_size", "in_flight", "admission_limit", "completed", "failures", "rejected", "request_seconds")
+                for name in (
+                    "queue_size",
+                    "in_flight",
+                    "admission_limit",
+                    "recovery_limit",
+                    "recovery_in_flight",
+                    "completed",
+                    "failures",
+                    "rejected",
+                    "request_seconds",
+                )
             ]
             dependencies = snapshot["dependency_seconds"]
             assert isinstance(dependencies, dict)

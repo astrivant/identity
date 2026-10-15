@@ -45,7 +45,9 @@ def test_native_controller_has_private_ha_and_runtime_controls() -> None:
         None: The default sync job is absent only for the explicit native profile.
     """
     documents = render(
-        "--set", "controller.replicas=3,controller.configuration.runtime.workers=24,controller.configuration.runtime.port=9443"
+        "--set",
+        "controller.replicas=3,controller.configuration.runtime.workers=24,controller.configuration.runtime.port=9443,"
+        "controller.configuration.runtime.recovery_admission=3",
     )
     resources = {value["kind"]: value for value in documents}
     assert "Job" not in resources and "StatefulSet" not in resources
@@ -70,6 +72,7 @@ def test_native_controller_has_private_ha_and_runtime_controls() -> None:
     assert isinstance(configuration, dict)
     settings = json.loads(configuration["settings.json"])
     assert settings["runtime"]["workers"] == 24
+    assert settings["runtime"]["recovery_admission"] == 3
     assert "DATABASE_URL" not in json.dumps(settings)
 
 

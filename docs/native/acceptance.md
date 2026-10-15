@@ -25,6 +25,8 @@ remain separate operator decisions.
 | Isolated gateway, remote CAS and independent verification | [Gateway policy](../../tests/native/test_projection_gateway.py), [lost-ack Git transport](../../tests/native/test_projection_transport.py), [real gateway mTLS, released broker and SSH](../../tests/native/gateway_transport.py) |
 | One Flask app, private operational endpoints and owned shutdown | [API](../../tests/native/test_api.py), [real Gunicorn transport](../../tests/native/test_native_transport.py), partial-startup cleanup regression in [configuration tests](../../tests/native/test_config.py) |
 | CloudNativePG CRs, stateless controller HA and isolated gateway/scheduler controls | [Chart references](../../helm/witful/references/README.md), chart tests and the CI orchestration job. No handwritten PostgreSQL StatefulSet |
+| Recovery and status under saturated ordinary execution | [Event-barrier API tests](../../tests/native/test_api.py), [reserved runtime capacity](../../pkg/witful/native/gunicorn.py), [configuration refusals](../../tests/native/test_config.py) |
+| Current committed provider API contracts on every PR | [Freshness gate](../../.github/workflows/stage-provider-contracts.yml), [real SDK request construction and schema tests](../../scripts/ci/tests/test_provider_contracts.py) |
 | Physical backup, WAL decoding, synchronous primary-loss recovery and PITR | [Required physical stage](../../.github/workflows/stage-native-storage.yml), [actual drill](../../tests/native/test_physical.py), [retained receipt](evidence/physical.json) |
 
 The [source checkpoint](https://github.com/astrivant/identity/commit/3300191abca6ebe888219f352e4dcb137519fbe3)

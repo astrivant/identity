@@ -18,7 +18,9 @@ class Admission:
 
     Attributes:
         limit (int): Maximum concurrently owned requests per worker process.
-        active (int): Requests currently executing in this worker.
+        recovery_limit (int): Separately reserved bounded recovery/cancellation requests.
+        recovering (int): Currently executing reserved recovery requests.
+        active (int): All requests currently executing in this worker.
         rejected (int): Refusals due to admission pressure.
         failures (int): Completed failed requests.
         completed (int): Completed admitted requests.
@@ -28,6 +30,8 @@ class Admission:
     """
 
     limit: int
+    recovery_limit: int = 1
+    recovering: int = 0
     active: int = 0
     rejected: int = 0
     failures: int = 0
@@ -44,36 +48,43 @@ class Admission:
         Returns:
             None: The configured limit is valid.
         """
-        if type(self.limit) is not int or self.limit < 1:
+        if any(type(value) is not int or value < 1 for value in (self.limit, self.recovery_limit)):
             raise NativeError("invalid")
 
-    def acquire(self) -> bool:
+    def acquire(self, recovery: bool = False) -> bool:
         """
-        Admit one request without waiting on an application queue.
+        Admit one request without letting saturated execution consume the reserved recovery budget.
+
+        Args:
+            recovery (bool): Whether this is a server-selected recovery/cancellation route.
 
         Returns:
             bool: Whether ownership was acquired.
         """
         with self._lock:
-            if self.draining or self.active >= self.limit:
+            saturated = self.recovering >= self.recovery_limit if recovery else self.active - self.recovering >= self.limit
+            if self.draining or saturated:
                 self.rejected += 1
                 return False
             self.active += 1
+            self.recovering += int(recovery)
             return True
 
-    def release(self, seconds: float, failed: bool) -> None:
+    def release(self, seconds: float, failed: bool, recovery: bool = False) -> None:
         """
         Release exactly one owned request and update bounded aggregate metrics.
 
         Args:
             seconds (float): Measured elapsed request time.
             failed (bool): Whether the response indicated failure.
+            recovery (bool): The server-selected budget originally acquired for this request.
 
         Returns:
             None: Ownership and local counters are updated.
         """
         with self._lock:
             self.active -= 1
+            self.recovering -= int(recovery)
             self.completed += 1
             self.failures += int(failed)
             self.seconds += max(0.0, seconds)
@@ -116,6 +127,8 @@ class Admission:
                 "queue_size": 0,
                 "in_flight": self.active,
                 "admission_limit": self.limit,
+                "recovery_limit": self.recovery_limit,
+                "recovery_in_flight": self.recovering,
                 "completed": self.completed,
                 "failures": self.failures,
                 "rejected": self.rejected,

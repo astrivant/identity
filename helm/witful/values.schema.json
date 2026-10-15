@@ -6343,6 +6343,9 @@
                                         "admission": {
                                             "type": "integer"
                                         },
+                                        "recovery_admission": {
+                                            "type": "integer"
+                                        },
                                         "timeout": {
                                             "type": "integer"
                                         },
@@ -7483,6 +7486,9 @@
                                                 "type": "integer"
                                             },
                                             "admission": {
+                                                "type": "integer"
+                                            },
+                                            "recovery_admission": {
                                                 "type": "integer"
                                             },
                                             "timeout": {

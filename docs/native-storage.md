@@ -424,3 +424,14 @@ service, store and client limits including framing. Crossing any bound fails
 explicitly; no incomplete package is reported as a full backup. The controller
 requires signed protection evidence and independently verifies local working
 storage. A memory-backed Kubernetes volume alone does not establish disabled swap.
+
+### Recovery under execution pressure
+
+`runtime.threads` is ordinary execution capacity and `runtime.admission` cannot
+exceed it. `runtime.recovery_admission` reserves separate bounded slots for exact
+recovery and migration cancellation. Gunicorn adds those slots and one operational
+thread to the execution thread count; `worker_connections` must cover the total.
+Verified peer authentication precedes admission. Status and metrics use local
+snapshots outside both work quotas. This prevents admitted ordinary work from
+consuming every recovery or inspection slot; it is not a denial-of-service guarantee
+against arbitrary TLS connections or an unbounded probe flood.

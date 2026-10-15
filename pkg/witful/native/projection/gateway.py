@@ -202,4 +202,6 @@ class Builder:
             )
             return Response(codec.encode(result), mimetype="application/cbor")
 
-        return Boundary("witful.projection", self.gateway.budget.bytes, self.admission, self.readiness, (blueprint,)).build()
+        return Boundary(
+            "witful.projection", self.gateway.budget.bytes, self.admission, self.readiness, (blueprint,), self.authenticate
+        ).build()
