@@ -92,4 +92,5 @@ def fixture() -> Fixture:
 
 # Imported fixtures remain shared support, not imports from test case modules.
 from tests.native.database import databases as databases  # noqa: E402
+from tests.native.runtime import destination as destination  # noqa: E402
 from tests.native.runtime import runtime as runtime  # noqa: E402

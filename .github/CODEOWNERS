@@ -65,3 +65,8 @@
 /tests/ @emmeowzing
 /docs/assets/identity-logo.png @emmeowzing
 /pkg/witful/native/ @emmeowzing
+/LICENSE @emmeowzing
+/docs/licensing.md @emmeowzing
+/docs/native-storage.md @emmeowzing
+/pkg/witful/sql/postgres/native/ @emmeowzing
+/scripts/licenses/ @emmeowzing

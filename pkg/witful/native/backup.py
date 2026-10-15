@@ -305,7 +305,10 @@ def restore(
     if context.tenant != access.scope.tenant or context.identity != access.scope.identity or context.kind != BACKUP:
         raise NativeError("denied")
     started = service.monotonic()
-    registration = service.authority.check(access, "export", "*", int(service.clock()))
+    service.protection()
+    registration = service.authority.check(access, "import", "*", int(service.clock()))
+    if service.authority.check(access, "export", "*", int(service.clock())) != registration:
+        raise NativeError("conflict")
     if target is service.store:
         raise NativeError("denied")
     keys = recipient or service.keys(access)
@@ -319,5 +322,6 @@ def restore(
         target.commit(access.scope, batch)
     if target.history(access.scope) != retained.batches or target.head(access.scope) != retained.head:
         raise NativeError("incomplete")
+    service.release(access, "import", "*", registration, started)
     service.release(access, "export", "*", registration, started)
     return retained.head

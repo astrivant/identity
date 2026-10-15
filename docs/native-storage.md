@@ -99,9 +99,35 @@ before candidate preparation and retains the inactive partial copy.
 Reverse migration uses the same protocol. It copies all new destination writes
 back to the retained original backend before advancing the epoch again. It does
 not restore an old snapshot over acknowledged work. The tests exercise this in
-both directions and inject failure after the real destination commit. The CLI
-and deployment workflow for migration are still being integrated; these library
-contracts do not constitute a production migration or private pilot.
+both directions and inject failure after the real destination commit. The controller admits only destinations declared in its signed configuration.
+`witful native migration run --client CLIENT --destination BACKEND_UUID --operation UUID`
+performs or resumes the transition. `native migration abort` can explicitly
+cancel before candidate preparation. After cutover, configure clients and the
+selected controller with the receipt's new epoch; the original controller remains
+fenced. These synthetic contracts do not constitute a production migration or
+private pilot.
+
+## Key lifecycle and recovery commands
+
+`witful native key rotate --client CLIENT --operation UUID --mode MODE` uses
+only the controller's configured key generations and independently pinned signer
+keys. `rewrap` retains domain ciphertext and nonce while changing the wrapped data
+key. `reseal` creates fresh domain ciphertext, nonce and data key. `resign` retains
+the wrapped data key and ciphertext and replaces only their signature. Metadata
+that points to changed representations is newly sealed in every mode.
+
+The operation requires both `write` and `rotate`, retains an encrypted mapping
+between representations, and leaves historical transactions intact. Original
+keys remain necessary for historical recovery. Rotation refuses pending
+projection intents and does not create, revoke or retire custodial keys.
+
+`native recovery export` writes an already signed encrypted binary package;
+`native recovery restore` verifies it into a configured inactive destination and
+requires current `export` and `import` permissions. Neither command changes
+routing. Read/history compatibility outputs remain restricted to protected
+working storage. Exports under separate recipient custody are available through
+the library's explicit recipient parameter; the retained inner history still
+requires its original key custody and grants.
 
 ## Controller boundaries
 

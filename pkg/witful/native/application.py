@@ -16,7 +16,7 @@ from uuid import uuid4
 
 from agent_broker_sdk.client import CryptoClient
 from agent_broker_sdk.exceptions import BrokerError
-from attrs import frozen
+from attrs import evolve, frozen
 from cryptography import x509
 from cryptography.hazmat.primitives import serialization
 from psycopg import ProgrammingError
@@ -28,7 +28,7 @@ from witful.native.api.admission import Admission
 from witful.native.api.builder import Builder
 from witful.native.authority import Access, Authority
 from witful.native.broker import BrokerKeys
-from witful.native.config import Settings, load, require_profile
+from witful.native.config import Backend, Settings, load, require_profile
 from witful.native.context import Context
 from witful.native.envelope import EnvelopeService, Signer
 from witful.native.git import Git
@@ -183,22 +183,34 @@ def build(settings: Settings) -> Runtime:
         authority_options = conninfo_to_dict(authority_url)
         if authority_options.get("sslmode", "verify-full") != "verify-full":
             raise NativeError("denied")
-        store: Store
-        backend = settings.backend
-        if backend.kind == "postgres":
-            database_url = os.environ["WITFUL_DATABASE_URL"]
-            options = conninfo_to_dict(database_url)
-            if options.get("sslmode", "verify-full") != "verify-full":
-                raise NativeError("denied")
-            # Different credentials in the same database do not establish the independent control-plane boundary.
-            if tuple(options.get(key) for key in ("host", "port", "dbname")) == tuple(
-                authority_options.get(key) for key in ("host", "port", "dbname")
-            ):
-                raise NativeError("denied")
-            store = Postgres(database_url, backend.max_objects, backend.max_bytes, backend.synchronous)
-        else:
-            require_protected(Path(backend.path))
-            store = Git(Path(backend.path), backend.author, backend.email, backend.max_objects, backend.max_bytes)
+
+        def storage(backend: Backend) -> Store:
+            """
+            Construct only an explicitly configured data boundary, without registering or migrating it.
+
+            Args:
+                backend (Backend): Selected source or inactive destination covered by signed deployment evidence.
+
+            Returns:
+                Store: Ciphertext adapter with verified transport and separation from the authority database.
+            """
+            if backend.kind == "postgres":
+                database_url = os.environ[backend.database_environment]
+                options = conninfo_to_dict(database_url)
+                if options.get("sslmode", "verify-full") != "verify-full":
+                    raise NativeError("denied")
+                # Different credentials in the same database do not establish the independent control-plane boundary.
+                if tuple(options.get(key) for key in ("host", "port", "dbname")) == tuple(
+                    authority_options.get(key) for key in ("host", "port", "dbname")
+                ):
+                    raise NativeError("denied")
+                return Postgres(database_url, backend.max_objects, backend.max_bytes, backend.synchronous)
+            else:
+                require_protected(Path(backend.path))
+                return Git(Path(backend.path), backend.author, backend.email, backend.max_objects, backend.max_bytes)
+
+        store = storage(settings.backend)
+        targets = {backend.id: storage(backend) for backend in settings.destinations}
         broker = settings.broker
         client = CryptoClient(broker.url, Path(broker.ca), Path(broker.certificate), Path(broker.key))
         signers = {item.generation: Signer(base64.b64decode(item.public, validate=True), item.fingerprint) for item in broker.signers}
@@ -222,11 +234,14 @@ def build(settings: Settings) -> Runtime:
         custody = MeteredKeys(BrokerKeys(client, access.grant, access.task, broker.authority, broker.policy), admission)
         return EnvelopeService(custody, broker.wrapping, broker.signing, signers)
 
-    service = Service(store, Authority(authority_url, backend.id), keys, protection, settings.budget)
+    service = Service(store, Authority(authority_url, settings.backend.id), keys, protection, settings.budget)
     probe = settings.probe
     access = Access(Scope(probe.tenant, probe.identity), fingerprint, probe.grant, probe.task, probe.epoch, probe.policy)
     readiness = Readiness(settings, service, admission, access)
-    application = Builder(service, admission, readiness).build()
+    destinations = tuple(
+        evolve(service, store=target, authority=evolve(service.authority, backend=identifier)) for identifier, target in targets.items()
+    )
+    application = Builder(service, admission, readiness, destinations=destinations).build()
     application.extensions["witful.runtime"] = admission
     return Runtime(application, service, admission)
 

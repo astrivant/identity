@@ -17,7 +17,7 @@ from typing import TYPE_CHECKING
 from witful.collection.protection import require_protected
 from witful.exceptions import NativeError, StorageProtectionError
 from witful.knowledge.contracts import schema
-from witful.native import domains
+from witful.native import codec, domains
 from witful.native.client import Client, ClientSettings
 from witful.native.config import Evidence, Settings, load, require_profile
 from witful.native.domains import Entry
@@ -58,19 +58,25 @@ def health(settings: Settings) -> int:
         connection.close()
 
 
-def write(path: Path, value: object) -> None:
+def write(path: Path, value: object, encrypted: bool = False) -> None:
     """
     Create a new protected compatibility output without overwriting a user's existing file.
 
     Args:
         path (Path): Explicit destination on verified protected working storage.
-        value (object): Authorized JSON-compatible response.
+        value (object): Authorized response.
+        encrypted (bool): Whether the response is an already encrypted recovery package serialized as CBOR.
 
     Returns:
         None: The complete output is fsynced with private permissions.
     """
-    require_protected(path.parent)
-    encoded = (json.dumps(value, indent=2, ensure_ascii=True) + "\n").encode()
+    if not encrypted:
+        require_protected(path.parent)
+    encoded = (
+        codec.encode(value, codec.Limits(bytes=64 * 1024 * 1024))
+        if encrypted
+        else (json.dumps(value, indent=2, ensure_ascii=True) + "\n").encode()
+    )
     descriptor = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
     with os.fdopen(descriptor, "wb") as output:
         output.write(encoded)
@@ -112,7 +118,8 @@ def execute(args: argparse.Namespace, parser: argparse.ArgumentParser) -> int:
         client = Client.load(args.client)
         arguments: object
         if args.output is not None:
-            require_protected(args.output.parent)
+            if operation != "export":
+                require_protected(args.output.parent)
             if args.output.exists():
                 raise NativeError("conflict")
         if operation in {"append", "merge"}:
@@ -150,6 +157,17 @@ def execute(args: argparse.Namespace, parser: argparse.ArgumentParser) -> int:
                 "selections": selections,
                 "reason": text(review["reason"]),
             }
+        elif operation == "migrate":
+            arguments = {"operation": args.operation, "destination": args.destination}
+        elif operation == "migration-abort":
+            arguments = {"operation": args.operation}
+        elif operation == "rotate":
+            arguments = {"operation": args.operation, "mode": args.mode}
+        elif operation == "restore":
+            with args.input.open("rb") as source:
+                raw = source.read(client.settings.max_bytes + 1)
+            package = mapping(codec.decode(raw, codec.Limits(bytes=client.settings.max_bytes)), {"context", "sealed"})
+            arguments = {**package, "destination": args.destination}
         elif operation == "read":
             arguments = {"record": args.record}
         elif operation == "history":
@@ -172,7 +190,7 @@ def execute(args: argparse.Namespace, parser: argparse.ArgumentParser) -> int:
                 history.append({"revision": record["revision"], "domain": entry.domain, "value": entry.value})
             result = history
         if args.output is not None:
-            write(args.output, result)
+            write(args.output, result, encrypted=operation == "export")
         else:
             print(json.dumps(result, ensure_ascii=True))
         return 0

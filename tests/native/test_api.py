@@ -12,37 +12,11 @@ from witful.native import codec, domains
 from witful.native.api.admission import Admission
 from witful.native.api.builder import Builder
 
+from tests.native.requests import body
 from tests.native.runtime import branches, lesson
 
 if TYPE_CHECKING:
     from tests.native.runtime import Runtime
-
-
-def body(runtime: Runtime, arguments: object) -> bytes:
-    """
-    Encode the public request contract without allowing a caller to choose its authenticated certificate identity.
-
-    Args:
-        runtime (Runtime): Synthetic service grant.
-        arguments (object): Operation-owned closed argument map.
-
-    Returns:
-        bytes: Native CBOR request.
-    """
-    access = runtime.access
-    return codec.encode(
-        {
-            "access": {
-                "tenant": access.scope.tenant,
-                "identity": access.scope.identity,
-                "grant": access.grant,
-                "task": access.task,
-                "epoch": access.epoch,
-                "policy": access.policy,
-            },
-            "arguments": arguments,
-        }
-    )
 
 
 def test_api_domain_and_metrics_share_one_application(runtime: Runtime) -> None:

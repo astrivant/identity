@@ -43,8 +43,8 @@ def options(operation: str) -> Callable[[argparse.ArgumentParser], None]:
             parser.add_argument("--config", type=Path, required=True)
             return
         parser.add_argument("--client", type=Path, required=True)
-        parser.add_argument("--output", type=Path, required=operation in {"read", "history"})
-        if operation in {"append", "branch", "merge"}:
+        parser.add_argument("--output", type=Path, required=operation in {"read", "history", "export"})
+        if operation in {"append", "branch", "merge", "rotate", "migrate", "migration-abort"}:
             parser.add_argument("--operation", required=True, help="Stable operation UUID; reuse unchanged after an unknown outcome")
         if operation in {"append", "history", "search"}:
             parser.add_argument("--ref", default="main")
@@ -57,6 +57,12 @@ def options(operation: str) -> Callable[[argparse.ArgumentParser], None]:
             parser.add_argument("--expected", required=True, help="Exact reviewed target logical head")
             parser.add_argument("--reviewed", required=True, help="Exact reviewed candidate logical head")
             parser.add_argument("--input", type=Path, required=True, help="Protected review document containing reason and selections")
+        if operation in {"migrate", "restore"}:
+            parser.add_argument("--destination", required=True, help="Explicit configured inactive backend UUID")
+        if operation == "restore":
+            parser.add_argument("--input", type=Path, required=True, help="Signed encrypted binary export")
+        if operation == "rotate":
+            parser.add_argument("--mode", choices=("rewrap", "reseal", "resign"), required=True)
         if operation == "branch":
             parser.add_argument("--name", required=True)
             parser.add_argument("--immutable", action="store_true")
@@ -124,7 +130,24 @@ def command() -> Command:
             Command(
                 "recovery",
                 "Reconcile uncertain durable operations",
-                children=(leaf("reconcile", "Resolve an exact pending prepared transaction", "recover"),),
+                children=(
+                    leaf("reconcile", "Resolve an exact pending prepared transaction", "recover"),
+                    leaf("export", "Write a signed encrypted complete-history recovery package", "export"),
+                    leaf("restore", "Restore into an inactive configured backend without cutover", "restore"),
+                ),
+            ),
+            Command(
+                "migration",
+                "Move exact history through a fenced routing-epoch transition",
+                children=(
+                    leaf("run", "Migrate or reverse-migrate without discarding new destination writes", "migrate"),
+                    leaf("abort", "Unfreeze only before a cutover candidate is prepared", "migration-abort"),
+                ),
+            ),
+            Command(
+                "key",
+                "Manage current representations without retiring history keys",
+                children=(leaf("rotate", "Rewrap, reseal or replace signatures using configured custody", "rotate"),),
             ),
             leaf("schema", "Print a closed native configuration contract", "schema"),
         ),

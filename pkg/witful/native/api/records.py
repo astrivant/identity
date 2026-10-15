@@ -7,15 +7,14 @@ from __future__ import annotations
 from http import HTTPStatus
 from typing import TYPE_CHECKING
 
-from flask import Blueprint, Response, request
+from flask import Blueprint, Response
 
 from witful.exceptions import NativeError
 from witful.knowledge.contracts import as_data
 from witful.native import codec, domains
-from witful.native.authority import Access
+from witful.native.api.requests import decode
 from witful.native.reconciliation import Selection, merge
-from witful.native.storage import Scope
-from witful.native.wire import integer, mapping, sequence, text
+from witful.native.wire import mapping, sequence, text
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -47,23 +46,10 @@ def routes(service: Service, authenticate: Callable[[], str]) -> Blueprint:
         Returns:
             Response: Bounded CBOR result or a centrally redacted domain error.
         """
-        subject = authenticate()
-        service.protection()
-        if request.mimetype != "application/cbor":
-            raise NativeError("invalid")
-        body = mapping(codec.decode(request.get_data(), codec.Limits(bytes=service.budget.bytes)), {"access", "arguments"})
-        binding = mapping(body["access"], {"tenant", "identity", "grant", "task", "epoch", "policy"})
-        access = Access(
-            Scope(text(binding["tenant"]), text(binding["identity"])),
-            subject,
-            text(binding["grant"]),
-            text(binding["task"]),
-            integer(binding["epoch"]),
-            text(binding["policy"]),
-        )
+        access, arguments = decode(service, authenticate)
         result: object
         if operation == "append":
-            args = mapping(body["arguments"], {"operation", "ref", "expected", "entries"})
+            args = mapping(arguments, {"operation", "ref", "expected", "entries"})
             entries = tuple(domains.decode(value) for value in sequence(args["entries"]))
             result = as_data(
                 service.append(
@@ -75,24 +61,24 @@ def routes(service: Service, authenticate: Callable[[], str]) -> Blueprint:
                 )
             )
         elif operation == "read":
-            args = mapping(body["arguments"], {"record"})
+            args = mapping(arguments, {"record"})
             result = domains.encode(service.read(access, text(args["record"])))
         elif operation == "history":
-            args = mapping(body["arguments"], {"ref"})
+            args = mapping(arguments, {"ref"})
             result = [
                 {"revision": as_data(revision), "entry": domains.encode(entry)}
                 for revision, entry in service.history(access, text(args["ref"]))
             ]
         elif operation == "search":
-            args = mapping(body["arguments"], {"ref", "query"})
+            args = mapping(arguments, {"ref", "query"})
             result = list(service.search(access, text(args["ref"]), text(args["query"])))
         elif operation == "branch":
-            args = mapping(body["arguments"], {"operation", "name", "record", "immutable"})
+            args = mapping(arguments, {"operation", "name", "record", "immutable"})
             if type(args["immutable"]) is not bool:
                 raise NativeError("invalid")
             result = as_data(service.branch(access, text(args["operation"]), text(args["name"]), text(args["record"]), args["immutable"]))
         elif operation == "merge":
-            args = mapping(body["arguments"], {"operation", "target", "candidate", "expected", "reviewed", "selections", "reason"})
+            args = mapping(arguments, {"operation", "target", "candidate", "expected", "reviewed", "selections", "reason"})
             selections: list[Selection] = []
             for item in sequence(args["selections"]):
                 selected = mapping(item, {"sources", "entry"})
@@ -113,7 +99,7 @@ def routes(service: Service, authenticate: Callable[[], str]) -> Blueprint:
                 )
             )
         elif operation == "recover":
-            mapping(body["arguments"], set())
+            mapping(arguments, set())
             head = service.authority.recover(access, service.store, int(service.clock()))
             result = {"generation": head.generation, "root": head.root, "digest": head.digest.hex()}
         else:

@@ -98,6 +98,7 @@ class Backend:
 
     Attributes:
         id (str): Registered opaque storage-instance UUID.
+        database_environment (str): Existing environment variable containing this backend's database URL.
         kind (Literal["postgres", "git"]): Explicit selected adapter, never an implicit migration request.
         path (str): Existing protected bare repository for Git mode.
         author (str): Honest exporter attribution for new native Git commits.
@@ -108,6 +109,7 @@ class Backend:
     """
 
     id: str
+    database_environment: str = "WITFUL_DATABASE_URL"
     kind: Literal["postgres", "git"] = "postgres"
     path: str = ""
     author: str = "Witful controller"
@@ -198,6 +200,7 @@ class Settings:
         protection (Protection): Independently signed protection evidence.
         runtime (Runtime): Server lifecycle and concurrency controls.
         budget (Budget): Explicit native operation limits.
+        destinations (tuple[Backend, ...]): Explicit inactive migration targets covered by the same signed deployment evidence.
         version (Literal[1]): Configuration schema version.
     """
 
@@ -208,6 +211,7 @@ class Settings:
     protection: Protection
     runtime: Runtime = Runtime()
     budget: Budget = Budget()
+    destinations: tuple[Backend, ...] = ()
     version: Literal[1] = 1
 
 
@@ -251,7 +255,13 @@ def load(path: Path) -> Settings:
         settings = parse(json.loads(data), Settings)
     except (OSError, ValueError):
         raise NativeError("invalid") from None
-    identifier(settings.backend.id)
+    backends = (settings.backend, *settings.destinations)
+    if len({backend.id for backend in backends}) != len(backends):
+        raise NativeError("invalid")
+    for backend in backends:
+        identifier(backend.id)
+        if backend.max_objects < 1 or backend.max_bytes < 1 or not backend.database_environment.isidentifier():
+            raise NativeError("invalid")
     for value in (
         settings.broker.wrapping,
         settings.broker.signing,

@@ -289,6 +289,19 @@ class EnvelopeService:
         del data_key
         return self.finalize(context, {**header, "w": self.wrapping, "s": self.signing, "k": wrapped})
 
+    def resign(self, context: Context, envelope: bytes) -> bytes:
+        """
+        Replace only the signing generation after verifying the historical signature.
+
+        Args:
+            context (Context): Unchanged immutable context.
+            envelope (bytes): Original representation retained by the caller.
+
+        Returns:
+            bytes: New signature over unchanged ciphertext, nonce and wrapped data key; no decryption is requested.
+        """
+        return self.finalize(context, {**self.verify(context, envelope), "s": self.signing})
+
     def reseal(self, context: Context, envelope: bytes) -> bytes:
         """
         Create a fresh content key, nonce and ciphertext after authenticating the retained original.

@@ -11,45 +11,16 @@ import pytest
 from attrs import evolve
 from witful.exceptions import NativeError
 from witful.native import migration
-from witful.native.git import Git, git
 from witful.native.migration import abort, migrate
-from witful.native.postgres import Postgres
 
 from tests.native.runtime import lesson
 
 if TYPE_CHECKING:
-    from pathlib import Path
-
     from witful.native.authority import Access, Registration
     from witful.native.service import Service
     from witful.native.storage import Batch, Head, Scope, Store
 
-    from tests.native.database import Databases
     from tests.native.runtime import Runtime
-
-
-@pytest.fixture
-def destination(runtime: Runtime, databases: Databases, tmp_path: Path) -> Service:
-    """
-    Select the other real backend without changing the registry's current authority.
-
-    Args:
-        runtime (Runtime): Current source service.
-        databases (Databases): Disposable PostgreSQL storage.
-        tmp_path (Path): Synthetic Git destination.
-
-    Returns:
-        Service: Protected test destination with a different backend UUID and the same authority.
-    """
-    store: Store
-    if isinstance(runtime.service.store, Git):
-        store = Postgres(databases.data)
-    else:
-        directory = tmp_path / "destination.git"
-        directory.mkdir()
-        git(directory, ("init", "--bare", "."))
-        store = Git(directory, "Synthetic Contract", "contract@example.invalid")
-    return evolve(runtime.service, store=store, authority=evolve(runtime.service.authority, backend=str(uuid4())))
 
 
 def test_cutover_and_reverse_migration_preserve_new_writes(runtime: Runtime, destination: Service) -> None:

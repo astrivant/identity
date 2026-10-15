@@ -16,6 +16,7 @@ from werkzeug.exceptions import HTTPException
 
 from witful.exceptions import NativeError
 from witful.native import codec
+from witful.native.api.maintenance import routes as maintenance_routes
 from witful.native.api.records import routes
 
 if TYPE_CHECKING:
@@ -53,12 +54,14 @@ class Builder:
         admission (Admission): Shared worker-local ownership and metrics.
         readiness (Callable[[], bool]): Bounded protected-storage, authority and key-health check.
         authenticate (Callable[[], str]): Trusted transport boundary; the production default requires verified mutual TLS.
+        destinations (tuple[Service, ...]): Explicit inactive migration targets from verified deployment configuration.
     """
 
     service: Service
     admission: Admission
     readiness: Callable[[], bool]
     authenticate: Callable[[], str] = peer_fingerprint
+    destinations: tuple[Service, ...] = ()
 
     def build(self) -> Flask:
         """
@@ -70,6 +73,7 @@ class Builder:
         app = Flask("witful.native")
         app.config.update(MAX_CONTENT_LENGTH=self.service.budget.bytes, DEBUG=False, TESTING=False)
         app.register_blueprint(routes(self.service, self.authenticate))
+        app.register_blueprint(maintenance_routes(self.service, self.authenticate, self.destinations))
         operational = Blueprint("native_operations", __name__)
 
         @app.before_request

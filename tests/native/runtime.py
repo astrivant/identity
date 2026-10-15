@@ -10,7 +10,7 @@ from uuid import uuid4
 
 import psycopg
 import pytest
-from attrs import frozen
+from attrs import evolve, frozen
 from witful.lessons import new_lesson
 from witful.native.authority import Access, Authority
 from witful.native.domains import Entry
@@ -118,3 +118,27 @@ def branches(runtime: Runtime) -> tuple[str, str]:
     service.append(access, str(uuid4()), "main", base, (lesson("target"),))
     service.append(access, str(uuid4()), "candidate", base, (lesson("candidate"),))
     return service.history(access, "main")[-1][0].id, service.history(access, "candidate")[-1][0].id
+
+
+@pytest.fixture
+def destination(runtime: Runtime, databases: Databases, tmp_path: Path) -> Service:
+    """
+    Select the other real backend without changing the registry's current authority.
+
+    Args:
+        runtime (Runtime): Current source service.
+        databases (Databases): Disposable PostgreSQL storage.
+        tmp_path (Path): Synthetic Git destination.
+
+    Returns:
+        Service: Protected test destination with a different backend UUID and the same authority.
+    """
+    store: Store
+    if isinstance(runtime.service.store, Git):
+        store = Postgres(databases.data)
+    else:
+        directory = tmp_path / "destination.git"
+        directory.mkdir()
+        git(directory, ("init", "--bare", "."))
+        store = Git(directory, "Synthetic Contract", "contract@example.invalid")
+    return evolve(runtime.service, store=store, authority=evolve(runtime.service.authority, backend=str(uuid4())))
