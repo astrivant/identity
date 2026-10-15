@@ -4,11 +4,14 @@ Use one fsynced Git root ref as the atomic publication boundary for ciphertext-o
 
 from __future__ import annotations
 
+import fcntl
 import os
 import selectors
 import signal
 import subprocess
 import time
+from contextlib import contextmanager
+from threading import Event
 from typing import TYPE_CHECKING
 
 from attrs import field, frozen
@@ -21,7 +24,7 @@ from witful.native.storage import Batch, Head, Object, Scope
 from witful.native.wire import decode_batch, encode_batch
 
 if TYPE_CHECKING:
-    from collections.abc import Mapping
+    from collections.abc import Iterator, Mapping
     from pathlib import Path
 
 __all__ = ["Git", "git"]
@@ -33,6 +36,7 @@ def git(
     data: bytes | None = None,
     environment: Mapping[str, str] | None = None,
     limit: int = 64 * 1024 * 1024,
+    lock_fd: int | None = None,
 ) -> bytes:
     """
     Execute local Git plumbing with bounded time and redacted diagnostics.
@@ -43,6 +47,7 @@ def git(
         data (bytes | None): Binary stdin, never logged.
         environment (Mapping[str, str] | None): Explicit exporter identity and time when creating new commits.
         limit (int): Maximum returned binary bytes.
+        lock_fd (int | None): Recovery lock inherited by a ref-mutating child, retaining fencing after parent loss.
 
     Returns:
         bytes: Successful Git output; process diagnostics are never reflected.
@@ -61,6 +66,7 @@ def git(
             stderr=subprocess.DEVNULL,
             env={**os.environ, "GIT_TERMINAL_PROMPT": "0", **(environment or {})},
             start_new_session=True,
+            pass_fds=(lock_fd,) if lock_fd is not None else (),
             bufsize=0,
         ) as process:
             assert process.stdin is not None and process.stdout is not None
@@ -244,13 +250,69 @@ class Git:
         identifier(operation)
         return next((batch.receipt for batch in self.history(scope) if batch.operation == operation), None)
 
+    @contextmanager
+    def lock(self, scope: Scope) -> Iterator[int]:
+        """
+        Serialize local write settlement with a lock that the ref-mutating child also owns.
+
+        Args:
+            scope (Scope): Current identity partition.
+
+        Yields:
+            int: Locked descriptor inherited by the mutating Git process, preventing premature recovery after parent death.
+        """
+        descriptor = os.open(self.directory / f"native-{scope.tenant}-{scope.identity}.lock", os.O_RDWR | os.O_CREAT | os.O_NOFOLLOW, 0o600)
+        deadline = time.monotonic() + 30
+        try:
+            while True:
+                try:
+                    fcntl.flock(descriptor, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                    break
+                except BlockingIOError:
+                    if time.monotonic() >= deadline:
+                        raise NativeError("unknown") from None
+                    Event().wait(0.02)
+            yield descriptor
+        finally:
+            os.close(descriptor)
+
+    def resolve(self, scope: Scope, operation: str) -> tuple[Head, Object | None]:
+        """
+        Wait for a surviving ref writer before classifying an uncertain commit.
+
+        Args:
+            scope (Scope): Current recovery scope.
+            operation (str): Prepared operation UUID.
+
+        Returns:
+            tuple[Head, Object | None]: Settled frontier and original receipt under one local lock.
+        """
+        with self.lock(scope):
+            return self.head(scope), self.receipt(scope, operation)
+
     def commit(self, scope: Scope, batch: Batch) -> Head:
+        """
+        Hold an inherited recovery fence across all local publication work.
+
+        Args:
+            scope (Scope): Current externally fenced scope.
+            batch (Batch): Exact prepared candidate.
+
+        Returns:
+            Head: Durable target after a settled ref update.
+        """
+        with self.lock(scope) as descriptor:
+            return self._commit(scope, batch, descriptor)
+
+    def _commit(self, scope: Scope, batch: Batch, descriptor: int) -> Head:
         """
         Write immutable encrypted objects, fsync Git storage and publish one expected-old root ref.
 
         Args:
             scope (Scope): Current externally fenced identity scope.
             batch (Batch): Exact prepared candidate, sealed before entering the authority lock.
+
+            descriptor (int): Held recovery lock inherited by the ref-mutating Git child.
 
         Returns:
             Head: Durable target; uncertain ref update remains unknown until independent readback.
@@ -301,5 +363,5 @@ class Git:
             .decode("ascii")
         )
         # Empty expected-old is the documented create-if-absent contract for either Git object hash format.
-        git(self.directory, ("update-ref", self.ref(scope), commit, current or ""))
+        git(self.directory, ("update-ref", self.ref(scope), commit, current or ""), lock_fd=descriptor)
         return batch.target

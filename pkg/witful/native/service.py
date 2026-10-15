@@ -78,6 +78,7 @@ class Service:
         store (Store): Registered ciphertext persistence adapter.
         authority (Authority): Independently administered authorization and fencing boundary.
         keys (Callable[[Access], EnvelopeService]): Request-bound broker client factory with independent signing pins.
+        protection (Callable[[], None]): Current independently verified deployment protection boundary.
         budget (Budget): Explicit service work limits.
         clock (Callable[[], float]): UTC epoch observation boundary.
         monotonic (Callable[[], float]): Elapsed-time boundary for bounded operations.
@@ -86,6 +87,7 @@ class Service:
     store: Store = field(repr=False)
     authority: Authority = field(repr=False)
     keys: Callable[[Access], EnvelopeService] = field(repr=False)
+    protection: Callable[[], None] = field(repr=False)
     budget: Budget = Budget()
     clock: Callable[[], float] = time.time
     monotonic: Callable[[], float] = time.monotonic
@@ -137,6 +139,7 @@ class Service:
         Returns:
             tuple[Registration, Frontier]: Current authority and authenticated complete logical ref snapshot.
         """
+        self.protection()
         registration = self.authority.check(access, action, record, int(self.clock()))
         if self.store.head(access.scope) != registration.head:
             raise NativeError("conflict")
@@ -167,6 +170,7 @@ class Service:
         Returns:
             None: The original admission still holds at this release boundary.
         """
+        self.protection()
         if self.monotonic() - started > self.budget.seconds:
             raise NativeError("incomplete")
         if self.authority.check(access, action, record, int(self.clock())) != registration:
@@ -386,6 +390,7 @@ class Service:
         self.authority.prepare(access, batch, int(self.clock()))
         self.authority.apply(access, self.store, int(self.clock()))
         # A policy change after commit can deny the response without undoing the durable receipt.
+        self.protection()
         self.authority.check(access, "write", "*", int(self.clock()))
         return receipt
 

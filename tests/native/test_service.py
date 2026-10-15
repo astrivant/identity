@@ -177,6 +177,19 @@ class LostAcknowledgment:
         """
         return self.store.receipt(scope, operation)
 
+    def resolve(self, scope: Scope, operation: str) -> tuple[Head, Object | None]:
+        """
+        Delegate settled backend readback instead of observing an in-flight snapshot.
+
+        Args:
+            scope (Scope): Test partition.
+            operation (str): Stable operation UUID.
+
+        Returns:
+            tuple[Head, Object | None]: Actual settled backend result.
+        """
+        return self.store.resolve(scope, operation)
+
     def history(self, scope: Scope) -> tuple[Batch, ...]:
         """
         Delegate complete ciphertext recovery history.

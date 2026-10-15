@@ -221,3 +221,16 @@ class Store(Protocol):
             tuple[Batch, ...]: Complete ciphertext recovery history; overflow is explicit incomplete coverage.
         """
         ...
+
+    def resolve(self, scope: Scope, operation: str) -> tuple[Head, Object | None]:
+        """
+        Settle any in-flight backend write before classifying an uncertain operation.
+
+        Args:
+            scope (Scope): Current externally fenced identity.
+            operation (str): Stable prepared operation UUID.
+
+        Returns:
+            tuple[Head, Object | None]: Atomic settled frontier and receipt; an ordinary snapshot read is insufficient.
+        """
+        ...

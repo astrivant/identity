@@ -185,6 +185,19 @@ class SnapshotStore:
         self.head(scope)
         return self.archive.batches
 
+    def resolve(self, scope: Scope, operation: str) -> tuple[Head, Object | None]:
+        """
+        Read an immutable snapshot's already settled frontier and receipt.
+
+        Args:
+            scope (Scope): Expected identity scope.
+            operation (str): Stable operation UUID.
+
+        Returns:
+            tuple[Head, Object | None]: Immutable recovery state.
+        """
+        return self.head(scope), self.receipt(scope, operation)
+
     def commit(self, scope: Scope, batch: Batch) -> Head:
         """
         Reject every mutation of a recovery snapshot.

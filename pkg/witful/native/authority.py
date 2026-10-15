@@ -159,6 +159,9 @@ class Authority:
             with connect(self.database_url) as connection:
                 if connection.execute(sql("role")).fetchone() != (False, False):
                     raise NativeError("denied")
+                connection.execute(sql("synchronous"), ("on",))
+                if connection.execute(sql("durability")).fetchone() != ("on", "on"):
+                    raise NativeError("denied")
                 row = connection.execute(sql("authority-lock"), (access.scope.tenant, access.scope.identity)).fetchone()
                 if row is None or len(row) != 7:
                     raise NativeError("denied")
@@ -276,7 +279,7 @@ class Authority:
                     raise NativeError("conflict")
                 return current
             batch = decode_batch(registration.pending, self.limits)
-            receipt = store.receipt(access.scope, batch.operation)
+            current, receipt = store.resolve(access.scope, batch.operation)
             if receipt == batch.receipt and current == batch.target:
                 target = batch.target
             elif receipt is None and current == batch.expected:

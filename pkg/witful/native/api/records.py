@@ -47,6 +47,7 @@ def routes(service: Service, authenticate: Callable[[], str]) -> Blueprint:
             Response: Bounded CBOR result or a centrally redacted domain error.
         """
         subject = authenticate()
+        service.protection()
         if request.mimetype != "application/cbor":
             raise NativeError("invalid")
         body = mapping(codec.decode(request.get_data(), codec.Limits(bytes=service.budget.bytes)), {"access", "arguments"})
@@ -92,7 +93,7 @@ def routes(service: Service, authenticate: Callable[[], str]) -> Blueprint:
         elif operation == "recover":
             mapping(body["arguments"], set())
             head = service.authority.recover(access, service.store, int(service.clock()))
-            result = {"generation": head.generation, "root": head.root, "digest": head.digest}
+            result = {"generation": head.generation, "root": head.root, "digest": head.digest.hex()}
         else:
             raise NativeError("unsupported")
         return Response(codec.encode(result, codec.Limits(bytes=service.budget.bytes)), status=HTTPStatus.OK, mimetype="application/cbor")

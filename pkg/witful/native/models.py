@@ -7,6 +7,7 @@ from __future__ import annotations
 from typing import TypeVar
 
 from attrs import frozen
+from cattrs.errors import BaseValidationError
 from jsonschema.exceptions import ValidationError
 
 from witful.exceptions import NativeError
@@ -138,5 +139,5 @@ def parse(value: object, model: type[T]) -> T:
     """
     try:
         return structure(value, model)
-    except (ValidationError, ValueError, TypeError):
+    except (ValidationError, ValueError, TypeError, BaseValidationError):
         raise NativeError("invalid") from None

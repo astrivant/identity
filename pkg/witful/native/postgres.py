@@ -295,3 +295,21 @@ class Postgres:
                     raise NativeError("incomplete")
                 result.append(decode_batch(payload, codec.Limits(bytes=self.max_bytes, items=self.max_objects * 32)))
             return tuple(result)
+
+    def resolve(self, scope: Scope, operation: str) -> tuple[Head, Object | None]:
+        """
+        Wait behind the data row lock before deciding whether an interrupted transaction committed.
+
+        Args:
+            scope (Scope): Current recovery scope.
+            operation (str): Exact prepared operation UUID.
+
+        Returns:
+            tuple[Head, Object | None]: Settled frontier and receipt from one locked transaction.
+        """
+        with self.transaction(scope) as connection:
+            connection.execute(sql("lock"), (scope.tenant, scope.identity))
+            current = head_row(connection.execute(sql("locked-head"), (scope.tenant, scope.identity)).fetchone())
+            row = connection.execute(sql("operation"), (scope.tenant, scope.identity, operation)).fetchone()
+            receipt = self._get(connection, scope, (str(row[1]),))[0] if row is not None else None
+            return current, receipt

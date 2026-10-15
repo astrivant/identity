@@ -85,7 +85,7 @@ def runtime(request: pytest.FixtureRequest, databases: Databases, fixture: Fixtu
         store = Git(tmp_path, "Synthetic Contract", "contract@example.invalid")
     else:
         store = Postgres(databases.data)
-    return Runtime(Service(store, Authority(databases.authority, backend), lambda _: fixture.service), access)
+    return Runtime(Service(store, Authority(databases.authority, backend), lambda _: fixture.service, lambda: None), access)
 
 
 def lesson(label: str = "synthetic-native-canary-3897") -> Entry:
