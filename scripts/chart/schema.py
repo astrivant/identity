@@ -9,6 +9,8 @@ import tarfile
 from pathlib import Path
 
 import yaml
+from witful.knowledge.contracts import schema as model_schema
+from witful.native.config import Settings
 
 _CHART = Path(__file__).resolve().parents[2] / "helm/witful"
 
@@ -41,6 +43,69 @@ def main() -> None:
             },
         },
     }
+
+    rules["controller.replicas"] = {"type": "integer", "minimum": 1}
+    rules["controller.terminationGracePeriodSeconds"] = {"type": "integer", "minimum": 1}
+    rules["controller.pdb.minAvailable"] = {"type": "integer", "minimum": 0}
+    rules["controller.secretEnvironment"] = {
+        "type": "object",
+        "default": {},
+        "propertyNames": {"pattern": "^[A-Z_][A-Z0-9_]*$"},
+        "additionalProperties": {
+            "type": "object",
+            "required": ["name", "key"],
+            "additionalProperties": False,
+            "properties": {"name": {"type": "string", "minLength": 1}, "key": {"type": "string", "minLength": 1}},
+        },
+    }
+    rules["controller.secretMounts"] = {
+        "type": "array",
+        "default": [],
+        "items": {
+            "type": "object",
+            "additionalProperties": False,
+            "required": ["name", "secretName", "mountPath", "items"],
+            "properties": {
+                "name": {"type": "string", "minLength": 1},
+                "secretName": {"type": "string", "minLength": 1},
+                "mountPath": {"type": "string", "pattern": "^/"},
+                "items": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                        "type": "object",
+                        "required": ["key", "path"],
+                        "additionalProperties": False,
+                        "properties": {"key": {"type": "string", "minLength": 1}, "path": {"type": "string", "minLength": 1}},
+                    },
+                },
+            },
+        },
+    }
+    rules["controller.archiveVolumes"] = {
+        "type": "array",
+        "default": [],
+        "items": {
+            "type": "object",
+            "additionalProperties": False,
+            "required": ["name", "existingClaim", "mountPath", "readOnly"],
+            "properties": {
+                "name": {"type": "string", "minLength": 1},
+                "existingClaim": {"type": "string", "minLength": 1},
+                "mountPath": {"type": "string", "pattern": "^/"},
+                "readOnly": {"type": "boolean"},
+            },
+        },
+    }
+    for path in ("controller.networkPolicy.ingress", "controller.networkPolicy.egress"):
+        rules[path] = {"type": "array", "default": [], "items": {"type": "object"}}
+    for probe, names in {
+        "startup": ("failureThreshold", "periodSeconds"),
+        "liveness": ("failureThreshold", "periodSeconds"),
+        "readiness": ("failureThreshold", "periodSeconds", "timeoutSeconds"),
+    }.items():
+        for name in names:
+            rules[f"controller.probes.{probe}.{name}"] = {"type": "integer", "minimum": 1}
 
     # Numeric Kubernetes fields must reject fractions before API admission.
     for path, minimum in {
@@ -75,13 +140,40 @@ def main() -> None:
     for path, constraints in rules.items():
         field(schema, path).update(constraints)
 
+    # Generate the complete controller configuration from the runtime model; disabled profiles may keep it empty.
+    configuration = model_schema(Settings)
+    field(schema, "controller.configuration").clear()
+    field(schema, "controller.configuration").update({"anyOf": [{"type": "object", "maxProperties": 0}, configuration]})
+    schema["allOf"] = [
+        {
+            "if": {"properties": {"controller": {"properties": {"enabled": {"const": True}}}}},
+            "then": {"properties": {"controller": {"properties": {"configuration": configuration}}}},
+        }
+    ]
+
     # Keep the complete native spec in sync with the operator instead of maintaining a parallel model.
     spec = field(cluster_schema(), "spec")
     field(schema, "postgresql.spec").update(spec)
     field(schema, "cloudnative-pg")["additionalProperties"] = True
 
     # Catch misspelled chart-owned parameters, while native Kubernetes maps stay extensible.
-    for path in ("", "image", "source", "database", "job", "scheduling", "postgresql"):
+    for path in (
+        "",
+        "image",
+        "source",
+        "database",
+        "job",
+        "scheduling",
+        "postgresql",
+        "controller",
+        "controller.git",
+        "controller.pdb",
+        "controller.networkPolicy",
+        "controller.probes",
+        "controller.probes.startup",
+        "controller.probes.readiness",
+        "controller.probes.liveness",
+    ):
         target = field(schema, path)
         properties = target.get("properties")
         if not isinstance(properties, dict):

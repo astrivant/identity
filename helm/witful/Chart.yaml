@@ -1,6 +1,6 @@
 apiVersion: v2
 name: witful
-description: Synchronize reviewed agent guidance into a shared PostgreSQL index with bounded, retryable Witful workers.
+description: Run reviewed guidance synchronization or an explicitly enabled protected native identity controller.
 type: application
 version: 0.1.0
 appVersion: "0.1.0"

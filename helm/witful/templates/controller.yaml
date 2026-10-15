@@ -1,0 +1,246 @@
+{{- if .Values.controller.enabled }}
+{{- $controller := .Values.controller }}
+{{- $runtime := mergeOverwrite (dict "port" 8443 "workers" 1 "graceful_timeout" 30 "working_directory" "/run/witful") (default dict $controller.configuration.runtime) }}
+{{- if le (int $controller.terminationGracePeriodSeconds) (int $runtime.graceful_timeout) }}
+{{- fail "controller termination budget must exceed runtime graceful_timeout" }}
+{{- end }}
+{{- if and $controller.pdb.enabled (ge (int $controller.pdb.minAvailable) (int $controller.replicas)) }}
+{{- fail "controller PDB minAvailable must allow at least one voluntary pod replacement" }}
+{{- end }}
+{{- range $name, $reference := $controller.secretEnvironment }}
+{{- if has $name (list "TMPDIR" "WITFUL_SECURE_TEMP" "MPLCONFIGDIR" "XDG_CACHE_HOME") }}
+{{- fail "controller working storage variables are derived from runtime.working_directory" }}
+{{- end }}
+{{- end }}
+{{- $usesGit := false }}
+{{- range concat (list $controller.configuration.backend) (default list $controller.configuration.destinations) }}
+{{- if eq .kind "git" }}
+{{- $usesGit = true }}
+{{- if or (ne (int $controller.replicas) 1) (ne (int $runtime.workers) 1) (empty $controller.git.existingClaim) }}
+{{- fail "local Git requires one replica, one worker and an existing fenced durable claim" }}
+{{- end }}
+{{- if not (or (eq .path $controller.git.mountPath) (hasPrefix (printf "%s/" $controller.git.mountPath) .path)) }}
+{{- fail "Git backend.path must be inside controller.git.mountPath" }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- include "witful.validatePlacement" . }}
+{{- $selector := dict "app.kubernetes.io/name" "witful" "app.kubernetes.io/instance" .Release.Name "app.kubernetes.io/component" "native" }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-native
+  labels: {{- toYaml $selector | nindent 4 }}
+data:
+  settings.json: {{ $controller.configuration | toJson | quote }}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ .Release.Name }}-native
+  labels: {{- toYaml $selector | nindent 4 }}
+automountServiceAccountToken: false
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-native
+  labels: {{- toYaml $selector | nindent 4 }}
+spec:
+  replicas: {{ $controller.replicas }}
+  strategy:
+    {{- if $usesGit }}
+    type: Recreate
+    {{- else }}
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+    {{- end }}
+  selector:
+    matchLabels: {{- toYaml $selector | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- toYaml $selector | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      annotations:
+        checksum/configuration: {{ $controller.configuration | toJson | sha256sum | quote }}
+        {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      serviceAccountName: {{ .Release.Name }}-native
+      automountServiceAccountToken: false
+      terminationGracePeriodSeconds: {{ $controller.terminationGracePeriodSeconds }}
+      securityContext: {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- range . }}
+        - name: {{ . | quote }}
+        {{- end }}
+      {{- end }}
+      {{- with .Values.scheduling.nodeSelector }}
+      nodeSelector: {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.scheduling.tolerations }}
+      tolerations: {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.scheduling.priorityClassName }}
+      priorityClassName: {{ . | quote }}
+      {{- end }}
+      {{- with .Values.scheduling.schedulerName }}
+      schedulerName: {{ . | quote }}
+      {{- end }}
+      {{- if .Values.scheduling.affinity }}
+      affinity: {{- toYaml .Values.scheduling.affinity | nindent 8 }}
+      {{- else if .Values.scheduling.podAntiAffinityPreset }}
+      affinity:
+        podAntiAffinity:
+          {{- if eq .Values.scheduling.podAntiAffinityPreset "hard" }}
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - topologyKey: {{ .Values.scheduling.topologyKey | quote }}
+              labelSelector:
+                matchLabels: {{- toYaml $selector | nindent 18 }}
+          {{- else }}
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                topologyKey: {{ .Values.scheduling.topologyKey | quote }}
+                labelSelector:
+                  matchLabels: {{- toYaml $selector | nindent 20 }}
+          {{- end }}
+      {{- end }}
+      {{- with .Values.scheduling.topologySpreadConstraints }}
+      topologySpreadConstraints:
+        {{- range . }}
+        {{- $constraint := deepCopy . }}
+        {{- if not (hasKey $constraint "labelSelector") }}
+        {{- $_ := set $constraint "labelSelector" (dict "matchLabels" $selector) }}
+        {{- end }}
+        - {{- toYaml $constraint | nindent 10 }}
+        {{- end }}
+      {{- end }}
+      containers:
+        - name: native
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: [/usr/bin/tini, -g, --, witful]
+          args: [native, controller, serve, --config, /etc/witful/settings.json]
+          securityContext: {{- toYaml .Values.containerSecurityContext | nindent 12 }}
+          resources: {{- toYaml .Values.resources | nindent 12 }}
+          ports:
+            - name: tls
+              containerPort: {{ $runtime.port }}
+          env:
+            - name: TMPDIR
+              value: {{ $runtime.working_directory | quote }}
+            - name: WITFUL_SECURE_TEMP
+              value: {{ $runtime.working_directory | quote }}
+            - name: MPLCONFIGDIR
+              value: {{ printf "%s/matplotlib" $runtime.working_directory | quote }}
+            - name: XDG_CACHE_HOME
+              value: {{ printf "%s/cache" $runtime.working_directory | quote }}
+            {{- range $name, $reference := $controller.secretEnvironment }}
+            - name: {{ $name | quote }}
+              valueFrom:
+                secretKeyRef: {{- toYaml $reference | nindent 18 }}
+            {{- end }}
+          startupProbe:
+            tcpSocket:
+              port: tls
+            {{- toYaml $controller.probes.startup | nindent 12 }}
+          livenessProbe:
+            tcpSocket:
+              port: tls
+            {{- toYaml $controller.probes.liveness | nindent 12 }}
+          readinessProbe:
+            exec:
+              command: [witful, native, controller, health, --config, /etc/witful/settings.json]
+            {{- toYaml $controller.probes.readiness | nindent 12 }}
+          volumeMounts:
+            - name: configuration
+              mountPath: /etc/witful
+              readOnly: true
+            - name: working
+              mountPath: {{ $runtime.working_directory | quote }}
+            {{- if $controller.git.existingClaim }}
+            - name: git
+              mountPath: {{ $controller.git.mountPath | quote }}
+            {{- end }}
+            {{- range $controller.archiveVolumes }}
+            - name: {{ .name | quote }}
+              mountPath: {{ .mountPath | quote }}
+              readOnly: {{ .readOnly }}
+            {{- end }}
+            {{- range $controller.secretMounts }}
+            - name: {{ .name | quote }}
+              mountPath: {{ .mountPath | quote }}
+              readOnly: true
+            {{- end }}
+      volumes:
+        - name: configuration
+          configMap:
+            name: {{ .Release.Name }}-native
+            defaultMode: 0440
+        - name: working
+          emptyDir:
+            medium: Memory
+            sizeLimit: {{ $controller.workingSizeLimit | quote }}
+        {{- if $controller.git.existingClaim }}
+        - name: git
+          persistentVolumeClaim:
+            claimName: {{ $controller.git.existingClaim | quote }}
+        {{- end }}
+        {{- range $controller.archiveVolumes }}
+        - name: {{ .name | quote }}
+          persistentVolumeClaim:
+            claimName: {{ .existingClaim | quote }}
+        {{- end }}
+        {{- range $controller.secretMounts }}
+        - name: {{ .name | quote }}
+          secret:
+            secretName: {{ .secretName | quote }}
+            defaultMode: 0440
+            items: {{- toYaml .items | nindent 14 }}
+        {{- end }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-native
+  labels: {{- toYaml $selector | nindent 4 }}
+spec:
+  type: ClusterIP
+  selector: {{- toYaml $selector | nindent 4 }}
+  ports:
+    - name: tls
+      port: {{ $runtime.port }}
+      targetPort: tls
+{{- if $controller.pdb.enabled }}
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ .Release.Name }}-native
+spec:
+  minAvailable: {{ $controller.pdb.minAvailable }}
+  selector:
+    matchLabels: {{- toYaml $selector | nindent 6 }}
+{{- end }}
+{{- if $controller.networkPolicy.enabled }}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ .Release.Name }}-native
+spec:
+  podSelector:
+    matchLabels: {{- toYaml $selector | nindent 6 }}
+  policyTypes: [Ingress, Egress]
+  ingress: {{- toYaml $controller.networkPolicy.ingress | nindent 4 }}
+  egress: {{- toYaml $controller.networkPolicy.egress | nindent 4 }}
+{{- end }}
+{{- end }}

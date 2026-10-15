@@ -1,3 +1,4 @@
+{{- if not .Values.controller.enabled }}
 {{- include "witful.validatePlacement" . }}
 apiVersion: batch/v1
 kind: Job
@@ -131,3 +132,4 @@ spec:
                 path: root.crt
             defaultMode: 0440
         {{- end }}
+{{- end }}

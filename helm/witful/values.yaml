@@ -149,3 +149,57 @@ postgresql:
       topologyKey: kubernetes.io/hostname
     smartShutdownTimeout: 30
     stopDelay: 60
+
+## @section Protected native controller
+## @param controller.enabled Deploy the explicit native controller profile instead of the one-shot sync Job
+## @param controller.replicas Stateless PostgreSQL controller replicas; local Git requires exactly one
+## @param controller.configuration Complete closed native Settings object; validated from the Python model, never credentials or private records
+## @param controller.secretEnvironment Existing Secret key references keyed by authoritative environment variable name
+## @param controller.archiveVolumes [array] Existing protected original-Git claims with name, existingClaim, mountPath and readOnly; scoped aliases live in configuration.archives
+## @param controller.secretMounts [array] Existing Secret projections with name, secretName, mountPath and explicit items; credentials mount read-only
+## @param controller.terminationGracePeriodSeconds Pod termination budget; must exceed the configured runtime drain timeout
+## @param controller.workingSizeLimit Size limit for the memory-backed runtime working directory
+## @param controller.git.existingClaim Existing retained single-writer Git PVC; never created, formatted or removed by the chart
+## @param controller.git.mountPath Mount path matching configuration.backend.path for local Git
+## @param controller.pdb.enabled Create a PodDisruptionBudget for voluntary maintenance
+## @param controller.pdb.minAvailable Minimum available controller pods; use zero for an explicitly reviewed single-writer profile
+## @param controller.networkPolicy.enabled Restrict controller traffic to explicit reviewed peer rules
+## @param controller.networkPolicy.ingress [array] Native ingress rules for authenticated clients and monitoring; empty denies traffic
+## @param controller.networkPolicy.egress [array] Native egress rules for DNS, authority, storage and broker; empty denies traffic
+## @param controller.probes.startup.failureThreshold Startup attempts before restart
+## @param controller.probes.startup.periodSeconds Startup probe interval
+## @param controller.probes.readiness.failureThreshold Failed readiness checks before endpoint withdrawal
+## @param controller.probes.readiness.periodSeconds Readiness probe interval
+## @param controller.probes.readiness.timeoutSeconds Readiness command time budget
+## @param controller.probes.liveness.failureThreshold Local listener failures before restart
+## @param controller.probes.liveness.periodSeconds Liveness probe interval independent of upstream health
+controller:
+  enabled: false
+  replicas: 2
+  configuration: {}
+  secretEnvironment: {}
+  secretMounts: []
+  archiveVolumes: []
+  terminationGracePeriodSeconds: 45
+  workingSizeLimit: 256Mi
+  git:
+    existingClaim: ""
+    mountPath: /var/lib/witful/git
+  pdb:
+    enabled: true
+    minAvailable: 1
+  networkPolicy:
+    enabled: true
+    ingress: []
+    egress: []
+  probes:
+    startup:
+      failureThreshold: 30
+      periodSeconds: 2
+    readiness:
+      failureThreshold: 3
+      periodSeconds: 10
+      timeoutSeconds: 6
+    liveness:
+      failureThreshold: 3
+      periodSeconds: 10

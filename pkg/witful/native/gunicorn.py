@@ -23,7 +23,7 @@ bind = f"{settings.runtime.host}:{settings.runtime.port}"
 workers = settings.runtime.workers
 threads = settings.runtime.threads
 worker_class = "gthread"
-worker_connections = settings.runtime.threads
+worker_connections = settings.runtime.worker_connections
 backlog = settings.runtime.backlog
 timeout = settings.runtime.timeout
 graceful_timeout = settings.runtime.graceful_timeout
@@ -38,7 +38,7 @@ errorlog = "-"
 loglevel = "warning"
 capture_output = False
 forwarded_allow_ips = ""
-worker_tmp_dir = "/run/witful"
+worker_tmp_dir = settings.runtime.working_directory
 
 
 class Worker(Protocol):

@@ -16,6 +16,7 @@ from werkzeug.exceptions import HTTPException
 
 from witful.exceptions import NativeError
 from witful.native import codec
+from witful.native.api.archives import routes as archive_routes
 from witful.native.api.maintenance import routes as maintenance_routes
 from witful.native.api.records import routes
 
@@ -23,6 +24,7 @@ if TYPE_CHECKING:
     from collections.abc import Callable
 
     from witful.native.api.admission import Admission
+    from witful.native.config import ArchivePath
     from witful.native.service import Service
 
 __all__ = ["Builder", "peer_fingerprint"]
@@ -55,6 +57,7 @@ class Builder:
         readiness (Callable[[], bool]): Bounded protected-storage, authority and key-health check.
         authenticate (Callable[[], str]): Trusted transport boundary; the production default requires verified mutual TLS.
         destinations (tuple[Service, ...]): Explicit inactive migration targets from verified deployment configuration.
+        archives (tuple[ArchivePath, ...]): Explicit identity-bound filesystem locations from signed settings.
     """
 
     service: Service
@@ -62,6 +65,7 @@ class Builder:
     readiness: Callable[[], bool]
     authenticate: Callable[[], str] = peer_fingerprint
     destinations: tuple[Service, ...] = ()
+    archives: tuple[ArchivePath, ...] = ()
 
     def build(self) -> Flask:
         """
@@ -74,6 +78,7 @@ class Builder:
         app.config.update(MAX_CONTENT_LENGTH=self.service.budget.bytes, DEBUG=False, TESTING=False)
         app.register_blueprint(routes(self.service, self.authenticate))
         app.register_blueprint(maintenance_routes(self.service, self.authenticate, self.destinations))
+        app.register_blueprint(archive_routes(self.service, self.authenticate, self.archives))
         operational = Blueprint("native_operations", __name__)
 
         @app.before_request

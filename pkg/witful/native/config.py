@@ -129,11 +129,13 @@ class Runtime:
         port (int): TLS listener port.
         workers (int): Independent Gunicorn worker processes.
         threads (int): Threads per worker.
+        worker_connections (int): Maximum simultaneous Gunicorn connections per worker, including idle keepalive sockets.
         backlog (int): Kernel socket backlog, separate from the application queue.
         admission (int): Maximum actively owned requests per worker.
         timeout (int): Gunicorn worker timeout seconds.
         graceful_timeout (int): Maximum worker drain seconds before runtime termination.
         keepalive (int): Idle keepalive seconds.
+        working_directory (str): Existing protected directory for owned runtime files and temporary recovery work.
         readiness_seconds (int): Minimum interval between key/dependency readiness probes.
     """
 
@@ -141,11 +143,13 @@ class Runtime:
     port: int = 8443
     workers: int = 1
     threads: int = 4
+    worker_connections: int = 64
     backlog: int = 128
     admission: int = 4
     timeout: int = 60
     graceful_timeout: int = 30
     keepalive: int = 2
+    working_directory: str = "/run/witful"
     readiness_seconds: int = 30
 
 
@@ -188,6 +192,26 @@ class Protection:
 
 
 @frozen
+class ArchivePath:
+    """
+    Bind an operator-reviewed original Git filesystem location to exactly one identity and direction.
+
+    Attributes:
+        name (str): Request-facing nonempty alias, never an arbitrary client path.
+        tenant (str): Admitted opaque tenant UUID.
+        identity (str): Admitted opaque identity UUID.
+        path (str): Absolute protected source Git directory or absent restore destination.
+        mode (Literal["capture", "restore"]): Independently configured filesystem effect.
+    """
+
+    name: str
+    tenant: str
+    identity: str
+    path: str
+    mode: Literal["capture", "restore"]
+
+
+@frozen
 class Settings:
     """
     Compose the complete deployment-owned configuration; credentials are read from existing authoritative environment names.
@@ -201,6 +225,8 @@ class Settings:
         runtime (Runtime): Server lifecycle and concurrency controls.
         budget (Budget): Explicit native operation limits.
         destinations (tuple[Backend, ...]): Explicit inactive migration targets covered by the same signed deployment evidence.
+        archives (tuple[ArchivePath, ...]): Identity-bound original Git source/restore locations, empty by default.
+        envelope (codec.Limits): Per-record binary payload and structural bounds, including explicit full-history package capacity.
         version (Literal[1]): Configuration schema version.
     """
 
@@ -212,6 +238,8 @@ class Settings:
     runtime: Runtime = Runtime()
     budget: Budget = Budget()
     destinations: tuple[Backend, ...] = ()
+    archives: tuple[ArchivePath, ...] = ()
+    envelope: codec.Limits = codec.DEFAULT_LIMITS
     version: Literal[1] = 1
 
 
@@ -274,6 +302,13 @@ def load(path: Path) -> Settings:
         settings.probe.policy,
     ):
         identifier(value)
+    if len({archive.name for archive in settings.archives}) != len(settings.archives):
+        raise NativeError("invalid")
+    for archive in settings.archives:
+        identifier(archive.tenant)
+        identifier(archive.identity)
+        if not archive.name or not Path(archive.path).is_absolute():
+            raise NativeError("invalid")
     runtime = settings.runtime
     if any(
         value < 1
@@ -282,6 +317,7 @@ def load(path: Path) -> Settings:
             runtime.workers,
             runtime.threads,
             runtime.backlog,
+            runtime.worker_connections,
             runtime.admission,
             runtime.timeout,
             runtime.graceful_timeout,
@@ -293,13 +329,15 @@ def load(path: Path) -> Settings:
         )
     ):
         raise NativeError("invalid")
-    if runtime.port > 65535 or runtime.timeout < runtime.graceful_timeout:
+    if not Path(runtime.working_directory).is_absolute():
+        raise NativeError("invalid")
+    if runtime.port > 65535 or runtime.timeout < runtime.graceful_timeout or runtime.worker_connections < runtime.threads:
         raise NativeError("invalid")
     if not settings.broker.signers or len({item.generation for item in settings.broker.signers}) != len(settings.broker.signers):
         raise NativeError("invalid")
     for signer in settings.broker.signers:
         identifier(signer.generation)
-    if settings.backend.kind == "git" and (not settings.backend.path or runtime.workers != 1):
+    if any(backend.kind == "git" and (not backend.path or runtime.workers != 1) for backend in backends):
         raise NativeError("invalid")
     return settings
 

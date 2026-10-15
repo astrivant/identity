@@ -5,7 +5,7 @@ PostgreSQL or a local bare Git store. It implements the shared binary and encryp
 contracts proposed in [RFC 74](https://github.com/astrivant/product-research/pull/74)
 and [RFC 75](https://github.com/astrivant/product-research/pull/75).
 
-Implementation is under review. Controller deployment, projection, operational evidence and the full acceptance report are being completed
+Implementation is under review. Projection, fork/split, operational evidence and the full acceptance report are being completed
 on the implementation branch. Existing managed collections retain their remote
 storage block. This document does not authorize a migration or a private pilot.
 
@@ -85,7 +85,16 @@ retention establishes signer trust. Restored configuration and hooks stay inert
 during verification; review them before activating that repository. Existing
 paths are never overwritten. The archive explicitly excludes working-tree files,
 pruned/provider-hidden objects, external LFS/submodule stores and original pack
-layout. These are library operations; controller transport is being completed.
+layout. The same operations are available through `native original capture`, `list` and
+`restore`. Controller settings declare `archives` entries with a name, tenant,
+identity, absolute protected path and capture/restore mode. Clients select only
+these scoped aliases with `--path`; they cannot provide arbitrary host paths.
+Capture uses a stable `--operation` UUID and explicit `--unreachable`/`--reflogs`
+flags. List writes its complete inventory through required `--output` into protected
+client storage. Restore selects an exact `--record` UUID and configured absent
+server path, and writes its inventory through protected `--output`. Retain reviewed
+source/restore volumes; the chart can mount existing claims without creating or
+removing them.
 
 ## Reviewed reconciliation
 
@@ -152,13 +161,16 @@ requires its original key custody and grants.
 One Flask application owns domain, metrics and status blueprints. The production
 authentication boundary accepts the verified TLS 1.3 peer certificate supplied by
 Gunicorn. Forwarded certificate or identity headers never grant access. Excess
-work is refused immediately; the application has no waiting request queue.
+application work is refused immediately; the application has no waiting request queue.
 
 `/live` reports process liveness. `/ready` uses the injected dependency readiness
 contract. `/status` and `/metrics` report local worker ownership, rejection/failure
 counts, a bounded status and last measured dependency probe durations. They do not
 include tenant labels or call dependencies while taking a metrics snapshot.
-Operational listeners remain private. Multi-worker counters require aggregation
+Operational listeners remain private. `runtime.worker_connections` bounds
+Gunicorn-owned connection slots separately from active request threads and the
+kernel backlog. These runtime socket queues are distinct from the application's
+zero-length waiting queue. Multi-worker counters require aggregation
 by the monitoring deployment; one process's counters are not a cluster total.
 
 ## Focused validation
@@ -196,3 +208,20 @@ next read. Rotation or changed frontiers cause fresh payload transfer. This save
 response bytes on a hit, but still performs controller cryptography and a network
 round trip; performance claims require measurement. `status` exposes aggregate
 local occupancy for the owning microservice's metrics.
+
+## Deployment configuration
+
+The opt-in [native Helm profile](../helm/witful/references/native/README.md) exposes
+the complete typed configuration, validated ConfigMap, existing Secret projections,
+HA placement, PDB, network policy and runtime probes. PostgreSQL controllers are
+stateless; any configured local Git adapter requires a single writer and retained
+protected storage. The image includes the standalone broker SDK and Git, without
+the broker server or 1Password provider runtime.
+
+`runtime.working_directory` owns runtime temporary files and library caches.
+`envelope` configures per-record bytes, item count and nesting; `budget` bounds
+aggregate service work. Full-history packages must fit the configured envelope,
+service, store and client limits including framing. Crossing any bound fails
+explicitly; no incomplete package is reported as a full backup. The controller
+requires signed protection evidence and independently verifies local working
+storage. A memory-backed Kubernetes volume alone does not establish disabled swap.

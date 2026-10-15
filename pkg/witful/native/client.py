@@ -143,6 +143,9 @@ class Client:
                 "rotate",
                 "export",
                 "restore",
+                "original-capture",
+                "original-list",
+                "original-restore",
             }:
                 raise NativeError("unsupported")
             context = ssl.create_default_context(cafile=settings.ca)

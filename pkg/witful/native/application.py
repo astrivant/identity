@@ -179,6 +179,7 @@ def build(settings: Settings) -> Runtime:
 
     protection()
     try:
+        require_protected(Path(settings.runtime.working_directory))
         authority_url = os.environ["WITFUL_AUTHORITY_DATABASE_URL"]
         authority_options = conninfo_to_dict(authority_url)
         if authority_options.get("sslmode", "verify-full") != "verify-full":
@@ -232,7 +233,7 @@ def build(settings: Settings) -> Runtime:
         """
         protection()
         custody = MeteredKeys(BrokerKeys(client, access.grant, access.task, broker.authority, broker.policy), admission)
-        return EnvelopeService(custody, broker.wrapping, broker.signing, signers)
+        return EnvelopeService(custody, broker.wrapping, broker.signing, signers, settings.envelope)
 
     service = Service(store, Authority(authority_url, settings.backend.id), keys, protection, settings.budget)
     probe = settings.probe
@@ -241,7 +242,7 @@ def build(settings: Settings) -> Runtime:
     destinations = tuple(
         evolve(service, store=target, authority=evolve(service.authority, backend=identifier)) for identifier, target in targets.items()
     )
-    application = Builder(service, admission, readiness, destinations=destinations).build()
+    application = Builder(service, admission, readiness, destinations=destinations, archives=settings.archives).build()
     application.extensions["witful.runtime"] = admission
     return Runtime(application, service, admission)
 

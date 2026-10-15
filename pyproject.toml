@@ -153,5 +153,5 @@ show_missing = true
 precision = 1
 
 [[tool.mypy.overrides]]
-module = ["casbin.*"]
+module = ["casbin.*", "agent_broker.*"]
 follow_untyped_imports = true

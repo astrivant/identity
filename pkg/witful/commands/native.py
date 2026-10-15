@@ -43,8 +43,8 @@ def options(operation: str) -> Callable[[argparse.ArgumentParser], None]:
             parser.add_argument("--config", type=Path, required=True)
             return
         parser.add_argument("--client", type=Path, required=True)
-        parser.add_argument("--output", type=Path, required=operation in {"read", "history", "export"})
-        if operation in {"append", "branch", "merge", "rotate", "migrate", "migration-abort"}:
+        parser.add_argument("--output", type=Path, required=operation in {"read", "history", "export", "original-list", "original-restore"})
+        if operation in {"append", "branch", "merge", "rotate", "migrate", "migration-abort", "original-capture"}:
             parser.add_argument("--operation", required=True, help="Stable operation UUID; reuse unchanged after an unknown outcome")
         if operation in {"append", "history", "search"}:
             parser.add_argument("--ref", default="main")
@@ -68,6 +68,13 @@ def options(operation: str) -> Callable[[argparse.ArgumentParser], None]:
             parser.add_argument("--immutable", action="store_true")
         if operation in {"read", "branch"}:
             parser.add_argument("--record", required=True)
+        if operation in {"original-capture", "original-restore"}:
+            parser.add_argument("--path", required=True, help="Identity-bound operator-configured source or destination alias")
+        if operation == "original-capture":
+            parser.add_argument("--unreachable", action="store_true", help="Explicitly retain available unreachable original objects")
+            parser.add_argument("--reflogs", action="store_true", help="Explicitly retain available reflogs; requires --unreachable")
+        if operation == "original-restore":
+            parser.add_argument("--record", required=True, help="Exact original archive UUID from original list")
         if operation == "search":
             parser.add_argument("--query", required=True)
 
@@ -134,6 +141,15 @@ def command() -> Command:
                     leaf("reconcile", "Resolve an exact pending prepared transaction", "recover"),
                     leaf("export", "Write a signed encrypted complete-history recovery package", "export"),
                     leaf("restore", "Restore into an inactive configured backend without cutover", "restore"),
+                ),
+            ),
+            Command(
+                "original",
+                "Preserve and recover exact original Git repositories",
+                children=(
+                    leaf("capture", "Capture an explicitly configured original Git directory", "original-capture"),
+                    leaf("list", "List complete archive inventories into protected storage", "original-list"),
+                    leaf("restore", "Restore into a configured absent protected path", "original-restore"),
                 ),
             ),
             Command(

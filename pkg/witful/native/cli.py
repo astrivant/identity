@@ -168,6 +168,10 @@ def execute(args: argparse.Namespace, parser: argparse.ArgumentParser) -> int:
                 raw = source.read(client.settings.max_bytes + 1)
             package = mapping(codec.decode(raw, codec.Limits(bytes=client.settings.max_bytes)), {"context", "sealed"})
             arguments = {**package, "destination": args.destination}
+        elif operation == "original-capture":
+            arguments = {"operation": args.operation, "path": args.path, "unreachable": args.unreachable, "reflogs": args.reflogs}
+        elif operation == "original-restore":
+            arguments = {"path": args.path, "record": args.record}
         elif operation == "read":
             arguments = {"record": args.record}
         elif operation == "history":
