@@ -5,9 +5,11 @@ PostgreSQL or a local bare Git store. It implements the shared binary and encryp
 contracts proposed in [RFC 74](https://github.com/astrivant/product-research/pull/74)
 and [RFC 75](https://github.com/astrivant/product-research/pull/75).
 
-Implementation is under review. Projection, operational evidence and the full acceptance report are being completed
-on the implementation branch. Existing managed collections retain their remote
-storage block. This document does not authorize a migration or a private pilot.
+The implementation and its [synthetic acceptance evidence](native/acceptance.md)
+are staged for review. The [six as-built storage views](native/diagrams/README.md)
+bind code, schemas and reference configuration. Existing managed collections retain
+their remote-storage block. Private enrollment and deployment require a separately
+reviewed pilot plan.
 
 ## Projection implementation
 
@@ -52,10 +54,11 @@ before exceeding the configured envelope budget; incremental projection is a
 separate format change. Returned-object limits do not bound fetched Git packfiles:
 the gateway deployment must also bound scratch storage and transfer execution.
 
-The core is exercised with synthetic policy, cryptography and real Git remotes,
-including a lost successful acknowledgment. Runtime and deployment wiring are
-under review with this branch's remaining acceptance work. These tests do not
-establish a production deployment or failover evidence.
+Synthetic tests exercise real broker and gateway mTLS, SSH host verification,
+remote Git CAS and independent readback, including a lost successful acknowledgment.
+A separate required CI stage tests physical backup, synchronous failover and PITR.
+The [acceptance report](native/acceptance.md) distinguishes those observations from
+production deployment controls and operational service guarantees.
 
 Configure `projection.mode` as `disabled`, `manual`, `interval`, `batch` or
 `required`. The complete `projection` object exposes target TLS/grant references,

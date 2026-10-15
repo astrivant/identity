@@ -1,0 +1,382 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="1152pt" height="792pt" viewBox="0 0 1152 792" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <metadata>
+  <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <cc:Work>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:creator>
+     <cc:Agent>
+      <dc:title>Witful native storage diagram renderer</dc:title>
+     </cc:Agent>
+    </dc:creator>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <defs>
+  <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+ </defs>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="M 0,792 
+L 1152,792 
+L 1152,0 
+L 0,0 
+z
+" style="fill: #ffffff"/>
+  </g>
+  <g id="axes_1">
+   <g id="patch_2">
+    <path d="M 361.497896,199.32 
+Q 389.998943,199.32,417.381957,199.32 
+" clip-path="url(#pd3b4f65bce)" style="fill: none; stroke: #4d5d61; stroke-linecap: round"/>
+    <path d="M 412.181957,196.72 
+L 417.381957,199.32 
+L 412.181957,201.92 
+z
+" clip-path="url(#pd3b4f65bce)" style="fill: #4d5d61; stroke: #4d5d61; stroke-linecap: round"/>
+   </g>
+   <g id="patch_3">
+    <path d="M 733.497896,199.32 
+Q 761.998943,199.32,789.381957,199.32 
+" clip-path="url(#pd3b4f65bce)" style="fill: none; stroke: #4d5d61; stroke-linecap: round"/>
+    <path d="M 784.181957,196.72 
+L 789.381957,199.32 
+L 784.181957,201.92 
+z
+" clip-path="url(#pd3b4f65bce)" style="fill: #4d5d61; stroke: #4d5d61; stroke-linecap: round"/>
+   </g>
+   <g id="patch_4">
+    <path d="M 948,246.924686 
+Q 948,287.76132,948,327.47992 
+" clip-path="url(#pd3b4f65bce)" style="fill: none; stroke: #4d5d61; stroke-linecap: round"/>
+    <path d="M 950.6,322.27992 
+L 948,327.47992 
+L 945.4,322.27992 
+z
+" clip-path="url(#pd3b4f65bce)" style="fill: #4d5d61; stroke: #4d5d61; stroke-linecap: round"/>
+   </g>
+   <g id="patch_5">
+    <path d="M 790.502104,376.2 
+Q 762.001057,376.2,734.618043,376.2 
+" clip-path="url(#pd3b4f65bce)" style="fill: none; stroke: #4d5d61; stroke-linecap: round"/>
+    <path d="M 739.818043,378.8 
+L 734.618043,376.2 
+L 739.818043,373.6 
+z
+" clip-path="url(#pd3b4f65bce)" style="fill: #4d5d61; stroke: #4d5d61; stroke-linecap: round"/>
+   </g>
+   <g id="patch_6">
+    <path d="M 418.502104,376.2 
+Q 390.001057,376.2,362.618043,376.2 
+" clip-path="url(#pd3b4f65bce)" style="fill: none; stroke: #4d5d61; stroke-linecap: round"/>
+    <path d="M 367.818043,378.8 
+L 362.618043,376.2 
+L 367.818043,373.6 
+z
+" clip-path="url(#pd3b4f65bce)" style="fill: #4d5d61; stroke: #4d5d61; stroke-linecap: round"/>
+   </g>
+   <g id="patch_7">
+    <path d="M 204,423.804686 
+Q 204,464.64132,204,504.35992 
+" clip-path="url(#pd3b4f65bce)" style="fill: none; stroke: #4d5d61; stroke-linecap: round"/>
+    <path d="M 206.6,499.15992 
+L 204,504.35992 
+L 201.4,499.15992 
+z
+" clip-path="url(#pd3b4f65bce)" style="fill: #4d5d61; stroke: #4d5d61; stroke-linecap: round"/>
+   </g>
+   <g id="patch_8">
+    <path d="M 361.497896,553.08 
+Q 389.998943,553.08,417.381957,553.08 
+" clip-path="url(#pd3b4f65bce)" style="fill: none; stroke: #4d5d61; stroke-linecap: round"/>
+    <path d="M 412.181957,550.48 
+L 417.381957,553.08 
+L 412.181957,555.68 
+z
+" clip-path="url(#pd3b4f65bce)" style="fill: #4d5d61; stroke: #4d5d61; stroke-linecap: round"/>
+   </g>
+   <g id="patch_9">
+    <path d="M 733.497896,553.08 
+Q 761.998943,553.08,789.381957,553.08 
+" clip-path="url(#pd3b4f65bce)" style="fill: none; stroke: #4d5d61; stroke-linecap: round"/>
+    <path d="M 784.181957,550.48 
+L 789.381957,553.08 
+L 784.181957,555.68 
+z
+" clip-path="url(#pd3b4f65bce)" style="fill: #4d5d61; stroke: #4d5d61; stroke-linecap: round"/>
+   </g>
+   <g id="patch_10">
+    <path d="M 55.2,244.4244 
+L 352.8,244.4244 
+Q 359,244.4244,359,240.0024 
+L 359,158.6376 
+Q 359,154.2156,352.8,154.2156 
+L 55.2,154.2156 
+Q 49,154.2156,49,158.6376 
+L 49,240.0024 
+Q 49,244.4244,55.2,244.4244 
+z
+" clip-path="url(#pd3b4f65bce)" style="fill: #f4e5c8; stroke: #4d5d61; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_11">
+    <path d="M 427.2,244.4244 
+L 724.8,244.4244 
+Q 731,244.4244,731,240.0024 
+L 731,158.6376 
+Q 731,154.2156,724.8,154.2156 
+L 427.2,154.2156 
+Q 421,154.2156,421,158.6376 
+L 421,240.0024 
+Q 421,244.4244,427.2,244.4244 
+z
+" clip-path="url(#pd3b4f65bce)" style="fill: #f0f2f3; stroke: #4d5d61; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_12">
+    <path d="M 799.2,244.4244 
+L 1096.8,244.4244 
+Q 1103,244.4244,1103,240.0024 
+L 1103,158.6376 
+Q 1103,154.2156,1096.8,154.2156 
+L 799.2,154.2156 
+Q 793,154.2156,793,158.6376 
+L 793,240.0024 
+Q 793,244.4244,799.2,244.4244 
+z
+" clip-path="url(#pd3b4f65bce)" style="fill: #f4e5c8; stroke: #4d5d61; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_13">
+    <path d="M 799.2,421.3044 
+L 1096.8,421.3044 
+Q 1103,421.3044,1103,416.8824 
+L 1103,335.5176 
+Q 1103,331.0956,1096.8,331.0956 
+L 799.2,331.0956 
+Q 793,331.0956,793,335.5176 
+L 793,416.8824 
+Q 793,421.3044,799.2,421.3044 
+z
+" clip-path="url(#pd3b4f65bce)" style="fill: #f4e5c8; stroke: #4d5d61; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_14">
+    <path d="M 427.2,421.3044 
+L 724.8,421.3044 
+Q 731,421.3044,731,416.8824 
+L 731,335.5176 
+Q 731,331.0956,724.8,331.0956 
+L 427.2,331.0956 
+Q 421,331.0956,421,335.5176 
+L 421,416.8824 
+Q 421,421.3044,427.2,421.3044 
+z
+" clip-path="url(#pd3b4f65bce)" style="fill: #f0f2f3; stroke: #4d5d61; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_15">
+    <path d="M 55.2,421.3044 
+L 352.8,421.3044 
+Q 359,421.3044,359,416.8824 
+L 359,335.5176 
+Q 359,331.0956,352.8,331.0956 
+L 55.2,331.0956 
+Q 49,331.0956,49,335.5176 
+L 49,416.8824 
+Q 49,421.3044,55.2,421.3044 
+z
+" clip-path="url(#pd3b4f65bce)" style="fill: #dbe8f3; stroke: #4d5d61; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_16">
+    <path d="M 55.2,598.1844 
+L 352.8,598.1844 
+Q 359,598.1844,359,593.7624 
+L 359,512.3976 
+Q 359,507.9756,352.8,507.9756 
+L 55.2,507.9756 
+Q 49,507.9756,49,512.3976 
+L 49,593.7624 
+Q 49,598.1844,55.2,598.1844 
+z
+" clip-path="url(#pd3b4f65bce)" style="fill: #dbe8f3; stroke: #4d5d61; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_17">
+    <path d="M 427.2,598.1844 
+L 724.8,598.1844 
+Q 731,598.1844,731,593.7624 
+L 731,512.3976 
+Q 731,507.9756,724.8,507.9756 
+L 427.2,507.9756 
+Q 421,507.9756,421,512.3976 
+L 421,593.7624 
+Q 421,598.1844,427.2,598.1844 
+z
+" clip-path="url(#pd3b4f65bce)" style="fill: #dceade; stroke: #4d5d61; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_18">
+    <path d="M 799.2,598.1844 
+L 1096.8,598.1844 
+Q 1103,598.1844,1103,593.7624 
+L 1103,512.3976 
+Q 1103,507.9756,1096.8,507.9756 
+L 799.2,507.9756 
+Q 793,507.9756,793,512.3976 
+L 793,593.7624 
+Q 793,598.1844,799.2,598.1844 
+z
+" clip-path="url(#pd3b4f65bce)" style="fill: #f0f2f3; stroke: #4d5d61; stroke-linejoin: miter"/>
+   </g>
+   <g id="text_1">
+    <text style="font-size: 10.5px; font-family: 'DejaVu Sans'" transform="translate(127.404141 186.992344)">1. Accepted encrypted intent</text>
+    <text style="font-size: 10.5px; font-family: 'DejaVu Sans'" transform="translate(113.747578 202.217344)">Destination, permit key and policy</text>
+    <text style="font-size: 10.5px; font-family: 'DejaVu Sans'" transform="translate(126.726562 217.442344)">Retained with original receipt</text>
+   </g>
+   <g id="text_2">
+    <text style="font-size: 10.5px; font-family: 'DejaVu Sans'" transform="translate(520.159688 186.992344)">2. Explicit scheduling</text>
+    <text style="font-size: 10.5px; font-family: 'DejaVu Sans'" transform="translate(484.770586 202.217344)">Manual / interval / batch / required</text>
+    <text style="font-size: 10.5px; font-family: 'DejaVu Sans'" transform="translate(493.237852 217.442344)">Disabled retains accepted work</text>
+   </g>
+   <g id="text_3">
+    <text style="font-size: 10.5px; font-family: 'DejaVu Sans'" transform="translate(875.636133 186.992344)">3. Persist exact preparation</text>
+    <text style="font-size: 10.5px; font-family: 'DejaVu Sans'" transform="translate(854.8125 202.217344)">Archive + Git OID + expected head</text>
+    <text style="font-size: 10.5px; font-family: 'DejaVu Sans'" transform="translate(859.769648 217.442344)">Signed permit; no remote call yet</text>
+   </g>
+   <g id="text_4">
+    <text style="font-size: 10.5px; font-family: 'DejaVu Sans'" transform="translate(877.006875 363.872344)">4. Persist attempt / backoff</text>
+    <text style="font-size: 10.5px; font-family: 'DejaVu Sans'" transform="translate(883.169883 380.114531)">State becomes unknown</text>
+    <text style="font-size: 10.5px; font-family: 'DejaVu Sans'" transform="translate(876.290742 394.322344)">Before first transport effect</text>
+   </g>
+   <g id="text_5">
+    <text style="font-size: 10.5px; font-family: 'DejaVu Sans'" transform="translate(524.403984 363.872344)">5. Isolated gateway</text>
+    <text style="font-size: 10.5px; font-family: 'DejaVu Sans'" transform="translate(499.985742 379.097344)">Current caller + writer policy</text>
+    <text style="font-size: 10.5px; font-family: 'DejaVu Sans'" transform="translate(485.478516 394.322344)">Permit-only unwrap; verify archive</text>
+   </g>
+   <g id="text_6">
+    <text style="font-size: 10.5px; font-family: 'DejaVu Sans'" transform="translate(125.553516 363.872344)">6. SSH expected-head update</text>
+    <text style="font-size: 10.5px; font-family: 'DejaVu Sans'" transform="translate(129.614883 379.097344)">Parent-preserving candidate</text>
+    <text style="font-size: 10.5px; font-family: 'DejaVu Sans'" transform="translate(125.01457 394.322344)">Divergence blocks publication</text>
+   </g>
+   <g id="text_7">
+    <text style="font-size: 10.5px; font-family: 'DejaVu Sans'" transform="translate(134.173359 540.752344)">7. Independent fresh fetch</text>
+    <text style="font-size: 10.5px; font-family: 'DejaVu Sans'" transform="translate(135.791836 556.581914)">Exact commit / tree / blob</text>
+    <text style="font-size: 10.5px; font-family: 'DejaVu Sans'" transform="translate(143.666836 572.219531)">Recheck advertised ref</text>
+   </g>
+   <g id="text_8">
+    <text style="font-size: 10.5px; font-family: 'DejaVu Sans'" transform="translate(511.217461 540.752344)">8. Retain verified receipt</text>
+    <text style="font-size: 10.5px; font-family: 'DejaVu Sans'" transform="translate(497.327109 556.994531)">Advance observed watermark</text>
+    <text style="font-size: 10.5px; font-family: 'DejaVu Sans'" transform="translate(483.883008 571.202344)">Remove only matching queue item</text>
+   </g>
+   <g id="text_9">
+    <text style="font-size: 10.5px; font-family: 'DejaVu Sans'" transform="translate(879.722109 540.752344)">9. Original target-set gate</text>
+    <text style="font-size: 10.5px; font-family: 'DejaVu Sans'" transform="translate(856.452305 555.977344)">Missing evidence stays incomplete</text>
+    <text style="font-size: 10.5px; font-family: 'DejaVu Sans'" transform="translate(870.364805 571.202344)">Timer never proves durability</text>
+   </g>
+   <g id="text_10">
+    <g id="patch_19">
+     <path d="M 343.540813,196.372344 
+L 436.459187,196.372344 
+L 436.459187,184.579656 
+L 343.540813,184.579656 
+z
+" style="fill: #ffffff"/>
+    </g>
+    <text style="font-size: 8.8px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #30414a" x="390" y="192.762281" transform="rotate(-0 390 192.762281)">scan durable outbox</text>
+   </g>
+   <g id="text_11">
+    <g id="patch_20">
+     <path d="M 723.586625,196.372344 
+L 800.413375,196.372344 
+L 800.413375,184.579656 
+L 723.586625,184.579656 
+z
+" style="fill: #ffffff"/>
+    </g>
+    <text style="font-size: 8.8px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #30414a" x="762" y="192.762281" transform="rotate(-0 762 192.762281)">oldest per target</text>
+   </g>
+   <g id="text_12">
+    <g id="patch_21">
+     <path d="M 902.167125,284.812344 
+L 993.832875,284.812344 
+L 993.832875,273.019656 
+L 902.167125,273.019656 
+z
+" style="fill: #ffffff"/>
+    </g>
+    <text style="font-size: 8.8px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #30414a" x="948" y="281.202281" transform="rotate(-0 948 281.202281)">same bytes on retry</text>
+   </g>
+   <g id="text_13">
+    <g id="patch_22">
+     <path d="M 748.28575,373.252 
+L 775.71425,373.252 
+L 775.71425,361.46 
+L 748.28575,361.46 
+z
+" style="fill: #ffffff"/>
+    </g>
+    <text style="font-size: 8.8px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #30414a" x="762" y="369.641937" transform="rotate(-0 762 369.641937)">mTLS</text>
+   </g>
+   <g id="text_14">
+    <g id="patch_23">
+     <path d="M 344.93025,373.252344 
+L 435.06975,373.252344 
+L 435.06975,361.459656 
+L 344.93025,361.459656 
+z
+" style="fill: #ffffff"/>
+    </g>
+    <text style="font-size: 8.8px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #30414a" x="390" y="369.642281" transform="rotate(-0 390 369.642281)">pinned SSH identity</text>
+   </g>
+   <g id="text_15">
+    <g id="patch_24">
+     <path d="M 174.689125,467.854406 
+L 233.310875,467.854406 
+L 233.310875,443.737594 
+L 174.689125,443.737594 
+z
+" style="fill: #ffffff"/>
+    </g>
+    <text style="font-size: 8.8px; font-family: 'DejaVu Sans'; fill: #30414a" transform="translate(176.185125 452.801078)">independent</text>
+    <text style="font-size: 8.8px; font-family: 'DejaVu Sans'; fill: #30414a" transform="translate(179.342125 463.363484)">verification</text>
+   </g>
+   <g id="text_16">
+    <g id="patch_25">
+     <path d="M 344.783125,550.132344 
+L 435.216875,550.132344 
+L 435.216875,538.339656 
+L 344.783125,538.339656 
+z
+" style="fill: #ffffff"/>
+    </g>
+    <text style="font-size: 8.8px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #30414a" x="390" y="546.522281" transform="rotate(-0 390 546.522281)">exact result binding</text>
+   </g>
+   <g id="text_17">
+    <g id="patch_26">
+     <path d="M 725.8595,550.132344 
+L 798.1405,550.132344 
+L 798.1405,538.339656 
+L 725.8595,538.339656 
+z
+" style="fill: #ffffff"/>
+    </g>
+    <text style="font-size: 8.8px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #30414a" x="762" y="546.522281" transform="rotate(-0 762 546.522281)">remote_verified</text>
+   </g>
+  </g>
+  <g id="text_18">
+   <text style="font-weight: 700; font-size: 20px; font-family: 'DejaVu Sans'; text-anchor: middle" x="576" y="50.044875" transform="rotate(-0 576 50.044875)">Projection timing and custody</text>
+  </g>
+  <g id="text_19">
+   <text style="font-size: 13px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #30414a" x="576" y="74.029969" transform="rotate(-0 576 74.029969)">When may remote history lag, and what proves delivery?</text>
+  </g>
+  <g id="text_20">
+   <text style="font-size: 9.5px; font-family: 'DejaVu Sans'" transform="translate(46.08 706.706406)">Default policy is disabled. Configured defaults: 60 s interval, batch 8, lag budget 3600 s, retry 1 to 60 s, 5 attempts; actual accepted targets and key generation</text>
+   <text style="font-size: 9.5px; font-family: 'DejaVu Sans'" transform="translate(46.08 720.956406)">are immutable intent data. Entry/byte/lag pressure refuses affected writes. Full snapshots retain history and amplify storage; limits are not an incremental format.</text>
+  </g>
+  <g id="text_21">
+   <text style="font-size: 9px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #30414a" x="46.08" y="766.656" transform="rotate(-0 46.08 766.656)">GREEN authoritative  |  AMBER durable pending  |  BLUE replicated projection  |  PURPLE disposable cache  |  GRAY service</text>
+  </g>
+ </g>
+ <defs>
+  <clipPath id="pd3b4f65bce">
+   <rect x="40.32" y="110.88" width="1071.36" height="530.64"/>
+  </clipPath>
+ </defs>
+</svg>

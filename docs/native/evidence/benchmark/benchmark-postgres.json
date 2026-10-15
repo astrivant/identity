@@ -1,0 +1,239 @@
+{
+  "schema": 1,
+  "backend": "postgres",
+  "source": "3300191abca6ebe888219f352e4dcb137519fbe3",
+  "source_digest": "e9206120595f78133f685d4ae230425d48ca1b19d6a360fe99240221f0fa2f19",
+  "python": "3.13.16",
+  "platform": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+  "cpu_seconds": 25.311737,
+  "max_rss_platform_units": 107986944,
+  "writers": 1,
+  "trials_per_profile": 8,
+  "warmup_reads": 3,
+  "profiles": [
+    {
+      "initial_branch_depth": 16,
+      "cold_exact_read_ms": 54.74725,
+      "observations": {
+        "exact_read": {
+          "samples_ms": [
+            61.965208,
+            58.917709,
+            55.556791,
+            58.582375,
+            59.739083,
+            58.266791,
+            55.993791,
+            58.724875
+          ],
+          "p50_ms": 58.653625,
+          "p95_ms": 61.965208,
+          "p99_ms": 61.965208,
+          "p95_bootstrap_95_ms": [
+            58.917709,
+            61.965208
+          ]
+        },
+        "head": {
+          "samples_ms": [
+            31.750208,
+            27.603666,
+            26.016042,
+            28.235375,
+            28.770458,
+            28.697875,
+            25.562875,
+            26.609167
+          ],
+          "p50_ms": 27.9195205,
+          "p95_ms": 31.750208,
+          "p99_ms": 31.750208,
+          "p95_bootstrap_95_ms": [
+            28.697875,
+            31.750208
+          ]
+        },
+        "history": {
+          "samples_ms": [
+            376.309958,
+            391.902292,
+            399.439208,
+            433.829,
+            448.887125,
+            489.26375,
+            488.991666,
+            499.304667
+          ],
+          "p50_ms": 441.3580625,
+          "p95_ms": 499.304667,
+          "p99_ms": 499.304667,
+          "p95_bootstrap_95_ms": [
+            448.887125,
+            499.304667
+          ]
+        },
+        "append": {
+          "samples_ms": [
+            427.287208,
+            461.928584,
+            454.605042,
+            490.404916,
+            500.719875,
+            538.359208,
+            539.807667,
+            554.143125
+          ],
+          "p50_ms": 495.5623955,
+          "p95_ms": 554.143125,
+          "p99_ms": 554.143125,
+          "p95_bootstrap_95_ms": [
+            500.719875,
+            554.143125
+          ]
+        },
+        "branch": {
+          "samples_ms": [
+            96.311167,
+            95.478791,
+            95.795125,
+            99.0095,
+            107.221417,
+            95.2215,
+            97.598416,
+            106.156417
+          ],
+          "p50_ms": 96.9547915,
+          "p95_ms": 107.221417,
+          "p99_ms": 107.221417,
+          "p95_bootstrap_95_ms": [
+            99.0095,
+            107.221417
+          ]
+        }
+      }
+    },
+    {
+      "initial_branch_depth": 64,
+      "cold_exact_read_ms": 56.428708,
+      "observations": {
+        "exact_read": {
+          "samples_ms": [
+            58.838709,
+            62.850083,
+            67.774875,
+            60.0315,
+            60.18425,
+            62.516625,
+            60.529375,
+            58.995958
+          ],
+          "p50_ms": 60.356812500000004,
+          "p95_ms": 67.774875,
+          "p99_ms": 67.774875,
+          "p95_bootstrap_95_ms": [
+            62.516625,
+            67.774875
+          ]
+        },
+        "head": {
+          "samples_ms": [
+            28.363375,
+            28.611625,
+            35.959709,
+            33.277166,
+            29.220291,
+            30.631792,
+            35.184625,
+            29.80725
+          ],
+          "p50_ms": 30.219521,
+          "p95_ms": 35.959709,
+          "p99_ms": 35.959709,
+          "p95_bootstrap_95_ms": [
+            30.631792,
+            35.959709
+          ]
+        },
+        "history": {
+          "samples_ms": [
+            1389.518208,
+            1381.948792,
+            1508.484542,
+            1456.670583,
+            1466.896917,
+            1470.865292,
+            1573.019042,
+            1507.947667
+          ],
+          "p50_ms": 1468.8811045,
+          "p95_ms": 1573.019042,
+          "p99_ms": 1573.019042,
+          "p95_bootstrap_95_ms": [
+            1507.947667,
+            1573.019042
+          ]
+        },
+        "append": {
+          "samples_ms": [
+            1428.374208,
+            1465.9585,
+            1480.211292,
+            1474.548,
+            1532.431958,
+            1591.222958,
+            1596.917458,
+            1591.137375
+          ],
+          "p50_ms": 1506.321625,
+          "p95_ms": 1596.917458,
+          "p99_ms": 1596.917458,
+          "p95_bootstrap_95_ms": [
+            1532.431958,
+            1596.917458
+          ]
+        },
+        "branch": {
+          "samples_ms": [
+            102.040292,
+            116.803083,
+            100.132375,
+            98.524583,
+            98.816,
+            100.712084,
+            101.077542,
+            96.089709
+          ],
+          "p50_ms": 100.4222295,
+          "p95_ms": 116.803083,
+          "p99_ms": 116.803083,
+          "p95_bootstrap_95_ms": [
+            100.712084,
+            116.803083
+          ]
+        }
+      }
+    }
+  ],
+  "durability": "local fsync/WAL on; shared independent PostgreSQL authority; no remote projection",
+  "custody": "real RSA/AES/Ed25519 with transient in-process synthetic keys; broker network excluded",
+  "exclusions": [
+    "hosted Git latency",
+    "synchronous replica performance",
+    "network key-service latency",
+    "large histories",
+    "multi-writer contention",
+    "fork/split/merge timing",
+    "cache hits",
+    "production cost"
+  ],
+  "limitations": "branch depths share a growing identity frontier; short-run p99 is sample maximum; bootstrap is not a population guarantee",
+  "decision": {
+    "append_p95_ratios": [
+      0.34302938039917014,
+      0.3634389216662727
+    ],
+    "required_max_ratio": 0.7,
+    "target_met": true,
+    "scope": "local comparison only; no hosted-Git performance or backend selection conclusion"
+  }
+}

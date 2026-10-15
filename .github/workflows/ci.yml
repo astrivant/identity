@@ -127,6 +127,7 @@ jobs:
           git ls-files -z 'scripts/*.sh' 'tests/native/resources/*.sh' | xargs -0 shfmt -d -i 4 -ci
           pre-commit run actionlint --all-files
           python scripts/documentation/update-contents.py --check
+          python -m scripts.native.diagrams --check
 
   privacy:
     name: PII scan

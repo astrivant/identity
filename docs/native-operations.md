@@ -5,6 +5,8 @@ attestations or create broker keys. An independent operator provisions those
 boundaries, reviews the generated plans and supplies scoped runtime credentials.
 Use the [storage contract](native-storage.md) and the
 [native chart reference](../helm/witful/references/native/README.md) together.
+Review the [as-built views](native/diagrams/README.md) and
+[synthetic acceptance report](native/acceptance.md) before selecting a deployment.
 All examples below use explicit placeholders, not a working production enrollment.
 
 ## Provision the two databases

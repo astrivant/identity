@@ -25,10 +25,12 @@ from cryptography.hazmat.primitives import serialization
 from witful.exceptions import NativeError
 from witful.knowledge.contracts import as_data
 from witful.native.broker import BrokerKeys
+from witful.native.config import Broker, Trust
 from witful.native.context import Context
 from witful.native.projection.models import PERMIT
 from witful.native.projection.preparation import load, prepare
 
+from tests.native.gateway_transport import exercise
 from tests.native.projection import configured
 from tests.native.runtime import lesson
 
@@ -93,9 +95,12 @@ def test_native_records_use_released_sdk_over_mtls(runtime: Runtime, fixture: Fi
             4102444800,
             all_records=True,
         )
-        gateway_grant = str(uuid4())
+        target = base.projection.targets[0]
+        gateway_grant = target.grant
         gateway_fingerprint = hashlib.sha256(ssl.PEM_cert_to_DER_cert((root / "bravo.pem").read_text())).hexdigest()
-        permit_grant = evolve(grant, certificate_sha256=gateway_fingerprint, actions=("unwrap",), keys=(permit_generation,))
+        permit_grant = evolve(
+            grant, certificate_sha256=gateway_fingerprint, task=target.task, actions=("unwrap",), keys=(permit_generation,)
+        )
         policy = Policy(configured_keys, {access.grant: grant, gateway_grant: permit_grant})
         write_private(policy_path, contracts.data(policy))
         provider = SyntheticProvider(secrets, [])
@@ -115,7 +120,7 @@ def test_native_records_use_released_sdk_over_mtls(runtime: Runtime, fixture: Fi
             _, prepared = prepare(service, access, service.projection.targets[0].id, "Synthetic Export", "fixture@example.invalid")
             bundle, permit, raw_permit = load(service, access, prepared)
             gateway_client = CryptoClient(url, root / "ca.pem", root / "bravo.pem", root / "bravo.key")
-            gateway_custody = BrokerKeys(gateway_client, gateway_grant, access.task, authority, policy_revision)
+            gateway_custody = BrokerKeys(gateway_client, gateway_grant, target.task, authority, policy_revision)
             gateway_keys = evolve(envelope, keys=gateway_custody, wrapping=permit_generation)
             context = Context(access.scope.tenant, access.scope.identity, prepared.permit.record, PERMIT)
             assert gateway_keys.open(context, raw_permit) == as_data(permit)
@@ -126,6 +131,21 @@ def test_native_records_use_released_sdk_over_mtls(runtime: Runtime, fixture: Fi
                 gateway_custody.invoke("sign", envelope.signing, context, b"0" * 32)
             with pytest.raises(NativeError, match="unavailable"):
                 gateway_keys.seal(context, {"probe": 1})
+            broker = Broker(
+                url=url,
+                ca=str(root / "ca.pem"),
+                certificate=str(root / "bravo.pem"),
+                key=str(root / "bravo.key"),
+                wrapping=permit_generation,
+                signing=envelope.signing,
+                authority=authority,
+                policy=policy_revision,
+                signers=tuple(
+                    Trust(generation, base64.b64encode(signer.public).decode(), signer.fingerprint)
+                    for generation, signer in envelope.signers.items()
+                ),
+            )
+            exercise(service, access, databases, root, broker)
             denied_client = CryptoClient(url, root / "ca.pem", root / "bravo.pem", root / "bravo.key")
             denied = evolve(service, keys=lambda _: evolve(envelope, keys=evolve(custody, client=denied_client)))
             with pytest.raises(NativeError, match="unavailable"):

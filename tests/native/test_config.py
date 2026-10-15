@@ -258,3 +258,37 @@ def test_gateway_readiness_uses_only_current_permit_decryption(
     with psycopg.connect(databases.authority_admin) as admin:
         admin.execute("DELETE FROM witful_native_grants WHERE id=%s", (runtime.access.grant,))
     assert not Readiness(selected, gateway, Admission(1), runtime.access)()
+
+
+def test_gunicorn_cleanup_handles_partial_startup(settings: Settings, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """
+    Preserve a startup failure and stop initialized admission safely on repeated worker-exit callbacks.
+
+    Args:
+        settings (Settings): Synthetic closed runtime configuration.
+        tmp_path (Path): Disposable configuration directory.
+        monkeypatch (pytest.MonkeyPatch): Scope Gunicorn's configuration environment to this test.
+
+    Returns:
+        None: Missing WSGI state does not raise or mask the original boot error.
+    """
+    import runpy
+    from types import SimpleNamespace
+
+    from flask import Flask
+    from witful.native.api.admission import Admission
+
+    path = tmp_path / "gunicorn.json"
+    path.write_text(json.dumps(as_data(settings)))
+    monkeypatch.setenv("WITFUL_NATIVE_CONFIG", str(path))
+    namespace = runpy.run_module("witful.native.gunicorn")
+    callback: object = namespace["worker_exit"]
+    assert callable(callback)
+    callback(None, object())
+    admission = Admission(1)
+    app = Flask(__name__)
+    app.extensions["witful.runtime"] = admission
+    worker = SimpleNamespace(wsgi=app)
+    callback(None, worker)
+    callback(None, worker)
+    assert admission.snapshot()["status"] == "draining"

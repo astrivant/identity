@@ -7,7 +7,7 @@ from __future__ import annotations
 import os
 import ssl
 from pathlib import Path
-from typing import TYPE_CHECKING, Protocol
+from typing import TYPE_CHECKING
 
 from flask import Flask
 
@@ -41,17 +41,6 @@ forwarded_allow_ips = ""
 worker_tmp_dir = settings.runtime.working_directory
 
 
-class Worker(Protocol):
-    """
-    Type only the runtime-owned WSGI application attribute needed by lifecycle hooks.
-
-    Attributes:
-        wsgi (object): Application loaded by the maintained worker runtime.
-    """
-
-    wsgi: object
-
-
 def ssl_context(configuration: object, default_ssl_context_factory: Callable[[], ssl.SSLContext]) -> ssl.SSLContext:
     """
     Require TLS 1.3 and a verified client certificate on every connection, including operational probes.
@@ -69,18 +58,20 @@ def ssl_context(configuration: object, default_ssl_context_factory: Callable[[],
     return context
 
 
-def worker_exit(server: object, worker: Worker) -> None:
+def worker_exit(server: object, worker: object) -> None:
     """
     Close application admission when the maintained runtime finishes draining a worker.
 
     Args:
         server (object): Runtime master supplied by Gunicorn.
-        worker (Worker): Worker owning the application and request threads.
+        worker (object): Runtime worker; application loading may have failed before its WSGI attribute exists.
 
     Returns:
         None: Repeated lifecycle notifications remain safe.
     """
-    if isinstance(worker.wsgi, Flask):
-        admission: object = worker.wsgi.extensions.get("witful.runtime")
+    # Boot failure also invokes this hook; preserve the original failure without assuming application initialization succeeded.
+    application = getattr(worker, "wsgi", None)
+    if isinstance(application, Flask):
+        admission: object = application.extensions.get("witful.runtime")
         if isinstance(admission, Admission):
             admission.stop()

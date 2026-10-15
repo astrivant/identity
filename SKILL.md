@@ -114,6 +114,9 @@ recovery. Setup, key creation, and unrelated agent launches still require task s
 
 ## Operate protected native storage
 
+Review [synthetic acceptance](docs/native/acceptance.md) and the
+[versioned as-built diagrams](docs/native/diagrams/README.md) before deployment.
+Rebind diagrams and evidence to the actual reviewed pilot configuration.
 Use [native storage](docs/native-storage.md) for the explicit controller profile,
 current grants, configured custody and recovery commands. Use the
 [operator runbook](docs/native-operations.md) and offline administration plans for

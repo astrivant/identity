@@ -70,3 +70,7 @@
 /docs/native-storage.md @emmeowzing
 /pkg/witful/sql/postgres/native/ @emmeowzing
 /scripts/licenses/ @emmeowzing
+
+/docs/native/ @emmeowzing
+/scripts/native/ @emmeowzing
+/docs/native-operations.md @emmeowzing
