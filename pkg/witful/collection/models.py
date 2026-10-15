@@ -10,7 +10,9 @@ from datetime import date
 from typing import TYPE_CHECKING, Literal
 
 from attrs import frozen
+from jsonschema import ValidationError
 
+from witful.exceptions import CollectionConfigurationError
 from witful.knowledge.contracts import structure
 
 if TYPE_CHECKING:
@@ -99,7 +101,11 @@ def parse_config(data: bytes) -> Config:
     Raises:
         ValueError: Repository, fingerprints, managed identifiers or deadline are invalid.
     """
-    config = structure(json.loads(data), Config)
+    # Schema errors retain the complete input object; translate them at the shared boundary.
+    try:
+        config = structure(json.loads(data), Config)
+    except (ValueError, UnicodeError, ValidationError, RecursionError):
+        raise CollectionConfigurationError("Invalid collection configuration (collection-config-invalid)") from None
 
     if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9-]*/[A-Za-z0-9_.-]+", config.repository):
         raise ValueError("Configure an explicit owner/repository")
@@ -111,8 +117,13 @@ def parse_config(data: bytes) -> Config:
         raise ValueError("Use at most 64 unique managed file identifiers")
     for name in config.managed_files:
         file_path(name)
-    if config.rotate_by is not None and date.fromisoformat(config.rotate_by).isoformat() != config.rotate_by:
-        raise ValueError("Use an ISO rotation deadline")
+    if config.rotate_by is not None:
+        try:
+            canonical_date = date.fromisoformat(config.rotate_by).isoformat()
+        except ValueError:
+            raise CollectionConfigurationError("Invalid collection rotation deadline (collection-config-invalid)") from None
+        if canonical_date != config.rotate_by:
+            raise CollectionConfigurationError("Invalid collection rotation deadline (collection-config-invalid)")
 
     return config
 

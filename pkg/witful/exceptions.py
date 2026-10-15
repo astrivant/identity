@@ -4,7 +4,9 @@ Define public package exceptions independently of their implementation modules.
 
 from __future__ import annotations
 
-__all__ = ["SleeveError", "StorageError", "StorageProtectionError"]
+from typing import Literal
+
+__all__ = ["CollectionConfigurationError", "NativeError", "SleeveError", "StorageError", "StorageProtectionError"]
 
 
 class SleeveError(ValueError):
@@ -23,3 +25,29 @@ class StorageProtectionError(ValueError):
     """
     Reject private processing when its working filesystem cannot be verified.
     """
+
+
+class CollectionConfigurationError(ValueError):
+    """
+    Reject invalid collection input without reflecting raw schema-validation diagnostics.
+    """
+
+
+NativeCode = Literal["invalid", "denied", "conflict", "unknown", "unavailable", "incomplete", "unsupported"]
+
+
+class NativeError(StorageError):
+    """
+    Report a closed native-operation category without reflecting record, key or connection details.
+
+    """
+
+    def __init__(self, code: NativeCode) -> None:
+        """
+        Keep diagnostic text independent of rejected input and provider diagnostics.
+
+        Args:
+            code (NativeCode): Fixed outcome category.
+        """
+        self.code = code
+        super().__init__(f"Native operation {code}")

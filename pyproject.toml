@@ -25,6 +25,7 @@ dependencies = [
     "networkx>=3.7,<3.8",
     "jsonschema>=4.26,<5",
     "cryptography>=50.0.2,<51",
+    "cbor2>=6.1.5,<6.2",
     "PyGithub>=2.10,<2.11",
     "python-gitlab>=8.6,<8.7",
 ]
@@ -109,6 +110,7 @@ add-select = ["D213"]
 match = ".*\\.py"
 
 [tool.pydoclint]
+allow-init-docstring = true
 style = "google"
 skip-checking-short-docstrings = false
 arg-type-hints-in-docstring = true

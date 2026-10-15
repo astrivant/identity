@@ -331,3 +331,33 @@ def test_empty_and_selected_text_scopes_are_complete(tmp_path: Path, capsys: Cap
         main(["scan", "absent.txt", "--repo", str(tmp_path)])
     assert error.value.code == 2
     assert "absent.txt" not in capsys.readouterr().err
+
+
+@pytest.mark.parametrize("staged", [False, True])
+@pytest.mark.parametrize("invalid", [{"private": "synthetic-config-canary"}, {"repository": ["synthetic-config-canary"]}])
+def test_invalid_configuration_is_redacted(tmp_path: Path, capsys: CaptureFixture[str], staged: bool, invalid: dict[str, object]) -> None:
+    """
+    Keep schema-invalid collection configuration out of CLI tracebacks and diagnostics.
+
+    Args:
+        tmp_path (Path): Disposable repository containing only synthetic configuration.
+        capsys (CaptureFixture[str]): Captured public diagnostic streams.
+        staged (bool): Select the index or working snapshot.
+        invalid (dict[str, object]): Valid JSON that violates the collection schema.
+
+    Returns:
+        None: Validation exits with a bounded error and does not disclose the input.
+    """
+    subprocess.run(["git", "init", "-q", str(tmp_path)], check=True)
+    path = tmp_path / CONFIG
+    path.parent.mkdir()
+    path.write_text(json.dumps(invalid))
+    subprocess.run(["git", "-C", str(tmp_path), "add", CONFIG], check=True)
+    arguments = ["scan", "--repo", str(tmp_path)] + (["--staged"] if staged else [])
+    with pytest.raises(SystemExit) as rejected:
+        main(arguments)
+    assert rejected.value.code == 2
+    captured = capsys.readouterr()
+    assert "synthetic-config-canary" not in captured.out + captured.err
+    assert "Traceback" not in captured.out + captured.err
+    assert "PII scan incomplete" in captured.err
