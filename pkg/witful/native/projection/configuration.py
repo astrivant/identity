@@ -30,7 +30,7 @@ def validate(settings: Settings) -> None:
     # Reuse the actual Git commit grammar to validate configured metadata before accepting any write.
     prepare(b"", "00000000-0000-0000-0000-000000000000", None, policy.author, policy.email, 0)
     if settings.role == "controller":
-        if settings.gateway:
+        if settings.gateway or (policy.mode != "disabled" and policy.permit_wrapping == settings.broker.wrapping):
             raise NativeError("denied")
         return
     if (

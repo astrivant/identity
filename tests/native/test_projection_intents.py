@@ -75,3 +75,23 @@ def test_queueing_requires_explicit_export_and_projection_authority(runtime: Run
             admin.execute(
                 "UPDATE witful_native_grants SET actions=array_append(actions, %s) WHERE id=%s", (permission, runtime.access.grant)
             )
+
+
+def test_projection_refuses_domain_wrapping_key_reuse(runtime: Runtime, databases: Databases) -> None:
+    """
+    Refuse a permit key that would give the gateway the same custody capability as the source identity.
+
+    Args:
+        runtime (Runtime): Actual native backend and domain wrapping generation.
+        databases (Databases): Explicit synthetic projection authorization.
+
+    Returns:
+        None: The misconfigured write has no durable effect even when source grants otherwise permit it.
+    """
+    from attrs import evolve
+
+    service = configured(runtime, databases)
+    shared = evolve(service, projection=evolve(service.projection, permit_wrapping=service.keys(runtime.access).wrapping))
+    with pytest.raises(NativeError, match="denied"):
+        shared.append(runtime.access, str(uuid4()), "main", None, (lesson(),))
+    assert service.store.head(runtime.access.scope).generation == 0

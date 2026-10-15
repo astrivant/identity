@@ -111,6 +111,40 @@ def tick_options(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--seconds", type=int, default=300, help="Complete bounded scheduling-cycle time budget")
 
 
+def administration_options(operation: str) -> Callable[[argparse.ArgumentParser], None]:
+    """
+    Compose offline administrator plans without adding privileged behavior to the controller.
+
+    Args:
+        operation (str): Selected plan or schema leaf.
+
+    Returns:
+        Callable[[argparse.ArgumentParser], None]: Typed leaf configuration, with no runtime imports.
+    """
+
+    def configure(parser: argparse.ArgumentParser) -> None:
+        """
+        Add only the selected administration leaf's required inputs.
+
+        Args:
+            parser (argparse.ArgumentParser): Parent-owned parser.
+
+        Returns:
+            None: Explicit plan arguments are registered.
+        """
+        parser.set_defaults(native_administration=operation)
+        if operation == "contract":
+            return
+        parser.add_argument("--output", type=Path, required=True)
+        if operation == "enroll":
+            parser.add_argument("--input", type=Path, required=True)
+        else:
+            parser.add_argument("--kind", choices=("data", "authority"), required=True)
+            parser.add_argument("--role", required=True, help="Existing independent unprivileged database login")
+
+    return configure
+
+
 def disclosure_options(parser: argparse.ArgumentParser) -> None:
     """
     Configure offline recipient verification without requesting a controller connection or source credentials.
@@ -154,6 +188,18 @@ def command() -> Command:
         "native",
         "Operate protected native identity storage",
         children=(
+            Command(
+                "administration",
+                "Prepare offline SQL for independent operator review",
+                children=tuple(
+                    Command(name, description, administration_options(name), "witful.native.administration")
+                    for name, description in (
+                        ("schema", "Render schema and least-privilege runtime grants"),
+                        ("enroll", "Render insert-only initial identity and grant enrollment"),
+                        ("contract", "Print the closed enrollment input schema"),
+                    )
+                ),
+            ),
             Command(
                 "controller",
                 "Manage the authenticated native runtime",

@@ -1,0 +1,36 @@
+name: Native physical storage
+on:
+  workflow_call:
+    inputs:
+      source:
+        description: Immutable source revision to validate
+        required: true
+        type: string
+permissions:
+  contents: read
+jobs:
+  recovery:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.source }}
+          persist-credentials: false
+      - uses: ./.github/actions/python
+      - name: Verify physical backup, synchronous failover and point-in-time recovery
+        env:
+          WITFUL_NATIVE_PHYSICAL_TESTS: '1'
+          WITFUL_NATIVE_EVIDENCE: .cache/native-physical
+        run: pytest -n 0 tests/native/test_physical.py -q --junitxml=.cache/native-physical/tests.xml
+      - name: Preserve synthetic recovery evidence
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: native-physical-${{ inputs.source }}
+          path: .cache/native-physical/
+          if-no-files-found: error
+          retention-days: 14

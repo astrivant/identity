@@ -88,6 +88,7 @@ class Policy:
     Attributes:
         mode (Literal["disabled", "manual", "interval", "batch", "required"]): Explicit delivery and completion policy.
         targets (tuple[Target, ...]): Reviewed identity-bound gateway destinations; no remote exists implicitly.
+        permit_wrapping (str): Independently provisioned wrapping generation used only for gateway permits, never domain data.
         author (str): Honest component attribution for newly generated export commits.
         email (str): Operator-reviewed exporter contact.
         interval_seconds (int): Minimum scheduled scan interval; a timer is not a durability guarantee.
@@ -102,6 +103,7 @@ class Policy:
 
     mode: Literal["disabled", "manual", "interval", "batch", "required"] = "disabled"
     targets: tuple[Target, ...] = ()
+    permit_wrapping: str = ""
     author: str = "Witful projection service"
     email: str = "projection@example.invalid"
     interval_seconds: int = 60
@@ -138,8 +140,10 @@ class Policy:
             raise NativeError("invalid")
         if len({target.id for target in self.targets}) != len(self.targets):
             raise NativeError("invalid")
-        if self.mode != "disabled" and not self.targets:
-            raise NativeError("invalid")
+        if self.mode != "disabled":
+            identifier(self.permit_wrapping)
+            if not self.targets:
+                raise NativeError("invalid")
 
     def select(self, tenant: str, identity: str) -> tuple[Target, ...]:
         """
@@ -169,6 +173,7 @@ class Intent:
         target (Target): Exact reviewed destination configuration at acceptance.
         generation (int): Source commit watermark covered by this intent.
         recorded (int): Actual acceptance time in UTC epoch seconds.
+        permit_wrapping (str): Original permit-only wrapping generation, retained across later scheduler/key configuration changes.
         required (bool): Retained requirement for remote verification before workload completion, independent of later policy changes.
         version (Literal[1]): Closed intent schema version.
     """
@@ -179,6 +184,7 @@ class Intent:
     target: Target
     generation: int
     recorded: int
+    permit_wrapping: str
     required: bool = False
     version: Literal[1] = 1
 
@@ -191,6 +197,7 @@ class Intent:
         """
         identifier(self.operation)
         identifier(self.backend)
+        identifier(self.permit_wrapping)
         if (
             self.generation < 1
             or self.recorded < 0

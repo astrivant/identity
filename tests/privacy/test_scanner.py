@@ -361,3 +361,24 @@ def test_invalid_configuration_is_redacted(tmp_path: Path, capsys: CaptureFixtur
     assert "synthetic-config-canary" not in captured.out + captured.err
     assert "Traceback" not in captured.out + captured.err
     assert "PII scan incomplete" in captured.err
+
+
+def test_npm_namespace_paths_do_not_hide_real_email_or_deny_terms() -> None:
+    """
+    Distinguish npm scope syntax from personal email without exempting a lockfile or its neighboring metadata.
+
+    Returns:
+        None: Recognized registry/package paths pass, while actual emails, unrelated URL credentials and explicit deny terms still fail.
+    """
+    namespace = "@" + "example.scope/package"
+    references = (
+        '"node_modules/' + namespace + '": {"version": "1.0.0"}',
+        '"resolved": "https://registry.npmjs.org/' + namespace + '/-/package-1.0.0.tgz"',
+    )
+    for reference in references:
+        assert scan_text(reference) == ()
+        assert scan_text(reference, ["example.scope"]) == ((1, "deny-term"),)
+        assert scan_text(reference + '\n"author": "person' + '@company.dev"') == ((2, "email"),)
+    assert scan_text("node_modules/person" + "@company.dev/package") == ((1, "email"),)
+    assert scan_text("https://person" + "@registry.npmjs.org/package") == ((1, "email"),)
+    assert scan_text("https://elsewhere.invalid/" + namespace) == ((1, "email"),)

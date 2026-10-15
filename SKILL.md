@@ -115,7 +115,9 @@ recovery. Setup, key creation, and unrelated agent launches still require task s
 ## Operate protected native storage
 
 Use [native storage](docs/native-storage.md) for the explicit controller profile,
-current grants, configured custody and recovery commands. Select only reviewed
+current grants, configured custody and recovery commands. Use the
+[operator runbook](docs/native-operations.md) and offline administration plans for
+separate database setup; the controller never receives administrator credentials. Select only reviewed
 backend, original-Git, recipient and derivation aliases. Keep received exports
 inactive until independently pinned signature/frontier verification succeeds.
 Recipient sharing discloses full retained history and its recovery data keys;

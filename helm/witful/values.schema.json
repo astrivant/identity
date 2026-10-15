@@ -6621,6 +6621,9 @@
                                                 ]
                                             }
                                         },
+                                        "permit_wrapping": {
+                                            "type": "string"
+                                        },
                                         "author": {
                                             "type": "string"
                                         },
@@ -7759,6 +7762,9 @@
                                                         "task"
                                                     ]
                                                 }
+                                            },
+                                            "permit_wrapping": {
+                                                "type": "string"
                                             },
                                             "author": {
                                                 "type": "string"

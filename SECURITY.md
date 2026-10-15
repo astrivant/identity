@@ -40,6 +40,11 @@ verification. A private repository alone is not encryption.
 - LinkedIn member profile URLs and PEM/OpenSSH private-key headers.
 - Additional case-insensitive literals from `--terms-file` or `WITFUL_PII_TERMS_FILE`.
 
+Recognized `node_modules/@scope/package` paths and primary npm registry package
+URLs use [npm namespace syntax](https://docs.npmjs.com/cli/v11/using-npm/scope/), so
+their namespace separator is not treated as an email delimiter. This does not
+exempt neighboring metadata, other URL credentials or explicit deny terms.
+
 Keep the terms file outside public source control. Logs contain only relative
 file locations, line numbers, detector IDs and bounded coverage diagnostics. A sensitive filename becomes a
 digest label. Matched values and snippets are never printed. Unreadable files and ordinary source files larger than 5 MiB fail inspection with

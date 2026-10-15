@@ -7,6 +7,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 from uuid import uuid4
 
+from attrs import evolve
 from flask import Blueprint, Response
 
 from witful.exceptions import NativeError
@@ -106,7 +107,11 @@ def routes(service: Service, authenticate: Callable[[], str]) -> Blueprint:
         started = service.monotonic()
         registration, _ = service.snapshot(access, "project", "*")
         context = Context(access.scope.tenant, access.scope.identity, str(uuid4()), PERMIT)
-        sealed = service.keys(access).seal(context, {"probe": 1})
+        wrapping = identifier(service.projection.permit_wrapping)
+        keys = service.keys(access)
+        if wrapping == keys.wrapping:
+            raise NativeError("denied")
+        sealed = evolve(keys, wrapping=wrapping).seal(context, {"probe": 1})
         service.release(access, "project", "*", registration, started)
         return Response(codec.encode({"context": context.data(), "sealed": sealed}), mimetype="application/cbor")
 

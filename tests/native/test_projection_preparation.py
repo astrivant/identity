@@ -37,10 +37,13 @@ def test_prepared_candidate_is_durable_and_exact_on_retry(runtime: Runtime, data
     service = configured(runtime, databases)
     receipt = service.append(runtime.access, str(uuid4()), "main", None, (lesson(),))
     target = service.projection.targets[0].id
+    accepted_wrapping = service.projection.permit_wrapping
+    service = evolve(service, projection=evolve(service.projection, mode="disabled", permit_wrapping=str(uuid4())))
     pointer, prepared = prepare(service, runtime.access, target, "Synthetic Export", "export@example.invalid")
     assert pointer.kind == PREPARED and prepared.intent.generation == receipt.generation and prepared.intent.required
     bundle, permit, envelope = load(service, runtime.access, prepared)
     assert permit.oid == prepared.oid and permit.expected is None
+    assert permit.intent.permit_wrapping == accepted_wrapping
     assert b"synthetic-native-canary" not in bundle.blob and b"Synthetic Export" not in envelope
     head = service.store.head(runtime.access.scope)
     restarted = evolve(service, projection=evolve(service.projection, mode="disabled"))

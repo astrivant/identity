@@ -19,9 +19,12 @@ receipt retains its requirement even when later configuration disables schedulin
 Completion checks use the originally accepted destination set and independently
 verified results, rather than assuming an empty queue means successful delivery.
 
-A separately operated gateway owns remote credentials. Its broker grant can unwrap
-only publication permits, with record kind 18, and cannot decrypt the exported
-identity history. Independent public signer pins authenticate that encrypted
+A separately operated gateway owns remote credentials. Its broker grant can unwrap only a separate
+permit wrapping-key generation and cannot decrypt exported identity history.
+Set `projection.permit_wrapping` to an independently provisioned generation that
+is never used for domain data; the gateway broker configuration selects that
+generation. The released broker enforces key-generation and action allowlists,
+not record-kind restrictions. Permit kind 18 remains authenticated envelope context. Independent public signer pins authenticate that encrypted
 history. Current native policy checks both the gateway caller and the original
 writer's project/export permissions before publication and result release. No
 control-plane database lock is held across key-service or remote Git calls.
@@ -81,7 +84,7 @@ Deploy the [gateway reference](../helm/witful/references/projection/README.md) a
 separate release with `role: projection`. Its configuration retains the original
 backend UUID for independent epoch checks but never opens that backend. Use
 separate gateway broker-client and transport certificates, an unwrap-only broker
-grant limited to permit kind 18, pinned SSH host keys and a repository-scoped SSH
+grant limited to the separate permit wrapping generation, pinned SSH host keys and a repository-scoped SSH
 identity. Prepare a signed encrypted probe through `native projection probe` and
 mount it at `probe.envelope`; readiness verifies current permit-key availability
 without needing domain decryption or signing. Reissue the probe after changing
@@ -96,6 +99,9 @@ ingress. The tick interval's Kubernetes schedule limits scheduling precision;
 the controller still applies its own interval/batch policy. Server liveness remains
 independent of remote availability. Every gateway Git subprocess shares the
 remaining complete-operation deadline, including post-push verification.
+
+See [operator provisioning and recovery](native-operations.md) for reviewable SQL
+plans, independent grants, deployment checks and recovery procedures.
 
 ## Transaction and trust boundaries
 

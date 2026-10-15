@@ -66,6 +66,8 @@ def enqueue(
     targets = policy.select(access.scope.tenant, access.scope.identity)
     if not targets:
         return frontier, objects
+    if policy.permit_wrapping == service.keys(access).wrapping:
+        raise NativeError("denied")
     now = int(service.clock())
     for permission in ("project", "export"):
         if service.authority.check(access, permission, "*", now) != registration:
@@ -86,7 +88,14 @@ def enqueue(
     additions = list(objects)
     for target in targets:
         intent = Intent(
-            operation, service.authority.backend, access, target, registration.head.generation + 1, now, policy.mode == "required"
+            operation,
+            service.authority.backend,
+            access,
+            target,
+            registration.head.generation + 1,
+            now,
+            policy.permit_wrapping,
+            policy.mode == "required",
         )
         record = str(uuid5(UUID(operation), target.id))
         pointer, sealed = service.seal(access, record, INTENT, as_data(intent))

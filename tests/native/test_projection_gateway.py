@@ -65,8 +65,8 @@ def test_gateway_policy_key_isolation_and_same_app_boundary(runtime: Runtime, da
         target.id, runtime.access.scope, GitRemote(working, remote.as_uri(), "refs/heads/projection", {}), prepared.author, prepared.email
     )
     original = service.keys(runtime.access)
-    restricted = PermitKeys(original.keys, [])
-    keys = evolve(original, keys=restricted)
+    restricted = PermitKeys(original.keys, service.projection.permit_wrapping, [])
+    keys = evolve(original, wrapping=service.projection.permit_wrapping, keys=restricted)
     gateway = Gateway(service.authority, (destination,), lambda _: keys, lambda: None, service.budget)
     app = Builder(gateway, Admission(2), lambda: True, lambda: delegate.subject).build().test_client()
     arguments = {"target": target.id, "operation": operation, "permit": envelope, "bundle": bundle.encode(keys.limits)}

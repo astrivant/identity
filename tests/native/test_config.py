@@ -233,11 +233,15 @@ def test_gateway_readiness_uses_only_current_permit_decryption(
 
     service = configured(runtime, databases)
     original = service.keys(runtime.access)
-    restricted = PermitKeys(original.keys, [])
-    keys = evolve(original, keys=restricted)
+    restricted = PermitKeys(original.keys, service.projection.permit_wrapping, [])
+    keys = evolve(original, wrapping=service.projection.permit_wrapping, keys=restricted)
     path = tmp_path / "probe.cbor"
     context = Context(runtime.access.scope.tenant, runtime.access.scope.identity, str(uuid4()), PERMIT)
-    path.write_bytes(codec.encode({"context": context.data(), "sealed": original.seal(context, {"probe": 1})}))
+    path.write_bytes(
+        codec.encode(
+            {"context": context.data(), "sealed": evolve(original, wrapping=service.projection.permit_wrapping).seal(context, {"probe": 1})}
+        )
+    )
     selected = evolve(settings, probe=evolve(settings.probe, envelope=str(path)))
     gateway = Gateway(service.authority, (), lambda _: keys, lambda: None, service.budget)
     assert Readiness(selected, gateway, Admission(1), runtime.access)()
@@ -246,7 +250,11 @@ def test_gateway_readiness_uses_only_current_permit_decryption(
     path.write_bytes(codec.encode({"context": wrong.data(), "sealed": original.seal(wrong, {"probe": 1})}))
     assert not Readiness(selected, gateway, Admission(1), runtime.access)()
     assert restricted.observed == [PERMIT]
-    path.write_bytes(codec.encode({"context": context.data(), "sealed": original.seal(context, {"probe": 1})}))
+    path.write_bytes(
+        codec.encode(
+            {"context": context.data(), "sealed": evolve(original, wrapping=service.projection.permit_wrapping).seal(context, {"probe": 1})}
+        )
+    )
     with psycopg.connect(databases.authority_admin) as admin:
         admin.execute("DELETE FROM witful_native_grants WHERE id=%s", (runtime.access.grant,))
     assert not Readiness(selected, gateway, Admission(1), runtime.access)()

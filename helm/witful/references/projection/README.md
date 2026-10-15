@@ -22,7 +22,7 @@ witful native projection probe --client CONTROLLER_CLIENT.json --output envelope
 Use separate gateway transport and broker-client Secrets from the controller's
 credentials. A shared client certificate could defeat the intended key-grant
 separation even when the runtime code uses only permit operations. Give the gateway caller and readiness identities
-only native `project` and broker `unwrap` for permit record kind 18; retain separate
+only native `project` and broker `unwrap` for the separate permit wrapping generation; retain separate
 current original-writer `project`/`export` grants. The controller prepares and signs
 permits. The gateway cannot sign them or decrypt the identity sidecar.
 
@@ -57,7 +57,7 @@ implementation status and the independent deployment-evidence contract.
 | `controller.configuration.broker.ca`                              | Reviewed gateway input; replace placeholders and independently sign the complete configuration | `/etc/broker-tls/ca.pem`                     |
 | `controller.configuration.broker.certificate`                     | Reviewed gateway input; replace placeholders and independently sign the complete configuration | `/etc/broker-tls/client.pem`                 |
 | `controller.configuration.broker.key`                             | Reviewed gateway input; replace placeholders and independently sign the complete configuration | `/etc/broker-tls/client.key`                 |
-| `controller.configuration.broker.wrapping`                        | Reviewed gateway input; replace placeholders and independently sign the complete configuration | `00000000-0000-4000-8000-000000000002`       |
+| `controller.configuration.broker.wrapping`                        | Reviewed gateway input; replace placeholders and independently sign the complete configuration | `00000000-0000-4000-8000-000000000025`       |
 | `controller.configuration.broker.signing`                         | Reviewed gateway input; replace placeholders and independently sign the complete configuration | `00000000-0000-4000-8000-000000000003`       |
 | `controller.configuration.broker.authority`                       | Reviewed gateway input; replace placeholders and independently sign the complete configuration | `00000000-0000-4000-8000-000000000004`       |
 | `controller.configuration.broker.policy`                          | Reviewed gateway input; replace placeholders and independently sign the complete configuration | `00000000-0000-4000-8000-000000000005`       |

@@ -59,7 +59,7 @@ controller:
       ca: /etc/broker-tls/ca.pem
       certificate: /etc/broker-tls/client.pem
       key: /etc/broker-tls/client.key
-      wrapping: 00000000-0000-4000-8000-000000000002
+      wrapping: 00000000-0000-4000-8000-000000000025
       signing: 00000000-0000-4000-8000-000000000003
       authority: 00000000-0000-4000-8000-000000000004
       policy: 00000000-0000-4000-8000-000000000005

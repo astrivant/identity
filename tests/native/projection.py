@@ -9,8 +9,11 @@ from uuid import uuid4
 
 import psycopg
 from attrs import evolve, frozen
+from cryptography.hazmat.primitives.asymmetric import rsa
 from witful.exceptions import NativeError
-from witful.native.projection.models import PERMIT, Policy, Target
+from witful.native.projection.models import Policy, Target
+
+from tests.native.conftest import Keys
 
 if TYPE_CHECKING:
     from witful.native.context import Context
@@ -45,20 +48,26 @@ def configured(runtime: Runtime, databases: Databases) -> Service:
         str(uuid4()),
         str(uuid4()),
     )
-    return evolve(runtime.service, projection=Policy(mode="required", targets=(target,), max_entries=1))
+    wrapping = str(uuid4())
+    custody = runtime.service.keys(runtime.access).keys
+    assert isinstance(custody, Keys)
+    custody.wrapping[wrapping] = rsa.generate_private_key(public_exponent=65537, key_size=3072)
+    return evolve(runtime.service, projection=Policy(mode="required", targets=(target,), permit_wrapping=wrapping, max_entries=1))
 
 
 @frozen
 class PermitKeys:
     """
-    Model the independently configured broker grant that can unwrap only publication permits.
+    Model the released broker's independent wrapping-generation allowlist for publication permits.
 
     Attributes:
         source (KeyService): Independent synthetic key custody.
+        generation (str): The only wrapping generation admitted by this gateway grant.
         observed (list[int]): Requested record kinds without input values.
     """
 
     source: KeyService
+    generation: str
     observed: list[int]
 
     def invoke(self, action: Literal["wrap", "unwrap", "sign"], generation: str, context: Context, payload: bytes) -> bytes:
@@ -75,6 +84,6 @@ class PermitKeys:
             bytes: Authorized permit data key only.
         """
         self.observed.append(context.kind)
-        if action != "unwrap" or context.kind != PERMIT:
+        if action != "unwrap" or generation != self.generation:
             raise NativeError("denied")
         return self.source.invoke(action, generation, context, payload)

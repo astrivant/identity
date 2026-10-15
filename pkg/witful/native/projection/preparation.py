@@ -135,7 +135,12 @@ def prepare(service: Service, access: Access, target: str, author: str, email: s
     blob, tree, commit = bundle.objects()
     permit = Permit(intent, context, expected, hashlib.sha256(raw).hexdigest(), commit[1], author, email, recorded)
     bundle_pointer, bundle_object = service.seal(access, str(uuid5(UUID(pointer.record), "bundle")), BUNDLE, raw)
-    permit_pointer, permit_object = service.seal(access, str(uuid5(UUID(pointer.record), "permit")), PERMIT, as_data(permit))
+    # The released broker scopes grants by key generation, not record kind. Never share this wrapping key with identity content.
+    if intent.permit_wrapping == keys.wrapping:
+        raise NativeError("denied")
+    permit_keys = evolve(keys, wrapping=intent.permit_wrapping)
+    permit_service = evolve(service, keys=lambda _: permit_keys)
+    permit_pointer, permit_object = permit_service.seal(access, str(uuid5(UUID(pointer.record), "permit")), PERMIT, as_data(permit))
     prepared = Prepared(intent, bundle_pointer, permit_pointer, expected, commit[1], tree[1], blob[1], author, email, recorded)
     updated, prepared_object = service.seal(access, pointer.record, PREPARED, as_data(prepared))
 

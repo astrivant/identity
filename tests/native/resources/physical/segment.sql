@@ -1,0 +1,1 @@
+SELECT pg_walfile_name(pg_current_wal_lsn());

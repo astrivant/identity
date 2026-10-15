@@ -23,8 +23,13 @@ from agent_broker_sdk.client import CryptoClient
 from attrs import evolve
 from cryptography.hazmat.primitives import serialization
 from witful.exceptions import NativeError
+from witful.knowledge.contracts import as_data
 from witful.native.broker import BrokerKeys
+from witful.native.context import Context
+from witful.native.projection.models import PERMIT
+from witful.native.projection.preparation import load, prepare
 
+from tests.native.projection import configured
 from tests.native.runtime import lesson
 
 if TYPE_CHECKING:
@@ -33,10 +38,11 @@ if TYPE_CHECKING:
     from cryptography.hazmat.primitives.asymmetric import ed25519, rsa
 
     from tests.native.conftest import Fixture
+    from tests.native.database import Databases
     from tests.native.runtime import Runtime
 
 
-def test_native_records_use_released_sdk_over_mtls(runtime: Runtime, fixture: Fixture, tmp_path: Path) -> None:
+def test_native_records_use_released_sdk_over_mtls(runtime: Runtime, fixture: Fixture, tmp_path: Path, databases: Databases) -> None:
     """
     Require an enrolled certificate and current broker grant for actual native writes and reads through the released SDK.
 
@@ -44,6 +50,7 @@ def test_native_records_use_released_sdk_over_mtls(runtime: Runtime, fixture: Fi
         runtime (Runtime): Real native data/control boundary with synthetic grants.
         fixture (Fixture): Independently held synthetic cryptographic keys and verification pins.
         tmp_path (Path): Disposable synthetic policy and certificate workspace.
+        databases (Databases): Test-only native grant administrator.
 
     Returns:
         None: Real service/client TLS round trips preserve records; certificate substitution, revocation and outage fail closed.
@@ -51,6 +58,8 @@ def test_native_records_use_released_sdk_over_mtls(runtime: Runtime, fixture: Fi
     root = tmp_path / "broker"
     root.mkdir()
     access = runtime.access
+    base = configured(runtime, databases)
+    permit_generation = base.projection.permit_wrapping
     authority, policy_revision = str(uuid4()), str(uuid4())
     keys: dict[str, rsa.RSAPrivateKey | ed25519.Ed25519PrivateKey] = {**fixture.keys.wrapping, **fixture.keys.signing}
     secrets = {
@@ -59,7 +68,7 @@ def test_native_records_use_released_sdk_over_mtls(runtime: Runtime, fixture: Fi
         ).decode()
         for generation, key in keys.items()
     }
-    configured = {
+    configured_keys = {
         generation: Key(
             Credential("op://synthetic/" + generation + "/key"),
             "wrapping" if generation in fixture.keys.wrapping else "signing",
@@ -84,7 +93,10 @@ def test_native_records_use_released_sdk_over_mtls(runtime: Runtime, fixture: Fi
             4102444800,
             all_records=True,
         )
-        policy = Policy(configured, {access.grant: grant})
+        gateway_grant = str(uuid4())
+        gateway_fingerprint = hashlib.sha256(ssl.PEM_cert_to_DER_cert((root / "bravo.pem").read_text())).hexdigest()
+        permit_grant = evolve(grant, certificate_sha256=gateway_fingerprint, actions=("unwrap",), keys=(permit_generation,))
+        policy = Policy(configured_keys, {access.grant: grant, gateway_grant: permit_grant})
         write_private(policy_path, contracts.data(policy))
         provider = SyntheticProvider(secrets, [])
         crypto = CryptoService(policy_path, provider, application.broker.ledger)
@@ -96,10 +108,24 @@ def test_native_records_use_released_sdk_over_mtls(runtime: Runtime, fixture: Fi
             client = CryptoClient(url, root / "ca.pem", root / "alpha.pem", root / "alpha.key")
             custody = BrokerKeys(client, access.grant, access.task, authority, policy_revision)
             envelope = evolve(fixture.service, keys=custody)
-            service = evolve(runtime.service, keys=lambda _: envelope)
+            service = evolve(base, keys=lambda _: envelope)
             service.append(access, str(uuid4()), "main", None, (lesson(),))
             record = service.history(access, "main")[0][0].id
             assert service.read(access, record) == lesson()
+            _, prepared = prepare(service, access, service.projection.targets[0].id, "Synthetic Export", "fixture@example.invalid")
+            bundle, permit, raw_permit = load(service, access, prepared)
+            gateway_client = CryptoClient(url, root / "ca.pem", root / "bravo.pem", root / "bravo.key")
+            gateway_custody = BrokerKeys(gateway_client, gateway_grant, access.task, authority, policy_revision)
+            gateway_keys = evolve(envelope, keys=gateway_custody, wrapping=permit_generation)
+            context = Context(access.scope.tenant, access.scope.identity, prepared.permit.record, PERMIT)
+            assert gateway_keys.open(context, raw_permit) == as_data(permit)
+            # These denials come from the released broker and maintained policy evaluator, not a test-only kind guard.
+            with pytest.raises(NativeError, match="unavailable"):
+                gateway_keys.open(permit.context, bundle.blob)
+            with pytest.raises(NativeError, match="unavailable"):
+                gateway_custody.invoke("sign", envelope.signing, context, b"0" * 32)
+            with pytest.raises(NativeError, match="unavailable"):
+                gateway_keys.seal(context, {"probe": 1})
             denied_client = CryptoClient(url, root / "ca.pem", root / "bravo.pem", root / "bravo.key")
             denied = evolve(service, keys=lambda _: evolve(envelope, keys=evolve(custody, client=denied_client)))
             with pytest.raises(NativeError, match="unavailable"):

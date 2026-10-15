@@ -1,0 +1,124 @@
+{
+  "profile": "witful-native-cbor-v1",
+  "source": "https://www.rfc-editor.org/rfc/rfc8949.html#section-4.2.3",
+  "valid": [
+    {
+      "name": "null",
+      "value": null,
+      "hex": "f6",
+      "sha256": "2c84224580c73c005db6612e1b646f81f833e0a85a508ea0a57d4b9016eafe81"
+    },
+    {
+      "name": "true",
+      "value": true,
+      "hex": "f5",
+      "sha256": "7044a55a722237735ab4565142daece05077f6a282e0b3b9a6f7413a5c37204c"
+    },
+    {
+      "name": "false",
+      "value": false,
+      "hex": "f4",
+      "sha256": "a9243cb6f14c35f828891707e029c613c8321db37732f05f73917bb42651b92e"
+    },
+    {
+      "name": "zero",
+      "value": 0,
+      "hex": "00",
+      "sha256": "17043979c3fc99ba03ca6ddb6f624c95551d9893af2205ffd52360b9d7e673b4"
+    },
+    {
+      "name": "negative",
+      "value": -1,
+      "hex": "20",
+      "sha256": "66c77dbd622fced9435f2a5dc1d3c8fa364b86815fba5fb6f883dd385fb24c48"
+    },
+    {
+      "name": "width",
+      "value": 24,
+      "hex": "1818",
+      "sha256": "6d97a9d060779f702eb8cca19ea22298981c83f7d9402a2991b6416db6f9165e"
+    },
+    {
+      "name": "signed-max",
+      "value": {
+        "$integer": "9223372036854775807"
+      },
+      "hex": "1b7fffffffffffffff",
+      "sha256": "06affac4b2d8a6814c0150e6a62c32a6e84dad7d9ac9e86ec8be17b0fe72f55a"
+    },
+    {
+      "name": "signed-min",
+      "value": {
+        "$integer": "-9223372036854775808"
+      },
+      "hex": "3b7fffffffffffffff",
+      "sha256": "7fe2fb2564c714ab1bedca3683983167ac4297e2642a64063e5354dce6d475e2"
+    },
+    {
+      "name": "bytes",
+      "value": {
+        "$bytes": "00ff"
+      },
+      "hex": "4200ff",
+      "sha256": "ee3805580bd4fe073f9efd67f201fa552074e7d17af153d8aee338be75906e74"
+    },
+    {
+      "name": "empty-array",
+      "value": [],
+      "hex": "80",
+      "sha256": "89dd5b1f64247b8da98fff0fda7726bceb91e1c6ad84d477830189e71c715b6f"
+    },
+    {
+      "name": "empty-map",
+      "value": {},
+      "hex": "a0",
+      "sha256": "4b6f0a37f08f82cb09e0e7a9cd7c0820578866b9309b01b4b8cd2043b5101c6f"
+    },
+    {
+      "name": "key-order",
+      "value": {
+        "aa": 1,
+        "z": 0
+      },
+      "hex": "a2617a0062616101",
+      "sha256": "ec7432cec7b664471eccb5c90c7d7e4524de6f6104b8ddc8a8dde207ed1f63d1"
+    },
+    {
+      "name": "unicode-composed",
+      "value": "\u00e9",
+      "hex": "62c3a9",
+      "sha256": "d8d1d939887a87d3a5c2ce7c8413a9306585a4219fafe8b66f606305bd560aee"
+    },
+    {
+      "name": "unicode-decomposed",
+      "value": "e\u0301",
+      "hex": "6365cc81",
+      "sha256": "c98a60d590e37977ed40031ac601787f4d7356cb490909ef19239ff7ff8ceaae"
+    },
+    {
+      "name": "nested",
+      "value": {
+        "a": [
+          true,
+          null,
+          {
+            "$bytes": "01"
+          }
+        ]
+      },
+      "hex": "a1616183f5f64101",
+      "sha256": "4b07bb03103c7bc87f4655b39f00a4cb65c3deb95b04ff33a706b3618d920026"
+    }
+  ],
+  "invalid": [
+    "1800",
+    "9fff",
+    "a2616101616102",
+    "c001",
+    "f93c00",
+    "a2616202616101",
+    "00ff",
+    "1b8000000000000000",
+    "3b8000000000000000"
+  ]
+}

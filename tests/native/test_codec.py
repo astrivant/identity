@@ -92,3 +92,47 @@ def test_budgets_and_exact_original_bytes() -> None:
             encode(value, limits)
     original = {"source": b'{ "value": 1 }\r\n', "text": "e\u0301"}
     assert decode(encode(original)) == original
+
+
+def test_shared_cross_language_vectors() -> None:
+    """
+    Verify the same independent byte and hash fixtures consumed by the maintained JavaScript codec in CI.
+
+    Returns:
+        None: Python agrees with the language-neutral registry, including signed integer limits and exact Unicode bytes.
+    """
+    import json
+    from pathlib import Path
+
+    from witful.native.wire import mapping, sequence, text
+
+    def materialize(value: object) -> object:
+        """
+        Recover fixture byte and integer wrappers without changing actual native values.
+
+        Args:
+            value (object): JSON fixture node.
+
+        Returns:
+            object: Exact value supported by the version-one native codec.
+        """
+        if isinstance(value, list):
+            return [materialize(item) for item in value]
+        if isinstance(value, dict):
+            if set(value) == {"$bytes"}:
+                return bytes.fromhex(text(value["$bytes"]))
+            if set(value) == {"$integer"}:
+                return int(text(value["$integer"]))
+            return {key: materialize(item) for key, item in value.items()}
+        return value
+
+    values = mapping(json.loads((Path(__file__).parent / "resources/codec-v1.json").read_text()), {"profile", "source", "valid", "invalid"})
+    for item in sequence(values["valid"]):
+        vector = mapping(item, {"name", "value", "hex", "sha256"})
+        value = materialize(vector["value"])
+        assert encode(value).hex() == vector["hex"]
+        assert decode(bytes.fromhex(text(vector["hex"]))) == value
+        assert digest(value).hex() == vector["sha256"]
+    for raw in sequence(values["invalid"]):
+        with pytest.raises(NativeError, match="invalid"):
+            decode(bytes.fromhex(text(raw)))

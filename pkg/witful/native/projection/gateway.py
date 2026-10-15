@@ -128,9 +128,12 @@ class Gateway:
         record = str(uuid5(UUID(operation), identifier(target)))
         context = Context(access.scope.tenant, access.scope.identity, str(uuid5(UUID(record), "permit")), PERMIT)
         keys = self.keys(access)
+        if keys.verify(context, envelope)["w"] != keys.wrapping:
+            raise NativeError("denied")
         permit = parse(keys.open(context, envelope), Permit)
         if (
-            permit.intent.operation != operation
+            permit.intent.permit_wrapping != keys.wrapping
+            or permit.intent.operation != operation
             or permit.intent.target.id != target
             or permit.context != Context(access.scope.tenant, access.scope.identity, record, BACKUP)
             or (permit.author, permit.email) != (destination.author, destination.email)

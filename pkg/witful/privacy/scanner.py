@@ -33,6 +33,11 @@ _RULES = {
     "profile-url": re.compile(r"https?://(?:[a-z]+\.)?linkedin\.com/in/[^\s/\"<>]+", re.I),
     "private-key": re.compile(r"-----BEGIN (?:RSA |EC |OPENSSH |ENCRYPTED )?PRIVATE KEY-----"),
 }
+# npm scopes use @ as a namespace separator in these package paths, not as an email delimiter.
+_NPM_REFERENCES = re.compile(
+    r"(?<![A-Za-z0-9_/@])(?:node_modules/|https://registry\.npmjs\.org/)"
+    r"@[a-z0-9][a-z0-9._-]*/[a-z0-9][a-z0-9._-]*(?=$|[/\"'\s),:])"
+)
 _SAFE_HOMES = {"/home/runner", "/home/witful"}
 _SYNTHETIC_EMAIL_DOMAINS = {"example.com", "example.org", "example.net"}
 _ENVELOPES = {"collection/sources.enc.json", "collection/figures.enc.json"}
@@ -106,6 +111,7 @@ def scan_text(text: str, terms: Sequence[str] = ()) -> tuple[tuple[int, str], ..
         tuple[tuple[int, str], ...]: Stable unique line/rule pairs, without matched data.
     """
     found: set[tuple[int, str]] = set()
+    packages = tuple(match.span() for match in _NPM_REFERENCES.finditer(text))
 
     for rule, pattern in _RULES.items():
         for match in pattern.finditer(text):
@@ -114,6 +120,8 @@ def scan_text(text: str, terms: Sequence[str] = ()) -> tuple[tuple[int, str], ..
             if rule == "personal-home" and value in _SAFE_HOMES:
                 continue
             if rule == "email":
+                if any(start <= match.start() and match.end() <= end for start, end in packages):
+                    continue
                 # GitHub uses this shared SSH principal; it is not a personal email address.
                 if value == "git@github.com":
                     continue

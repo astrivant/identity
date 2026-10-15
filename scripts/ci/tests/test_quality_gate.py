@@ -15,7 +15,18 @@ import pytest
 import yaml
 
 ROOT = Path(__file__).resolve().parents[3]
-REQUIRED = ("distributions", "learning", "lint", "orchestration", "privacy", "provider-contracts", "security", "tests", "views")
+REQUIRED = (
+    "distributions",
+    "learning",
+    "lint",
+    "native-physical",
+    "orchestration",
+    "privacy",
+    "provider-contracts",
+    "security",
+    "tests",
+    "views",
+)
 
 
 def gate_result(payload: str) -> int:

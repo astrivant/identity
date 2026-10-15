@@ -69,7 +69,9 @@ def test_required_delivery_survives_lost_reply_and_process_reconstruction(runtim
         "fixture@example.invalid",
     )
     original = service.keys(runtime.access)
-    keys = evolve(original, keys=PermitKeys(original.keys, []))
+    keys = evolve(
+        original, wrapping=service.projection.permit_wrapping, keys=PermitKeys(original.keys, service.projection.permit_wrapping, [])
+    )
     gateway = Gateway(service.authority, (destination,), lambda _: keys, lambda: None, service.budget)
     requests: list[dict[str, object]] = []
 
