@@ -234,6 +234,32 @@ class ExportRecipient:
 
 
 @frozen
+class DerivationTarget:
+    """
+    Bind a fork/split destination alias to an independently provisioned identity and grant.
+
+    Attributes:
+        name (str): Unique request-facing destination alias.
+        backend (str): Existing configured backend UUID, including the controller's own adapter.
+        tenant (str): Recipient tenant UUID.
+        identity (str): Recipient identity UUID, distinct from the parent and every sibling.
+        grant (str): Independently provisioned destination grant; configuration cannot create authority.
+        task (str): Destination task approved by that grant.
+        epoch (int): Expected recipient authority epoch.
+        policy (str): Expected recipient policy revision UUID.
+    """
+
+    name: str
+    backend: str
+    tenant: str
+    identity: str
+    grant: str
+    task: str
+    epoch: int
+    policy: str
+
+
+@frozen
 class Settings:
     """
     Compose the complete deployment-owned configuration; credentials are read from existing authoritative environment names.
@@ -248,6 +274,7 @@ class Settings:
         budget (Budget): Explicit native operation limits.
         destinations (tuple[Backend, ...]): Explicit inactive migration targets covered by the same signed deployment evidence.
         archives (tuple[ArchivePath, ...]): Identity-bound original Git source/restore locations, empty by default.
+        derivations (tuple[DerivationTarget, ...]): Independently provisioned fork/split destinations, empty by default.
         recipients (tuple[ExportRecipient, ...]): Explicit identity-bound public sharing recipients, empty by default.
         envelope (codec.Limits): Per-record binary payload and structural bounds, including explicit full-history package capacity.
         version (Literal[1]): Configuration schema version.
@@ -262,6 +289,7 @@ class Settings:
     budget: Budget = Budget()
     destinations: tuple[Backend, ...] = ()
     archives: tuple[ArchivePath, ...] = ()
+    derivations: tuple[DerivationTarget, ...] = ()
     recipients: tuple[ExportRecipient, ...] = ()
     envelope: codec.Limits = codec.DEFAULT_LIMITS
     version: Literal[1] = 1
@@ -346,6 +374,13 @@ def load(path: Path) -> Settings:
             Recipient(recipient.generation, base64.b64decode(recipient.public, validate=True), recipient.fingerprint).key()
         except ValueError:
             raise NativeError("invalid") from None
+    if len({target.name for target in settings.derivations}) != len(settings.derivations):
+        raise NativeError("invalid")
+    for target in settings.derivations:
+        for value in (target.backend, target.tenant, target.identity, target.grant, target.task, target.policy):
+            identifier(value)
+        if not target.name or target.epoch < 1 or target.backend not in {backend.id for backend in backends}:
+            raise NativeError("invalid")
     runtime = settings.runtime
     if any(
         value < 1

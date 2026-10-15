@@ -5,7 +5,7 @@ PostgreSQL or a local bare Git store. It implements the shared binary and encryp
 contracts proposed in [RFC 74](https://github.com/astrivant/product-research/pull/74)
 and [RFC 75](https://github.com/astrivant/product-research/pull/75).
 
-Implementation is under review. Projection, fork/split, operational evidence and the full acceptance report are being completed
+Implementation is under review. Projection, operational evidence and the full acceptance report are being completed
 on the implementation branch. Existing managed collections retain their remote
 storage block. This document does not authorize a migration or a private pilot.
 
@@ -106,6 +106,59 @@ An empty selection records reviewed non-adoption. Ordered parents and the
 candidate remain intact. The target's existing journal hashes are never rewritten
 to make a competing chain fit. The durable prepared operation retains its review
 permission, so ordinary write permission cannot finish a revoked review.
+
+## Independently scoped fork and split
+
+`native ref fork` publishes one independently scoped reviewed adoption;
+`native ref split` publishes several together. Each target must already have an
+empty registered identity, its own current grant and key-service policy, and a
+configured `controller.configuration.derivations` alias. Each alias names `name`,
+`backend`, `tenant`, `identity`, `grant`, `task`, `epoch` and `policy`. Its backend
+must be the current adapter or an explicit configured destination. The caller's
+actual TLS subject must be independently approved in every scope. Configuration
+creates neither identities nor grants. All participants must share the same
+independently administered authority database for atomic publication; cross-authority
+splits are rejected.
+
+The parent requires `derive`, `review`, `export` and `write`. Every child requires
+`derive`, `import` and `write`. The protected JSON review document contains `reason`
+and a `children` array. Each child specifies its configured `destination` alias,
+new `ref`, and `selections`; each selection contains source revision UUIDs in
+`sources` and explicitly reviewed `domain`/`value` content. These values must form
+a valid new child history. No journal hash is silently rewritten to fit a subset.
+
+```sh
+witful native ref split --client CLIENT --expected REVIEWED_FRONTIER_UUID \
+  --operation STABLE_OPERATION_UUID --input protected-child-review.json \
+  --output protected-publication-receipt.json
+```
+
+Select the exact source frontier from an acknowledged `native recovery reconcile`
+result and review records through `native record history`. A source change before
+preparation conflicts. A fork uses the same review shape with exactly one child;
+a split requires at least two. Each child receives new honest native adoption
+revisions, selected source mappings and the pinned source frontier. Parent and
+sibling references grant no traversal. Whole original import files and unselected
+ancestry are excluded. The parent's encrypted decision retains all output mappings
+and explicit omissions, while its original records remain unchanged.
+
+The controller seals and verifies every candidate before atomically freezing all
+participants in the authority database. That durable encrypted preparation includes
+the exact parent and child transactions. Data copies happen outside control-plane
+locks and remain inaccessible to normal readers and writers. After independent
+readback of every exact receipt/frontier, one authority transaction acknowledges
+and unfreezes every participant. An injected failure on the final child update
+rolls back all acknowledgments, so ordinary clients cannot observe a partly
+published split. This is atomic service visibility, not a distributed transaction
+across the independent data stores.
+
+An interrupted command must be retried with its unchanged operation ID, review and
+configured bindings. It resumes the original bytes and times. Revocation prevents
+further progress or result release; it does not undo ciphertext already copied.
+Prepared groups cannot be automatically canceled or partially activated. Retain
+their fences and restore independently approved access through the administrator's
+reviewed recovery process before resuming. No runtime command creates permissions,
+removes partially copied data or rewrites the prepared review.
 
 ## Migration and reverse migration
 

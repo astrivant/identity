@@ -112,6 +112,22 @@ receipts after interruption and report the last verified remote state, not assum
 recovery. Setup, key creation, and unrelated agent launches still require task scope.
 
 
+## Operate protected native storage
+
+Use [native storage](docs/native-storage.md) for the explicit controller profile,
+current grants, configured custody and recovery commands. Select only reviewed
+backend, original-Git, recipient and derivation aliases. Keep received exports
+inactive until independently pinned signature/frontier verification succeeds.
+Recipient sharing discloses full retained history and its recovery data keys;
+reviewed fork/split publishes only explicitly selected new child histories.
+
+A prepared split freezes the parent and every independently authorized child until
+all exact transactions are verified and published together. Resume with the same
+operation ID and review; retain fences on denial or uncertainty. Reading this
+entrypoint does not authorize provisioning grants, key changes, production
+migration, disclosure or deployment. Existing managed collections retain their
+separate remote-storage protection contract.
+
 ## Continual learning
 
 Use [periodic decision reviews](docs/continual-learning.md) at session boundaries

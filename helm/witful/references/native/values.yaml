@@ -33,6 +33,7 @@
 ## @param controller.configuration.runtime.admission Reviewed reference input; replace placeholders to match the independently signed deployment configuration
 ## @param controller.configuration.runtime.working_directory Reviewed reference input; replace placeholders to match the independently signed deployment configuration
 ## @param controller.configuration.runtime.graceful_timeout Reviewed reference input; replace placeholders to match the independently signed deployment configuration
+## @param controller.configuration.derivations [array] Explicit independently provisioned fork/split target scopes and grant bindings
 ## @param controller.configuration.recipients [array] Reviewed identity-bound public export recipients; private recipient keys never enter this chart
 ## @param controller.configuration.budget.revisions Reviewed reference input; replace placeholders to match the independently signed deployment configuration
 ## @param controller.configuration.budget.refs Reviewed reference input; replace placeholders to match the independently signed deployment configuration
@@ -91,6 +92,7 @@ controller:
       admission: 4
       working_directory: /run/witful
       graceful_timeout: 30
+    derivations: []
     recipients: []
     budget:
       revisions: 4096

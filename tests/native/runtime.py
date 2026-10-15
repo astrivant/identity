@@ -75,7 +75,7 @@ def runtime(request: pytest.FixtureRequest, databases: Databases, fixture: Fixtu
                 access.grant,
                 access.subject,
                 access.task,
-                ["read", "write", "traverse", "recover", "export", "review", "rotate", "import", "migrate"],
+                ["read", "write", "traverse", "recover", "export", "review", "rotate", "import", "migrate", "derive"],
                 ["*"],
             ),
         )

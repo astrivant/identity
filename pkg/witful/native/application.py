@@ -243,7 +243,13 @@ def build(settings: Settings) -> Runtime:
         evolve(service, store=target, authority=evolve(service.authority, backend=identifier)) for identifier, target in targets.items()
     )
     application = Builder(
-        service, admission, readiness, destinations=destinations, archives=settings.archives, recipients=settings.recipients
+        service,
+        admission,
+        readiness,
+        destinations=destinations,
+        archives=settings.archives,
+        derivations=settings.derivations,
+        recipients=settings.recipients,
     ).build()
     application.extensions["witful.runtime"] = admission
     return Runtime(application, service, admission)

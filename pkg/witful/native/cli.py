@@ -124,7 +124,7 @@ def execute(args: argparse.Namespace, parser: argparse.ArgumentParser) -> int:
                 require_protected(args.output.parent)
             if args.output.exists():
                 raise NativeError("conflict")
-        if operation in {"append", "merge"}:
+        if operation in {"append", "merge", "fork", "split"}:
             require_protected(args.input)
             with args.input.open("rb") as source:
                 raw = source.read(client.settings.max_bytes + 1)
@@ -159,6 +159,29 @@ def execute(args: argparse.Namespace, parser: argparse.ArgumentParser) -> int:
                 "selections": selections,
                 "reason": text(review["reason"]),
             }
+        elif operation in {"fork", "split"}:
+            review = mapping(imported, {"reason", "children"})
+            children: list[dict[str, object]] = []
+            for value in sequence(review["children"]):
+                child = mapping(value, {"destination", "ref", "selections"})
+                selections = []
+                for value in sequence(child["selections"]):
+                    selection = mapping(value, {"sources", "domain", "value"})
+                    selections.append(
+                        {
+                            "sources": [text(source) for source in sequence(selection["sources"])],
+                            "entry": domains.encode(Entry(text(selection["domain"]), selection["value"])),
+                        }
+                    )
+                children.append({"destination": text(child["destination"]), "ref": text(child["ref"]), "selections": selections})
+            arguments = {
+                "operation": args.operation,
+                "expected": args.expected,
+                "mode": operation,
+                "reason": text(review["reason"]),
+                "children": children,
+            }
+            operation = "derive"
         elif operation == "migrate":
             arguments = {"operation": args.operation, "destination": args.destination}
         elif operation == "migration-abort":

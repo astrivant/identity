@@ -137,6 +137,7 @@ class Client:
                 "search",
                 "branch",
                 "merge",
+                "derive",
                 "recover",
                 "migrate",
                 "migration-abort",

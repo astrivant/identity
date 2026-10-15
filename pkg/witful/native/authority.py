@@ -15,6 +15,7 @@ from witful.exceptions import NativeError, StorageError
 from witful.native import codec
 from witful.native.context import identifier
 from witful.native.postgres import head_row, sql
+from witful.native.storage import Scope  # noqa: TC001 - Access is serialized through runtime cattrs type resolution.
 from witful.native.wire import binary, decode_batch, encode_batch, integer, mapping, text
 from witful.storage.connection import connect
 
@@ -23,7 +24,7 @@ if TYPE_CHECKING:
 
     import psycopg
 
-    from witful.native.storage import Batch, Head, Scope, Store
+    from witful.native.storage import Batch, Head, Store
 
 __all__ = ["Access", "Authority", "Grant", "Registration"]
 
@@ -97,7 +98,7 @@ class Registration:
         policy (str): Current policy revision UUID.
         head (Head): Last acknowledged durable frontier.
         pending (bytes | None): Exact ciphertext-only prepared transaction requiring reconciliation.
-        transition (bytes | None): Durable migration fence; only current migration admission may continue it.
+        transition (bytes | None): Durable migration or grouped derivation fence; only that admitted recovery protocol may continue it.
     """
 
     backend: str
@@ -165,47 +166,115 @@ class Authority:
                 connection.execute(sql("synchronous"), ("on",))
                 if connection.execute(sql("durability")).fetchone() != ("on", "on"):
                     raise NativeError("denied")
-                row = connection.execute(sql("authority-lock"), (access.scope.tenant, access.scope.identity)).fetchone()
-                if row is None or len(row) != 8:
-                    raise NativeError("denied")
-                registration = Registration(
-                    str(row[0]),
-                    integer(row[1]),
-                    str(row[2]),
-                    head_row(row[3:6]),
-                    None if row[6] is None else binary(row[6]),
-                    None if row[7] is None else binary(row[7]),
-                )
-                if registration.backend != self.backend or registration.epoch != access.epoch or registration.policy != access.policy:
-                    raise NativeError("conflict")
-                if registration.transition is not None and action != "migrate":
-                    raise NativeError("unknown")
-                grant_row = connection.execute(
-                    sql("authority-grant"), (access.scope.tenant, access.scope.identity, access.policy, access.grant)
-                ).fetchone()
-                if grant_row is None:
-                    raise NativeError("denied")
-                subject, task, actions, records, starts, expires = grant_row
-                if not isinstance(actions, list) or not isinstance(records, list):
-                    raise NativeError("invalid")
-                grant = Grant(
-                    text(subject),
-                    str(task),
-                    tuple(text(item) for item in actions),
-                    tuple(text(item) for item in records),
-                    integer(starts),
-                    integer(expires),
-                )
-                with as_file(files("witful.native").joinpath("resources", "authorization.conf")) as model:
-                    evaluator: Evaluator = Enforcer(str(model), enable_log=False)
-                permissions = (action, *requirements)
-                if action == "write" and registration.pending is not None:
-                    permission, _ = self.candidate(registration.pending)
-                    permissions += (permission,)
-                for permission in permissions:
-                    if evaluator.enforce(grant, access.subject, access.task, permission, record, now) is not True:
-                        raise NativeError("denied")
+                registration = self.locked(connection, access, action, record, now, requirements)
                 yield connection, registration
+        except StorageError as error:
+            if isinstance(error, NativeError):
+                raise
+            raise NativeError("unknown") from None
+
+    def locked(
+        self,
+        connection: psycopg.Connection[tuple[object, ...]],
+        access: Access,
+        action: str,
+        record: str,
+        now: int,
+        requirements: tuple[str, ...] = (),
+    ) -> Registration:
+        """
+        Lock and authorize one scope inside a caller-owned control transaction without contacting storage or custody.
+
+        Args:
+            connection (psycopg.Connection[tuple[object, ...]]): Already validated independent authority transaction.
+            access (Access): Explicit authenticated scope and expected fencing state.
+            action (str): Primary native permission; only migration or derivation may inspect an existing transition.
+            record (str): Requested logical record or whole-identity wildcard.
+            now (int): Fresh trusted authorization time.
+            requirements (tuple[str, ...]): Additional permissions checked under the same locked grant.
+
+        Returns:
+            Registration: Locked current registration after maintained policy evaluation.
+        """
+        row = connection.execute(sql("authority-lock"), (access.scope.tenant, access.scope.identity)).fetchone()
+        if row is None or len(row) != 8:
+            raise NativeError("denied")
+        registration = Registration(
+            str(row[0]),
+            integer(row[1]),
+            str(row[2]),
+            head_row(row[3:6]),
+            None if row[6] is None else binary(row[6]),
+            None if row[7] is None else binary(row[7]),
+        )
+        if registration.backend != self.backend or registration.epoch != access.epoch or registration.policy != access.policy:
+            raise NativeError("conflict")
+        if registration.transition is not None and action not in {"migrate", "derive"}:
+            raise NativeError("unknown")
+        grant_row = connection.execute(
+            sql("authority-grant"), (access.scope.tenant, access.scope.identity, access.policy, access.grant)
+        ).fetchone()
+        if grant_row is None:
+            raise NativeError("denied")
+        subject, task, actions, records, starts, expires = grant_row
+        if not isinstance(actions, list) or not isinstance(records, list):
+            raise NativeError("invalid")
+        grant = Grant(
+            text(subject),
+            str(task),
+            tuple(text(item) for item in actions),
+            tuple(text(item) for item in records),
+            integer(starts),
+            integer(expires),
+        )
+        with as_file(files("witful.native").joinpath("resources", "authorization.conf")) as model:
+            evaluator: Evaluator = Enforcer(str(model), enable_log=False)
+        permissions = (action, *requirements)
+        if action == "write" and registration.pending is not None:
+            permission, _ = self.candidate(registration.pending)
+            permissions += (permission,)
+        for permission in permissions:
+            if evaluator.enforce(grant, access.subject, access.task, permission, record, now) is not True:
+                raise NativeError("denied")
+        return registration
+
+    @contextmanager
+    def group(
+        self,
+        members: tuple[tuple[Authority, Access, tuple[str, ...]], ...],
+        now: int,
+    ) -> Iterator[tuple[psycopg.Connection[tuple[object, ...]], tuple[Registration, ...]]]:
+        """
+        Lock independently provisioned scopes in deterministic order for one atomic derivation publication boundary.
+
+        Args:
+            members (tuple[tuple[Authority, Access, tuple[str, ...]], ...]): Explicit authority/access/permission bindings.
+            now (int): Fresh authorization time shared by the bounded transaction.
+
+        Yields:
+            tuple[psycopg.Connection[tuple[object, ...]], tuple[Registration, ...]]: One transaction and registrations in input order.
+        """
+        if not members or any(authority.database_url != self.database_url for authority, _, _ in members):
+            raise NativeError("denied")
+        scopes = [(access.scope.tenant, access.scope.identity) for _, access, _ in members]
+        if len(set(scopes)) != len(scopes):
+            raise NativeError("invalid")
+        try:
+            with connect(self.database_url) as connection:
+                if connection.execute(sql("role")).fetchone() != (False, False):
+                    raise NativeError("denied")
+                connection.execute(sql("synchronous"), ("on",))
+                if connection.execute(sql("durability")).fetchone() != ("on", "on"):
+                    raise NativeError("denied")
+                registrations: dict[int, Registration] = {}
+                # Every grouped writer locks the same ordered scope set before publishing any registry changes.
+                for index in sorted(range(len(members)), key=lambda item: scopes[item]):
+                    authority, access, permissions = members[index]
+                    registration = authority.locked(connection, access, "derive", "*", now, permissions)
+                    if registration.pending is not None:
+                        raise NativeError("unknown")
+                    registrations[index] = registration
+                yield connection, tuple(registrations[index] for index in range(len(members)))
         except StorageError as error:
             if isinstance(error, NativeError):
                 raise

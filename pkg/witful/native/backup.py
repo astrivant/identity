@@ -13,6 +13,8 @@ from attrs import field, frozen
 from witful.exceptions import NativeError
 from witful.native import codec, domains
 from witful.native.context import Context, identifier
+from witful.native.derivation_models import validate as validate_derivation
+from witful.native.kinds import DERIVATION
 from witful.native.models import Frontier, Pointer, Receipt, parse
 from witful.native.original_git import GIT_ARCHIVE, Repository
 from witful.native.original_git import validate_view as validate_original_git
@@ -286,6 +288,8 @@ def inspect(archive: Archive, keys: EnvelopeService, budget: Budget, monotonic: 
             value = view.open(pointer)
             if pointer.kind == GIT_ARCHIVE:
                 validate_original_git(view, parse(value, Repository))
+            elif pointer.kind == DERIVATION:
+                validate_derivation(value)
         for pointer in frontier.revisions:
             revision = view.revision(frontier, pointer.record)
             entry = domains.decode(view.open(revision.payload))

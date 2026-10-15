@@ -46,13 +46,18 @@ def options(operation: str) -> Callable[[argparse.ArgumentParser], None]:
         parser.add_argument(
             "--output", type=Path, required=operation in {"read", "history", "export", "share", "original-list", "original-restore"}
         )
-        if operation in {"append", "branch", "merge", "rotate", "migrate", "migration-abort", "original-capture"}:
+        if operation in {"append", "branch", "merge", "rotate", "migrate", "migration-abort", "original-capture", "fork", "split"}:
             parser.add_argument("--operation", required=True, help="Stable operation UUID; reuse unchanged after an unknown outcome")
         if operation in {"append", "history", "search"}:
             parser.add_argument("--ref", default="main")
         if operation == "append":
             parser.add_argument("--expected", help="Exact current logical head; omit only to create an absent branch")
             parser.add_argument("--input", type=Path, required=True, help="Explicit protected JSON import array of domain/value records")
+        if operation in {"fork", "split"}:
+            parser.add_argument("--expected", required=True, help="Exact reviewed parent frontier UUID")
+            parser.add_argument(
+                "--input", type=Path, required=True, help="Protected review document with reason and selected child outputs"
+            )
         if operation == "merge":
             parser.add_argument("--target", required=True)
             parser.add_argument("--candidate", required=True)
@@ -152,6 +157,8 @@ def command() -> Command:
                 "Manage native branch and retained tag refs",
                 children=(
                     leaf("create", "Create a branch or immutable tag only when absent", "branch"),
+                    leaf("fork", "Publish one independently scoped reviewed adoption", "fork"),
+                    leaf("split", "Publish multiple independently scoped reviewed adoptions atomically", "split"),
                     leaf("merge", "Apply explicit reviewed adoptions while retaining both histories", "merge"),
                 ),
             ),

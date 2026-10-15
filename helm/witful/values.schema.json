@@ -6458,6 +6458,50 @@
                                         ]
                                     }
                                 },
+                                "derivations": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "title": "DerivationTarget",
+                                        "additionalProperties": false,
+                                        "properties": {
+                                            "name": {
+                                                "type": "string"
+                                            },
+                                            "backend": {
+                                                "type": "string"
+                                            },
+                                            "tenant": {
+                                                "type": "string"
+                                            },
+                                            "identity": {
+                                                "type": "string"
+                                            },
+                                            "grant": {
+                                                "type": "string"
+                                            },
+                                            "task": {
+                                                "type": "string"
+                                            },
+                                            "epoch": {
+                                                "type": "integer"
+                                            },
+                                            "policy": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "required": [
+                                            "name",
+                                            "backend",
+                                            "tenant",
+                                            "identity",
+                                            "grant",
+                                            "task",
+                                            "epoch",
+                                            "policy"
+                                        ]
+                                    }
+                                },
                                 "recipients": {
                                     "type": "array",
                                     "items": {
@@ -7180,6 +7224,50 @@
                                                 "identity",
                                                 "path",
                                                 "mode"
+                                            ]
+                                        }
+                                    },
+                                    "derivations": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object",
+                                            "title": "DerivationTarget",
+                                            "additionalProperties": false,
+                                            "properties": {
+                                                "name": {
+                                                    "type": "string"
+                                                },
+                                                "backend": {
+                                                    "type": "string"
+                                                },
+                                                "tenant": {
+                                                    "type": "string"
+                                                },
+                                                "identity": {
+                                                    "type": "string"
+                                                },
+                                                "grant": {
+                                                    "type": "string"
+                                                },
+                                                "task": {
+                                                    "type": "string"
+                                                },
+                                                "epoch": {
+                                                    "type": "integer"
+                                                },
+                                                "policy": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "name",
+                                                "backend",
+                                                "tenant",
+                                                "identity",
+                                                "grant",
+                                                "task",
+                                                "epoch",
+                                                "policy"
                                             ]
                                         }
                                     },
