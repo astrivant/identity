@@ -52,9 +52,11 @@ remote-head leases when rebasing. Return clickable review order and current evid
 
 Persist user-defined commands in the owning collection and keep its README alias
 catalog and relevant Skill/Lesson aligned. By default, contribute reusable generic
-behavior to this upstream project through review, updating its README, this guide
-and the collection template. Keep personal bindings and records private. Do not
-claim a proposed definition has shipped to consumers before release/adoption.
+behavior to this upstream project through review, updating the
+[command catalog](docs/agent-commands.md), this guide and the collection template.
+Keep the upstream README linked to the catalog instead of duplicating it.
+Keep personal bindings and records private. Do not claim a proposed definition
+has shipped to consumers before release/adoption.
 
 ## Runtime provenance and startup reconciliation
 
