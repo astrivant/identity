@@ -1,6 +1,6 @@
 {
-  "source": "7cf4d43653d1d3d2df25bdc1a58815642588a9e3",
-  "report_sha256": "1788cbfa05633e35672879d24515874c054428c29128b6c51c4b505863c6f3a1",
+  "source": "391e93dc5046ea4599131a0e0dd55b0231de7bf0",
+  "report_sha256": "8ec2e39f167dfbdee8930290711e4c451bea1370538e8ec3eaf3b443ef824f32",
   "scope": "witful package, tests omitted; line and branch coverage",
   "covered_lines": 6155,
   "num_statements": 6951,
