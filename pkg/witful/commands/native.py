@@ -36,6 +36,11 @@ def options(operation: str) -> Callable[[argparse.ArgumentParser], None]:
             None: Arguments and dispatch metadata are registered once.
         """
         parser.set_defaults(native_operation=operation)
+        if operation == "project-check":
+            parser.add_argument("--operation", required=True)
+        if operation == "project-drain":
+            parser.add_argument("--target", required=True, help="Opaque configured projection destination")
+            parser.add_argument("--scheduled", action="store_true", help="Honor configured disabled/manual/interval/batch thresholds")
         if operation == "schema":
             parser.add_argument("--kind", choices=("server", "client", "evidence", "recipient"), default="server")
             return
@@ -44,7 +49,9 @@ def options(operation: str) -> Callable[[argparse.ArgumentParser], None]:
             return
         parser.add_argument("--client", type=Path, required=True)
         parser.add_argument(
-            "--output", type=Path, required=operation in {"read", "history", "export", "share", "original-list", "original-restore"}
+            "--output",
+            type=Path,
+            required=operation in {"read", "history", "export", "share", "original-list", "original-restore", "project-probe"},
         )
         if operation in {"append", "branch", "merge", "rotate", "migrate", "migration-abort", "original-capture", "fork", "split"}:
             parser.add_argument("--operation", required=True, help="Stable operation UUID; reuse unchanged after an unknown outcome")
@@ -88,6 +95,20 @@ def options(operation: str) -> Callable[[argparse.ArgumentParser], None]:
             parser.add_argument("--query", required=True)
 
     return configure
+
+
+def tick_options(parser: argparse.ArgumentParser) -> None:
+    """
+    Configure one bounded scheduled delivery cycle, reusable from a CronJob or an explicit operator invocation.
+
+    Args:
+        parser (argparse.ArgumentParser): Parent-owned leaf parser.
+
+    Returns:
+        None: Typed scheduling inputs are registered without importing runtime services.
+    """
+    parser.add_argument("--client", type=Path, required=True)
+    parser.add_argument("--seconds", type=int, default=300, help="Complete bounded scheduling-cycle time budget")
 
 
 def disclosure_options(parser: argparse.ArgumentParser) -> None:
@@ -160,6 +181,17 @@ def command() -> Command:
                     leaf("fork", "Publish one independently scoped reviewed adoption", "fork"),
                     leaf("split", "Publish multiple independently scoped reviewed adoptions atomically", "split"),
                     leaf("merge", "Apply explicit reviewed adoptions while retaining both histories", "merge"),
+                ),
+            ),
+            Command(
+                "projection",
+                "Inspect and deliver retained encrypted remote projections",
+                children=(
+                    Command("tick", "Run one bounded configured scheduling cycle", tick_options, "witful.native.projection.cli"),
+                    leaf("drain", "Attempt one ordered candidate with durable retry state", "project-drain"),
+                    leaf("status", "Inspect backlog and independently verified frontiers", "project-status"),
+                    leaf("check", "Require the original operation's remote completion gate", "project-check"),
+                    leaf("probe", "Prepare a signed encrypted gateway readiness probe", "project-probe"),
                 ),
             ),
             Command(

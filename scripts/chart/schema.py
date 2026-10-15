@@ -140,6 +140,29 @@ def main() -> None:
     for path, constraints in rules.items():
         field(schema, path).update(constraints)
 
+    for name in ("seconds", "activeDeadlineSeconds", "startingDeadlineSeconds", "terminationGracePeriodSeconds"):
+        field(schema, f"controller.scheduler.{name}").update({"type": "integer", "minimum": 1})
+    for name in ("successfulJobsHistoryLimit", "failedJobsHistoryLimit"):
+        field(schema, f"controller.scheduler.{name}").update({"type": "integer", "minimum": 0})
+    field(schema, "controller.scheduler.clients").update(
+        {
+            "type": "array",
+            "default": [],
+            "items": {
+                "type": "object",
+                "required": ["name", "secretName", "key"],
+                "additionalProperties": False,
+                "properties": {
+                    "name": {"type": "string", "pattern": "^[a-z0-9]([-a-z0-9]*[a-z0-9])?$"},
+                    "secretName": {"type": "string", "minLength": 1},
+                    "key": {"type": "string", "minLength": 1},
+                },
+            },
+        }
+    )
+    field(schema, "controller.scheduler.secretMounts").update(rules["controller.secretMounts"])
+    field(schema, "controller.scheduler.networkPolicy.egress").update({"type": "array", "default": [], "items": {"type": "object"}})
+
     # Generate the complete controller configuration from the runtime model; disabled profiles may keep it empty.
     configuration = model_schema(Settings)
     field(schema, "controller.configuration").clear()
@@ -166,6 +189,8 @@ def main() -> None:
         "scheduling",
         "postgresql",
         "controller",
+        "controller.scheduler",
+        "controller.scheduler.networkPolicy",
         "controller.git",
         "controller.pdb",
         "controller.networkPolicy",

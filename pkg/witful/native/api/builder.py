@@ -19,6 +19,7 @@ from witful.native import codec
 from witful.native.api.archives import routes as archive_routes
 from witful.native.api.derivation import routes as derivation_routes
 from witful.native.api.maintenance import routes as maintenance_routes
+from witful.native.api.projection import routes as projection_routes
 from witful.native.api.records import routes
 from witful.native.api.sharing import routes as sharing_routes
 
@@ -87,6 +88,7 @@ class Builder:
             self.readiness,
             (
                 routes(self.service, self.authenticate),
+                projection_routes(self.service, self.authenticate),
                 maintenance_routes(self.service, self.authenticate, self.destinations),
                 archive_routes(self.service, self.authenticate, self.archives),
                 sharing_routes(self.service, self.authenticate, self.recipients),

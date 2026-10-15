@@ -88,6 +88,8 @@ class Policy:
     Attributes:
         mode (Literal["disabled", "manual", "interval", "batch", "required"]): Explicit delivery and completion policy.
         targets (tuple[Target, ...]): Reviewed identity-bound gateway destinations; no remote exists implicitly.
+        author (str): Honest component attribution for newly generated export commits.
+        email (str): Operator-reviewed exporter contact.
         interval_seconds (int): Minimum scheduled scan interval; a timer is not a durability guarantee.
         batch_size (int): Pending intent threshold for batch scheduling.
         max_entries (int): Maximum pending outbox items before refusing further affected writes.
@@ -100,6 +102,8 @@ class Policy:
 
     mode: Literal["disabled", "manual", "interval", "batch", "required"] = "disabled"
     targets: tuple[Target, ...] = ()
+    author: str = "Witful projection service"
+    email: str = "projection@example.invalid"
     interval_seconds: int = 60
     batch_size: int = 8
     max_entries: int = 64

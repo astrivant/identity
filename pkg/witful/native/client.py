@@ -139,6 +139,7 @@ class Client:
                 "merge",
                 "derive",
                 "project-deliver",
+                "project-probe",
                 "project-drain",
                 "project-status",
                 "project-check",

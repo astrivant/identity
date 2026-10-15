@@ -19,6 +19,7 @@ from witful.knowledge.contracts import as_data
 from witful.native import codec
 from witful.native.context import identifier
 from witful.native.models import parse
+from witful.native.projection.models import Policy
 from witful.native.service import Budget
 from witful.native.values import pack
 
@@ -165,6 +166,7 @@ class Probe:
         task (str): Explicit readiness task UUID.
         epoch (int): Expected current backend epoch.
         policy (str): Native authority policy revision UUID.
+        envelope (str): Projection-role signed encrypted readiness probe path; controller probes do not need a retained envelope.
     """
 
     tenant: str
@@ -173,6 +175,7 @@ class Probe:
     task: str
     epoch: int
     policy: str
+    envelope: str = ""
 
 
 @frozen
@@ -260,6 +263,36 @@ class DerivationTarget:
 
 
 @frozen
+class GatewayRemote:
+    """
+    Select a remote and its mounted SSH identity only within the isolated projection deployment.
+
+    Attributes:
+        id (str): Opaque target UUID matching the controller's accepted projection target.
+        tenant (str): Explicit approved tenant UUID.
+        identity (str): Explicit approved identity UUID.
+        url (str): Operator-owned SSH Git URL, with no embedded password or query.
+        ref (str): Exact remote branch ref.
+        directory (str): Existing or newly created gateway-owned fenced ciphertext directory under runtime working storage.
+        ssh_key (str): Mounted repository-scoped SSH key path, never a key value.
+        known_hosts (str): Independently reviewed pinned host-key file path.
+        author (str): Approved honest exporter attribution.
+        email (str): Approved exporter contact.
+    """
+
+    id: str
+    tenant: str
+    identity: str
+    url: str
+    ref: str
+    directory: str
+    ssh_key: str
+    known_hosts: str
+    author: str = "Witful projection service"
+    email: str = "projection@example.invalid"
+
+
+@frozen
 class Settings:
     """
     Compose the complete deployment-owned configuration; credentials are read from existing authoritative environment names.
@@ -276,6 +309,9 @@ class Settings:
         archives (tuple[ArchivePath, ...]): Identity-bound original Git source/restore locations, empty by default.
         derivations (tuple[DerivationTarget, ...]): Independently provisioned fork/split destinations, empty by default.
         recipients (tuple[ExportRecipient, ...]): Explicit identity-bound public sharing recipients, empty by default.
+        role (Literal["controller", "projection"]): Independently deployed runtime role; projection never opens native data storage.
+        projection (Policy): Controller delivery, backlog and required-completion policy.
+        gateway (tuple[GatewayRemote, ...]): Isolated projection-role remote allowlist, empty on native controllers.
         envelope (codec.Limits): Per-record binary payload and structural bounds, including explicit full-history package capacity.
         version (Literal[1]): Configuration schema version.
     """
@@ -291,6 +327,9 @@ class Settings:
     archives: tuple[ArchivePath, ...] = ()
     derivations: tuple[DerivationTarget, ...] = ()
     recipients: tuple[ExportRecipient, ...] = ()
+    role: Literal["controller", "projection"] = "controller"
+    projection: Policy = Policy()
+    gateway: tuple[GatewayRemote, ...] = ()
     envelope: codec.Limits = codec.DEFAULT_LIMITS
     version: Literal[1] = 1
 
@@ -335,6 +374,9 @@ def load(path: Path) -> Settings:
         settings = parse(json.loads(data), Settings)
     except (OSError, ValueError):
         raise NativeError("invalid") from None
+    from witful.native.projection.configuration import validate as validate_projection
+
+    validate_projection(settings)
     backends = (settings.backend, *settings.destinations)
     if len({backend.id for backend in backends}) != len(backends):
         raise NativeError("invalid")
@@ -409,7 +451,7 @@ def load(path: Path) -> Settings:
         raise NativeError("invalid")
     for signer in settings.broker.signers:
         identifier(signer.generation)
-    if any(backend.kind == "git" and (not backend.path or runtime.workers != 1) for backend in backends):
+    if settings.role == "controller" and any(backend.kind == "git" and (not backend.path or runtime.workers != 1) for backend in backends):
         raise NativeError("invalid")
     return settings
 

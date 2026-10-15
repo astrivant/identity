@@ -118,6 +118,7 @@ class Gateway:
         Returns:
             dict[str, object]: Bounded remote verification receipt over authenticated transport; local durability remains separate.
         """
+        started = time.monotonic()
         self.protection()
         identifier(operation)
         destination = next((item for item in self.targets if item.id == target and item.scope == access.scope), None)
@@ -145,7 +146,7 @@ class Gateway:
         with destination.remote.lock() as descriptor:
             self.protection()
             self.authorize(access, permit)
-            oid = destination.remote.publish(bundle, permit.expected, descriptor)
+            oid = destination.remote.publish(bundle, permit.expected, descriptor, started + self.budget.seconds)
             self.authorize(access, permit)
         self.protection()
         return {

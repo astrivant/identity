@@ -5,6 +5,7 @@ Use one fsynced Git root ref as the atomic publication boundary for ciphertext-o
 from __future__ import annotations
 
 import fcntl
+import math
 import os
 import selectors
 import signal
@@ -37,6 +38,7 @@ def git(
     environment: Mapping[str, str] | None = None,
     limit: int = 64 * 1024 * 1024,
     lock_fd: int | None = None,
+    seconds: float = 30.0,
 ) -> bytes:
     """
     Execute local Git plumbing with bounded time and redacted diagnostics.
@@ -48,15 +50,18 @@ def git(
         environment (Mapping[str, str] | None): Explicit exporter identity and time when creating new commits.
         limit (int): Maximum returned binary bytes.
         lock_fd (int | None): Recovery lock inherited by a ref-mutating child, retaining fencing after parent loss.
+        seconds (float): Positive remaining duration supplied by the owning complete operation.
 
     Returns:
         bytes: Successful Git output; process diagnostics are never reflected.
     """
+    if not math.isfinite(seconds) or seconds <= 0:
+        raise NativeError("unknown")
     if limit < 1 or (data is not None and len(data) > limit):
         raise NativeError("incomplete")
     pending = memoryview(data or b"")
     output = bytearray()
-    deadline = time.monotonic() + 30
+    deadline = time.monotonic() + seconds
     try:
         with subprocess.Popen(
             ["git", "-c", "core.fsync=all", "-c", "core.fsyncMethod=fsync", "-c", "gc.auto=0", *arguments],

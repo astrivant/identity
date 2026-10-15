@@ -50,10 +50,52 @@ separate format change. Returned-object limits do not bound fetched Git packfile
 the gateway deployment must also bound scratch storage and transfer execution.
 
 The core is exercised with synthetic policy, cryptography and real Git remotes,
-including a lost successful acknowledgment. Controller configuration, operational
-CLI, scheduled delivery and gateway chart wiring are still under implementation
-in this review branch. These library tests do not establish a deployed service or
-production failover evidence.
+including a lost successful acknowledgment. Runtime and deployment wiring are
+under review with this branch's remaining acceptance work. These tests do not
+establish a production deployment or failover evidence.
+
+Configure `projection.mode` as `disabled`, `manual`, `interval`, `batch` or
+`required`. The complete `projection` object exposes target TLS/grant references,
+exporter attribution, interval, batch threshold, entry/byte/lag budgets and bounded
+retry controls. Interval delivery becomes due after the oldest intent reaches the
+configured interval. Batch delivery becomes due at its count threshold or interval,
+so a final partial batch can drain. Required mode attempts accepted work on the
+next scheduling cycle and retains the separate completion gate.
+
+```bash
+witful native projection status --client CLIENT.json
+witful native projection drain --client CLIENT.json --target DESTINATION_UUID
+witful native projection check --client CLIENT.json --operation OPERATION_UUID
+witful native projection tick --client CLIENT.json --seconds 300
+```
+
+`drain` makes one bounded attempt and retains backoff. Add `--scheduled` to honor
+disabled/manual/interval/batch deferral; an explicit manual drain can recover
+already accepted work after scheduling is disabled. `check` exits nonzero until
+all originally required destinations have independently verified receipts. A lost
+or accidentally removed pending index entry cannot replace that evidence. `tick`
+uses server-owned retry policy for one bounded cycle, handles SIGTERM/SIGINT, and
+reports remaining work. A scheduled cycle is distinct from workload completion.
+
+Deploy the [gateway reference](../helm/witful/references/projection/README.md) as a
+separate release with `role: projection`. Its configuration retains the original
+backend UUID for independent epoch checks but never opens that backend. Use
+separate gateway broker-client and transport certificates, an unwrap-only broker
+grant limited to permit kind 18, pinned SSH host keys and a repository-scoped SSH
+identity. Prepare a signed encrypted probe through `native projection probe` and
+mount it at `probe.envelope`; readiness verifies current permit-key availability
+without needing domain decryption or signing. Reissue the probe after changing
+its configured signing/wrapping generations.
+
+Enable `controller.scheduler` on the controller release for one CronJob per
+explicit client Secret. Scheduler TLS mounts are separate from the controller's
+custody and database mounts. Jobs use a distinct service account, no service-account
+token, memory working storage, an explicit deadline and deny-by-default network
+policy. Configure approved DNS/controller egress and the controller's corresponding
+ingress. The tick interval's Kubernetes schedule limits scheduling precision;
+the controller still applies its own interval/batch policy. Server liveness remains
+independent of remote availability. Every gateway Git subprocess shares the
+remaining complete-operation deadline, including post-push verification.
 
 ## Transaction and trust boundaries
 

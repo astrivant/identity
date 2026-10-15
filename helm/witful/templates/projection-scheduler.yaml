@@ -1,0 +1,129 @@
+{{- if and .Values.controller.enabled .Values.controller.scheduler.enabled }}
+{{- $root := . }}
+{{- $scheduler := .Values.controller.scheduler }}
+{{- if eq (default "controller" .Values.controller.configuration.role) "projection" }}
+{{- fail "delivery schedulers belong to the controller release, not the isolated gateway" }}
+{{- end }}
+{{- if empty $scheduler.clients }}
+{{- fail "delivery scheduler requires at least one independently scoped client Secret" }}
+{{- end }}
+{{- if le (int $scheduler.activeDeadlineSeconds) (int $scheduler.seconds) }}
+{{- fail "scheduler activeDeadlineSeconds must exceed its complete CLI seconds budget" }}
+{{- end }}
+{{- $names := list }}
+{{- range $client := $scheduler.clients }}
+{{- $name := printf "%s-delivery-%s" $root.Release.Name $client.name }}
+{{- if or (has $client.name $names) (gt (len $name) 52) }}
+{{- fail "scheduler client names must be unique and generated CronJob names at most 52 characters" }}
+{{- end }}
+{{- $names = append $names $client.name }}
+{{- $selector := dict "app.kubernetes.io/name" "witful" "app.kubernetes.io/instance" $root.Release.Name "app.kubernetes.io/component" "projection-scheduler" }}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ $name }}
+  labels: {{- toYaml $selector | nindent 4 }}
+automountServiceAccountToken: false
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ $name }}
+  labels: {{- toYaml $selector | nindent 4 }}
+spec:
+  schedule: {{ $scheduler.schedule | quote }}
+  concurrencyPolicy: Forbid
+  startingDeadlineSeconds: {{ $scheduler.startingDeadlineSeconds }}
+  successfulJobsHistoryLimit: {{ $scheduler.successfulJobsHistoryLimit }}
+  failedJobsHistoryLimit: {{ $scheduler.failedJobsHistoryLimit }}
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      activeDeadlineSeconds: {{ $scheduler.activeDeadlineSeconds }}
+      template:
+        metadata:
+          labels: {{- toYaml $selector | nindent 12 }}
+        spec:
+          restartPolicy: Never
+          serviceAccountName: {{ $name }}
+          automountServiceAccountToken: false
+          terminationGracePeriodSeconds: {{ $scheduler.terminationGracePeriodSeconds }}
+          securityContext: {{- toYaml $root.Values.podSecurityContext | nindent 12 }}
+          {{- with $root.Values.imagePullSecrets }}
+          imagePullSecrets:
+            {{- range . }}
+            - name: {{ . | quote }}
+            {{- end }}
+          {{- end }}
+          {{- with $root.Values.scheduling.nodeSelector }}
+          nodeSelector: {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with $root.Values.scheduling.tolerations }}
+          tolerations: {{- toYaml . | nindent 12 }}
+          {{- end }}
+          containers:
+            - name: delivery
+              image: "{{ $root.Values.image.repository }}:{{ $root.Values.image.tag }}"
+              imagePullPolicy: {{ $root.Values.image.pullPolicy }}
+              command: [/usr/bin/tini, -g, --, witful]
+              args: [native, projection, tick, --client, /etc/witful/client/client.json, --seconds, {{ $scheduler.seconds | quote }}]
+              securityContext: {{- toYaml $root.Values.containerSecurityContext | nindent 16 }}
+              resources: {{- toYaml $scheduler.resources | nindent 16 }}
+              env:
+                - name: WITFUL_SECURE_TEMP
+                  value: /run/witful
+                - name: TMPDIR
+                  value: /run/witful
+                - name: MPLCONFIGDIR
+                  value: /run/witful/matplotlib
+                - name: XDG_CACHE_HOME
+                  value: /run/witful/cache
+              volumeMounts:
+                - name: client
+                  mountPath: /etc/witful/client
+                  readOnly: true
+                - name: working
+                  mountPath: /run/witful
+                {{- range $scheduler.secretMounts }}
+                - name: {{ .name | quote }}
+                  mountPath: {{ .mountPath | quote }}
+                  readOnly: true
+                {{- end }}
+          volumes:
+            - name: client
+              secret:
+                secretName: {{ $client.secretName | quote }}
+                defaultMode: 0440
+                items:
+                  - key: {{ $client.key | quote }}
+                    path: client.json
+            - name: working
+              emptyDir:
+                medium: Memory
+                sizeLimit: {{ $root.Values.controller.workingSizeLimit | quote }}
+            {{- range $scheduler.secretMounts }}
+            - name: {{ .name | quote }}
+              secret:
+                secretName: {{ .secretName | quote }}
+                defaultMode: 0440
+                items: {{- toYaml .items | nindent 18 }}
+            {{- end }}
+{{- end }}
+{{- if $scheduler.networkPolicy.enabled }}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ $root.Release.Name }}-delivery
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: witful
+      app.kubernetes.io/instance: {{ $root.Release.Name }}
+      app.kubernetes.io/component: projection-scheduler
+  policyTypes: [Ingress, Egress]
+  ingress: []
+  egress: {{ toYaml $scheduler.networkPolicy.egress | nindent 4 }}
+{{- end }}
+{{- end }}

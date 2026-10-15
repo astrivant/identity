@@ -136,3 +136,69 @@ def test_native_git_requires_one_writer_and_retains_existing_volume() -> None:
     assert isinstance(spec, dict) and spec["strategy"] == {"type": "Recreate"}
     assert not any(item["kind"] == "PersistentVolumeClaim" for item in documents)
     assert {"name": "git", "persistentVolumeClaim": {"claimName": "reviewed-git"}} in spec["template"]["spec"]["volumes"]
+
+
+def test_projection_gateway_has_independent_single_writer_credentials() -> None:
+    """
+    Render the isolated gateway reference and reject replicas or source-database credentials that violate its privilege boundary.
+
+    Returns:
+        None: Gateway storage ownership, credentials and current complete configuration are reflected in actual Kubernetes output.
+    """
+    reference = _CHART / "references/projection/values.yaml"
+    result = subprocess.run(
+        ["helm", "template", "gateway", str(_CHART), "-f", str(reference)], capture_output=True, text=True, check=True, timeout=30
+    )
+    resources = {value["kind"]: value for value in yaml.safe_load_all(result.stdout)}
+    deployment = resources["Deployment"]["spec"]
+    assert deployment["replicas"] == 1 and deployment["strategy"] == {"type": "Recreate"}
+    pod = deployment["template"]["spec"]
+    assert {item["name"] for item in pod["volumes"]}.isdisjoint({"git", "source", "database"})
+    environment = {item["name"] for item in pod["containers"][0]["env"]}
+    assert "WITFUL_AUTHORITY_DATABASE_URL" in environment and "WITFUL_DATABASE_URL" not in environment
+    assert resources["NetworkPolicy"]["spec"]["egress"] == []
+    for override in (
+        "controller.replicas=2",
+        "controller.configuration.runtime.workers=2",
+        "controller.secretEnvironment.WITFUL_DATABASE_URL.name=unapproved,controller.secretEnvironment.WITFUL_DATABASE_URL.key=url",
+    ):
+        rejected = subprocess.run(
+            ["helm", "template", "gateway", str(_CHART), "-f", str(reference), "--set", override],
+            capture_output=True,
+            text=True,
+            timeout=30,
+            check=False,
+        )
+        assert rejected.returncode != 0
+
+
+def test_projection_scheduler_uses_one_network_policy_and_distinct_scoped_clients() -> None:
+    """
+    Render two client scheduling jobs without duplicating shared policy or inheriting controller database/broker credentials.
+
+    Returns:
+        None: Each bounded cycle owns its service account and client mount, with one shared deny-by-default network policy.
+    """
+    clients = json.dumps([{"name": name, "secretName": name + "-client", "key": "client.json"} for name in ("one", "two")])
+    resources = render("--set", "controller.scheduler.enabled=true", "--set-json", f"controller.scheduler.clients={clients}")
+    jobs = [item for item in resources if item["kind"] == "CronJob"]
+    policies: list[dict[str, object]] = []
+    for item in resources:
+        metadata = item["metadata"]
+        assert isinstance(metadata, dict)
+        if item["kind"] == "NetworkPolicy" and metadata["name"].endswith("-delivery"):
+            policies.append(item)
+    assert len(jobs) == 2 and len(policies) == 1
+    policy = policies[0]["spec"]
+    assert isinstance(policy, dict) and policy["egress"] == [] and policy["ingress"] == []
+    for job in jobs:
+        schedule = job["spec"]
+        assert isinstance(schedule, dict) and schedule["concurrencyPolicy"] == "Forbid"
+        spec = schedule["jobTemplate"]["spec"]
+        assert spec["backoffLimit"] == 0 and spec["activeDeadlineSeconds"] > 300
+        pod = spec["template"]["spec"]
+        assert pod["automountServiceAccountToken"] is False
+        container = pod["containers"][0]
+        assert container["args"][:3] == ["native", "projection", "tick"]
+        assert all("valueFrom" not in item for item in container["env"])
+        assert {item["name"] for item in pod["volumes"]} == {"client", "working"}

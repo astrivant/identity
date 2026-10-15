@@ -39,6 +39,7 @@ def test_remote_cas_and_lost_acknowledgment(tmp_path: Path, monkeypatch: pytest.
     first = prepare(b"synthetic-ciphertext-one", str(uuid4()), None, "Synthetic Export", "fixture@example.invalid", 100)
     first_oid = first.objects()[-1][1]
     observed: list[tuple[str, ...]] = []
+    budgets: list[float] = []
 
     def lost_reply(
         directory: Path,
@@ -47,6 +48,7 @@ def test_remote_cas_and_lost_acknowledgment(tmp_path: Path, monkeypatch: pytest.
         environment: Mapping[str, str] | None = None,
         limit: int = 64 * 1024 * 1024,
         lock_fd: int | None = None,
+        seconds: float = 30.0,
     ) -> bytes:
         """
         Lose a single push acknowledgment after real Git completes; retain all independent verification calls.
@@ -58,12 +60,14 @@ def test_remote_cas_and_lost_acknowledgment(tmp_path: Path, monkeypatch: pytest.
             environment (Mapping[str, str] | None): Explicit transport environment.
             limit (int): Original output limit.
             lock_fd (int | None): Actual inherited process fence.
+            seconds (float): Remaining complete transfer budget.
 
         Returns:
             bytes: Real command output except the one deliberately lost successful push reply.
         """
-        result = git(directory, arguments, data, environment, limit, lock_fd)
+        result = git(directory, arguments, data, environment, limit, lock_fd, seconds)
         observed.append(arguments)
+        budgets.append(seconds)
         if "push" in arguments and sum("push" in call for call in observed) == 1:
             raise NativeError("unknown")
         return result
@@ -71,6 +75,8 @@ def test_remote_cas_and_lost_acknowledgment(tmp_path: Path, monkeypatch: pytest.
     monkeypatch.setattr(transport, "git", lost_reply)
     with destination.lock() as descriptor:
         assert destination.publish(first, None, descriptor) == first_oid
+        assert 0 < budgets[-1] < budgets[0] <= 30
+        assert all(later <= earlier for earlier, later in zip(budgets, budgets[1:], strict=False))
         assert destination.publish(first, None, descriptor) == first_oid
     assert sum("push" in call for call in observed) == 1
     assert sum("fetch" in call for call in observed) >= 2

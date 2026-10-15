@@ -120,7 +120,7 @@ def execute(args: argparse.Namespace, parser: argparse.ArgumentParser) -> int:
         client = Client.load(args.client)
         arguments: object
         if args.output is not None:
-            if operation not in {"export", "share"}:
+            if operation not in {"export", "share", "project-probe"}:
                 require_protected(args.output.parent)
             if args.output.exists():
                 raise NativeError("conflict")
@@ -199,6 +199,10 @@ def execute(args: argparse.Namespace, parser: argparse.ArgumentParser) -> int:
             arguments = {"operation": args.operation, "path": args.path, "unreachable": args.unreachable, "reflogs": args.reflogs}
         elif operation == "original-restore":
             arguments = {"path": args.path, "record": args.record}
+        elif operation == "project-drain":
+            arguments = {"target": args.target, "scheduled": args.scheduled}
+        elif operation == "project-check":
+            arguments = {"operation": args.operation}
         elif operation == "read":
             arguments = {"record": args.record}
         elif operation == "history":
@@ -221,9 +225,16 @@ def execute(args: argparse.Namespace, parser: argparse.ArgumentParser) -> int:
                 history.append({"revision": record["revision"], "domain": entry.domain, "value": entry.value})
             result = history
         if args.output is not None:
-            write(args.output, result, encrypted=operation in {"export", "share"})
+            write(args.output, result, encrypted=operation in {"export", "share", "project-probe"})
         else:
             print(json.dumps(result, ensure_ascii=True))
+        if operation == "project-check":
+            response = mapping(result, {"operation", "durability", "remote_required", "complete", "pending", "verified"})
+            return 0 if response["complete"] is True else 1
+        if operation == "project-drain":
+            return (
+                0 if isinstance(result, dict) and result.get("state") in {"remote_verified", "idle", "disabled", "manual", "waiting"} else 1
+            )
         return 0
     except NativeError as error:
         print(str(error), file=sys.stderr)

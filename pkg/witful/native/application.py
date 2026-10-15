@@ -166,6 +166,8 @@ def build(settings: Settings) -> Runtime:
     Returns:
         Runtime: Complete service without launching a listener or creating keys, schemas or authorities.
     """
+    if settings.role != "controller":
+        raise NativeError("invalid")
     resource.setrlimit(resource.RLIMIT_CORE, (0, 0))
 
     def protection() -> None:
@@ -235,7 +237,9 @@ def build(settings: Settings) -> Runtime:
         custody = MeteredKeys(BrokerKeys(client, access.grant, access.task, broker.authority, broker.policy), admission)
         return EnvelopeService(custody, broker.wrapping, broker.signing, signers, settings.envelope)
 
-    service = Service(store, Authority(authority_url, settings.backend.id), keys, protection, settings.budget)
+    service = Service(
+        store, Authority(authority_url, settings.backend.id), keys, protection, settings.budget, projection=settings.projection
+    )
     probe = settings.probe
     access = Access(Scope(probe.tenant, probe.identity), fingerprint, probe.grant, probe.task, probe.epoch, probe.policy)
     readiness = Readiness(settings, service, admission, access)
@@ -265,4 +269,9 @@ def create_app() -> Flask:
     location = os.environ.get("WITFUL_NATIVE_CONFIG")
     if not location:
         raise NativeError("invalid")
-    return build(load(Path(location))).application
+    settings = load(Path(location))
+    if settings.role == "projection":
+        from witful.native.projection.application import build as build_gateway
+
+        return build_gateway(settings).application
+    return build(settings).application

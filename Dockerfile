@@ -5,7 +5,8 @@ ENV PATH="/opt/witful/bin:$PATH" MPLCONFIGDIR=/run/witful/matplotlib XDG_CACHE_H
 # Reap children and forward signals in both development and production targets.
 ARG TINI_VERSION=0.19.0-3+b8
 ARG GIT_VERSION=1:2.47.3-0+deb13u1
-RUN apt-get update && apt-get install --no-install-recommends -y tini="${TINI_VERSION}" git="${GIT_VERSION}" \
+ARG OPENSSH_CLIENT_VERSION=1:10.0p1-7+deb13u4
+RUN apt-get update && apt-get install --no-install-recommends -y tini="${TINI_VERSION}" git="${GIT_VERSION}" openssh-client="${OPENSSH_CLIENT_VERSION}" \
     && rm -rf /var/lib/apt/lists/*
 # Both runnable targets share the same non-root identity and owned working directory.
 RUN groupadd --gid 10001 witful && useradd --uid 10001 --gid witful --create-home witful

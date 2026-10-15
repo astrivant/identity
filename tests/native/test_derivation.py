@@ -273,3 +273,72 @@ def test_fork_api_uses_configured_target_and_rejects_mode_mismatch(runtime: Runt
     assert response.status_code == HTTPStatus.OK
     assert child.service.history(child.access, "main")[0][1] == child.selections[0].entry
     assert response.headers["Cache-Control"] == "no-store"
+
+
+def test_split_retains_projection_permissions_after_lost_ack(
+    runtime: Runtime, databases: Databases, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """
+    Enqueue each independently scoped split and keep its export requirement after a restart disables scheduling.
+
+    Args:
+        runtime (Runtime): Actual parent data adapter.
+        databases (Databases): Independent test authority administrator.
+        monkeypatch (pytest.MonkeyPatch): Lost acknowledgment after a real child commit.
+
+    Returns:
+        None: Recovery denies revoked projection and later reuses the exact outbox candidates in every scope.
+    """
+    from witful.native.projection.models import Policy
+    from witful.native.projection.status import completion, status
+
+    from tests.native.projection import configured
+    from tests.native.runtime import Runtime as FixtureRuntime
+
+    expected, outputs = children(runtime, databases)
+    source = configured(runtime, databases)
+    outputs = tuple(evolve(child, service=configured(FixtureRuntime(child.service, child.access), databases)) for child in outputs)
+    operation = str(uuid4())
+    original = type(source.store).commit
+
+    def lost(store: Git | Postgres, scope: Scope, batch: Batch) -> Head:
+        """
+        Lose the final child acknowledgment without discarding committed data.
+
+        Args:
+            store (Git | Postgres): Actual storage adapter.
+            scope (Scope): Independently scoped destination.
+            batch (Batch): Retained prepared transaction.
+
+        Returns:
+            Head: Committed frontier except at the injected unknown boundary.
+        """
+        result = original(store, scope, batch)
+        if scope == outputs[-1].access.scope:
+            raise NativeError("unknown")
+        return result
+
+    monkeypatch.setattr(type(source.store), "commit", lost)
+    with pytest.raises(NativeError, match="unknown"):
+        derive(source, runtime.access, operation, expected, outputs, "Reviewed projected split")
+    saved = tuple(
+        service.store.history(access.scope)[-1]
+        for service, access in ((source, runtime.access), *((child.service, child.access) for child in outputs))
+    )
+    source = evolve(source, projection=Policy())
+    outputs = tuple(evolve(child, service=evolve(child.service, projection=Policy())) for child in outputs)
+    with psycopg.connect(databases.authority_admin) as admin:
+        admin.execute("UPDATE witful_native_grants SET actions=array_remove(actions, 'project') WHERE id=%s", (outputs[-1].access.grant,))
+    monkeypatch.setattr(type(source.store), "commit", original)
+    with pytest.raises(NativeError, match="denied"):
+        derive(source, runtime.access, operation, expected, outputs, "Reviewed projected split")
+    with psycopg.connect(databases.authority_admin) as admin:
+        admin.execute("UPDATE witful_native_grants SET actions=array_append(actions, 'project') WHERE id=%s", (outputs[-1].access.grant,))
+    receipt = derive(source, runtime.access, operation, expected, outputs, "Reviewed projected split")
+    assert receipt.remote_required
+    for (service, access), batch in zip(
+        ((source, runtime.access), *((child.service, child.access) for child in outputs)), saved, strict=True
+    ):
+        assert service.store.history(access.scope)[-1] == batch
+        assert status(service, access)["queue_size"] == 1
+        assert not completion(service, access, operation)["complete"]

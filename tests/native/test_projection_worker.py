@@ -121,3 +121,57 @@ def test_required_delivery_survives_lost_reply_and_process_reconstruction(runtim
         result["oid"],
     ]
     verify(service, runtime.access, Archive(runtime.access.scope, service.store.history(runtime.access.scope)))
+
+
+def test_missing_pending_entry_does_not_satisfy_required_destination_set(runtime: Runtime, databases: Databases) -> None:
+    """
+    Detect a missing outbox entry by comparing completion against the originally accepted destination set.
+
+    Args:
+        runtime (Runtime): Real native backend.
+        databases (Databases): Explicit synthetic grant administrator.
+
+    Returns:
+        None: One verified destination cannot close a two-destination requirement even when the pending index is accidentally emptied.
+    """
+    service = configured(runtime, databases)
+    first_target = service.projection.targets[0]
+    second_target = evolve(first_target, id=str(uuid4()))
+    service = evolve(service, projection=evolve(service.projection, targets=(first_target, second_target), max_entries=2))
+    operation = str(uuid4())
+    service.append(runtime.access, operation, "main", None, (lesson(),))
+
+    def verified(target: Target, access: Access, arguments: dict[str, object], byte_limit: int) -> object:
+        """
+        Supply one trusted gateway result solely to exercise native completion bookkeeping; remote transport is tested separately.
+
+        Args:
+            target (Target): Selected destination.
+            access (Access): Current worker bindings.
+            arguments (dict[str, object]): Complete prepared candidate.
+            byte_limit (int): Explicit wire budget.
+
+        Returns:
+            object: Exact synthetic verified response for the first accepted destination only.
+        """
+        from witful.native.projection.bundle import Bundle
+
+        bundle = Bundle.decode(binary(arguments["bundle"]), service.keys(access).limits)
+        assert target == first_target and byte_limit == service.budget.bytes
+        return {"state": "remote_verified", "operation": operation, "target": target.id, "generation": 1, "oid": bundle.objects()[-1][1]}
+
+    deliver(service, runtime.access, first_target.id, "Synthetic Export", "fixture@example.invalid", verified)
+    registration, frontier = service.snapshot(runtime.access, "write", "*")
+    assert len(frontier.outbox) == 1
+    service.commit(
+        runtime.access,
+        str(uuid4()),
+        "synthetic-missing-index-fault",
+        registration,
+        evolve(frontier, outbox=()),
+        (),
+        service.monotonic(),
+        project=False,
+    )
+    result = completion(service, runtime.access, operation)
+    assert result["pending"] == 0 and result["verified"] == 1 and result["complete"] is False

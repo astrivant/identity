@@ -173,6 +173,23 @@ postgresql:
 ## @param controller.probes.readiness.timeoutSeconds Readiness command time budget
 ## @param controller.probes.liveness.failureThreshold Local listener failures before restart
 ## @param controller.probes.liveness.periodSeconds Liveness probe interval independent of upstream health
+## @param controller.scheduler.enabled Deploy bounded per-identity delivery CronJobs using only independently scoped client credentials
+## @param controller.scheduler.schedule Kubernetes CronJob schedule; the controller also enforces interval and batch policy
+## @param controller.scheduler.seconds Complete CLI cycle budget in seconds
+## @param controller.scheduler.activeDeadlineSeconds Pod execution deadline; must exceed the CLI cycle budget
+## @param controller.scheduler.terminationGracePeriodSeconds Shutdown budget for the bounded in-flight HTTPS request and interruptible backoff
+## @param controller.scheduler.networkPolicy.enabled Restrict scheduler ingress and explicit controller/DNS egress
+## @param controller.scheduler.networkPolicy.egress [array] Approved scheduler-only network egress rules; empty denies traffic
+## @param controller.scheduler.startingDeadlineSeconds Maximum late scheduled-start allowance
+## @param controller.scheduler.successfulJobsHistoryLimit Retained successful scheduling Jobs
+## @param controller.scheduler.failedJobsHistoryLimit Retained failed scheduling Jobs
+## @param controller.scheduler.clients [array] Identity client Secret references with name, secretName and key; each gets an independent CronJob
+## @param controller.scheduler.secretMounts [array] Scheduler-only TLS Secret projections; never inherit controller custody/database credentials
+## @extra controller.scheduler.resources Scheduler container resource requests and limits
+## @param controller.scheduler.resources.requests.cpu Requested scheduler CPU
+## @param controller.scheduler.resources.requests.memory Requested scheduler memory
+## @param controller.scheduler.resources.limits.cpu Maximum scheduler CPU
+## @param controller.scheduler.resources.limits.memory Maximum scheduler memory
 controller:
   enabled: false
   replicas: 2
@@ -203,3 +220,24 @@ controller:
     liveness:
       failureThreshold: 3
       periodSeconds: 10
+  scheduler:
+    enabled: false
+    schedule: "* * * * *"
+    seconds: 300
+    activeDeadlineSeconds: 330
+    startingDeadlineSeconds: 60
+    terminationGracePeriodSeconds: 35
+    networkPolicy:
+      enabled: true
+      egress: []
+    successfulJobsHistoryLimit: 1
+    failedJobsHistoryLimit: 3
+    clients: []
+    secretMounts: []
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: "1"
+        memory: 512Mi

@@ -23,6 +23,9 @@ from witful.native.values import pack
 if TYPE_CHECKING:
     from pathlib import Path
 
+    from tests.native.database import Databases
+    from tests.native.runtime import Runtime
+
 
 @pytest.fixture
 def settings(tmp_path: Path) -> Settings:
@@ -157,3 +160,93 @@ def test_recipient_configuration_is_scoped_and_pinned(settings: Settings, tmp_pa
         path.write_text(json.dumps(as_data(evolve(settings, recipients=recipients))))
         with pytest.raises(NativeError):
             load(path)
+
+
+def test_gateway_configuration_separates_remote_privilege(settings: Settings, tmp_path: Path) -> None:
+    """
+    Reject mixed controller/gateway roles and unsafe remote credential routing before any service starts.
+
+    Args:
+        settings (Settings): Synthetic complete signed-settings shape.
+        tmp_path (Path): Disposable configuration file.
+
+    Returns:
+        None: Only the explicit single-writer SSH gateway configuration is admitted.
+    """
+    from witful.native.config import GatewayRemote
+
+    remote = GatewayRemote(
+        str(uuid4()),
+        settings.probe.tenant,
+        settings.probe.identity,
+        "ssh://git@git.example.invalid/approved/identity.git",
+        "refs/heads/projection",
+        "/run/witful/destination",
+        "/etc/git/key",
+        "/etc/git/known_hosts",
+    )
+    configured = evolve(settings, role="projection", gateway=(remote,), probe=evolve(settings.probe, envelope="/etc/probe/envelope.cbor"))
+    path = tmp_path / "gateway.json"
+    path.write_text(json.dumps(as_data(configured)))
+    assert load(path) == configured
+    rejected = (
+        evolve(configured, role="controller"),
+        evolve(configured, runtime=evolve(configured.runtime, workers=2)),
+        evolve(configured, gateway=(remote, remote)),
+        evolve(configured, gateway=(evolve(remote, url="https://user:password@example.invalid/repository"),)),
+        evolve(configured, gateway=(evolve(remote, directory="/run/witful/../outside"),)),
+        evolve(configured, gateway=(evolve(remote, directory="/tmp/unreviewed"),)),
+        evolve(configured, probe=evolve(configured.probe, envelope="")),
+    )
+    for candidate in rejected:
+        path.write_text(json.dumps(as_data(candidate)))
+        with pytest.raises(NativeError):
+            load(path)
+
+
+def test_gateway_readiness_uses_only_current_permit_decryption(
+    settings: Settings,
+    runtime: Runtime,
+    databases: Databases,
+    tmp_path: Path,
+) -> None:
+    """
+    Verify real independent grant and key availability without requiring gateway signing or native data-store access.
+
+    Args:
+        settings (Settings): Synthetic deployment settings shape.
+        runtime (Runtime): Actual Git or PostgreSQL authority fixture.
+        databases (Databases): Synthetic independent grant administrator.
+        tmp_path (Path): Encrypted readiness probe directory.
+
+    Returns:
+        None: A valid permit probe passes while wrong kinds and revoked grants fail; no domain unwrap is attempted.
+    """
+    import psycopg
+    from witful.native.api.admission import Admission
+    from witful.native.context import Context
+    from witful.native.projection.application import Readiness
+    from witful.native.projection.gateway import Gateway
+    from witful.native.projection.models import PERMIT
+
+    from tests.native.projection import PermitKeys, configured
+
+    service = configured(runtime, databases)
+    original = service.keys(runtime.access)
+    restricted = PermitKeys(original.keys, [])
+    keys = evolve(original, keys=restricted)
+    path = tmp_path / "probe.cbor"
+    context = Context(runtime.access.scope.tenant, runtime.access.scope.identity, str(uuid4()), PERMIT)
+    path.write_bytes(codec.encode({"context": context.data(), "sealed": original.seal(context, {"probe": 1})}))
+    selected = evolve(settings, probe=evolve(settings.probe, envelope=str(path)))
+    gateway = Gateway(service.authority, (), lambda _: keys, lambda: None, service.budget)
+    assert Readiness(selected, gateway, Admission(1), runtime.access)()
+    assert restricted.observed == [PERMIT]
+    wrong = evolve(context, kind=1)
+    path.write_bytes(codec.encode({"context": wrong.data(), "sealed": original.seal(wrong, {"probe": 1})}))
+    assert not Readiness(selected, gateway, Admission(1), runtime.access)()
+    assert restricted.observed == [PERMIT]
+    path.write_bytes(codec.encode({"context": context.data(), "sealed": original.seal(context, {"probe": 1})}))
+    with psycopg.connect(databases.authority_admin) as admin:
+        admin.execute("DELETE FROM witful_native_grants WHERE id=%s", (runtime.access.grant,))
+    assert not Readiness(selected, gateway, Admission(1), runtime.access)()

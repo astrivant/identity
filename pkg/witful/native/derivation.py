@@ -20,6 +20,7 @@ from witful.native.derivation_models import ChildEvidence, Decision, Output
 from witful.native.kinds import DERIVATION, DOMAIN, FRONTIER, RECEIPT, REVISION
 from witful.native.models import Adoption, Frontier, Pointer, Receipt, Ref, Revision, parse
 from witful.native.postgres import sql
+from witful.native.projection.intents import enqueue
 from witful.native.storage import Head
 from witful.native.wire import binary, decode_batch, encode_batch, mapping, sequence, text
 
@@ -172,7 +173,11 @@ def child_candidate(
     archive, sealed = child.service.seal(child.access, str(uuid4()), DERIVATION, as_data(evidence))
     objects.append(sealed)
     frontier = Frontier(refs=(Ref(child.ref, parents[0], 1),), revisions=tuple(pointers), archives=(archive,))
-    batch, _ = child.service.candidate(child.access, operation, request, registration, frontier, tuple(objects))
+    frontier, additions = enqueue(child.service, child.access, operation, registration, frontier, tuple(objects))
+    required = child.service.projection.mode == "required" and bool(
+        child.service.projection.select(child.access.scope.tenant, child.access.scope.identity)
+    )
+    batch, _ = child.service.candidate(child.access, operation, request, registration, frontier, additions, remote_required=required)
     return batch, Output(
         child.access.scope,
         child.service.authority.backend,
@@ -243,13 +248,18 @@ def prepare(
         recorded,
     )
     decision, sealed = source.seal(access, str(uuid4()), DERIVATION, as_data(evidence))
+    frontier, additions = enqueue(
+        source, access, operation, registration, evolve(frontier, archives=(*frontier.archives, decision)), (sealed,)
+    )
+    required = source.projection.mode == "required" and bool(source.projection.select(access.scope.tenant, access.scope.identity))
     parent, _ = source.candidate(
         access,
         operation,
         request,
         registration,
-        evolve(frontier, archives=(*frontier.archives, decision)),
-        (sealed,),
+        frontier,
+        additions,
+        remote_required=required,
     )
     result = (parent, *batches)
     context = Context(access.scope.tenant, access.scope.identity, operation, PREPARATION)
@@ -368,6 +378,11 @@ def derive(
         if batch.operation != operation or batch.expected != registration.head:
             raise NativeError("conflict")
         verify_candidate(service, target_access, batch)
+    # Retain disclosure permissions from the exact prepared batches even if scheduling is disabled before recovery.
+    bindings = tuple(
+        (authority, target_access, tuple(dict.fromkeys((*permissions, *(("project", "export") if batch.outbox else ())))))
+        for (authority, target_access, permissions), batch in zip(bindings, batches, strict=True)
+    )
     if source.monotonic() - started > source.budget.seconds:
         raise NativeError("incomplete")
     # Freeze all scopes together. No child becomes readable because one data copy happens to finish first.

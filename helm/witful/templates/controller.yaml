@@ -1,6 +1,17 @@
 {{- if .Values.controller.enabled }}
 {{- $controller := .Values.controller }}
+{{- $gateway := eq (default "controller" $controller.configuration.role) "projection" }}
+{{- $component := ternary "projection" "native" $gateway }}
+{{- $name := printf "%s-%s" .Release.Name $component }}
 {{- $runtime := mergeOverwrite (dict "port" 8443 "workers" 1 "graceful_timeout" 30 "working_directory" "/run/witful") (default dict $controller.configuration.runtime) }}
+{{- if $gateway }}
+{{- if or (ne (int $controller.replicas) 1) (ne (int $runtime.workers) 1) }}
+{{- fail "projection gateway requires one replica and one worker with remote expected-head fencing" }}
+{{- end }}
+{{- if or $controller.git.existingClaim $controller.archiveVolumes (hasKey $controller.secretEnvironment (default "WITFUL_DATABASE_URL" $controller.configuration.backend.database_environment)) }}
+{{- fail "projection gateway cannot mount native data storage or its database credentials" }}
+{{- end }}
+{{- end }}
 {{- if le (int $controller.terminationGracePeriodSeconds) (int $runtime.graceful_timeout) }}
 {{- fail "controller termination budget must exceed runtime graceful_timeout" }}
 {{- end }}
@@ -13,6 +24,7 @@
 {{- end }}
 {{- end }}
 {{- $usesGit := false }}
+{{- if not $gateway }}
 {{- range concat (list $controller.configuration.backend) (default list $controller.configuration.destinations) }}
 {{- if eq .kind "git" }}
 {{- $usesGit = true }}
@@ -24,12 +36,13 @@
 {{- end }}
 {{- end }}
 {{- end }}
+{{- end }}
 {{- include "witful.validatePlacement" . }}
-{{- $selector := dict "app.kubernetes.io/name" "witful" "app.kubernetes.io/instance" .Release.Name "app.kubernetes.io/component" "native" }}
+{{- $selector := dict "app.kubernetes.io/name" "witful" "app.kubernetes.io/instance" .Release.Name "app.kubernetes.io/component" $component }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Release.Name }}-native
+  name: {{ $name }}
   labels: {{- toYaml $selector | nindent 4 }}
 data:
   settings.json: {{ $controller.configuration | toJson | quote }}
@@ -37,19 +50,19 @@ data:
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: {{ .Release.Name }}-native
+  name: {{ $name }}
   labels: {{- toYaml $selector | nindent 4 }}
 automountServiceAccountToken: false
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-native
+  name: {{ $name }}
   labels: {{- toYaml $selector | nindent 4 }}
 spec:
   replicas: {{ $controller.replicas }}
   strategy:
-    {{- if $usesGit }}
+    {{- if or $usesGit $gateway }}
     type: Recreate
     {{- else }}
     type: RollingUpdate
@@ -72,7 +85,7 @@ spec:
         {{- toYaml . | nindent 8 }}
         {{- end }}
     spec:
-      serviceAccountName: {{ .Release.Name }}-native
+      serviceAccountName: {{ $name }}
       automountServiceAccountToken: false
       terminationGracePeriodSeconds: {{ $controller.terminationGracePeriodSeconds }}
       securityContext: {{- toYaml .Values.podSecurityContext | nindent 8 }}
@@ -183,7 +196,7 @@ spec:
       volumes:
         - name: configuration
           configMap:
-            name: {{ .Release.Name }}-native
+            name: {{ $name }}
             defaultMode: 0440
         - name: working
           emptyDir:
@@ -210,7 +223,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Release.Name }}-native
+  name: {{ $name }}
   labels: {{- toYaml $selector | nindent 4 }}
 spec:
   type: ClusterIP
@@ -224,7 +237,7 @@ spec:
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
-  name: {{ .Release.Name }}-native
+  name: {{ $name }}
 spec:
   minAvailable: {{ $controller.pdb.minAvailable }}
   selector:
@@ -235,7 +248,7 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: {{ .Release.Name }}-native
+  name: {{ $name }}
 spec:
   podSelector:
     matchLabels: {{- toYaml $selector | nindent 6 }}

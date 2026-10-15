@@ -71,7 +71,21 @@ def status(service: Service, access: Access) -> dict[str, object]:
                 "recorded": result.recorded,
             }
     service.release(access, "project", "*", registration, started)
-    return {"queue_size": len(pending), "queue_bytes": size, "oldest_seconds": oldest, "pending": pending, "verified": verified}
+    policy = service.projection
+    return {
+        "queue_size": len(pending),
+        "queue_bytes": size,
+        "oldest_seconds": oldest,
+        "pending": pending,
+        "verified": verified,
+        "policy": {
+            "mode": policy.mode,
+            "attempts": policy.attempts,
+            "retry_seconds": policy.retry_seconds,
+            "retry_max_seconds": policy.retry_max_seconds,
+            "targets": [item.id for item in policy.select(access.scope.tenant, access.scope.identity)],
+        },
+    }
 
 
 def completion(service: Service, access: Access, operation: str) -> dict[str, object]:

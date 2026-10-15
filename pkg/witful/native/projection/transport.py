@@ -6,6 +6,8 @@ from __future__ import annotations
 
 import fcntl
 import os
+import stat
+import time
 from contextlib import contextmanager
 from pathlib import Path
 from tempfile import TemporaryDirectory
@@ -32,14 +34,14 @@ class GitRemote:
         remote (str): Operator-selected remote URL; request payloads cannot choose it.
         ref (str): Exact operator-selected branch ref, never a wildcard, deletion or refspec expression.
         environment (Mapping[str, str]): Explicit reviewed Git transport configuration; secret values stay in mounted files.
-        bytes (int): Candidate and returned-object bound; deployment storage quota also bounds fetched packfiles.
+        max_bytes (int): Candidate and returned-object bound; deployment storage quota also bounds fetched packfiles.
     """
 
     directory: Path
     remote: str
     ref: str
     environment: Mapping[str, str]
-    bytes: int = 64 * 1024 * 1024
+    max_bytes: int = 64 * 1024 * 1024
 
     def __attrs_post_init__(self) -> None:
         """
@@ -51,7 +53,7 @@ class GitRemote:
         status = self.directory.lstat()
         if not self.directory.is_dir() or self.directory.is_symlink() or status.st_uid != os.getuid() or status.st_mode & 0o077:
             raise NativeError("denied")
-        if not self.ref.startswith("refs/heads/") or not self.remote or self.remote.startswith("-") or self.bytes < 1:
+        if not self.ref.startswith("refs/heads/") or not self.remote or self.remote.startswith("-") or self.max_bytes < 1:
             raise NativeError("invalid")
         git(self.directory, ("check-ref-format", self.ref), environment=self.environment)
 
@@ -65,6 +67,9 @@ class GitRemote:
         """
         descriptor = os.open(self.directory / "delivery.lock", os.O_RDWR | os.O_CREAT | os.O_NOFOLLOW, 0o600)
         try:
+            status = os.fstat(descriptor)
+            if not stat.S_ISREG(status.st_mode) or status.st_uid != os.getuid() or status.st_mode & 0o077:
+                raise NativeError("denied")
             try:
                 fcntl.flock(descriptor, fcntl.LOCK_EX | fcntl.LOCK_NB)
             except BlockingIOError:
@@ -74,19 +79,53 @@ class GitRemote:
             # Closing our descriptor preserves the child's inherited lock after abrupt parent loss.
             os.close(descriptor)
 
-    def head(self, directory: Path, descriptor: int) -> str | None:
+    def command(
+        self,
+        directory: Path,
+        arguments: tuple[str, ...],
+        descriptor: int,
+        deadline: float,
+        data: bytes | None = None,
+        limit: int | None = None,
+    ) -> bytes:
+        """
+        Share one complete-operation deadline across every Git subprocess, including lost-acknowledgment verification.
+
+        Args:
+            directory (Path): Isolated current object database.
+            arguments (tuple[str, ...]): Package-owned exact Git command.
+            descriptor (int): Inherited current gateway fence.
+            deadline (float): Complete operation's monotonic deadline.
+            data (bytes | None): Exact optional object bytes.
+            limit (int | None): Optional tighter returned-byte limit.
+
+        Returns:
+            bytes: Bounded real Git output; an exhausted operation cannot admit another child process.
+        """
+        return git(
+            directory,
+            arguments,
+            data=data,
+            environment=self.environment,
+            limit=min(self.max_bytes, limit) if limit is not None else self.max_bytes,
+            lock_fd=descriptor,
+            seconds=deadline - time.monotonic(),
+        )
+
+    def head(self, directory: Path, descriptor: int, deadline: float) -> str | None:
         """
         Read the exact advertised branch, distinguishing absent state from transport uncertainty.
 
         Args:
             directory (Path): Disposable isolated Git repository.
             descriptor (int): Current inherited gateway fence.
+            deadline (float): Shared monotonic completion deadline for the whole transfer/readback.
 
         Returns:
             str | None: Exact remote OID, or no matching ref after a successful advertisement.
         """
-        raw = git(
-            directory, ("ls-remote", "--refs", "--", self.remote, self.ref), environment=self.environment, limit=4096, lock_fd=descriptor
+        raw = self.command(
+            directory, ("ls-remote", "--refs", "--", self.remote, self.ref), limit=4096, descriptor=descriptor, deadline=deadline
         )
         if not raw:
             return None
@@ -98,24 +137,26 @@ class GitRemote:
             raise NativeError("invalid")
         return oid
 
-    def readback(self, bundle: Bundle, descriptor: int) -> bool:
+    def readback(self, bundle: Bundle, descriptor: int, deadline: float | None = None) -> bool:
         """
         Fetch into a fresh object database, then compare exact commit/tree/blob bytes independently of the upload workspace.
 
         Args:
             bundle (Bundle): Exact prepared and authorized candidate.
             descriptor (int): Current inherited gateway fence.
+            deadline (float | None): Shared monotonic completion deadline for the whole transfer/readback.
 
         Returns:
             bool: Whether the remote branch exposes exactly this independently retrieved candidate.
         """
+        deadline = time.monotonic() + 30 if deadline is None else deadline
         with TemporaryDirectory(prefix="verify-", dir=self.directory) as temporary:
             directory = Path(temporary)
-            git(directory, ("init", "--bare", "."), environment=self.environment, lock_fd=descriptor)
+            self.command(directory, ("init", "--bare", "."), descriptor=descriptor, deadline=deadline)
             oid = bundle.objects()[-1][1]
-            if self.head(directory, descriptor) != oid:
+            if self.head(directory, descriptor, deadline) != oid:
                 return False
-            git(
+            self.command(
                 directory,
                 (
                     "-c",
@@ -127,21 +168,23 @@ class GitRemote:
                     self.remote,
                     f"{self.ref}:refs/heads/verify",
                 ),
-                environment=self.environment,
-                limit=self.bytes,
-                lock_fd=descriptor,
+                limit=self.max_bytes,
+                descriptor=descriptor,
+                deadline=deadline,
             )
-            fetched = git(directory, ("rev-parse", "refs/heads/verify"), environment=self.environment, lock_fd=descriptor).strip()
+            fetched = self.command(directory, ("rev-parse", "refs/heads/verify"), descriptor=descriptor, deadline=deadline).strip()
             if fetched != oid.encode("ascii"):
                 return False
             for kind, expected, payload in bundle.objects():
-                actual = git(directory, ("cat-file", kind, expected), environment=self.environment, limit=self.bytes, lock_fd=descriptor)
+                actual = self.command(
+                    directory, ("cat-file", kind, expected), limit=self.max_bytes, descriptor=descriptor, deadline=deadline
+                )
                 if actual != payload:
                     raise NativeError("invalid")
             # Recheck the advertised ref after object retrieval; a concurrent external writer is never silently adopted.
-            return self.head(directory, descriptor) == oid
+            return self.head(directory, descriptor, deadline) == oid
 
-    def publish(self, bundle: Bundle, expected: str | None, descriptor: int) -> str:
+    def publish(self, bundle: Bundle, expected: str | None, descriptor: int, deadline: float | None = None) -> str:
         """
         Perform only a parent-preserving expected-old update, resolving lost acknowledgments through independent readback.
 
@@ -149,49 +192,51 @@ class GitRemote:
             bundle (Bundle): Exact independently verified candidate, including its approved parent.
             expected (str | None): Durable expected remote head or explicit absent-ref boundary.
             descriptor (int): Current gateway lock, inherited by the transfer process.
+            deadline (float | None): Shared monotonic transfer deadline; standalone callers default to thirty seconds.
 
         Returns:
             str: Exact verified remote commit OID; uncertainty and divergence remain distinct failures.
         """
+        deadline = time.monotonic() + 30 if deadline is None else deadline
         parents = tuple(line[7:] for line in bundle.commit.split(b"\n\n", 1)[0].splitlines() if line.startswith(b"parent "))
         if parents != ((expected.encode("ascii"),) if expected is not None else ()):
             raise NativeError("invalid")
         oid = bundle.objects()[-1][1]
         with TemporaryDirectory(prefix="upload-", dir=self.directory) as temporary:
             directory = Path(temporary)
-            git(directory, ("init", "--bare", "."), environment=self.environment, lock_fd=descriptor)
-            current = self.head(directory, descriptor)
+            self.command(directory, ("init", "--bare", "."), descriptor=descriptor, deadline=deadline)
+            current = self.head(directory, descriptor, deadline)
             if current == oid:
-                if self.readback(bundle, descriptor):
+                if self.readback(bundle, descriptor, deadline):
                     return oid
                 raise NativeError("unknown")
             if current != expected:
                 raise NativeError("diverged")
             if expected is not None:
-                git(
+                self.command(
                     directory,
                     ("fetch", "--no-tags", "--no-write-fetch-head", self.remote, f"{self.ref}:refs/heads/base"),
-                    environment=self.environment,
-                    limit=self.bytes,
-                    lock_fd=descriptor,
+                    limit=self.max_bytes,
+                    descriptor=descriptor,
+                    deadline=deadline,
                 )
-                actual = git(directory, ("rev-parse", "refs/heads/base"), environment=self.environment, lock_fd=descriptor).strip()
+                actual = self.command(directory, ("rev-parse", "refs/heads/base"), descriptor=descriptor, deadline=deadline).strip()
                 if actual != expected.encode("ascii"):
                     raise NativeError("diverged")
             for kind, wanted, payload in bundle.objects():
-                actual = git(
+                actual = self.command(
                     directory,
                     ("hash-object", "-t", kind, "-w", "--stdin"),
                     data=payload,
-                    environment=self.environment,
-                    limit=self.bytes,
-                    lock_fd=descriptor,
+                    limit=self.max_bytes,
+                    descriptor=descriptor,
+                    deadline=deadline,
                 ).strip()
                 if actual != wanted.encode("ascii"):
                     raise NativeError("invalid")
             # The exact lease supplies CAS, while the previously verified commit parent prohibits a history rewrite.
             try:
-                git(
+                self.command(
                     directory,
                     (
                         "-c",
@@ -203,17 +248,17 @@ class GitRemote:
                         self.remote,
                         f"{oid}:{self.ref}",
                     ),
-                    environment=self.environment,
-                    limit=self.bytes,
-                    lock_fd=descriptor,
+                    limit=self.max_bytes,
+                    descriptor=descriptor,
+                    deadline=deadline,
                 )
             except NativeError as error:
                 if error.code != "unknown":
                     raise
                 # A lost acknowledgment does not authorize new bytes or imply the remote rejected the original candidate.
-                if self.readback(bundle, descriptor):
+                if self.readback(bundle, descriptor, deadline):
                     return oid
                 raise NativeError("unknown") from None
-            if not self.readback(bundle, descriptor):
+            if not self.readback(bundle, descriptor, deadline):
                 raise NativeError("unknown")
             return oid
