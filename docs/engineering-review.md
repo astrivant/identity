@@ -95,8 +95,7 @@ must be reviewed and rerun to a clean pass before publication.
 The protection proposal follows [GitHub's protected-branch contract](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches).
 The registry follow-up can compare files through the [PyPI JSON API](https://docs.pypi.org/api/json/).
 
-The repository privacy gate separately reviews the public logo by exact path and
-SHA-256 digest in `scripts/ci/checks/privacy.py`. The PNG has no metadata and was
-visually inspected as an unlabeled graph mark. Changed bytes require another
-review. Other binary files still fail closed; the package privacy scanner remains
-unchanged. Regression checks cover modified, renamed and staged asset bytes.
+The repository privacy gate uses the same public CLI in hooks and CI. It reports
+pattern findings separately from unsupported content and inspection errors; see
+[the PII scan contract](CLI.md#pii-scan-coverage). Binary assets require an appropriate
+content review before publication, rather than an asset-specific scanner exception.

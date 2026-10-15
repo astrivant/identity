@@ -9,7 +9,7 @@ import hashlib
 import json
 import re
 import subprocess
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal
 
 from attrs import frozen
 from jsonschema import ValidationError
@@ -21,7 +21,9 @@ if TYPE_CHECKING:
     from collections.abc import Sequence
     from pathlib import Path
 
-__all__ = ["Finding", "scan", "scan_text"]
+__all__ = ["Finding", "GapReason", "ScanGap", "ScanReport", "scan", "scan_report", "scan_text"]
+
+GapReason = Literal["binary-content", "non-utf8-content", "encrypted-envelope", "read-error", "invalid-envelope", "file-too-large"]
 
 _RULES = {
     "email": re.compile(r"\b[A-Z0-9.!#$%&'*+/=?^_`{|}~-]+@(?:[A-Z0-9-]+\.)+[A-Z]{2,}\b", re.I),
@@ -43,13 +45,53 @@ class Finding:
 
     Attributes:
         path (str): Relative path, replaced by a digest label if its name is itself sensitive.
-        line (int): One-based line number, or zero for file-level failures.
+        line (int): One-based line number, or zero for filename matches.
         rule (str): Detector identifier, never its matched value.
     """
 
     path: str
     line: int
     rule: str
+
+
+@frozen
+class ScanGap:
+    """
+    Identify uninspected content without confusing it with a detected pattern.
+
+    Attributes:
+        path (str): Repository-relative or redacted digest label, as for findings.
+        reason (GapReason): Bounded explanation without source data or exception details.
+    """
+
+    path: str
+    reason: GapReason
+
+
+@frozen
+class ScanReport:
+    """
+    Keep detector evidence, unsupported content and inspection failures separate.
+
+    Attributes:
+        findings (tuple[Finding, ...]): Actual pattern matches in filenames or inspected text.
+        skipped (tuple[ScanGap, ...]): Unsupported content or schema-validated encrypted envelopes.
+        errors (tuple[ScanGap, ...]): Files that could not be read or validated within the scan contract.
+    """
+
+    findings: tuple[Finding, ...]
+    skipped: tuple[ScanGap, ...]
+    errors: tuple[ScanGap, ...]
+
+    @property
+    def complete(self) -> bool:
+        """
+        State whether every selected payload was inspected as text.
+
+        Returns:
+            bool: False for skipped content or inspection errors, even without findings.
+        """
+        return not self.skipped and not self.errors
 
 
 def scan_text(text: str, terms: Sequence[str] = ()) -> tuple[tuple[int, str], ...]:
@@ -120,19 +162,43 @@ def _git(root: Path, *arguments: str) -> bytes:
 
 def scan(root: Path, *, staged: bool = False, terms: Sequence[str] = (), paths: Sequence[str] = ()) -> tuple[Finding, ...]:
     """
-    Scan repository source or exact staged content, refusing opaque files and escaping links.
+    Return actual detections, preserving the finding-only Python interface.
 
     Args:
         root (Path): Git checkout; normal mode includes untracked, nonignored files.
         staged (bool): Read the complete index, ignoring unstaged working-tree replacements.
         terms (Sequence[str]): Additional sensitive literals from a private file.
-        paths (Sequence[str]): Optional repository-relative files selecting a subset of the discovered sources.
+        paths (Sequence[str]): Optional repository-relative files selecting a subset of discovered sources.
 
     Returns:
-        tuple[Finding, ...]: Redacted, stable findings; binary and unreadable files fail closed.
+        tuple[Finding, ...]: Redacted matches only; use scan_report to inspect skipped content and coverage.
+
+    Raises:
+        ValueError: Repository access, path selection or file inspection fails.
+        OSError: The collection configuration cannot be read.
+    """
+    report = scan_report(root, staged=staged, terms=terms, paths=paths)
+    if report.errors:
+        raise ValueError("PII scan incomplete: file inspection failed")
+    return report.findings
+
+
+def scan_report(root: Path, *, staged: bool = False, terms: Sequence[str] = (), paths: Sequence[str] = ()) -> ScanReport:
+    """
+    Scan filenames and UTF-8 source, reporting unsupported content separately from detections.
+
+    Args:
+        root (Path): Git checkout; normal mode includes untracked, nonignored files.
+        staged (bool): Read the complete index, ignoring unstaged working-tree replacements.
+        terms (Sequence[str]): Additional sensitive literals from a private file.
+        paths (Sequence[str]): Optional repository-relative files selecting a subset of discovered sources.
+
+    Returns:
+        ScanReport: Stable redacted detections, skipped payloads and inspection errors.
 
     Raises:
         ValueError: Repository access fails or selected files are not in the scan scope.
+        OSError: The collection configuration cannot be read.
     """
     root = root.resolve()
     listing = (
@@ -148,48 +214,64 @@ def scan(root: Path, *, staged: bool = False, terms: Sequence[str] = (), paths: 
     if paths:
         if not set(paths).issubset(names):
             raise ValueError("Selected paths must be tracked or nonignored repository-relative files")
-
         names = sorted(set(paths))
 
     findings: list[Finding] = []
+    skipped: list[ScanGap] = []
+    errors: list[ScanGap] = []
 
     for name in names:
+        # Even unsupported payloads have their filenames inspected and redacted when sensitive.
         path_hits = scan_text(name, terms)
         label = "path-sha256:" + hashlib.sha256(name.encode(errors="surrogateescape")).hexdigest()[:16] if path_hits else name
         findings.extend(Finding(label, 0, rule) for _, rule in path_hits)
         path = root / name
+        limit = MAX_BYTES * 2 if name in envelopes else 5 * 1024 * 1024
 
-        # Symlinks are inspected as targets, not followed outside the checkout.
+        # Symlinks are inspected as targets, never followed into unrelated private files.
         try:
             if staged:
                 data = _git(root, "show", f":{name}")
             elif path.is_symlink():
                 data = str(path.readlink()).encode()
-            elif not path.exists():
+            elif not path.resolve().is_relative_to(root):
+                errors.append(ScanGap(label, "read-error"))
                 continue
-            elif not path.resolve().is_relative_to(root) or path.stat().st_size > (MAX_BYTES * 2 if name in envelopes else 5 * 1024 * 1024):
-                findings.append(Finding(label, 0, "unscannable-file"))
+            elif path.stat().st_size > limit:
+                errors.append(ScanGap(label, "file-too-large"))
                 continue
             else:
                 data = path.read_bytes()
-
-            # Only configured encrypted transport paths accept opaque content, with a closed envelope schema.
-            if name in envelopes:
-                validate_envelope(data)
-                continue
-
-            if len(data) > 5 * 1024 * 1024 or b"\0" in data:
-                findings.append(Finding(label, 0, "unscannable-file"))
-                continue
-
-            content = data.decode("utf-8")
-        except (OSError, UnicodeError, ValueError, ValidationError):
-            findings.append(Finding(label, 0, "unscannable-file"))
+        except (OSError, UnicodeError, ValueError):
+            errors.append(ScanGap(label, "read-error"))
             continue
 
+        if len(data) > limit:
+            errors.append(ScanGap(label, "file-too-large"))
+            continue
+
+        # Validate managed transport without claiming ciphertext was checked for personal data.
+        if name in envelopes:
+            try:
+                validate_envelope(data)
+            except (ValueError, ValidationError):
+                errors.append(ScanGap(label, "invalid-envelope"))
+            else:
+                skipped.append(ScanGap(label, "encrypted-envelope"))
+            continue
+
+        # Classification uses bytes, not extensions or a per-asset approval exception.
+        if b"\0" in data:
+            skipped.append(ScanGap(label, "binary-content"))
+            continue
+        try:
+            content = data.decode("utf-8")
+        except UnicodeError:
+            skipped.append(ScanGap(label, "non-utf8-content"))
+            continue
         findings.extend(Finding(label, line, rule) for line, rule in scan_text(content, terms))
 
-    return tuple(findings)
+    return ScanReport(tuple(findings), tuple(skipped), tuple(errors))
 
 
 def validate_envelope(data: bytes) -> None:

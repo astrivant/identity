@@ -30,7 +30,7 @@ sources and schema drift.
 | `repertoire [--repo PATH] check/build/record --input use.json` | Validate the toolbox/problem taxonomy, record actual use, and plot task frequency |
 | `checkpoints [--repo PATH] record --project PATH --project-id ALIAS` | Record a Git boundary and update its local checkpoint mirror |
 | `checkpoints check/diff/build/schemas/sync` | Validate, compare, render, or explicitly mirror checkpoint history |
-| `privacy scan [--repo PATH] [--staged] [--terms-file PATH]` | Scan publishable source; redacted findings, exit 1 for matches, 2 for incomplete scans |
+| `privacy scan [--repo PATH] [--staged] [--terms-file PATH] [--require-complete]` | Inspect filenames and UTF-8 text; [coverage and exit statuses](#pii-scan-coverage) |
 | `awareness [--repo PATH] [--config PATH] [--output PATH] build/push/schema` | Render selected figures, explicitly dispatch a resume rebuild, or print wire schemas |
 | `sleeve start/checkpoint/backup/finish/status/guard/run/schema` | Isolated sessions, signed backup, termination handling, and verified reconciliation |
 | `collection export/verify-export/restore-export` | Signed encrypted current identity copies with an optional recipient public key; [export contract](identity-exports.md) |
@@ -48,6 +48,49 @@ Registry results are `registered`, `not-registered`, or `unknown`. A 404 is not
 proof that PyPI will accept registration. `--ttl-seconds`, `--cache-dir`, and
 `--timeout-seconds` control caching and request bounds. A 429 cooldown applies
 across the batch and later invocations, even with `--refresh`.
+
+## PII scan coverage
+
+`witful privacy scan` (also `witful-pii scan`) detects declared patterns and private
+deny terms in filenames and UTF-8 text. It reports locations and detector names,
+never matched values. Filenames that contain a match become digest labels.
+`--staged` reads the complete Git index, including its collection configuration;
+unstaged replacements cannot hide staged findings.
+
+The JSON-lines output separates three results:
+
+- Findings retain `path`, `line` and `rule`; these are actual detector matches.
+- Uninspected content has `status: "skipped"`, a redacted `path` and a `reason`.
+  NUL-containing bytes and non-UTF-8 content are unsupported, regardless of extension.
+  Configured encrypted envelopes are schema-validated and reported as skipped;
+  their plaintext is neither decrypted nor inspected.
+- Inspection failures have `status: "error"`, a redacted `path` and a `reason`.
+  Unreadable or missing files, oversized files and invalid managed envelopes fail
+  inspection. Ordinary text has a 5 MiB limit; envelope limits follow the collection
+  transport contract. Symlinks are checked as link text and never followed.
+
+The last JSON object counts `findings`, `skipped` and `errors`. `complete` is true
+only when no selected payload was skipped and no inspection failed. An empty
+selection is complete. Repository, selection and configuration failures exit 2
+with a redacted diagnostic before a summary can be produced.
+
+| Exit | Meaning |
+| --- | --- |
+| 0 | No matches in inspected content and no inspection errors; unsupported content may be listed as skipped |
+| 1 | One or more detected patterns, without inspection errors |
+| 2 | Inspection failed, or `--require-complete` was requested and any payload was skipped; this takes precedence over exit 1 |
+
+For a text-only publication gate, run `witful privacy scan --require-complete`.
+The default repository hook and CI gate allow binary assets while reporting their
+coverage gaps. Neither mode performs OCR, image metadata analysis or archive
+extraction. A skipped image is not a detected PII finding or a reviewed image.
+Review unsupported content for its intended audience before publication; a passing
+pattern scan is not proof of anonymization.
+
+Python callers can use `scan_report()` for typed `findings`, `skipped`, `errors`
+and `complete` results. The existing `scan()` interface still returns a tuple of
+actual findings, but now raises `ValueError` for file inspection failures instead
+of inventing an `unscannable-file` finding. Use the report API when coverage matters.
 
 ## Toolbox and problems
 
