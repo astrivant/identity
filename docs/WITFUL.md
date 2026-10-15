@@ -86,3 +86,12 @@ Checkpoint comparisons retain their existing digest representation, so the renam
 alone does not count as learning. Current plots and CLI output
 use Insight; existing concept IDs remain stable. Historical replay still
 requires acknowledgment of renderer changes before producing different plot bytes.
+
+
+## License
+
+Witful is source-available under [Business Source License 1.1](https://github.com/astrivant/identity/blob/main/LICENSE).
+Astrivant LLC grants no additional production use. Each version converts to
+GPLv3 four years after its first public distribution under BSL. See the
+[licensing guide](https://github.com/astrivant/identity/blob/main/docs/licensing.md)
+for commercial-use and separately licensed component boundaries.

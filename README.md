@@ -46,6 +46,7 @@ execution; people retain authority over accepted guidance and publication.
   - [Storage and orchestration](#storage-and-orchestration)
   - [Privacy and data protection](#privacy-and-data-protection)
   - [Development and releases](#development-and-releases)
+- [License](#license)
 <!-- toc:end -->
 
 ## Getting started
@@ -281,3 +282,11 @@ independently and restore with only the recipient's decryption key.
 [Contributing](CONTRIBUTING.md) covers local checks, measured test coverage,
 and reproducible tooling. [Release operations](docs/releases.md) describes signed
 artifacts and publication. Detailed package responsibilities live in [Witful's guide](docs/WITFUL.md).
+
+
+## License
+
+Identity and Witful are source-available under [BSL 1.1](LICENSE), with Astrivant
+LLC as licensor and no additional production-use grant. Each version converts to
+GPLv3 four years after its first public distribution under BSL. See
+[licensing and separately licensed components](docs/licensing.md).
