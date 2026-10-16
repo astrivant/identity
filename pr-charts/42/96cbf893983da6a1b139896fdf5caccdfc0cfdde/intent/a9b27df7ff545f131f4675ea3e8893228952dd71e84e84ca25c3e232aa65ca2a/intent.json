@@ -1,0 +1,213 @@
+{
+  "source": {
+    "target": "fe132c3ca5d39255005fce88515b72bdb85d9bb1",
+    "base": "fe132c3ca5d39255005fce88515b72bdb85d9bb1",
+    "head": "96cbf893983da6a1b139896fdf5caccdfc0cfdde",
+    "tree": "d15764efe87f871c94a5f5a4666d4a70c80393c2",
+    "staged": false,
+    "deltas": [
+      {
+        "before": ".github/CODEOWNERS",
+        "after": ".github/CODEOWNERS",
+        "added": 57,
+        "deleted": 59
+      },
+      {
+        "before": ".github/workflows/ci.yml",
+        "after": ".github/workflows/ci.yml",
+        "added": 34,
+        "deleted": 0
+      },
+      {
+        "before": ".github/workflows/stage-provider-contracts.yml",
+        "after": ".github/workflows/stage-provider-contracts.yml",
+        "added": 2,
+        "deleted": 2
+      },
+      {
+        "before": "docs/provider-contracts.md",
+        "after": "docs/provider-contracts.md",
+        "added": 35,
+        "deleted": 16
+      },
+      {
+        "before": "scripts/ci/provider-contracts.test.mjs",
+        "after": "scripts/ci/provider-contracts.test.mjs",
+        "added": 129,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/ci/provider_contracts/data/manifest.json",
+        "after": "scripts/ci/provider_contracts/data/manifest.json",
+        "added": 2,
+        "deleted": 4
+      },
+      {
+        "before": "scripts/ci/provider_contracts/refresh.py",
+        "after": "scripts/ci/provider_contracts/refresh.py",
+        "added": 19,
+        "deleted": 24
+      },
+      {
+        "before": "scripts/ci/provider_contracts/report.py",
+        "after": "scripts/ci/provider_contracts/report.py",
+        "added": 1,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/ci/publish-contracts.mjs",
+        "after": "scripts/ci/publish-contracts.mjs",
+        "added": 116,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/ci/tests/test_quality_gate.py",
+        "after": "scripts/ci/tests/test_quality_gate.py",
+        "added": 16,
+        "deleted": 4
+      },
+      {
+        "before": "scripts/documentation/package.json",
+        "after": "scripts/documentation/package.json",
+        "added": 1,
+        "deleted": 1
+      },
+      {
+        "before": "tests/provider_contracts/test_refresh.py",
+        "after": "tests/provider_contracts/test_refresh.py",
+        "added": 61,
+        "deleted": 0
+      }
+    ]
+  },
+  "view": {
+    "nodes": [
+      {
+        "id": "F1",
+        "label": ".github/CODEOWNERS",
+        "kind": "file",
+        "status": "changed",
+        "weight": 116.0,
+        "group": ".github"
+      },
+      {
+        "id": "F2",
+        "label": ".github/workflows/ci.yml",
+        "kind": "file",
+        "status": "changed",
+        "weight": 34.0,
+        "group": ".github/workflows"
+      },
+      {
+        "id": "F3",
+        "label": ".github/workflows/stage-provider-contracts.yml",
+        "kind": "file",
+        "status": "changed",
+        "weight": 4.0,
+        "group": ".github/workflows"
+      },
+      {
+        "id": "F4",
+        "label": "docs/provider-contracts.md",
+        "kind": "file",
+        "status": "changed",
+        "weight": 51.0,
+        "group": "docs"
+      },
+      {
+        "id": "F5",
+        "label": "scripts/ci/provider-contracts.test.mjs",
+        "kind": "file",
+        "status": "changed",
+        "weight": 129.0,
+        "group": "scripts/ci"
+      },
+      {
+        "id": "F6",
+        "label": "scripts/ci/provider_contracts/data/manifest.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "scripts/ci/provider_contracts/data"
+      },
+      {
+        "id": "F7",
+        "label": "scripts/ci/provider_contracts/refresh.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 43.0,
+        "group": "scripts/ci/provider_contracts"
+      },
+      {
+        "id": "F8",
+        "label": "scripts/ci/provider_contracts/report.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 1.0,
+        "group": "scripts/ci/provider_contracts"
+      },
+      {
+        "id": "F9",
+        "label": "scripts/ci/publish-contracts.mjs",
+        "kind": "file",
+        "status": "changed",
+        "weight": 116.0,
+        "group": "scripts/ci"
+      },
+      {
+        "id": "F10",
+        "label": "scripts/ci/tests/test_quality_gate.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 20.0,
+        "group": "scripts/ci/tests"
+      },
+      {
+        "id": "F11",
+        "label": "scripts/documentation/package.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 2.0,
+        "group": "scripts/documentation"
+      },
+      {
+        "id": "F12",
+        "label": "tests/provider_contracts/test_refresh.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 61.0,
+        "group": "tests/provider_contracts"
+      }
+    ],
+    "links": [],
+    "missing": [
+      ".github/CODEOWNERS",
+      ".github/workflows/ci.yml",
+      ".github/workflows/stage-provider-contracts.yml",
+      "docs/provider-contracts.md",
+      "scripts/ci/provider-contracts.test.mjs",
+      "scripts/ci/provider_contracts/data/manifest.json",
+      "scripts/ci/provider_contracts/refresh.py",
+      "scripts/ci/provider_contracts/report.py",
+      "scripts/ci/publish-contracts.mjs",
+      "scripts/ci/tests/test_quality_gate.py",
+      "scripts/documentation/package.json",
+      "tests/provider_contracts/test_refresh.py"
+    ],
+    "state": "unavailable: no local intent export",
+    "graph_revision": "",
+    "input_sha256": "",
+    "omitted_dependencies": 0
+  },
+  "palette_sha256": "df3607dacd40a0c4dbfb4b0053752953f4b40d060401fe4e42a3d842f6a8a15c",
+  "seed": 1729,
+  "renderer": 1,
+  "implementation_sha256": "e631db84ffbb7427180a71d6a6847d4dc8375c0bc45494d1cb2d296ef5953edf",
+  "matplotlib": "3.11.2",
+  "networkx": "3.7",
+  "numpy": "2.5.3",
+  "witful": "0.6.0",
+  "model_calls": 0,
+  "evaluated_at": null,
+  "image_sha256": "9b1f02edeb5aa3167af3ea56141773c222145c6f263756e28d9183b0c388c51d"
+}

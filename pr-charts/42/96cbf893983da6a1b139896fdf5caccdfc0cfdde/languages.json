@@ -1,0 +1,116 @@
+{
+  "measurement": {
+    "base": "fe132c3ca5d39255005fce88515b72bdb85d9bb1",
+    "merge_base": "fe132c3ca5d39255005fce88515b72bdb85d9bb1",
+    "head": "96cbf893983da6a1b139896fdf5caccdfc0cfdde",
+    "classifier": "Pygments 2.21.0",
+    "deltas": [
+      {
+        "before": ".github/CODEOWNERS",
+        "after": ".github/CODEOWNERS",
+        "added": 57,
+        "deleted": 59
+      },
+      {
+        "before": ".github/workflows/ci.yml",
+        "after": ".github/workflows/ci.yml",
+        "added": 34,
+        "deleted": 0
+      },
+      {
+        "before": ".github/workflows/stage-provider-contracts.yml",
+        "after": ".github/workflows/stage-provider-contracts.yml",
+        "added": 2,
+        "deleted": 2
+      },
+      {
+        "before": "docs/provider-contracts.md",
+        "after": "docs/provider-contracts.md",
+        "added": 35,
+        "deleted": 16
+      },
+      {
+        "before": "scripts/ci/provider-contracts.test.mjs",
+        "after": "scripts/ci/provider-contracts.test.mjs",
+        "added": 129,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/ci/provider_contracts/data/manifest.json",
+        "after": "scripts/ci/provider_contracts/data/manifest.json",
+        "added": 2,
+        "deleted": 4
+      },
+      {
+        "before": "scripts/ci/provider_contracts/refresh.py",
+        "after": "scripts/ci/provider_contracts/refresh.py",
+        "added": 19,
+        "deleted": 24
+      },
+      {
+        "before": "scripts/ci/provider_contracts/report.py",
+        "after": "scripts/ci/provider_contracts/report.py",
+        "added": 1,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/ci/publish-contracts.mjs",
+        "after": "scripts/ci/publish-contracts.mjs",
+        "added": 116,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/ci/tests/test_quality_gate.py",
+        "after": "scripts/ci/tests/test_quality_gate.py",
+        "added": 16,
+        "deleted": 4
+      },
+      {
+        "before": "scripts/documentation/package.json",
+        "after": "scripts/documentation/package.json",
+        "added": 1,
+        "deleted": 1
+      },
+      {
+        "before": "tests/provider_contracts/test_refresh.py",
+        "after": "tests/provider_contracts/test_refresh.py",
+        "added": 61,
+        "deleted": 0
+      }
+    ],
+    "shares": [
+      {
+        "language": "JavaScript",
+        "added": 245,
+        "deleted": 0
+      },
+      {
+        "language": "Python",
+        "added": 97,
+        "deleted": 28
+      },
+      {
+        "language": "Unknown",
+        "added": 57,
+        "deleted": 59
+      },
+      {
+        "language": "Markdown",
+        "added": 35,
+        "deleted": 16
+      },
+      {
+        "language": "YAML",
+        "added": 36,
+        "deleted": 2
+      },
+      {
+        "language": "JSON",
+        "added": 3,
+        "deleted": 5
+      }
+    ]
+  },
+  "palette_sha256": "df3607dacd40a0c4dbfb4b0053752953f4b40d060401fe4e42a3d842f6a8a15c",
+  "matplotlib": "3.11.2"
+}
