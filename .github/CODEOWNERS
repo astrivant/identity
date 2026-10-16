@@ -31,6 +31,7 @@
 /.gitignore @emmeowzing
 /LICENSE @emmeowzing
 /SECURITY.md @emmeowzing
+/docs/assets/brand/ @emmeowzing
 /docs/assets/identity-logo.png @emmeowzing
 /docs/context.md @emmeowzing
 /docs/data-protection.md @emmeowzing
