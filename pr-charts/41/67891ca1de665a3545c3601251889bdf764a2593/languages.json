@@ -1,0 +1,175 @@
+{
+  "measurement": {
+    "base": "ccb9f63bb7c2285392fd7b605ed4e801d6883efa",
+    "merge_base": "ccb9f63bb7c2285392fd7b605ed4e801d6883efa",
+    "head": "67891ca1de665a3545c3601251889bdf764a2593",
+    "classifier": "Pygments 2.21.0",
+    "deltas": [
+      {
+        "before": ".github/CODEOWNERS",
+        "after": ".github/CODEOWNERS",
+        "added": 6,
+        "deleted": 2
+      },
+      {
+        "before": ".github/workflows/ci.yml",
+        "after": ".github/workflows/ci.yml",
+        "added": 1,
+        "deleted": 0
+      },
+      {
+        "before": ".pre-commit-config.yaml",
+        "after": ".pre-commit-config.yaml",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "SKILL.md",
+        "after": "SKILL.md",
+        "added": 10,
+        "deleted": 0
+      },
+      {
+        "before": "docs/intent-graphs.md",
+        "after": "docs/intent-graphs.md",
+        "added": 37,
+        "deleted": 14
+      },
+      {
+        "before": "docs/native/diagrams/manifest.json",
+        "after": "docs/native/diagrams/manifest.json",
+        "added": 2,
+        "deleted": 2
+      },
+      {
+        "before": "docs/source-links.md",
+        "after": "docs/source-links.md",
+        "added": 88,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/documentation.py",
+        "after": "pkg/witful/documentation.py",
+        "added": 366,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/intent/breadcrumbs.py",
+        "after": "pkg/witful/intent/breadcrumbs.py",
+        "added": 87,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/intent/draft.py",
+        "after": "pkg/witful/intent/draft.py",
+        "added": 2,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/intent/models.py",
+        "after": "pkg/witful/intent/models.py",
+        "added": 9,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/intent/service.py",
+        "after": "pkg/witful/intent/service.py",
+        "added": 8,
+        "deleted": 1
+      },
+      {
+        "before": "pkg/witful/repertoire/models.py",
+        "after": "pkg/witful/repertoire/models.py",
+        "added": 1,
+        "deleted": 0
+      },
+      {
+        "before": "poetry.lock",
+        "after": "poetry.lock",
+        "added": 54,
+        "deleted": 2
+      },
+      {
+        "before": "pyproject.toml",
+        "after": "pyproject.toml",
+        "added": 4,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/ci/provider_contracts/data/manifest.json",
+        "after": "scripts/ci/provider_contracts/data/manifest.json",
+        "added": 4,
+        "deleted": 4
+      },
+      {
+        "before": "scripts/documentation/check-markdown.mjs",
+        "after": "scripts/documentation/check-markdown.mjs",
+        "added": 3,
+        "deleted": 3
+      },
+      {
+        "before": "scripts/documentation/check-markdown.test.mjs",
+        "after": "scripts/documentation/check-markdown.test.mjs",
+        "added": 5,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/documentation/source-links.py",
+        "after": "scripts/documentation/source-links.py",
+        "added": 10,
+        "deleted": 0
+      },
+      {
+        "before": "tests/documentation/test_source_links.py",
+        "after": "tests/documentation/test_source_links.py",
+        "added": 229,
+        "deleted": 0
+      },
+      {
+        "before": "tests/intent/test_breadcrumbs.py",
+        "after": "tests/intent/test_breadcrumbs.py",
+        "added": 56,
+        "deleted": 0
+      }
+    ],
+    "shares": [
+      {
+        "language": "Python",
+        "added": 768,
+        "deleted": 1
+      },
+      {
+        "language": "Markdown",
+        "added": 135,
+        "deleted": 14
+      },
+      {
+        "language": "TOML",
+        "added": 58,
+        "deleted": 2
+      },
+      {
+        "language": "JSON",
+        "added": 6,
+        "deleted": 6
+      },
+      {
+        "language": "JavaScript",
+        "added": 8,
+        "deleted": 3
+      },
+      {
+        "language": "Unknown",
+        "added": 6,
+        "deleted": 2
+      },
+      {
+        "language": "YAML",
+        "added": 7,
+        "deleted": 0
+      }
+    ]
+  },
+  "palette_sha256": "df3607dacd40a0c4dbfb4b0053752953f4b40d060401fe4e42a3d842f6a8a15c",
+  "matplotlib": "3.11.2"
+}
