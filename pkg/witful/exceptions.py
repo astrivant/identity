@@ -6,7 +6,13 @@ from __future__ import annotations
 
 from typing import Literal
 
-__all__ = ["CollectionConfigurationError", "NativeError", "SleeveError", "StorageError", "StorageProtectionError"]
+__all__ = ["CollectionConfigurationError", "NativeError", "SetupError", "SleeveError", "StorageError", "StorageProtectionError"]
+
+
+class SetupError(ValueError):
+    """
+    Report an operator setup failure using fixed diagnostics without provider output or credentials.
+    """
 
 
 class SleeveError(ValueError):

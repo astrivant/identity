@@ -81,6 +81,10 @@ roles of repository evidence, learned guidance and review receipts.
 
 ## Runtime and custody
 
+For explicit development bootstrap, [CodeGraph setup](codegraph-setup.md) defaults
+to provisioning dedicated 1Password custody. Use `--no-provision` to retrieve
+existing locations. Ordinary builds and queries do not create keys or grants.
+
 Use the [protected native runtime](native-storage.md) on an explicitly admitted
 engineer's host. The independent authority and key broker remain separate services.
 Give every graph a new opaque native identity scope, distinct from the engineer's
@@ -88,7 +92,7 @@ learning identity and every other repository. Provision native `write`,
 `codegraph-build`, `codegraph-query` and `recover` grants only for that engineer's admitted
 runtime certificate and task. Use independently scoped broker grants and wrapping
 generations for that extension. Neither an employer nor a tenant administrator is
-an additional authorized graph recipient. No keys or grants are created by these commands.
+an additional authorized graph recipient. Build and query commands require existing keys and grants.
 
 The operator must review the custody policy, including recovery, to establish that
 only the engineer's admitted runtime can unwrap these records. If that cannot be
