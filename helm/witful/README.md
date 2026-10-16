@@ -8,6 +8,7 @@ No credentials or lesson records belong in Helm values. CloudNativePG is a locke
 optional dependency; keep it disabled when your cluster already has an operator.
 
 <!-- toc:start -->
+
 **Table of contents**
 
 - [Configuration references](#configuration-references)
@@ -21,6 +22,7 @@ optional dependency; keep it disabled when your cluster already has an operator.
   - [PostgreSQL operator](#postgresql-operator)
   - [Managed PostgreSQL](#managed-postgresql)
   - [Protected native controller](#protected-native-controller)
+
 <!-- toc:end -->
 
 ## Configuration references

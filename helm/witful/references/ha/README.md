@@ -6,12 +6,14 @@ Each worker repeats the full synchronization; this is a retryable batch Job, not
 continuously available API. The database owns durable state and failover.
 
 <!-- toc:start -->
+
 **Table of contents**
 
 - [Run](#run)
 - [Placement and failure recovery](#placement-and-failure-recovery)
 - [Parameters](#parameters)
   - [Resilient synchronization](#resilient-synchronization-1)
+
 <!-- toc:end -->
 
 ## Run

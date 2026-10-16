@@ -118,6 +118,8 @@ jobs:
       - run: npm --prefix scripts/documentation test
       - run: pre-commit run codeowners --all-files
       - run: pre-commit run documentation-syntax --all-files
+      - run: pre-commit run markdown-lint --all-files
+      - run: pre-commit run readme-format --all-files
       - run: pre-commit run documentation-javascript --all-files
 
       - name: Cache the compiled workflow linter

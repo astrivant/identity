@@ -6,6 +6,7 @@ It replaces the sync Job only when `controller.enabled` is true. It is a deploym
 reference, not evidence that a cluster satisfies the security profile.
 
 <!-- toc:start -->
+
 **Table of contents**
 
 - [Prepare and deploy](#prepare-and-deploy)
@@ -13,6 +14,7 @@ reference, not evidence that a cluster satisfies the security profile.
 - [ConfigMap and future CRD](#configmap-and-future-crd)
 - [Parameters](#parameters)
   - [Native PostgreSQL reference](#native-postgresql-reference)
+
 <!-- toc:end -->
 
 ## Prepare and deploy
