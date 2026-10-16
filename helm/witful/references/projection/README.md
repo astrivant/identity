@@ -38,10 +38,12 @@ See [native storage operations](../../../../docs/native-storage.md) for current
 implementation status and the independent deployment-evidence contract.
 
 <!-- toc:start -->
+
 **Table of contents**
 
 - [Parameters](#parameters)
   - [Isolated encrypted projection gateway](#isolated-encrypted-projection-gateway)
+
 <!-- toc:end -->
 
 ## Parameters

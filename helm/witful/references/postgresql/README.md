@@ -6,6 +6,7 @@ The chart's defaults keep both the operator dependency and Cluster disabled, so
 existing external PostgreSQL deployments continue to work.
 
 <!-- toc:start -->
+
 **Table of contents**
 
 - [Install the operator and Cluster](#install-the-operator-and-cluster)
@@ -13,6 +14,7 @@ existing external PostgreSQL deployments continue to work.
 - [Migrate from the former StatefulSet](#migrate-from-the-former-statefulset)
 - [Parameters](#parameters)
   - [Operator-managed PostgreSQL](#operator-managed-postgresql-1)
+
 <!-- toc:end -->
 
 ## Install the operator and Cluster

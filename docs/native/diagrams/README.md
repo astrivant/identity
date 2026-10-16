@@ -13,11 +13,13 @@ projections, cream disposable caches and gray services. Labels and arrows retain
 the precise contract; color alone never establishes authorization or durability.
 
 <!-- toc:start -->
+
 **Table of contents**
 
 - [Source and configuration binding](#source-and-configuration-binding)
 - [Views](#views)
 - [Verification scope](#verification-scope)
+
 <!-- toc:end -->
 
 ## Source and configuration binding
