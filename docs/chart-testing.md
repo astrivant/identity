@@ -32,7 +32,7 @@ PYTHON=python3.13 helm plugin install https://github.com/astrivant/hypothesis-he
 bash scripts/chart/dependencies.sh
 helm hypothesis schemas --schema-cache-dir .cache/helm-schemas
 helm hypothesis test helm/witful --paths \
-  --match 'test_workers_ or test_job_ or test_scheduling_podAntiAffinityPreset_ or test_scheduling_topologyKey_' \
+  --match 'test_sync_workers_ or test_sync_job_ or test_sync_scheduling_podAntiAffinityPreset_ or test_sync_scheduling_topologyKey_' \
   --config scripts/chart/hypothesis.yaml --max-depth 0 --seed 20261015 --jobs 2 --timeout 15 \
   --validate-schemas --strict --schema-cache-dir .cache/helm-schemas \
   --no-cache --artifact-dir .cache/helm-properties

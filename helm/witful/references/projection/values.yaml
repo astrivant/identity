@@ -48,7 +48,7 @@
 ## @param controller.networkPolicy.egress [array] Reviewed gateway input; replace placeholders and independently sign the complete configuration
 ## @param controller.pdb.enabled Reviewed gateway input; replace placeholders and independently sign the complete configuration
 ## @param controller.pdb.minAvailable Reviewed gateway input; replace placeholders and independently sign the complete configuration
-## @param scheduling.podAntiAffinityPreset Reviewed gateway input; replace placeholders and independently sign the complete configuration
+## @param controller.scheduling.podAntiAffinityPreset Reviewed gateway input; replace placeholders and independently sign the complete configuration
 controller:
   enabled: true
   replicas: 1
@@ -169,5 +169,5 @@ controller:
   pdb:
     enabled: true
     minAvailable: 0
-scheduling:
-  podAntiAffinityPreset: hard
+  scheduling:
+    podAntiAffinityPreset: hard
