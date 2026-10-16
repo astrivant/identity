@@ -13,6 +13,7 @@ services:
       security_opt: [no-new-privileges:true]
       build:
         context: ..
+        dockerfile: services/witful/Dockerfile
         target: production
       environment:
         WITFUL_DATABASE_URL: "${WITFUL_DATABASE_URL:?Set the local PostgreSQL URI}"

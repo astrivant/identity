@@ -1,0 +1,15 @@
+name: witful-development
+services:
+  development:
+    profiles: [development]
+    build:
+      context: ..
+      dockerfile: services/witful/Dockerfile
+      target: development
+    command: [--help]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    network_mode: none
+    stop_grace_period: 30s
+    volumes:
+      - ../pkg:/build/pkg:ro

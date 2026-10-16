@@ -72,6 +72,12 @@ repos:
         entry: shfmt -d -i 4 -ci
         language: system
         types: [shell]
+      - id: dockerfile-check
+        name: Docker build checks
+        entry: bash scripts/ci/checks/dockerfile.sh
+        language: system
+        pass_filenames: false
+        files: '(^|/)(Dockerfile|\.dockerignore)$|^scripts/ci/checks/dockerfile\.sh$'
       - id: chart-dependencies
         name: Restore locked Helm dependencies
         entry: bash scripts/chart/dependencies.sh

@@ -2,11 +2,11 @@
 /docs/assets/knowledge-collections-example.* @emmeowzing
 
 # Literal ownership follows directory-tree order; run the compiler after edits.
+/.dockerignore @emmeowzing
 /.github/ @emmeowzing
 /.gitignore @emmeowzing
 /.pre-commit-config.yaml @emmeowzing
 /CONTRIBUTING.md @emmeowzing
-/Dockerfile @emmeowzing
 /LICENSE @emmeowzing
 /README.md @emmeowzing
 /SECURITY.md @emmeowzing
@@ -25,6 +25,7 @@
 /docs/codegraphs.md @emmeowzing
 /docs/codeowners.md @emmeowzing
 /docs/completion.md @emmeowzing
+/docs/containers.md @emmeowzing
 /docs/context.md @emmeowzing
 /docs/data-protection.md @emmeowzing
 /docs/delivery.md @emmeowzing
