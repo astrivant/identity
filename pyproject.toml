@@ -132,7 +132,7 @@ skip-checking-raises = true
 
 [tool.pytest.ini_options]
 testpaths = ["pkg/witful", "scripts/ci/tests", "tests"]
-pythonpath = ["scripts", "scripts/ci", "pkg"]
+pythonpath = [".", "scripts", "scripts/ci", "pkg"]
 addopts = "-ra -n auto --import-mode=importlib"
 
 markers = ["postgres: live PostgreSQL contract tests (WITFUL_TEST_DATABASE_URL required)"]

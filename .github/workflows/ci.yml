@@ -121,7 +121,7 @@ jobs:
           mypy
           pre-commit run docstrings --all-files
           pre-commit run typed-docstrings --all-files
-          sqlfluff lint pkg/witful/sql pkg/witful/storage/tests pkg/witful/life/tests pkg/witful/checkpoints/tests tests/native/resources
+          sqlfluff lint pkg/witful/sql pkg/witful/storage/tests pkg/witful/life/tests tests/checkpoints tests/native/resources
           git ls-files -z 'scripts/*.sh' 'tests/native/resources/*.sh' | xargs -0 shellcheck -x
           git ls-files -z 'scripts/*.sh' 'tests/native/resources/*.sh' | xargs -0 shfmt -d -i 4 -ci
           pre-commit run actionlint --all-files
