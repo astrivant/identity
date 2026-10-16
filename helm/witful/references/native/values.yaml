@@ -47,7 +47,7 @@
 ## @param controller.secretMounts [array] Reviewed reference input; replace placeholders to match the independently signed deployment configuration
 ## @param controller.networkPolicy.ingress [array] Reviewed reference input; replace placeholders to match the independently signed deployment configuration
 ## @param controller.networkPolicy.egress [array] Reviewed reference input; replace placeholders to match the independently signed deployment configuration
-## @param scheduling.podAntiAffinityPreset Place controllers on separate nodes
+## @param controller.scheduling.podAntiAffinityPreset Place controllers on separate nodes
 controller:
   enabled: true
   replicas: 2
@@ -167,5 +167,5 @@ controller:
         port: 5432
       - protocol: TCP
         port: 8443
-scheduling:
-  podAntiAffinityPreset: hard
+  scheduling:
+    podAntiAffinityPreset: hard

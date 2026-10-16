@@ -1,129 +1,313 @@
-## @section Synchronization workers
-## @param workers Number of concurrent one-shot sync workers; positive integer with no chart-imposed maximum
-workers: 1
-## @param image.repository Image built from this checkout; publish to a private registry before cluster use
-## @param image.tag Immutable application release or source tag
-## @param image.pullPolicy Kubernetes image pull policy
-image:
-  repository: witful
-  tag: "0.1.0"
-  pullPolicy: IfNotPresent
-## @param imagePullSecrets [array] Existing registry credential Secret names
-imagePullSecrets: []
-## @param source.existingSecret Secret containing the reviewed journal, mounted read-only
-## @param source.journalKey Secret key projected as lessons.jsonl
-source:
-  existingSecret: witful-source
-  journalKey: lessons.jsonl
-## @param database.existingSecret Secret containing the PostgreSQL URI; never place credentials in values
-## @param database.urlKey Key holding the PostgreSQL URI in that Secret
-## @param database.namespace Shared identity partition; all cooperating workers must use the same value
-## @param database.caSecret Optional Secret containing a private PostgreSQL CA
-## @param database.caKey Secret key projected as root.crt
-database:
-  existingSecret: witful-database
-  urlKey: url
-  namespace: default
-  caSecret: ""
-  caKey: root.crt
+## @section Synchronization controller
+sync:
+  ## @param sync.workers Number of concurrent one-shot sync workers; positive integer with no chart-imposed maximum
+  workers: 1
 
-## @section Job lifecycle
-## @param job.suspend Suspend creation of worker pods
-## @param job.terminationGracePeriodSeconds Time allowed before Kubernetes forcibly terminates a worker
-## @param job.backoffLimit Number of failed pod retries
-## @param job.activeDeadlineSeconds Maximum total job duration
-## @param job.ttlSecondsAfterFinished Retain completed job status for this many seconds
-job:
-  suspend: false
-  terminationGracePeriodSeconds: 30
-  backoffLimit: 2
-  activeDeadlineSeconds: 300
-  ttlSecondsAfterFinished: 3600
+  ## @param sync.image.repository Image built from this checkout; publish to a private registry before cluster use
+  ## @param sync.image.tag Immutable application release or source tag
+  ## @param sync.image.pullPolicy Kubernetes image pull policy
+  image:
+    repository: witful
+    tag: "0.1.0"
+    pullPolicy: IfNotPresent
 
-## @section Worker resources and placement
-## @param resources.requests.cpu Requested worker CPU
-## @param resources.requests.memory Requested worker memory
-## @param resources.limits.cpu Maximum worker CPU
-## @param resources.limits.memory Maximum worker memory
-resources:
-  requests:
-    cpu: 100m
-    memory: 128Mi
-  limits:
-    cpu: "1"
-    memory: 512Mi
+  ## @param sync.imagePullSecrets [array] Existing registry credential Secret names
+  imagePullSecrets: []
 
-## @param scheduling.nodeSelector Worker node labels required for scheduling
-## @param scheduling.tolerations [array] Worker pod tolerations
-## @param scheduling.affinity Native worker affinity; mutually exclusive with the anti-affinity preset
-## @param scheduling.podAntiAffinityPreset Worker separation by topologyKey; empty, soft preference, or hard requirement
-## @param scheduling.topologyKey Failure domain used by the anti-affinity preset
-## @param scheduling.topologySpreadConstraints [array] Native spread constraints; omitted selectors default to this release and Job revision
-## @param scheduling.priorityClassName Existing PriorityClass for worker pods
-## @param scheduling.schedulerName Optional scheduler override
-scheduling:
-  nodeSelector: {}
-  tolerations: []
-  affinity: {}
-  podAntiAffinityPreset: ""
-  topologyKey: kubernetes.io/hostname
-  topologySpreadConstraints: []
-  priorityClassName: ""
-  schedulerName: ""
-## @param podLabels Additional worker pod labels; chart identity labels are reserved
-## @param podAnnotations Additional worker pod annotations
-## @extra podSecurityContext Worker pod security context; defaults to unprivileged execution
-## @param podSecurityContext.runAsNonRoot Require non-root worker execution
-## @param podSecurityContext.runAsUser Worker user ID
-## @param podSecurityContext.runAsGroup Worker group ID
-## @param podSecurityContext.fsGroup Group allowed to read mounted Secrets
-## @param podSecurityContext.seccompProfile.type Worker seccomp profile
-## @extra containerSecurityContext Worker container security context
-## @param containerSecurityContext.allowPrivilegeEscalation Allow privilege escalation in worker containers
-## @param containerSecurityContext.readOnlyRootFilesystem Require a read-only worker root filesystem
-## @param containerSecurityContext.capabilities.drop Linux capabilities removed from workers
-podLabels: {}
-podAnnotations: {}
-podSecurityContext:
-  runAsNonRoot: true
-  runAsUser: 10001
-  runAsGroup: 10001
-  fsGroup: 10001
-  seccompProfile:
-    type: RuntimeDefault
-containerSecurityContext:
-  allowPrivilegeEscalation: false
-  readOnlyRootFilesystem: true
-  capabilities:
-    drop: [ALL]
+  ## @param sync.source.existingSecret Secret containing the reviewed journal, mounted read-only
+  ## @param sync.source.journalKey Secret key projected as lessons.jsonl
+  source:
+    existingSecret: witful-source
+    journalKey: lessons.jsonl
+
+  ## @param sync.database.existingSecret Secret containing the PostgreSQL URI; never place credentials in values
+  ## @param sync.database.urlKey Key holding the PostgreSQL URI in that Secret
+  ## @param sync.database.namespace Shared identity partition; all cooperating workers must use the same value
+  ## @param sync.database.caSecret Optional Secret containing a private PostgreSQL CA
+  ## @param sync.database.caKey Secret key projected as root.crt
+  database:
+    existingSecret: witful-database
+    urlKey: url
+    namespace: default
+    caSecret: ""
+    caKey: root.crt
+
+  ## @param sync.job.suspend Suspend creation of worker pods
+  ## @param sync.job.terminationGracePeriodSeconds Time allowed before Kubernetes forcibly terminates a worker
+  ## @param sync.job.backoffLimit Number of failed pod retries
+  ## @param sync.job.activeDeadlineSeconds Maximum total job duration
+  ## @param sync.job.ttlSecondsAfterFinished Retain completed job status for this many seconds
+  job:
+    suspend: false
+    terminationGracePeriodSeconds: 30
+    backoffLimit: 2
+    activeDeadlineSeconds: 300
+    ttlSecondsAfterFinished: 3600
+
+  ## @param sync.resources.requests.cpu Requested worker CPU
+  ## @param sync.resources.requests.memory Requested worker memory
+  ## @param sync.resources.limits.cpu Maximum worker CPU
+  ## @param sync.resources.limits.memory Maximum worker memory
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: "1"
+      memory: 512Mi
+
+  ## @param sync.scheduling.nodeSelector Worker node labels required for scheduling
+  ## @param sync.scheduling.tolerations [array] Worker pod tolerations
+  ## @param sync.scheduling.affinity Native worker affinity; mutually exclusive with the anti-affinity preset
+  ## @param sync.scheduling.podAntiAffinityPreset Worker separation by topologyKey; empty, soft preference, or hard requirement
+  ## @param sync.scheduling.topologyKey Failure domain used by the anti-affinity preset
+  ## @param sync.scheduling.topologySpreadConstraints [array] Native spread constraints; omitted selectors default to this release and Job revision
+  ## @param sync.scheduling.priorityClassName Existing PriorityClass for worker pods
+  ## @param sync.scheduling.schedulerName Optional scheduler override
+  scheduling:
+    nodeSelector: {}
+    tolerations: []
+    affinity: {}
+    podAntiAffinityPreset: ""
+    topologyKey: kubernetes.io/hostname
+    topologySpreadConstraints: []
+    priorityClassName: ""
+    schedulerName: ""
+
+  ## @param sync.podLabels Additional worker pod labels; chart identity labels are reserved
+  podLabels: {}
+
+  ## @param sync.podAnnotations Additional worker pod annotations
+  podAnnotations: {}
+
+  ## @extra sync.podSecurityContext Worker pod security context; defaults to unprivileged execution
+  ## @param sync.podSecurityContext.runAsNonRoot Require non-root worker execution
+  ## @param sync.podSecurityContext.runAsUser Worker user ID
+  ## @param sync.podSecurityContext.runAsGroup Worker group ID
+  ## @param sync.podSecurityContext.fsGroup Group allowed to read mounted Secrets
+  ## @param sync.podSecurityContext.seccompProfile.type Worker seccomp profile
+  podSecurityContext:
+    runAsNonRoot: true
+    runAsUser: 10001
+    runAsGroup: 10001
+    fsGroup: 10001
+    seccompProfile:
+      type: RuntimeDefault
+
+  ## @extra sync.containerSecurityContext Worker container security context
+  ## @param sync.containerSecurityContext.allowPrivilegeEscalation Allow privilege escalation in worker containers
+  ## @param sync.containerSecurityContext.readOnlyRootFilesystem Require a read-only worker root filesystem
+  ## @param sync.containerSecurityContext.capabilities.drop Linux capabilities removed from workers
+  containerSecurityContext:
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: true
+    capabilities:
+      drop:
+      - ALL
+
+## @section Protected native controller
+controller:
+  ## @param controller.enabled Deploy the explicit native controller profile instead of the one-shot sync Job
+  enabled: false
+
+  ## @param controller.replicas Stateless PostgreSQL controller replicas; local Git requires exactly one
+  replicas: 2
+
+  ## @param controller.image.repository Image built from this checkout; publish to a private registry before cluster use
+  ## @param controller.image.tag Immutable application release or source tag
+  ## @param controller.image.pullPolicy Kubernetes image pull policy
+  image:
+    repository: witful
+    tag: "0.1.0"
+    pullPolicy: IfNotPresent
+
+  ## @param controller.imagePullSecrets [array] Existing registry credential Secret names
+  imagePullSecrets: []
+
+  ## @param controller.resources.requests.cpu Requested controller CPU
+  ## @param controller.resources.requests.memory Requested controller memory
+  ## @param controller.resources.limits.cpu Maximum controller CPU
+  ## @param controller.resources.limits.memory Maximum controller memory
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: "1"
+      memory: 512Mi
+
+  ## @param controller.scheduling.nodeSelector Controller node labels required for scheduling
+  ## @param controller.scheduling.tolerations [array] Controller pod tolerations
+  ## @param controller.scheduling.affinity Native controller affinity; mutually exclusive with the anti-affinity preset
+  ## @param controller.scheduling.podAntiAffinityPreset Controller separation by topologyKey; empty, soft preference, or hard requirement
+  ## @param controller.scheduling.topologyKey Failure domain used by the anti-affinity preset
+  ## @param controller.scheduling.topologySpreadConstraints [array] Native spread constraints; omitted selectors default to this release and controller
+  ## @param controller.scheduling.priorityClassName Existing PriorityClass for controller pods
+  ## @param controller.scheduling.schedulerName Optional scheduler override
+  scheduling:
+    nodeSelector: {}
+    tolerations: []
+    affinity: {}
+    podAntiAffinityPreset: ""
+    topologyKey: kubernetes.io/hostname
+    topologySpreadConstraints: []
+    priorityClassName: ""
+    schedulerName: ""
+
+  ## @param controller.podLabels Additional controller pod labels; chart identity labels are reserved
+  podLabels: {}
+
+  ## @param controller.podAnnotations Additional controller pod annotations
+  podAnnotations: {}
+
+  ## @extra controller.podSecurityContext Controller pod security context; defaults to unprivileged execution
+  ## @param controller.podSecurityContext.runAsNonRoot Require non-root controller execution
+  ## @param controller.podSecurityContext.runAsUser Controller user ID
+  ## @param controller.podSecurityContext.runAsGroup Controller group ID
+  ## @param controller.podSecurityContext.fsGroup Group allowed to read mounted Secrets
+  ## @param controller.podSecurityContext.seccompProfile.type Controller seccomp profile
+  podSecurityContext:
+    runAsNonRoot: true
+    runAsUser: 10001
+    runAsGroup: 10001
+    fsGroup: 10001
+    seccompProfile:
+      type: RuntimeDefault
+
+  ## @extra controller.containerSecurityContext Controller container security context
+  ## @param controller.containerSecurityContext.allowPrivilegeEscalation Allow privilege escalation in controller containers
+  ## @param controller.containerSecurityContext.readOnlyRootFilesystem Require a read-only controller root filesystem
+  ## @param controller.containerSecurityContext.capabilities.drop Linux capabilities removed from controllers
+  containerSecurityContext:
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: true
+    capabilities:
+      drop:
+      - ALL
+
+  ## @param controller.configuration Complete closed native Settings object; validated from the Python model, never credentials or private records
+  configuration: {}
+
+  ## @param controller.secretEnvironment Existing Secret key references keyed by authoritative environment variable name
+  secretEnvironment: {}
+
+  ## @param controller.secretMounts [array] Existing Secret projections with name, secretName, mountPath and explicit items; credentials mount read-only
+  secretMounts: []
+
+  ## @param controller.archiveVolumes [array] Existing protected original-Git claims with name, existingClaim, mountPath and readOnly; scoped aliases live in configuration.archives
+  archiveVolumes: []
+
+  ## @param controller.terminationGracePeriodSeconds Pod termination budget; must exceed the configured runtime drain timeout
+  terminationGracePeriodSeconds: 45
+
+  ## @param controller.workingSizeLimit Size limit for the memory-backed runtime working directory
+  workingSizeLimit: 256Mi
+
+  ## @param controller.git.existingClaim Existing retained single-writer Git PVC; never created, formatted or removed by the chart
+  ## @param controller.git.mountPath Mount path matching configuration.backend.path for local Git
+  git:
+    existingClaim: ""
+    mountPath: /var/lib/witful/git
+
+  ## @param controller.pdb.enabled Create a PodDisruptionBudget for voluntary maintenance
+  ## @param controller.pdb.minAvailable Minimum available controller pods; use zero for an explicitly reviewed single-writer profile
+  pdb:
+    enabled: true
+    minAvailable: 1
+
+  ## @param controller.networkPolicy.enabled Restrict controller traffic to explicit reviewed peer rules
+  ## @param controller.networkPolicy.ingress [array] Native ingress rules for authenticated clients and monitoring; empty denies traffic
+  ## @param controller.networkPolicy.egress [array] Native egress rules for DNS, authority, storage and broker; empty denies traffic
+  networkPolicy:
+    enabled: true
+    ingress: []
+    egress: []
+
+  ## @param controller.probes.startup.failureThreshold Startup attempts before restart
+  ## @param controller.probes.startup.periodSeconds Startup probe interval
+  ## @param controller.probes.readiness.failureThreshold Failed readiness checks before endpoint withdrawal
+  ## @param controller.probes.readiness.periodSeconds Readiness probe interval
+  ## @param controller.probes.readiness.timeoutSeconds Readiness command time budget
+  ## @param controller.probes.liveness.failureThreshold Local listener failures before restart
+  ## @param controller.probes.liveness.periodSeconds Liveness probe interval independent of upstream health
+  probes:
+    startup:
+      failureThreshold: 30
+      periodSeconds: 2
+    readiness:
+      failureThreshold: 3
+      periodSeconds: 10
+      timeoutSeconds: 6
+    liveness:
+      failureThreshold: 3
+      periodSeconds: 10
+
+  ## @param controller.scheduler.enabled Deploy bounded per-identity delivery CronJobs using only independently scoped client credentials
+  ## @param controller.scheduler.schedule Kubernetes CronJob schedule; the controller also enforces interval and batch policy
+  ## @param controller.scheduler.seconds Complete CLI cycle budget in seconds
+  ## @param controller.scheduler.activeDeadlineSeconds Pod execution deadline; must exceed the CLI cycle budget
+  ## @param controller.scheduler.terminationGracePeriodSeconds Shutdown budget for the bounded in-flight HTTPS request and interruptible backoff
+  ## @param controller.scheduler.networkPolicy.enabled Restrict scheduler ingress and explicit controller/DNS egress
+  ## @param controller.scheduler.networkPolicy.egress [array] Approved scheduler-only network egress rules; empty denies traffic
+  ## @param controller.scheduler.startingDeadlineSeconds Maximum late scheduled-start allowance
+  ## @param controller.scheduler.successfulJobsHistoryLimit Retained successful scheduling Jobs
+  ## @param controller.scheduler.failedJobsHistoryLimit Retained failed scheduling Jobs
+  ## @param controller.scheduler.clients [array] Identity client Secret references with name, secretName and key; each gets an independent CronJob
+  ## @param controller.scheduler.secretMounts [array] Scheduler-only TLS Secret projections; never inherit controller custody/database credentials
+  ## @extra controller.scheduler.resources Scheduler container resource requests and limits
+  ## @param controller.scheduler.resources.requests.cpu Requested scheduler CPU
+  ## @param controller.scheduler.resources.requests.memory Requested scheduler memory
+  ## @param controller.scheduler.resources.limits.cpu Maximum scheduler CPU
+  ## @param controller.scheduler.resources.limits.memory Maximum scheduler memory
+  scheduler:
+    enabled: false
+    schedule: '* * * * *'
+    seconds: 300
+    activeDeadlineSeconds: 330
+    startingDeadlineSeconds: 60
+    terminationGracePeriodSeconds: 35
+    networkPolicy:
+      enabled: true
+      egress: []
+    successfulJobsHistoryLimit: 1
+    failedJobsHistoryLimit: 3
+    clients: []
+    secretMounts: []
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: "1"
+        memory: 512Mi
 
 ## @section PostgreSQL operator
-## @param cloudnative-pg.enabled Install the locked CloudNativePG operator dependency; leave false when the cluster already has an operator
-## @extra cloudnative-pg Operator chart overrides; all upstream parameters remain available under this namespace
 cloudnative-pg:
+  ## @param cloudnative-pg.enabled Install the locked CloudNativePG operator dependency; leave false when the cluster already has an operator
   enabled: false
 
 ## @section Managed PostgreSQL
-## @param postgresql.enabled Create a CloudNativePG Cluster; its CRDs and ready controller must exist before enabling this
-## @extra postgresql.spec Native CloudNativePG Cluster spec, validated from the locked dependency CRD; supports the complete upstream configuration surface
-## @param postgresql.spec.instances PostgreSQL instance count, including the primary; positive integer with no chart-imposed maximum
-## @param postgresql.spec.imageName Operator-compatible PostgreSQL image pinned by OCI digest
-## @param postgresql.spec.enableSuperuserAccess Allow external superuser credentials; disabled by default
-## @param postgresql.spec.bootstrap.initdb.database Application database created on first bootstrap
-## @param postgresql.spec.bootstrap.initdb.owner Application database owner created on first bootstrap
-## @param postgresql.spec.bootstrap.initdb.secret.name Existing kubernetes.io/basic-auth Secret with username and password keys; username must match owner
-## @param postgresql.spec.storage.size Persistent storage capacity per PostgreSQL instance
-## @param postgresql.spec.resources.requests.cpu Requested CPU per database instance
-## @param postgresql.spec.resources.requests.memory Requested memory per database instance
-## @param postgresql.spec.resources.limits.cpu CPU limit per database instance
-## @param postgresql.spec.resources.limits.memory Memory limit per database instance
-## @param postgresql.spec.affinity.enablePodAntiAffinity Spread database instances across eligible nodes
-## @param postgresql.spec.affinity.podAntiAffinityType Preferred or required database pod anti-affinity
-## @param postgresql.spec.affinity.topologyKey Failure domain label used for database separation
-## @param postgresql.spec.smartShutdownTimeout Seconds for the operator to wait for client disconnection before fast shutdown
-## @param postgresql.spec.stopDelay Total seconds allowed for PostgreSQL shutdown before forced termination
 postgresql:
+  ## @param postgresql.enabled Create a CloudNativePG Cluster; its CRDs and ready controller must exist before enabling this
   enabled: false
+
+  ## @extra postgresql.spec Native CloudNativePG Cluster spec, validated from the locked dependency CRD; supports the complete upstream configuration surface
+  ## @param postgresql.spec.instances PostgreSQL instance count, including the primary; positive integer with no chart-imposed maximum
+  ## @param postgresql.spec.imageName Operator-compatible PostgreSQL image pinned by OCI digest
+  ## @param postgresql.spec.enableSuperuserAccess Allow external superuser credentials; disabled by default
+  ## @param postgresql.spec.bootstrap.initdb.database Application database created on first bootstrap
+  ## @param postgresql.spec.bootstrap.initdb.owner Application database owner created on first bootstrap
+  ## @param postgresql.spec.bootstrap.initdb.secret.name Existing kubernetes.io/basic-auth Secret with username and password keys; username must match owner
+  ## @param postgresql.spec.storage.size Persistent storage capacity per PostgreSQL instance
+  ## @param postgresql.spec.resources.requests.cpu Requested CPU per database instance
+  ## @param postgresql.spec.resources.requests.memory Requested memory per database instance
+  ## @param postgresql.spec.resources.limits.cpu CPU limit per database instance
+  ## @param postgresql.spec.resources.limits.memory Memory limit per database instance
+  ## @param postgresql.spec.affinity.enablePodAntiAffinity Spread database instances across eligible nodes
+  ## @param postgresql.spec.affinity.podAntiAffinityType Preferred or required database pod anti-affinity
+  ## @param postgresql.spec.affinity.topologyKey Failure domain label used for database separation
+  ## @param postgresql.spec.smartShutdownTimeout Seconds for the operator to wait for client disconnection before fast shutdown
+  ## @param postgresql.spec.stopDelay Total seconds allowed for PostgreSQL shutdown before forced termination
   spec:
     instances: 3
     imageName: ghcr.io/cloudnative-pg/postgresql:18.6-standard-trixie@sha256:c7747d8d1049fff9cf30d9cd83d14d609c957afb5ffbcd114145f393ea1850e1
@@ -149,95 +333,3 @@ postgresql:
       topologyKey: kubernetes.io/hostname
     smartShutdownTimeout: 30
     stopDelay: 60
-
-## @section Protected native controller
-## @param controller.enabled Deploy the explicit native controller profile instead of the one-shot sync Job
-## @param controller.replicas Stateless PostgreSQL controller replicas; local Git requires exactly one
-## @param controller.configuration Complete closed native Settings object; validated from the Python model, never credentials or private records
-## @param controller.secretEnvironment Existing Secret key references keyed by authoritative environment variable name
-## @param controller.archiveVolumes [array] Existing protected original-Git claims with name, existingClaim, mountPath and readOnly; scoped aliases live in configuration.archives
-## @param controller.secretMounts [array] Existing Secret projections with name, secretName, mountPath and explicit items; credentials mount read-only
-## @param controller.terminationGracePeriodSeconds Pod termination budget; must exceed the configured runtime drain timeout
-## @param controller.workingSizeLimit Size limit for the memory-backed runtime working directory
-## @param controller.git.existingClaim Existing retained single-writer Git PVC; never created, formatted or removed by the chart
-## @param controller.git.mountPath Mount path matching configuration.backend.path for local Git
-## @param controller.pdb.enabled Create a PodDisruptionBudget for voluntary maintenance
-## @param controller.pdb.minAvailable Minimum available controller pods; use zero for an explicitly reviewed single-writer profile
-## @param controller.networkPolicy.enabled Restrict controller traffic to explicit reviewed peer rules
-## @param controller.networkPolicy.ingress [array] Native ingress rules for authenticated clients and monitoring; empty denies traffic
-## @param controller.networkPolicy.egress [array] Native egress rules for DNS, authority, storage and broker; empty denies traffic
-## @param controller.probes.startup.failureThreshold Startup attempts before restart
-## @param controller.probes.startup.periodSeconds Startup probe interval
-## @param controller.probes.readiness.failureThreshold Failed readiness checks before endpoint withdrawal
-## @param controller.probes.readiness.periodSeconds Readiness probe interval
-## @param controller.probes.readiness.timeoutSeconds Readiness command time budget
-## @param controller.probes.liveness.failureThreshold Local listener failures before restart
-## @param controller.probes.liveness.periodSeconds Liveness probe interval independent of upstream health
-## @param controller.scheduler.enabled Deploy bounded per-identity delivery CronJobs using only independently scoped client credentials
-## @param controller.scheduler.schedule Kubernetes CronJob schedule; the controller also enforces interval and batch policy
-## @param controller.scheduler.seconds Complete CLI cycle budget in seconds
-## @param controller.scheduler.activeDeadlineSeconds Pod execution deadline; must exceed the CLI cycle budget
-## @param controller.scheduler.terminationGracePeriodSeconds Shutdown budget for the bounded in-flight HTTPS request and interruptible backoff
-## @param controller.scheduler.networkPolicy.enabled Restrict scheduler ingress and explicit controller/DNS egress
-## @param controller.scheduler.networkPolicy.egress [array] Approved scheduler-only network egress rules; empty denies traffic
-## @param controller.scheduler.startingDeadlineSeconds Maximum late scheduled-start allowance
-## @param controller.scheduler.successfulJobsHistoryLimit Retained successful scheduling Jobs
-## @param controller.scheduler.failedJobsHistoryLimit Retained failed scheduling Jobs
-## @param controller.scheduler.clients [array] Identity client Secret references with name, secretName and key; each gets an independent CronJob
-## @param controller.scheduler.secretMounts [array] Scheduler-only TLS Secret projections; never inherit controller custody/database credentials
-## @extra controller.scheduler.resources Scheduler container resource requests and limits
-## @param controller.scheduler.resources.requests.cpu Requested scheduler CPU
-## @param controller.scheduler.resources.requests.memory Requested scheduler memory
-## @param controller.scheduler.resources.limits.cpu Maximum scheduler CPU
-## @param controller.scheduler.resources.limits.memory Maximum scheduler memory
-controller:
-  enabled: false
-  replicas: 2
-  configuration: {}
-  secretEnvironment: {}
-  secretMounts: []
-  archiveVolumes: []
-  terminationGracePeriodSeconds: 45
-  workingSizeLimit: 256Mi
-  git:
-    existingClaim: ""
-    mountPath: /var/lib/witful/git
-  pdb:
-    enabled: true
-    minAvailable: 1
-  networkPolicy:
-    enabled: true
-    ingress: []
-    egress: []
-  probes:
-    startup:
-      failureThreshold: 30
-      periodSeconds: 2
-    readiness:
-      failureThreshold: 3
-      periodSeconds: 10
-      timeoutSeconds: 6
-    liveness:
-      failureThreshold: 3
-      periodSeconds: 10
-  scheduler:
-    enabled: false
-    schedule: "* * * * *"
-    seconds: 300
-    activeDeadlineSeconds: 330
-    startingDeadlineSeconds: 60
-    terminationGracePeriodSeconds: 35
-    networkPolicy:
-      enabled: true
-      egress: []
-    successfulJobsHistoryLimit: 1
-    failedJobsHistoryLimit: 3
-    clients: []
-    secretMounts: []
-    resources:
-      requests:
-        cpu: 100m
-        memory: 128Mi
-      limits:
-        cpu: "1"
-        memory: 512Mi

@@ -101,4 +101,4 @@ implementation status and the independent deployment-evidence contract.
 | `controller.networkPolicy.egress`                                 | Reviewed gateway input; replace placeholders and independently sign the complete configuration      | `[]`                                         |
 | `controller.pdb.enabled`                                          | Reviewed gateway input; replace placeholders and independently sign the complete configuration      | `true`                                       |
 | `controller.pdb.minAvailable`                                     | Reviewed gateway input; replace placeholders and independently sign the complete configuration      | `0`                                          |
-| `scheduling.podAntiAffinityPreset`                                | Reviewed gateway input; replace placeholders and independently sign the complete configuration      | `hard`                                       |
+| `controller.scheduling.podAntiAffinityPreset`                     | Reviewed gateway input; replace placeholders and independently sign the complete configuration      | `hard`                                       |

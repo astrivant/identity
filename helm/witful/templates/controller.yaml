@@ -37,7 +37,7 @@
 {{- end }}
 {{- end }}
 {{- end }}
-{{- include "witful.validatePlacement" . }}
+{{- include "witful.validatePlacement" (dict "settings" .Values.controller "root" . "path" "controller") }}
 {{- $selector := dict "app.kubernetes.io/name" "witful" "app.kubernetes.io/instance" .Release.Name "app.kubernetes.io/component" $component }}
 apiVersion: v1
 kind: ConfigMap
@@ -76,57 +76,57 @@ spec:
     metadata:
       labels:
         {{- toYaml $selector | nindent 8 }}
-        {{- with .Values.podLabels }}
+        {{- with .Values.controller.podLabels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
       annotations:
         checksum/configuration: {{ $controller.configuration | toJson | sha256sum | quote }}
-        {{- with .Values.podAnnotations }}
+        {{- with .Values.controller.podAnnotations }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
     spec:
       serviceAccountName: {{ $name }}
       automountServiceAccountToken: false
       terminationGracePeriodSeconds: {{ $controller.terminationGracePeriodSeconds }}
-      securityContext: {{- toYaml .Values.podSecurityContext | nindent 8 }}
-      {{- with .Values.imagePullSecrets }}
+      securityContext: {{- toYaml .Values.controller.podSecurityContext | nindent 8 }}
+      {{- with .Values.controller.imagePullSecrets }}
       imagePullSecrets:
         {{- range . }}
         - name: {{ . | quote }}
         {{- end }}
       {{- end }}
-      {{- with .Values.scheduling.nodeSelector }}
+      {{- with .Values.controller.scheduling.nodeSelector }}
       nodeSelector: {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.scheduling.tolerations }}
+      {{- with .Values.controller.scheduling.tolerations }}
       tolerations: {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.scheduling.priorityClassName }}
+      {{- with .Values.controller.scheduling.priorityClassName }}
       priorityClassName: {{ . | quote }}
       {{- end }}
-      {{- with .Values.scheduling.schedulerName }}
+      {{- with .Values.controller.scheduling.schedulerName }}
       schedulerName: {{ . | quote }}
       {{- end }}
-      {{- if .Values.scheduling.affinity }}
-      affinity: {{- toYaml .Values.scheduling.affinity | nindent 8 }}
-      {{- else if .Values.scheduling.podAntiAffinityPreset }}
+      {{- if .Values.controller.scheduling.affinity }}
+      affinity: {{- toYaml .Values.controller.scheduling.affinity | nindent 8 }}
+      {{- else if .Values.controller.scheduling.podAntiAffinityPreset }}
       affinity:
         podAntiAffinity:
-          {{- if eq .Values.scheduling.podAntiAffinityPreset "hard" }}
+          {{- if eq .Values.controller.scheduling.podAntiAffinityPreset "hard" }}
           requiredDuringSchedulingIgnoredDuringExecution:
-            - topologyKey: {{ .Values.scheduling.topologyKey | quote }}
+            - topologyKey: {{ .Values.controller.scheduling.topologyKey | quote }}
               labelSelector:
                 matchLabels: {{- toYaml $selector | nindent 18 }}
           {{- else }}
           preferredDuringSchedulingIgnoredDuringExecution:
             - weight: 100
               podAffinityTerm:
-                topologyKey: {{ .Values.scheduling.topologyKey | quote }}
+                topologyKey: {{ .Values.controller.scheduling.topologyKey | quote }}
                 labelSelector:
                   matchLabels: {{- toYaml $selector | nindent 20 }}
           {{- end }}
       {{- end }}
-      {{- with .Values.scheduling.topologySpreadConstraints }}
+      {{- with .Values.controller.scheduling.topologySpreadConstraints }}
       topologySpreadConstraints:
         {{- range . }}
         {{- $constraint := deepCopy . }}
@@ -138,12 +138,12 @@ spec:
       {{- end }}
       containers:
         - name: native
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          image: "{{ .Values.controller.image.repository }}:{{ .Values.controller.image.tag }}"
+          imagePullPolicy: {{ .Values.controller.image.pullPolicy }}
           command: [/usr/bin/tini, -g, --, witful]
           args: [native, controller, serve, --config, /etc/witful/settings.json]
-          securityContext: {{- toYaml .Values.containerSecurityContext | nindent 12 }}
-          resources: {{- toYaml .Values.resources | nindent 12 }}
+          securityContext: {{- toYaml .Values.controller.containerSecurityContext | nindent 12 }}
+          resources: {{- toYaml .Values.controller.resources | nindent 12 }}
           ports:
             - name: tls
               containerPort: {{ $runtime.port }}

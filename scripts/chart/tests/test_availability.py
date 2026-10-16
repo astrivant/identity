@@ -128,7 +128,7 @@ class AvailabilityContracts(unittest.TestCase):
             "podSecurityContext": {"runAsUser": 20001, "runAsGroup": 20001, "fsGroup": 20001},
             "containerSecurityContext": {"readOnlyRootFilesystem": False},
         }
-        result = render(values)
+        result = render({"sync": values})
         assert result.returncode == 0, result.stderr
         job = yaml.safe_load(result.stdout)
         spec = job["spec"]
@@ -164,12 +164,26 @@ class AvailabilityContracts(unittest.TestCase):
         assert default.returncode == 0, default.stderr
         pod = yaml.safe_load(default.stdout)["spec"]["template"]["spec"]
         assert "affinity" not in pod and "topologySpreadConstraints" not in pod
-        result = render({"scheduling": {"podAntiAffinityPreset": "soft", "topologyKey": "topology.kubernetes.io/zone"}})
+        result = render({"sync": {"scheduling": {"podAntiAffinityPreset": "soft", "topologyKey": "topology.kubernetes.io/zone"}}})
         assert result.returncode == 0, result.stderr
         pod = yaml.safe_load(result.stdout)["spec"]["template"]["spec"]
         preference = pod["affinity"]["podAntiAffinity"]["preferredDuringSchedulingIgnoredDuringExecution"][0]
         assert preference["weight"] == 100
         assert preference["podAffinityTerm"]["topologyKey"] == "topology.kubernetes.io/zone"
+
+    def test_retired_root_controls_are_rejected(self) -> None:
+        """
+        Reject old root overrides instead of accepting settings that no workload consumes.
+
+        Returns:
+            None: Every former synchronization root field has an explicit schema failure.
+        """
+        values = yaml.safe_load((_CHART / "values.yaml").read_text())
+        for name, value in values["sync"].items():
+            with self.subTest(path=name):
+                result = render({name: value})
+                assert result.returncode != 0
+                assert name in result.stderr and "additional propert" in result.stderr.lower()
 
     def test_native_database_overrides_reach_operator(self) -> None:
         """
@@ -213,7 +227,7 @@ class AvailabilityContracts(unittest.TestCase):
         Returns:
             None: The optional controller, CRDs and suspended worker respect supplied configuration.
         """
-        result = render({"cloudnative-pg": {"enabled": True, "replicaCount": 2}, "job": {"suspend": True}})
+        result = render({"cloudnative-pg": {"enabled": True, "replicaCount": 2}, "sync": {"job": {"suspend": True}}})
         assert result.returncode == 0, result.stderr
         resources = [item for item in yaml.safe_load_all(result.stdout) if item is not None]
         assert not any(item["kind"] in {"Cluster", "StatefulSet"} for item in resources)
@@ -279,17 +293,17 @@ class AvailabilityContracts(unittest.TestCase):
             None: Every invalid values fixture is rejected by Helm.
         """
         fixtures: list[dict[str, object]] = [
-            {"scheduling": {"podAntiAffinityPreset": "required"}},
-            {"scheduling": {"nodeSelector": {"pool": 2}}},
-            {"scheduling": {"tolerations": ["invalid"]}},
-            {"scheduling": {"topologySpreadConstraints": [{"maxSkew": 0}]}},
-            {"scheduling": {"podAntiAffinityPreset": "hard", "affinity": {"nodeAffinity": {}}}},
-            {"podLabels": {"app.kubernetes.io/instance": "another-release"}},
-            {"job": {"activeDeadlineSeconds": 0}},
-            {"job": {"backoffLimit": 1.5}},
-            {"job": {"terminationGracePeriodSeconds": -1}},
-            {"database": {"namespace": "bad namespace"}},
-            {"source": {"journalKey": ""}},
+            {"sync": {"scheduling": {"podAntiAffinityPreset": "required"}}},
+            {"sync": {"scheduling": {"nodeSelector": {"pool": 2}}}},
+            {"sync": {"scheduling": {"tolerations": ["invalid"]}}},
+            {"sync": {"scheduling": {"topologySpreadConstraints": [{"maxSkew": 0}]}}},
+            {"sync": {"scheduling": {"podAntiAffinityPreset": "hard", "affinity": {"nodeAffinity": {}}}}},
+            {"sync": {"podLabels": {"app.kubernetes.io/instance": "another-release"}}},
+            {"sync": {"job": {"activeDeadlineSeconds": 0}}},
+            {"sync": {"job": {"backoffLimit": 1.5}}},
+            {"sync": {"job": {"terminationGracePeriodSeconds": -1}}},
+            {"sync": {"database": {"namespace": "bad namespace"}}},
+            {"sync": {"source": {"journalKey": ""}}},
             {"postgresql": {"readinessProbe": {"timeoutSeconds": 0}}},
             {"postgresql": {"readinessProbe": {"exec": {"command": ["true"]}}}},
             {"postgresql": {"replicas": 3}},
