@@ -5,6 +5,9 @@ ordering, and real PyGithub/python-gitlab transports against local HTTP servers.
 The HTTP tests validate their success responses against selected vendor OpenAPI
 schemas before serving them. They exercise pagination, encoded GitLab namespaces,
 inventory and exact-revision signature evidence without credentials or live writes.
+The same versioned contract stage covers release-range selection, PR comments and
+release assets through the real GitHub SDK. Lost-response and permission failures
+are explicit synthetic transport scenarios, not claims about live service behavior.
 
 ## Versioned inputs and results
 
@@ -48,7 +51,7 @@ Then propose updated snapshots:
 ```bash
 poetry run python scripts/ci/provider_contracts/refresh.py \
     --github-ref REVIEWED_GITHUB_SPEC_SHA --gitlab-ref REVIEWED_GITLAB_SPEC_SHA
-poetry run pytest -n 0 scripts/ci/tests/test_provider_contracts.py
+poetry run pytest -n 0 scripts/ci/tests/test_provider_contracts.py tests/releases
 poetry run python scripts/ci/provider_contracts/refresh.py --check
 poetry run pre-commit run --all-files
 ```

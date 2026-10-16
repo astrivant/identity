@@ -18,6 +18,8 @@ fi
 mkdir -p .cache/release
 cp dist/* .cache/release/
 artifact_dir="$PWD/.cache/release"
+python -m scripts.release.report prepare --output "$RUNNER_TEMP/release-feedback"
+cp "$RUNNER_TEMP/release-feedback/RELEASE.json" "$artifact_dir/RELEASE.json"
 cosign public-key --key env://COSIGN_PRIVATE_KEY >"$artifact_dir/cosign.pub"
 openssl pkey -pubin -in "$artifact_dir/cosign.pub" -outform DER |
     openssl dgst -sha256 >"$artifact_dir/public-key.sha256"
@@ -29,30 +31,17 @@ for artifact in "$artifact_dir"/*.whl "$artifact_dir"/*.tar.gz; do
 done
 (
     cd "$artifact_dir"
-    sha256sum ./*.whl ./*.tar.gz ./*.sigstore.json ./cosign.pub ./public-key.sha256 ./SOURCE.json >SHA256SUMS
+    sha256sum ./*.whl ./*.tar.gz ./*.sigstore.json ./cosign.pub ./public-key.sha256 ./SOURCE.json ./RELEASE.json >SHA256SUMS
     cosign sign-blob --yes --key env://COSIGN_PRIVATE_KEY --bundle SHA256SUMS.sigstore.json SHA256SUMS
     cosign verify-blob --key cosign.pub --bundle SHA256SUMS.sigstore.json SHA256SUMS
     sha256sum --check SHA256SUMS
 )
 
-notes="$RUNNER_TEMP/release-notes.md"
-cat >"$notes" <<'NOTES'
-Install the package with `pip install witful` or `pip install 'witful[postgres]'`.
-
-Download the distributions, public key, fingerprint, manifest, and Sigstore bundles.
-Compare the fingerprint with a trusted source, then verify:
-
-```bash
-cosign verify-blob --key cosign.pub --bundle SHA256SUMS.sigstore.json SHA256SUMS
-sha256sum --check SHA256SUMS
-```
-
-SOURCE.json identifies the tag and source commit used for the distributions.
-NOTES
+notes="$RUNNER_TEMP/release-feedback/release-notes.md"
 
 # A completed release is immutable; retry only an existing draft or create one with reviewed bytes.
 if gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --json isDraft --jq .isDraft >"$RUNNER_TEMP/release-state" 2>/dev/null; then
-    if [[ "$(cat "$RUNNER_TEMP/release-state")" != true ]]; then
+    if [ "$(cat "$RUNNER_TEMP/release-state")" != true ]; then
         echo 'Release is already published; refusing to replace its artifacts.' >&2
         exit 1
     fi
@@ -65,3 +54,9 @@ gh release upload "$RELEASE_TAG" "$artifact_dir"/* --repo "$GITHUB_REPOSITORY" -
 # Poetry publishes only downloaded build artifacts, never a rebuild. A failed upload leaves the release as a draft.
 poetry publish --no-interaction --skip-existing
 gh release edit "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --draft=false --notes-file "$notes"
+
+# Pass public trust material independently from the subsequently downloaded release assets.
+if [ -n "${GITHUB_OUTPUT:-}" ]; then
+    fingerprint="$(awk '{print $NF}' "$artifact_dir/public-key.sha256")"
+    echo "fingerprint=$fingerprint" >>"$GITHUB_OUTPUT"
+fi
