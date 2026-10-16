@@ -6,6 +6,29 @@ requires explicit applicability decisions, and rejects missing or stale coverage
 The implementation uses the existing compiler and generated JSON Schema; it does
 not introduce a second knowledge model or infer completion from usage counts.
 
+## Review lifecycle
+
+What does a successful completion check establish, and when is a review stale?
+
+```mermaid
+flowchart TB
+    inputs["Hierarchy, task<br/>and Git workspaces"] --> plan["plan<br/>Snapshot full review scope"]
+    plan --> review["Individual review<br/>Evidence or applicability"]
+    review --> check["check<br/>Coverage and freshness"]
+    check -->|review gaps| review
+    check -->|changed inputs| plan
+    check -->|coverage passes| outcome{"Declared outcome"}
+    outcome -->|complete| complete["Task declared complete"]
+    outcome -->|handoff| handoff["Incomplete handoff<br/>Next actions retained"]
+```
+
+The [completion implementation](../pkg/witful/completion/) verifies the recorded
+review, not the truth of its evidence or the quality of the implementation. Every
+active child needs its own disposition. An incomplete handoff may pass coverage
+while reporting `complete: false`; it must not be presented as finished work.
+This final full-tree review complements the
+[working-context review](context.md#review-flow) performed for individual steps.
+
 ## Review a task
 
 Use a collection containing `lessons.jsonl` and `knowledge/catalog.json`. Keep

@@ -9,6 +9,53 @@ The local adapter follows [RFC #76](https://github.com/astrivant/product-researc
 Access is restricted to the owning engineer's admitted runtime. Installation does
 not enroll repositories. Model-token reduction has not been measured.
 
+## Architecture and isolation
+
+Where can readable source exist, and which component can contact other services?
+
+```mermaid
+flowchart TB
+    subgraph host["Admitted host"]
+        source["Approved clean Git worktree"] -->|verified source bytes| runtime["Native controller<br/>CodeGraph service"]
+        image["Pinned local image"] -->|start without pulling| worker
+        worker["Isolated worker<br/>CodeGraph SDK and private tmpfs<br/>No network, mounts or swap"]
+        runtime -->|bounded stdin| worker
+        worker -->|bounded nodes and edges| runtime
+    end
+    runtime -->|current admission| authority["Independent authority"]
+    runtime -->|scoped key operations| broker["Independent key broker"]
+    runtime -->|signed ciphertext| storage["Native Git or PostgreSQL store"]
+```
+
+The network restriction applies to the SDK worker. The controller still contacts
+its configured authority, broker and storage. Only verified Python source bytes
+enter the worker; it receives no host-directory mount, broker credentials or
+identity learning records. Source text and SDK index files are readable during
+processing. The controller also handles readable graph data while sealing or
+querying it; encryption at rest does not remove that trusted runtime boundary.
+
+Docker is the adapter's isolation mechanism, not a CodeGraph SDK requirement or
+the source of token savings. It adds a Docker dependency and per-build startup
+cost. Image creation downloads pinned dependencies separately; indexing starts
+only an already installed, explicitly enrolled image. Querying an existing graph
+does not start the SDK container again, although it verifies current source bytes.
+
+| Worker property | Purpose and actual boundary |
+| --- | --- |
+| Optional | Ordinary Witful operations do not install or run CodeGraph. |
+| Locked | Source revision, dependency lock and enrolled image content ID identify the reviewed executable. |
+| Bounded | Source, output, memory, process count and time limits constrain parser work; exhaustion fails the operation. |
+| Disposable | Copied source and SDK SQLite files stay in tmpfs; cleanup removes the container after success, failure or cancellation. |
+| No network | The indexing process cannot contact a telemetry or other remote endpoint; the host and Docker daemon remain trusted. |
+
+The [snapshot reader](../pkg/witful/codegraph/snapshot.py),
+[worker supervisor](../pkg/witful/codegraph/worker.py),
+[SDK adapter](../services/codegraph/worker.mjs) and
+[graph service](../pkg/witful/codegraph/service.py) own these boundaries.
+Native storage retains the encrypted normalized graph and its history, not the
+worker's SQLite database. See the [concept map](architecture.md) for the separate
+roles of repository evidence, learned guidance and review receipts.
+
 ## Runtime and custody
 
 Use the [protected native runtime](native-storage.md) on an explicitly admitted
@@ -139,6 +186,44 @@ output through existing context limits. The token budget is a conservative UTF-8
 byte bound, not a measured tokenizer count. Static Python analysis can miss dynamic
 calls; an absent edge is never proof of absence. Budget exhaustion is visible or
 fails with `incomplete`, never silently current-looking truncated JSON.
+
+## Query lifecycle
+
+What happens before a stored graph can supply context to its admitted consumer?
+
+```mermaid
+sequenceDiagram
+    participant Client as Native client
+    participant API as CodeGraph service
+    participant Authority as Authority
+    participant Store as Native store
+    participant Keys as Key broker
+    Client->>API: mTLS query: revision and budgets
+    API->>Authority: Check scope and admission
+    Authority-->>API: Registration and frontier binding
+    API->>Store: Read selected encrypted graph
+    Store-->>API: Ciphertext and signatures
+    API->>Keys: Request scoped key operation
+    Keys-->>API: Authorized cryptographic result
+    API->>API: Verify and decrypt graph in memory
+    API->>API: Match enrollment and source
+    API->>API: Select bounded evidence
+    API->>API: Recheck source and elapsed budget
+    API->>Authority: Recheck admission before release
+    Authority-->>API: Current authorization
+    API-->>Client: Revision-bound evidence over mTLS
+    Note over Client: CLI forwards to admitted pipe or socket
+```
+
+This shows the logical flow of a successful request through
+[`RepositoryGraph.query`](../pkg/witful/codegraph/service.py).
+Native envelope verification repeats as referenced metadata and payloads are read.
+Missing, stale, revoked or over-budget inputs fail before a successful response.
+The query uses Witful's bounded traversal over the normalized graph; it does not
+invoke a model or re-run the SDK indexer. The
+[CLI](../pkg/witful/codegraph/cli.py) refuses terminal and regular-file output, but
+the separately reviewed recipient must still prevent logging or durable plaintext
+retention. No application-owned query cache is created.
 
 ## Validation evidence
 

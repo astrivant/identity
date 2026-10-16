@@ -8,6 +8,36 @@ The public library ships no personal collection, and its collection job stays di
 
 For replacement keys, follow [current-file rotation and retained-history recovery](key-rotation.md).
 
+## Publication boundaries
+
+Where are records readable, and what crosses into Git or the artifact store?
+
+```mermaid
+flowchart TB
+    subgraph local["Protected local storage"]
+        records["Readable source records"] --> seal["Validate, encrypt and sign"]
+    end
+    seal --> bundle["Ciphertext and<br/>verification material"]
+    bundle --> git["Private Git repository"]
+    git --> verify["Trusted main CI<br/>Verify signer pin"]
+    subgraph temporary["CI temporary memory: swap disabled"]
+        verify -->|decrypt with configured keys| render["Validate sources and render views"]
+        render --> reseal["Encrypt and sign derived views"]
+    end
+    reseal --> publish["Encrypted outputs"]
+    render -->|reviewed figure opt-in| figures["Readable figures<br/>Retained in history"]
+```
+
+The decryption arrow is conditional on the private-repository, trusted-event and
+configuration checks below. PR checks do not receive collection decryption keys.
+The render runtime can read plaintext while it operates; encryption protects the
+published payload, not that runtime from its authorized operators. Plaintext
+source journals are not a Git publication step. See
+[data protection](data-protection.md) for working-storage checks and retained
+history. The [collection pipeline](../pkg/witful/collection/pipeline.py) owns this
+transport and rendering path; [the native storage views](native/diagrams/README.md)
+cover the separate service-backed record path used by CodeGraph.
+
 ## First setup
 
 Requires protected local working and key-backup volumes, macOS or Linux, Python 3.12+ excluding 3.14.1, Git, `gh`, OpenSSL,

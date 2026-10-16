@@ -84,3 +84,5 @@
 /tests/codegraph/ @emmeowzing
 /services/codegraph/ @emmeowzing
 /docs/codegraphs.md @emmeowzing
+/docs/architecture.md @emmeowzing
+/docs/multisleeving.md @emmeowzing

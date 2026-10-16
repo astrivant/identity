@@ -142,6 +142,9 @@ use `WITFUL_TEST_DATABASE_URL`; ordinary commands never read that variable.
 
 ## How it works
 
+See the [architecture and concept diagrams](docs/architecture.md) for the knowledge
+hierarchy, evidence records, runtime boundaries and links to operation-specific flows.
+
 Policy means the reviewed expectations, constraints, and procedures that guide
 an agent's work. Learning connects those rules to sourced lessons and observed
 outcomes so colleagues can understand why a practice exists and revise it when

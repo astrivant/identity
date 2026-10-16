@@ -10,6 +10,34 @@ This is a workflow and a CLI gate. It cannot prevent a user from closing an agen
 window or a host from killing a process. The supervised mode handles catchable
 termination; remote checkpoints and durable storage cover interrupted sessions.
 
+## Session and storage relationships
+
+How can concurrent sessions preserve independent work without sharing a mutable
+plaintext collection?
+
+```mermaid
+flowchart TB
+    main["Private remote main<br/>Starting revision"] -->|start| a["Sleeve A<br/>Isolated files"]
+    main -->|start| b["Sleeve B<br/>Isolated files"]
+    a -->|signed checkpoint| branchA["Remote sleeve A branch"]
+    b -->|signed checkpoint| branchB["Remote sleeve B branch"]
+    branchA --> reconcile["finish<br/>Fetch, reconcile and validate"]
+    branchB --> reconcile
+    reconcile -->|conflict or review| open["Keep sleeve open<br/>Retain both histories"]
+    open -->|reviewed resolution| reconcile
+    reconcile -->|push and verify| integrated["Main contains sleeve history"]
+    integrated --> guard["guard<br/>Normal closure"]
+```
+
+For encrypted collections, each source directory is readable only on protected
+working storage; each Git checkpoint contains signed ciphertext. An
+[instance](instances.md) identifies an observed runtime, a sleeve isolates its
+working files, and a [checkpoint](checkpoints.md) records project evidence. They
+are separate records and are not substituted for one another. Opening a PR does
+not close a sleeve: required review or unresolved source conflicts keep the guard
+closed until remote integration is verified. The lifecycle is implemented in
+[`witful.sleeves`](../pkg/witful/sleeves/).
+
 ## Start and work
 
 Use the version from this checkout until the next package release. Requires Git,

@@ -11,6 +11,33 @@ interceptor. Keep existing permissions, instance/sleeve guards, and the independ
 reviewed scope against a local snapshot; it does not establish truth, remote
 freshness, successful execution, or simultaneous model recall.
 
+## Review flow
+
+How does one task select guidance without treating every retrieved statement as
+applicable or authoritative?
+
+```mermaid
+flowchart TB
+    hierarchy["Hierarchy and<br/>relationships"] --> plan
+    task["Mapping, task<br/>and workspace"] --> plan["plan<br/>Bounded candidates"]
+    plan --> review["Read teachings<br/>Review each candidate"]
+    review --> resolve["resolve<br/>Follow requirements"]
+    resolve -->|new or pending candidates| review
+    resolve -->|reviewed set| receipt["Private receipt<br/>Decisions and bindings"]
+    receipt --> check["check<br/>Re-read current inputs"]
+    check -->|stale inputs| plan
+    check -->|coverage passes| use["Caller uses guidance<br/>Existing permissions apply"]
+```
+
+The [resolver](../pkg/witful/context/core.py) follows outgoing `requires`
+relationships and nominates optional `related`/`transfers` neighbors. It does not
+infer use from graph proximity or application counts. The caller performs the
+review and retains the selected text; a receipt alone does not place it in a
+model's context. The separate [completion review](completion.md#review-lifecycle)
+covers the full hierarchy at handoff rather than only this selected neighborhood.
+See the [concept map](architecture.md#guidance-and-code-evidence) for how this
+guidance differs from repository code evidence.
+
 ## First review
 
 Use an existing Git-backed collection with a committed HEAD and ignored `.witful/`
