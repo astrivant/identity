@@ -9,6 +9,9 @@ poetry run pytest -n 4 pkg/witful scripts/ci/tests --cov=witful --cov-branch --c
 poetry run pre-commit run --all-files
 ```
 
+Maintain review ownership with the [CODEOWNERS compiler](docs/codeowners.md).
+Commit hooks normalize the map; push and CI checks require committed output.
+
 ShellCheck and shfmt validate standalone shell scripts. The pinned Actionlint hook
 also validates every workflow and sends inline `run:` shell to ShellCheck; missing
 ShellCheck fails the hook. CI runs this same hook with

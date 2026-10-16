@@ -328,3 +328,12 @@ with exact-version links. Recover uncertain notification outcomes through the
 reporting receipt and rerun only the reporting job; never republish immutable
 artifacts to repair a comment. Reading this guide does not authorize a release
 or live notification outside the selected pipeline.
+
+## Maintain review ownership
+
+When adding or moving owned files, update CODEOWNERS and run the
+[ownership compiler](docs/codeowners.md) in the same change. Review the normalized
+map, stage it, and pass the hooks. Commit hooks organize the complete map even for
+path-only changes; push and CI checks validate the committed map and tree together.
+Keep wildcard precedence and section boundaries intact. New directory scopes require
+explicit review because they also assign ownership of future files.
