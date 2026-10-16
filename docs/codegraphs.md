@@ -100,6 +100,13 @@ established, enrollment is unsupported. An operator's ability to edit policy or 
 compromised attester is outside the claimed cryptographic guarantee. A signed
 configuration is evidence of a reviewed deployment, not hardware attestation.
 
+The default memory profile requires nonswappable temporary storage. An explicitly
+reviewed macOS development profile may instead accept verified encrypted swap and
+FileVault working storage through the signed `macos-encrypted-swap` control.
+See [profile selection](codegraph-setup.md#retries-recovery-and-admission). This
+changes the controller host's memory acceptance rule; the Linux worker still uses
+its bounded nonswappable tmpfs.
+
 The same Flask application supplies graph routes, central mutual TLS, operational
 metrics, admission limits and shutdown. Generic record, export, sharing and
 derivation HTTP operations reject reserved graph scopes. Graphs cannot use

@@ -348,7 +348,7 @@ class Evidence:
         configuration (str): Digest of the exact effective non-secret Settings object.
         issued (int): UTC epoch seconds of the evidence observation.
         expires (int): Exclusive expiration requiring renewed verification.
-        controls (tuple[str, ...]): Complete required reviewed controls.
+        controls (tuple[str, ...]): Complete reviewed controls; explicit macOS development evidence may select macos-encrypted-swap.
         references (tuple[str, ...]): Operator-owned evidence references, without credentials or private payloads.
         version (Literal[1]): Evidence contract version.
     """
@@ -517,6 +517,10 @@ def require_profile(settings: Settings, now: int) -> Evidence:
     }
     if settings.codegraphs:
         required.update({"graph-engineer-only-custody", "graph-runtime-egress-isolation", "graph-source-rights", "graph-output-sink"})
+    if "macos-encrypted-swap" in evidence.controls:
+        # The signed operator choice changes only this memory control. It never implies the stronger no-swap claim.
+        required.remove("temp-memory-noswap")
+        required.add("macos-encrypted-swap")
     configuration = as_data(settings)
     accepted = {hashlib.sha256(codec.encode(pack(configuration))).hexdigest()}
     # An absent optional extension must not invalidate otherwise identical pre-extension evidence.
@@ -529,4 +533,8 @@ def require_profile(settings: Settings, now: int) -> Evidence:
         raise NativeError("denied")
     if any(not value.strip() for value in evidence.references) or len(evidence.controls) != len(required):
         raise NativeError("invalid")
+    if "macos-encrypted-swap" in evidence.controls:
+        from witful.native.memory import require_macos_encrypted_swap
+
+        require_macos_encrypted_swap(settings.runtime.working_directory)
     return evidence

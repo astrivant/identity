@@ -111,9 +111,18 @@ removing that marker and retrying. Never paste a token into a diagnostic or issu
 Cancel an interactive authentication prompt normally; preserve partial receipts.
 
 Custody setup cannot attest a host's protection. The native runtime still requires
-reviewed, signed deployment evidence covering storage, nonswappable temporary
-memory, role separation, recovery and graph-specific access. Separate processes
-on one developer machine are not independently administered production services.
-Encrypted swap is still swap. A host that cannot meet the profile can prepare vault
-configuration, but cannot enroll a repository under that profile. Setup neither
-signs such an attestation nor relaxes the admission gate.
+reviewed, signed deployment evidence covering storage, working memory, role
+separation, recovery and graph-specific access. Separate processes on one developer
+machine are not independently administered production services.
+
+The default memory control is `temp-memory-noswap`. For an explicitly accepted
+macOS development deployment, its signed evidence may substitute
+`macos-encrypted-swap`. That profile checks FileVault working storage and macOS's
+actual encrypted-swap status on each admission check. Other operating systems,
+unencrypted swap and unverifiable metadata are rejected. This choice accepts
+encrypted disk-backed memory; it does not claim memory never reaches disk.
+The isolated Linux SDK worker retains its no-swap controls in either profile.
+
+All other admission controls remain required. Setup does not sign the deployment
+attestation automatically, and an existing no-swap attestation does not implicitly
+select the macOS exception.

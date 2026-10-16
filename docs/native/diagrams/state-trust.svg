@@ -450,8 +450,9 @@ z
    <text style="font-size: 13px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #263642" x="576" y="74.029969" transform="rotate(-0 576 74.029969)">Where can plaintext, keys and the sole authoritative copy exist?</text>
   </g>
   <g id="text_24">
-   <text style="font-size: 9.5px; font-family: 'DejaVu Sans'; fill: #263642" transform="translate(46.08 706.706406)">Every source and authority has its own storage/backup owner. Controller scratch must be protected and nonswappable. Gateway scratch holds ciphertext and permit</text>
-   <text style="font-size: 9.5px; font-family: 'DejaVu Sans'; fill: #263642" transform="translate(46.08 720.956406)">plaintext only. Native reference uses two stateless controllers; local Git requires one fenced writer. Operational endpoints use the same private mTLS app.</text>
+   <text style="font-size: 9.5px; font-family: 'DejaVu Sans'; fill: #263642" transform="translate(46.08 706.706406)">Every source and authority has its own storage/backup owner. Controller scratch must satisfy its signed memory profile: nonswappable by default, or explicitly</text>
+   <text style="font-size: 9.5px; font-family: 'DejaVu Sans'; fill: #263642" transform="translate(46.08 720.956406)">verified macOS encrypted swap for development. Gateway scratch holds ciphertext and permit plaintext only. Native reference uses two stateless controllers; local Git</text>
+   <text style="font-size: 9.5px; font-family: 'DejaVu Sans'; fill: #263642" transform="translate(46.08 735.206406)">requires one fenced writer. Operational endpoints use the same private mTLS app.</text>
   </g>
   <g id="text_25">
    <text style="font-size: 9px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #263642" x="46.08" y="766.656" transform="rotate(-0 46.08 766.656)">OLIVE authoritative  |  COPPER durable pending  |  BLUE replicated projection  |  CREAM disposable cache  |  GRAY service</text>

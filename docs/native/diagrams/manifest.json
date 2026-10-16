@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "source_commit": "087058946f0ad44103caef8bbc65ba6003aa3ae3",
-  "verification_date": "2026-10-15",
+  "source_commit": "3590a7137ea9f7554862d1da90bc6129cfe257c4",
+  "verification_date": "2026-10-16",
   "scope": "Implemented synthetic/reference profiles; no production deployment or storage attestation asserted",
   "versions": {
     "native_codec": 1,
@@ -14,7 +14,7 @@
     "helm/witful/references/projection/values.yaml": "cb4177194e6ed3698603e4431ef4f3db4fc957ada441f0df76f59d5b2f249bab"
   },
   "inputs": {
-    "docs/native/diagrams/views.json": "9bf82f60e55e590db1cc6261fa5f2880a001a2968e0cb7dca0457ee048b29e35",
+    "docs/native/diagrams/views.json": "66686fb97ea14d229cc5c8dd5f12e60361fc8f40e0c3601d00773496fbeae3b3",
     "docs/native-operations.md": "0b10f10d02a43e7318cdc33b0e30433d76a85f17f2b9b5e9f2ba8abc9fcaa714",
     "helm/witful/references/native/values.yaml": "0101e85f886e1dc3b9f1f17b7d572c84b4255622ba0b46442e1c4792a4578efa",
     "helm/witful/references/projection/values.yaml": "cb4177194e6ed3698603e4431ef4f3db4fc957ada441f0df76f59d5b2f249bab",
@@ -40,7 +40,7 @@
     "pkg/witful/native/cli.py": "1fc33d3fbacd5a2d87e4c79bf453aad900f6659ab6389c37db0cd9f477f5407f",
     "pkg/witful/native/client.py": "5482d1017a8c33f619a586073c1a0314712b363473af49005b6d8747d1355088",
     "pkg/witful/native/codec.py": "927561fd6f228b102a9f5c80f677d346575e1d3c544803f3f7ff0a21d859bf73",
-    "pkg/witful/native/config.py": "2eb564eb4ba29dc3a90e2416f6ce03822cbcd43f8018052f591a772972af2828",
+    "pkg/witful/native/config.py": "f254f731b1ee029ba49d47e9aa5eefa0bbac2ece7a5f6cc0c3317c7b097c1490",
     "pkg/witful/native/context.py": "458ba6ee7c2898459ad77c9470c8ecc38c3f709cf912e96510baa747ab35b3f9",
     "pkg/witful/native/derivation.py": "fc16ebdb899094276989907287d9ca36201afd1d7d94935833d47d1b3ab8bd4a",
     "pkg/witful/native/derivation_models.py": "a9c56be915bc1989b6794fdc1cfa829099d19dc6f18cc16080c196c9ccc51aa3",
@@ -49,6 +49,7 @@
     "pkg/witful/native/git.py": "d735387bf73d45fbd80979ab12e9de2edf82c3b1da032edea981ae41722bd0ec",
     "pkg/witful/native/gunicorn.py": "3f949a58f9434ba9dcfc428874279c9498261c99ad5037e92ac32b8ac2c47de2",
     "pkg/witful/native/kinds.py": "7eb3d5b3e7bed695b03205d34c0b8d7a375c43b5306e62b65448f51b9999d3f7",
+    "pkg/witful/native/memory.py": "a8a93566861154418ebd81a5269358d6ee3572c65d7b1d707d0aa3a621e0e1ed",
     "pkg/witful/native/migration.py": "cde7284d069f9289ed1e2991c73bbe2b1d673f789ea8680e61f42d353042b115",
     "pkg/witful/native/models.py": "3b32a7028aaa7c4ba0cc50c4f11eeb8cbe4dd7ec2852d203a2771978ffeb0356",
     "pkg/witful/native/original_git.py": "b9c92372e74a76fa974271d952165d0635fb545f9154908ba527510038805a28",
@@ -110,7 +111,7 @@
     "tests/native/test_physical.py": "e55a74394f78ac1d59e4f420ee6a38f6a507ac53406abf708ce1e84ee8906a9a"
   },
   "outputs": {
-    "state-trust.svg": "066c9ac117af651f6d2ff9e6bb9678d72a4dd37bc453c06197ec764c70d4059c",
+    "state-trust.svg": "0dad5403eaa035b6f0a0a5e26da359f0bb7c1a94c8073cf8dd0ee475870aa6e1",
     "write-ack.svg": "04160eb563fd67ada14a0c725896052240d6810992283fbca00c243d83bd3e04",
     "branches-review.svg": "a959c7dbac367ec3f95d8896efdeaec336d53fe401cd5e347821db631d029898",
     "projection.svg": "9ebeddc77ca702e458503a545113ae0e83db8585b2b251b6f423b46c600cb0f1",

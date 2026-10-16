@@ -353,3 +353,42 @@ def test_runtime_reserves_recovery_and_operational_capacity(settings: Settings, 
     large = evolve(runtime, threads=100, admission=100, recovery_admission=20, worker_connections=121)
     path.write_text(json.dumps(as_data(evolve(settings, runtime=large))))
     assert load(path).runtime == large
+
+
+def test_memory_choice_is_signed_and_does_not_waive_other_controls(
+    settings: Settings, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """
+    Require an explicit signed control substitution while preserving every other admission obligation.
+
+    Args:
+        settings (Settings): Existing signed no-swap synthetic profile.
+        tmp_path (Path): Disposable evidence output.
+        monkeypatch (pytest.MonkeyPatch): Count actual selected-profile verification calls.
+
+    Returns:
+        None: Default profiles do not select the exception; incomplete or mixed controls are denied.
+    """
+    from witful.native import memory
+
+    observed: list[str] = []
+    monkeypatch.setattr(memory, "require_macos_encrypted_swap", observed.append)
+    original = require_profile(settings, 150)
+    assert not observed
+    private = Ed25519PrivateKey.generate()
+    public = private.public_key().public_bytes(serialization.Encoding.Raw, serialization.PublicFormat.Raw)
+    path = tmp_path / "mac-profile.cbor"
+    selected = evolve(settings, protection=Protection(str(path), base64.b64encode(public).decode(), hashlib.sha256(public).hexdigest()))
+    controls = tuple("macos-encrypted-swap" if value == "temp-memory-noswap" else value for value in original.controls)
+    evidence = Evidence(
+        hashlib.sha256(codec.encode(pack(as_data(selected)))).hexdigest(), 100, 200, controls, ("Synthetic explicit Mac choice",)
+    )
+    for choice, accepted in ((controls, True), (controls + ("temp-memory-noswap",), False), (controls[:-1], False)):
+        payload = codec.encode(as_data(evolve(evidence, controls=choice)))
+        path.write_bytes(codec.encode({"payload": payload, "signature": private.sign(b"witful-storage-evidence-v1\0" + payload)}))
+        if accepted:
+            assert require_profile(selected, 150).controls == controls
+        else:
+            with pytest.raises(NativeError):
+                require_profile(selected, 150)
+    assert observed == [selected.runtime.working_directory]
