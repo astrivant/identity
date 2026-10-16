@@ -1,0 +1,228 @@
+{
+  "source": {
+    "target": "fe132c3ca5d39255005fce88515b72bdb85d9bb1",
+    "base": "fe132c3ca5d39255005fce88515b72bdb85d9bb1",
+    "head": "3fbde425b0668ac7392d56a3e821906e749a3c99",
+    "tree": "e95e5ead37adf07f3808a1aab945277c9b6e4a16",
+    "staged": false,
+    "deltas": [
+      {
+        "before": ".github/CODEOWNERS",
+        "after": ".github/CODEOWNERS",
+        "added": 58,
+        "deleted": 59
+      },
+      {
+        "before": "docs/assets/brand/README.md",
+        "after": "docs/assets/brand/README.md",
+        "added": 23,
+        "deleted": 0
+      },
+      {
+        "before": "docs/assets/brand/pr-palette.json",
+        "after": "docs/assets/brand/pr-palette.json",
+        "added": 18,
+        "deleted": 0
+      },
+      {
+        "before": "docs/private-collections.md",
+        "after": "docs/private-collections.md",
+        "added": 10,
+        "deleted": 1
+      },
+      {
+        "before": "pkg/witful/collection/archive.py",
+        "after": "pkg/witful/collection/archive.py",
+        "added": 2,
+        "deleted": 3
+      },
+      {
+        "before": "pkg/witful/collection/dashboard.py",
+        "after": "pkg/witful/collection/dashboard.py",
+        "added": 99,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/collection/operations.py",
+        "after": "pkg/witful/collection/operations.py",
+        "added": 9,
+        "deleted": 53
+      },
+      {
+        "before": "pkg/witful/collection/publication.py",
+        "after": "pkg/witful/collection/publication.py",
+        "added": 7,
+        "deleted": 4
+      },
+      {
+        "before": "pkg/witful/collection/tests/test_operations.py",
+        "after": "pkg/witful/collection/tests/test_operations.py",
+        "added": 2,
+        "deleted": 1
+      },
+      {
+        "before": "pkg/witful/collection/tests/test_rotation.py",
+        "after": "pkg/witful/collection/tests/test_rotation.py",
+        "added": 7,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/ci/provider_contracts/data/manifest.json",
+        "after": "scripts/ci/provider_contracts/data/manifest.json",
+        "added": 6,
+        "deleted": 6
+      },
+      {
+        "before": "tests/collection/__init__.py",
+        "after": "tests/collection/__init__.py",
+        "added": 5,
+        "deleted": 0
+      },
+      {
+        "before": "tests/collection/test_dashboard.py",
+        "after": "tests/collection/test_dashboard.py",
+        "added": 69,
+        "deleted": 0
+      }
+    ]
+  },
+  "view": {
+    "nodes": [
+      {
+        "id": "F1",
+        "label": ".github/CODEOWNERS",
+        "kind": "file",
+        "status": "changed",
+        "weight": 117.0,
+        "group": ".github"
+      },
+      {
+        "id": "F2",
+        "label": "docs/assets/brand/README.md",
+        "kind": "file",
+        "status": "changed",
+        "weight": 23.0,
+        "group": "docs/assets/brand"
+      },
+      {
+        "id": "F3",
+        "label": "docs/assets/brand/pr-palette.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 18.0,
+        "group": "docs/assets/brand"
+      },
+      {
+        "id": "F4",
+        "label": "docs/private-collections.md",
+        "kind": "file",
+        "status": "changed",
+        "weight": 11.0,
+        "group": "docs"
+      },
+      {
+        "id": "F5",
+        "label": "pkg/witful/collection/archive.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 5.0,
+        "group": "pkg/witful/collection"
+      },
+      {
+        "id": "F6",
+        "label": "pkg/witful/collection/dashboard.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 99.0,
+        "group": "pkg/witful/collection"
+      },
+      {
+        "id": "F7",
+        "label": "pkg/witful/collection/operations.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 62.0,
+        "group": "pkg/witful/collection"
+      },
+      {
+        "id": "F8",
+        "label": "pkg/witful/collection/publication.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 11.0,
+        "group": "pkg/witful/collection"
+      },
+      {
+        "id": "F9",
+        "label": "pkg/witful/collection/tests/test_operations.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 3.0,
+        "group": "pkg/witful/collection/tests"
+      },
+      {
+        "id": "F10",
+        "label": "pkg/witful/collection/tests/test_rotation.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 7.0,
+        "group": "pkg/witful/collection/tests"
+      },
+      {
+        "id": "F11",
+        "label": "scripts/ci/provider_contracts/data/manifest.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 12.0,
+        "group": "scripts/ci/provider_contracts/data"
+      },
+      {
+        "id": "F12",
+        "label": "tests/collection/__init__.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 5.0,
+        "group": "tests/collection"
+      },
+      {
+        "id": "F13",
+        "label": "tests/collection/test_dashboard.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 69.0,
+        "group": "tests/collection"
+      }
+    ],
+    "links": [],
+    "missing": [
+      ".github/CODEOWNERS",
+      "docs/assets/brand/README.md",
+      "docs/assets/brand/pr-palette.json",
+      "docs/private-collections.md",
+      "pkg/witful/collection/archive.py",
+      "pkg/witful/collection/dashboard.py",
+      "pkg/witful/collection/operations.py",
+      "pkg/witful/collection/publication.py",
+      "pkg/witful/collection/tests/test_operations.py",
+      "pkg/witful/collection/tests/test_rotation.py",
+      "scripts/ci/provider_contracts/data/manifest.json",
+      "tests/collection/__init__.py",
+      "tests/collection/test_dashboard.py"
+    ],
+    "state": "unavailable: no local intent export",
+    "graph_revision": "",
+    "input_sha256": "",
+    "omitted_dependencies": 0
+  },
+  "palette_sha256": "df3607dacd40a0c4dbfb4b0053752953f4b40d060401fe4e42a3d842f6a8a15c",
+  "seed": 1729,
+  "renderer": 1,
+  "implementation_sha256": "6d5a45191bd58e030b4b28297cb8ad952e8557a7cdb9fd922f7881ad55e12461",
+  "matplotlib": "3.11.2",
+  "networkx": "3.7",
+  "numpy": "2.5.3",
+  "witful": "0.6.0",
+  "model_calls": 0,
+  "evaluated_at": null,
+  "image_sha256": "bd01b3e1ac5d95d9665c4f81e5f98f2ee6b468c72ca3c1a7349fd32636846984"
+}
