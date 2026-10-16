@@ -144,7 +144,7 @@
           "bend": 1.5
         }
       ],
-      "notes": "Every source and authority has its own storage/backup owner. Controller scratch must be protected and nonswappable. Gateway scratch holds ciphertext and permit plaintext only. Native reference uses two stateless controllers; local Git requires one fenced writer. Operational endpoints use the same private mTLS app.",
+      "notes": "Every source and authority has its own storage/backup owner. Controller scratch must satisfy its signed memory profile: nonswappable by default, or explicitly verified macOS encrypted swap for development. Gateway scratch holds ciphertext and permit plaintext only. Native reference uses two stateless controllers; local Git requires one fenced writer. Operational endpoints use the same private mTLS app.",
       "sources": [
         "pkg/witful/native/application.py",
         "pkg/witful/native/projection/application.py",

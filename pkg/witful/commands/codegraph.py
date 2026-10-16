@@ -4,13 +4,31 @@ Declare optional graph commands without importing SDK, database or controller ru
 
 from __future__ import annotations
 
+import argparse
 from pathlib import Path
-from typing import TYPE_CHECKING
 
 from witful.commands.builder import Command
 
-if TYPE_CHECKING:
-    import argparse
+
+def setup(parser: argparse.ArgumentParser) -> None:
+    """
+    Declare explicit operator provisioning, optional for users of an existing native deployment.
+
+    Args:
+        parser (argparse.ArgumentParser): Setup leaf.
+
+    Returns:
+        None: Defaults apply only to this explicitly invoked setup command.
+    """
+    parser.add_argument("--directory", type=Path, required=True, help="Private protected setup directory outside Git")
+    parser.add_argument("--account", required=True, help="Existing authenticated 1Password account")
+    parser.add_argument("--vault", default="Witful CodeGraph Development", help="Dedicated vault name or ID to create or reuse")
+    parser.add_argument(
+        "--provision", action=argparse.BooleanOptionalAction, default=True, help="Create missing vault/items/account (default: on)"
+    )
+    parser.add_argument("--wrapping-reference", help="Existing op://VAULT_ID/ITEM_ID/FIELD with generation/kind fields")
+    parser.add_argument("--signing-reference", help="Existing op://VAULT_ID/ITEM_ID/FIELD with generation/kind fields")
+    parser.add_argument("--token-reference", help="Existing vault-scoped read-only service-account token field")
 
 
 def common(parser: argparse.ArgumentParser) -> None:
@@ -115,6 +133,7 @@ def command() -> Command:
         "codegraph",
         "Build and query encrypted repository evidence",
         children=(
+            Command("setup", "Prepare optional 1Password broker custody", setup, "witful.codegraph.setup.cli"),
             Command("build", "Publish an encrypted generation", build, "witful.codegraph.cli"),
             Command("query", "Retrieve bounded source references", query, "witful.codegraph.cli"),
             Command("recover", "Reconcile an uncertain publication", recover, "witful.codegraph.cli"),

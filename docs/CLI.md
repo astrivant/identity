@@ -272,6 +272,10 @@ for SDK authentication, provider evidence and operation boundaries.
 
 ## Repository codegraphs
 
+`witful codegraph setup` explicitly prepares optional 1Password broker custody.
+Provisioning defaults to on for this command; `--no-provision` and explicit vault
+field references reuse existing credentials. See [setup and recovery](codegraph-setup.md).
+
 `witful codegraph build` and `witful codegraph query` operate on explicitly enrolled
 engineer-only encrypted extensions. See [inputs, commands and custody](codegraphs.md).
 The SDK worker is optional and uses a separate locked runtime; the CLI never

@@ -9,6 +9,7 @@ import hashlib
 import json
 from pathlib import Path
 from typing import Literal
+from urllib.parse import urlsplit
 
 from attrs import frozen
 from cryptography.exceptions import InvalidSignature
@@ -348,7 +349,7 @@ class Evidence:
         configuration (str): Digest of the exact effective non-secret Settings object.
         issued (int): UTC epoch seconds of the evidence observation.
         expires (int): Exclusive expiration requiring renewed verification.
-        controls (tuple[str, ...]): Complete required reviewed controls.
+        controls (tuple[str, ...]): Complete reviewed controls, including any explicit development substitutions.
         references (tuple[str, ...]): Operator-owned evidence references, without credentials or private payloads.
         version (Literal[1]): Evidence contract version.
     """
@@ -517,6 +518,28 @@ def require_profile(settings: Settings, now: int) -> Evidence:
     }
     if settings.codegraphs:
         required.update({"graph-engineer-only-custody", "graph-runtime-egress-isolation", "graph-source-rights", "graph-output-sink"})
+    if "macos-encrypted-swap" in evidence.controls:
+        # The signed operator choice changes only this memory control. It never implies the stronger no-swap claim.
+        required.remove("temp-memory-noswap")
+        required.add("macos-encrypted-swap")
+    if "local-development-administration" in evidence.controls:
+        # A signed local demo accepts its host administrator without claiming independent custody.
+        if (
+            settings.role != "controller"
+            or settings.runtime.host not in {"127.0.0.1", "::1"}
+            or urlsplit(settings.broker.url).hostname not in {"localhost", "127.0.0.1", "::1"}
+            or settings.backend.kind != "git"
+            or not settings.codegraphs
+            or settings.destinations
+            or settings.archives
+            or settings.derivations
+            or settings.recipients
+            or settings.gateway
+            or settings.projection.targets
+        ):
+            raise NativeError("denied")
+        required.remove("role-separation")
+        required.add("local-development-administration")
     configuration = as_data(settings)
     accepted = {hashlib.sha256(codec.encode(pack(configuration))).hexdigest()}
     # An absent optional extension must not invalidate otherwise identical pre-extension evidence.
@@ -529,4 +552,8 @@ def require_profile(settings: Settings, now: int) -> Evidence:
         raise NativeError("denied")
     if any(not value.strip() for value in evidence.references) or len(evidence.controls) != len(required):
         raise NativeError("invalid")
+    if "macos-encrypted-swap" in evidence.controls:
+        from witful.native.memory import require_macos_encrypted_swap
+
+        require_macos_encrypted_swap(settings.runtime.working_directory)
     return evidence

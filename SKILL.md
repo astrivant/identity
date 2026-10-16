@@ -117,6 +117,15 @@ recovery. Setup, key creation, and unrelated agent launches still require task s
 
 ## Retrieve encrypted repository evidence
 
+For requested development bootstrap, use [the explicit custody setup command](docs/codegraph-setup.md).
+It defaults to creating missing 1Password resources only when invoked. Honor
+`--no-provision`, reuse existing generations, preserve uncertain-account markers
+and keep provider output private. It does not establish runtime admission or
+authorize enrollment. Do not generate successful host evidence from setup defaults.
+For an explicitly accepted macOS development deployment, signed evidence may
+select `macos-encrypted-swap`; verify the actual encrypted-swap and FileVault state.
+Keep the no-swap default elsewhere and retain every other admission control.
+
 Follow [the optional CodeGraph contract](docs/codegraphs.md) only for explicitly
 enrolled codebases. Use the existing admitted runtime and independent graph-scoped
 keys/grants. Build against exact clean commits and request bounded source evidence;
