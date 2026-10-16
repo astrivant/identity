@@ -60,7 +60,7 @@ all checks pass; it does not rebuild them. See [release operations](docs/release
 
 Non-Python pins live beside their consumers: action commit SHAs and documented
 versions in `.github/workflows/ci.yml`; Python/PostgreSQL image digests in the
-Dockerfile and chart; Composer commit in CI and pre-commit; Bitnami README/schema
+[application Dockerfile](services/witful/Dockerfile) and chart; Composer commit in CI and pre-commit; Bitnami README/schema
 generator 2.7.2 (with glob 13.0.6 using its compatible synchronous API) in `scripts/chart/package-lock.json`; Poetry 2.5.1 in CI/Docker.
 Coverage publication uses the pinned GitHub SDK action in the workflow.
 The release signing job pins Cosign. Update consumer and lock/schema outputs
@@ -86,10 +86,11 @@ and an explicit remote-ancestry close gate. Its focused tests use temporary loca
 Git remotes, ephemeral SSH signing keys, synthetic encrypted collections, and real
 TERM/INT/HUP signals. No model provider or live Kubernetes cluster is required.
 
-The Dockerfile pins Debian Trixie's Tini to `0.19.0-3+b8`, verified for amd64 and
-arm64 in the [Debian package index](https://packages.debian.org/trixie/tini).
-Both image targets and the chart/derived Compose entrypoint retain Tini. Regenerate
-Compose when changing the chart; do not patch its generated entrypoint directly.
+The [container guide](docs/containers.md) covers both application targets, editable
+development, build caches and the exact-image checks used by CI. The Dockerfile
+holds the current interpreter and OS package pins; keep version details there.
+Both targets and the chart/derived Compose entrypoint retain Tini. Regenerate
+Compose when changing the chart or its runtime profile. Do not patch generated output.
 
 
 ## Observed instance contracts

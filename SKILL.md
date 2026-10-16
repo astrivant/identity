@@ -337,3 +337,12 @@ map, stage it, and pass the hooks. Commit hooks organize the complete map even f
 path-only changes; push and CI checks validate the committed map and tree together.
 Keep wildcard precedence and section boundaries intact. New directory scopes require
 explicit review because they also assign ownership of future files.
+
+## Maintain container builds
+
+Use the [container guide](docs/containers.md) and `services/witful/Dockerfile` with
+the repository root build context. Keep runtime and development dependencies
+separate, preserve editable development imports, and retain the shared non-root
+identity and Tini entrypoint. Run the Docker build-check hook, build both targets,
+and pass their actual image IDs to `scripts/ci/checks/images.sh`. Keep generated
+Compose output aligned through its maintained profile.
