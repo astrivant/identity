@@ -1,0 +1,112 @@
+{
+  "measurement": {
+    "base": "54426c98d11a881789b45ce8838c07faacd47f75",
+    "merge_base": "54426c98d11a881789b45ce8838c07faacd47f75",
+    "head": "19549afe01356c85ff899763178431e387af0d8a",
+    "classifier": "Pygments 2.21.0",
+    "deltas": [
+      {
+        "before": ".github/CODEOWNERS",
+        "after": ".github/CODEOWNERS",
+        "added": 58,
+        "deleted": 59
+      },
+      {
+        "before": "docs/assets/brand/README.md",
+        "after": "docs/assets/brand/README.md",
+        "added": 23,
+        "deleted": 0
+      },
+      {
+        "before": "docs/assets/brand/pr-palette.json",
+        "after": "docs/assets/brand/pr-palette.json",
+        "added": 18,
+        "deleted": 0
+      },
+      {
+        "before": "docs/private-collections.md",
+        "after": "docs/private-collections.md",
+        "added": 10,
+        "deleted": 1
+      },
+      {
+        "before": "pkg/witful/collection/archive.py",
+        "after": "pkg/witful/collection/archive.py",
+        "added": 2,
+        "deleted": 3
+      },
+      {
+        "before": "pkg/witful/collection/dashboard.py",
+        "after": "pkg/witful/collection/dashboard.py",
+        "added": 99,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/collection/operations.py",
+        "after": "pkg/witful/collection/operations.py",
+        "added": 9,
+        "deleted": 53
+      },
+      {
+        "before": "pkg/witful/collection/publication.py",
+        "after": "pkg/witful/collection/publication.py",
+        "added": 7,
+        "deleted": 4
+      },
+      {
+        "before": "pkg/witful/collection/tests/test_operations.py",
+        "after": "pkg/witful/collection/tests/test_operations.py",
+        "added": 2,
+        "deleted": 1
+      },
+      {
+        "before": "pkg/witful/collection/tests/test_rotation.py",
+        "after": "pkg/witful/collection/tests/test_rotation.py",
+        "added": 7,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/ci/provider_contracts/data/manifest.json",
+        "after": "scripts/ci/provider_contracts/data/manifest.json",
+        "added": 4,
+        "deleted": 4
+      },
+      {
+        "before": "tests/collection/__init__.py",
+        "after": "tests/collection/__init__.py",
+        "added": 5,
+        "deleted": 0
+      },
+      {
+        "before": "tests/collection/test_dashboard.py",
+        "after": "tests/collection/test_dashboard.py",
+        "added": 69,
+        "deleted": 0
+      }
+    ],
+    "shares": [
+      {
+        "language": "Python",
+        "added": 200,
+        "deleted": 61
+      },
+      {
+        "language": "Unknown",
+        "added": 58,
+        "deleted": 59
+      },
+      {
+        "language": "Markdown",
+        "added": 33,
+        "deleted": 1
+      },
+      {
+        "language": "JSON",
+        "added": 22,
+        "deleted": 4
+      }
+    ]
+  },
+  "palette_sha256": "df3607dacd40a0c4dbfb4b0053752953f4b40d060401fe4e42a3d842f6a8a15c",
+  "matplotlib": "3.11.2"
+}
