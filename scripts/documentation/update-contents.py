@@ -103,9 +103,9 @@ def with_contents(document: str, *, max_depth: int = 3) -> str:
         entries.append(f"{'  ' * (level - minimum)}- [{label}](#{anchor})")
     # Keep the overview visible. Heading depth controls its detail instead of
     # hiding navigation inside an expandable section when the list grows.
-    block = [START, "**Table of contents**", ""]
+    block = [START, "", "**Table of contents**", ""]
     block.extend(entries)
-    block.extend([END, "", ""])
+    block.extend(["", END, "", ""])
     position = title[0] + 1 if title else 0
     if title and len(headings) > 1:
         position = headings[1][0]
