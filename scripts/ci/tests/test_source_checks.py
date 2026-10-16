@@ -77,3 +77,38 @@ def test_docstring_hooks_check_owned_files_only(tmp_path: Path, defect: str) -> 
     )
     assert (result.returncode == 0) == (defect == "none"), result.stdout + result.stderr
     assert "node_modules" not in result.stdout + result.stderr
+
+
+def test_full_collection_preserves_top_level_support_imports() -> None:
+    """
+    Reproduce CI discovery order so focused runs cannot hide test-package import collisions.
+
+    Returns:
+        None: All source, tooling and feature tests collect without executing a second test suite.
+    """
+    result = subprocess.run(
+        ["pytest", "-n", "0", "--collect-only", "pkg/witful", "scripts/ci/tests", "tests", "-q"],
+        cwd=ROOT,
+        env={key: value for key, value in os.environ.items() if key not in {"PYTEST_ADDOPTS", "GIT_INDEX_FILE"}},
+        capture_output=True,
+        text=True,
+        timeout=60,
+        check=False,
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
+
+
+def test_ci_sql_roots_follow_fixture_relocations() -> None:
+    """
+    Reject source-check commands that retain removed fixture directories.
+
+    Returns:
+        None: Every literal SQL root in the CI lint stage exists in the reviewed checkout.
+    """
+    workflow = yaml.load((ROOT / ".github/workflows/ci.yml").read_text(), Loader=yaml.BaseLoader)
+    commands = [line.strip() for step in workflow["jobs"]["lint"]["steps"] for line in step.get("run", "").splitlines()]
+    sql = [line for line in commands if line.startswith("sqlfluff lint ")]
+    assert sql
+    for command in sql:
+        for root in command.split()[2:]:
+            assert (ROOT / root).is_dir(), root

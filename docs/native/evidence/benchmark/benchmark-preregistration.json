@@ -1,0 +1,8 @@
+{
+  "schema": 1,
+  "source_digest": "e9206120595f78133f685d4ae230425d48ca1b19d6a360fe99240221f0fa2f19",
+  "baseline_sha256": "845d0ef63788b591857ab095762529e5b007e94864b83523cc8262d10fe88ceb",
+  "append_p95_max_ratio": 0.7,
+  "rule": "Every declared local profile must reduce append p95 by at least 30 percent",
+  "registered_after_baseline_before_candidate": true
+}

@@ -1,0 +1,15 @@
+[sqlfluff:templater:placeholder]
+param_style = pyformat
+name = 'runtime_fixture'
+role = runtime_fixture
+tenant = '00000000-0000-4000-8000-000000000001'
+identity = '00000000-0000-4000-8000-000000000002'
+backend = '00000000-0000-4000-8000-000000000003'
+policy = '00000000-0000-4000-8000-000000000004'
+grant = '00000000-0000-4000-8000-000000000005'
+subject = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
+task = '00000000-0000-4000-8000-000000000006'
+actions = ARRAY['read']
+records = ARRAY['*']
+starts = 0
+expires = 4102444800

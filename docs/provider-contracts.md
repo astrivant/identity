@@ -5,6 +5,9 @@ ordering, and real PyGithub/python-gitlab transports against local HTTP servers.
 The HTTP tests validate their success responses against selected vendor OpenAPI
 schemas before serving them. They exercise pagination, encoded GitLab namespaces,
 inventory and exact-revision signature evidence without credentials or live writes.
+The same versioned contract stage covers release-range selection, PR comments and
+release assets through the real GitHub SDK. Lost-response and permission failures
+are explicit synthetic transport scenarios, not claims about live service behavior.
 
 ## Versioned inputs and results
 
@@ -17,19 +20,20 @@ supply structural fields around explicit synthetic scenario values. GitLab's
 schemas validate the deliberately minimal scenarios already used in unit tests.
 
 The independent [CI stage](../.github/workflows/stage-provider-contracts.yml)
-checks out the caller's exact revision, installs the committed lockfile, regenerates
-the snapshots in check mode, and runs the HTTP tests. Tag builds must additionally
-resolve the current official specification branch heads through the SDKs, refresh
-at those immutable commits, and pass the tests before publication. Resolution or
-validation failure blocks release; there is no fallback to the older baseline. Required CI and release
-publication require this stage to succeed. The `provider-contracts` artifact pairs
-JUnit results with source revision, installed SDK/validator versions, lockfile
-digest, vendor contract pins and the actual tested snapshots. Tag receipts also
-record when the latest heads were observed. This means latest at that resolution
-boundary, not a guarantee that upstream stops changing during the run. The release
-source/tag is unchanged; the additional current-contract test inputs live in the
-artifact. Its provenance file records inputs, not success;
-a failed or interrupted run must not be interpreted as a passing result.
+checks out the caller's exact revision and installs the committed lockfile. Every
+PR, main and tag run resolves the latest commit affecting each specification file
+on its official branch, fetches those immutable bytes, and requires the committed
+manifest and snapshots to match. Unrelated repository commits do not change the
+API revision. Stale inputs, lookup failure or incompatible contracts block the gate;
+CI never silently refreshes unreviewed files and proceeds to publication.
+
+Refresh locally with `--latest`, review and test the diff, then commit the manifest
+and snapshots in the PR. Other PRs can rebase on that reviewed update after it
+merges. A branch or tag can become stale again when the specification changes;
+latest is an observation boundary, not a guarantee about future upstream activity.
+The `provider-contracts` artifact binds current observation time/revisions, source
+revision, installed SDK/validator versions, lockfile digest, snapshots and JUnit
+results. Provenance alone does not establish that tests passed.
 
 The servers bind ephemeral loopback ports. Test clients reject external destinations
 and authentication headers. The test owns server shutdown, thread joining and SDK
@@ -47,14 +51,15 @@ Then propose updated snapshots:
 ```bash
 poetry run python scripts/ci/provider_contracts/refresh.py \
     --github-ref REVIEWED_GITHUB_SPEC_SHA --gitlab-ref REVIEWED_GITLAB_SPEC_SHA
-poetry run pytest -n 0 scripts/ci/tests/test_provider_contracts.py
+poetry run pytest -n 0 scripts/ci/tests/test_provider_contracts.py tests/releases
 poetry run python scripts/ci/provider_contracts/refresh.py --check
 poetry run pre-commit run --all-files
 ```
 
-To exercise the tag freshness gate locally, use `--latest` instead of explicit
-revision overrides, then run the same tests. It resolves GitHub specification
-`main` and GitLab specification `master`, records full commits and observation time,
+To prepare the current inputs, use `--latest` instead of explicit revision overrides,
+then run the same tests and `refresh.py --check --latest`. It resolves the latest
+specification-file commits on GitHub `main` and GitLab `master`, records those
+full commits and observation time,
 and refreshes the local snapshots for review. It does not select or upgrade SDK
 package versions; those remain governed by the committed lockfile.
 
@@ -68,8 +73,8 @@ Review endpoint/schema changes, explicit fixture adjustments, license changes an
 SDK behavior together. Commit the manifest and generated snapshots in the same PR.
 Refresh when updating either SDK or a supported server version, and review upstream
 changes monthly. Pins make old results reproducible; the refresh procedure is what
-keeps the reviewed baseline current. PR checks use committed pins. Tag checks resolve current heads first, then fetch
-and test immutable revisions; they never silently accept older inputs.
+keeps the reviewed baseline current. PR and tag checks both require committed snapshots at the latest observed
+specification-file revisions; they never silently accept older inputs.
 
 ## Coverage boundaries
 

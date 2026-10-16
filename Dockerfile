@@ -1,27 +1,30 @@
 # Keep the interpreter identical across dependency installation and execution.
 FROM python:3.14.7-slim-trixie@sha256:51dafde81dbdb6ebde285137a295cf18a47ca95234fe388a343719cb97305b3d AS base
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 VIRTUAL_ENV=/opt/witful
-ENV PATH="/opt/witful/bin:$PATH"
+ENV PATH="/opt/witful/bin:$PATH" MPLCONFIGDIR=/run/witful/matplotlib XDG_CACHE_HOME=/run/witful/cache
 # Reap children and forward signals in both development and production targets.
 ARG TINI_VERSION=0.19.0-3+b8
-RUN apt-get update && apt-get install --no-install-recommends -y tini="${TINI_VERSION}" \
+ARG GIT_VERSION=1:2.47.3-0+deb13u1
+ARG OPENSSH_CLIENT_VERSION=1:10.0p1-7+deb13u4
+RUN apt-get update && apt-get install --no-install-recommends -y tini="${TINI_VERSION}" git="${GIT_VERSION}" openssh-client="${OPENSSH_CLIENT_VERSION}" \
     && rm -rf /var/lib/apt/lists/*
 # Both runnable targets share the same non-root identity and owned working directory.
 RUN groupadd --gid 10001 witful && useradd --uid 10001 --gid witful --create-home witful
+RUN install -d -o witful -g witful -m 0700 /run/witful
 STOPSIGNAL SIGTERM
 
 FROM base AS dependencies
 WORKDIR /build
 RUN python -m venv /opt/poetry && /opt/poetry/bin/pip install --no-cache-dir poetry==2.5.1     && python -m venv /opt/witful
 COPY pyproject.toml poetry.lock ./
-RUN /opt/poetry/bin/poetry install --only main --extras postgres --no-root --no-interaction
+RUN /opt/poetry/bin/poetry install --only main --extras "postgres native" --no-root --no-interaction
 COPY README.md LICENSE ./
 COPY docs/WITFUL.md ./docs/WITFUL.md
 COPY pkg ./pkg
 RUN /opt/poetry/bin/poetry build --format wheel     && pip install --no-deps dist/*.whl
 
 FROM dependencies AS development
-RUN /opt/poetry/bin/poetry install --extras postgres --no-root --no-interaction \
+RUN /opt/poetry/bin/poetry install --extras "postgres native" --no-root --no-interaction \
     && chown -R witful:witful /build /opt/witful
 USER 10001:10001
 WORKDIR /build

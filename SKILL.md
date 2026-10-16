@@ -112,6 +112,27 @@ receipts after interruption and report the last verified remote state, not assum
 recovery. Setup, key creation, and unrelated agent launches still require task scope.
 
 
+## Operate protected native storage
+
+Review [synthetic acceptance](docs/native/acceptance.md) and the
+[versioned as-built diagrams](docs/native/diagrams/README.md) before deployment.
+Rebind diagrams and evidence to the actual reviewed pilot configuration.
+Use [native storage](docs/native-storage.md) for the explicit controller profile,
+current grants, configured custody and recovery commands. Use the
+[operator runbook](docs/native-operations.md) and offline administration plans for
+separate database setup; the controller never receives administrator credentials. Select only reviewed
+backend, original-Git, recipient and derivation aliases. Keep received exports
+inactive until independently pinned signature/frontier verification succeeds.
+Recipient sharing discloses full retained history and its recovery data keys;
+reviewed fork/split publishes only explicitly selected new child histories.
+
+A prepared split freezes the parent and every independently authorized child until
+all exact transactions are verified and published together. Resume with the same
+operation ID and review; retain fences on denial or uncertainty. Reading this
+entrypoint does not authorize provisioning grants, key changes, production
+migration, disclosure or deployment. Existing managed collections retain their
+separate remote-storage protection contract.
+
 ## Continual learning
 
 Use [periodic decision reviews](docs/continual-learning.md) at session boundaries
@@ -266,3 +287,15 @@ shared orchestration owns Git, checks and recovery. Refer to the
 For CLI maintenance, compose lightweight argparse builders and typed handlers.
 Reuse those builders for standalone entrypoints and parse once; preserve existing
 syntax, help and input validation through the public command tests.
+
+
+## Close the release loop
+
+Follow [the release communication contract](docs/releases.md#contributor-notifications-and-change-notes).
+Review PR labels and consumer-facing titles, preserve existing release details,
+and prepare the signed contribution inventory before publishing. The same logical
+pipeline verifies hosted artifacts and registry files before notifying PR openers
+with exact-version links. Recover uncertain notification outcomes through the
+reporting receipt and rerun only the reporting job; never republish immutable
+artifacts to repair a comment. Reading this guide does not authorize a release
+or live notification outside the selected pipeline.

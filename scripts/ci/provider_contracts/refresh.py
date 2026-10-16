@@ -158,17 +158,27 @@ def refresh(manifest: dict[str, object], overrides: dict[str, str]) -> tuple[dic
 
 def latest_revisions() -> dict[str, str]:
     """
-    Resolve the current official specification branch heads through the locked SDKs.
+    Resolve the latest file-changing commit on each official specification branch through the locked SDKs.
 
     Returns:
         dict[str, str]: Immutable source commits observed during this invocation.
     """
     # Public metadata needs no token, local login lookup or credential-bearing environment.
     with Github(retry=0, timeout=30) as github:
-        github_revision = github.get_repo("github/rest-api-description").get_commit("main").sha
+        github_revision = (
+            github.get_repo("github/rest-api-description")
+            .get_commits(sha="main", path="descriptions/api.github.com/api.github.com.json")[0]
+            .sha
+        )
     with Gitlab("https://gitlab.com", timeout=30) as gitlab:
         project = gitlab.projects.get("gitlab-org/gitlab", lazy=True)
-        gitlab_revision = string(project.commits.get("master", max_retries=0).attributes["id"])
+        # `path` is also an SDK endpoint override; keep the vendor filter in its explicit query namespace.
+        commits = project.commits.list(
+            query_parameters={"ref_name": "master", "path": "doc/api/openapi/openapi_v3.yaml"}, per_page=1, get_all=False
+        )
+        if not commits:
+            raise ValueError("No current GitLab specification revision was returned")
+        gitlab_revision = string(commits[0].attributes["id"])
     return {"github": github_revision, "gitlab": gitlab_revision}
 
 
@@ -184,22 +194,23 @@ def main() -> int:
         "--latest", action="store_true", help="Resolve current official spec heads, then refresh at those immutable commits"
     )
     parser.add_argument("--check", action="store_true", help="Fetch pinned sources and reject generated drift without writing")
+    parser.add_argument("--observation", type=Path, help="Separate current-check evidence file; never rewrites reviewed inputs")
     parser.add_argument("--github-ref", help="Reviewed 40-character specification commit")
     parser.add_argument("--gitlab-ref", help="Reviewed 40-character specification commit")
     args = parser.parse_args()
     manifest_path = DATA / "manifest.json"
     manifest = object_value(json.loads(manifest_path.read_text()))
     overrides = {name: ref for name, ref in (("github", args.github_ref), ("gitlab", args.gitlab_ref)) if ref is not None}
-    if (args.check and (overrides or args.latest)) or (args.latest and overrides):
-        parser.error("Choose --check, --latest, or explicit revision overrides")
+    if (args.check and overrides) or (args.latest and overrides):
+        parser.error("Explicit revision overrides cannot be combined with --check or --latest")
     if args.latest:
         overrides = latest_revisions()
     updated, snapshots = refresh(manifest, overrides)
-    if args.latest:
+    if args.latest and not args.check:
         observed_at = datetime.now(UTC).isoformat()
         for name, raw in updated.items():
             updated[name] = {**object_value(raw), "latest_observed_at": observed_at}
-    elif overrides:
+    elif overrides and not args.check:
         for name in overrides:
             entry = object_value(updated[name])
             entry.pop("latest_observed_at", None)
@@ -208,8 +219,25 @@ def main() -> int:
     outputs[manifest_path] = encoded(updated)
     if args.check:
         stale = [str(path.relative_to(DATA)) for path, content in outputs.items() if not path.exists() or path.read_bytes() != content]
+        if args.observation is not None:
+            args.observation.parent.mkdir(parents=True, exist_ok=True)
+            args.observation.write_bytes(
+                encoded(
+                    {
+                        "observed_at": datetime.now(UTC).isoformat(),
+                        "latest": args.latest,
+                        "revisions": overrides,
+                        "current": not stale,
+                        "manifest_sha256": hashlib.sha256(manifest_path.read_bytes()).hexdigest(),
+                    }
+                )
+            )
         if stale:
             print("Stale API contracts: " + ", ".join(stale))
+            print(
+                "Run refresh.py --latest, review and test the diff, then commit the updated manifest and snapshots "
+                "or rebase on that update."
+            )
         return int(bool(stale))
     for path, content in outputs.items():
         path.write_bytes(content)

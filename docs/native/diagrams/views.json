@@ -1,0 +1,794 @@
+{
+  "views": [
+    {
+      "id": "state-trust",
+      "title": "State and trust boundaries",
+      "question": "Where can plaintext, keys and the sole authoritative copy exist?",
+      "nodes": [
+        {
+          "id": "client",
+          "label": "Microservice / CLI\nAuthorized plaintext in use\nL1 is optional memory only",
+          "kind": "cache",
+          "x": 0,
+          "y": 2
+        },
+        {
+          "id": "controller",
+          "label": "Native controller replicas\nAuthenticated tenant + task\nPlaintext validation / sealing",
+          "kind": "service",
+          "x": 1.5,
+          "y": 2
+        },
+        {
+          "id": "broker",
+          "label": "Independent key broker\nKEKs + signing authority\nSeparate permit generation",
+          "kind": "authority",
+          "x": 3,
+          "y": 2
+        },
+        {
+          "id": "views",
+          "label": "Local derived views\nRebuildable search / plots\nExplicit export disclosure",
+          "kind": "cache",
+          "x": 0,
+          "y": 1
+        },
+        {
+          "id": "data",
+          "label": "Selected source backend\nPostgreSQL or local bare Git\nCiphertext + CAS head",
+          "kind": "authority",
+          "x": 1.5,
+          "y": 1
+        },
+        {
+          "id": "auth",
+          "label": "Independent authority DB\nGrants, epochs, exact prepares\nPending / accepted frontiers",
+          "kind": "authority",
+          "x": 3,
+          "y": 1
+        },
+        {
+          "id": "backup",
+          "label": "WAL / base backup / replica\nEncrypted durable copies\nRetained keys required",
+          "kind": "projection",
+          "x": 0,
+          "y": 0
+        },
+        {
+          "id": "outbox",
+          "label": "Source outbox + receipts\nEncrypted durable pending work\nPart of source transaction",
+          "kind": "pending",
+          "x": 1.5,
+          "y": 0
+        },
+        {
+          "id": "gateway",
+          "label": "Isolated projection gateway\nPermit unwrap + SSH only\nNo source DB or domain key",
+          "kind": "service",
+          "x": 3,
+          "y": 0
+        },
+        {
+          "id": "remote",
+          "label": "Optional remote Git\nVerified encrypted projection\nNever an active second writer",
+          "kind": "projection",
+          "x": 3,
+          "y": -1
+        }
+      ],
+      "edges": [
+        {
+          "source": "client",
+          "target": "controller",
+          "label": "mTLS",
+          "bend": 0.0
+        },
+        {
+          "source": "controller",
+          "target": "broker",
+          "label": "mTLS / scoped key calls",
+          "bend": 0.0
+        },
+        {
+          "source": "controller",
+          "target": "data",
+          "label": "TLS or protected local I/O",
+          "bend": 0.0
+        },
+        {
+          "source": "controller",
+          "target": "auth",
+          "label": "TLS / current policy",
+          "bend": 0.0
+        },
+        {
+          "source": "data",
+          "target": "views",
+          "label": "authorized rebuild",
+          "bend": 0.0
+        },
+        {
+          "source": "data",
+          "target": "backup",
+          "label": "replication / backup",
+          "bend": 0.0
+        },
+        {
+          "source": "data",
+          "target": "outbox",
+          "label": "same acceptance transaction",
+          "bend": 0.0
+        },
+        {
+          "source": "outbox",
+          "target": "gateway",
+          "label": "controller worker / mTLS",
+          "bend": 0.0
+        },
+        {
+          "source": "gateway",
+          "target": "remote",
+          "label": "SSH + expected-head CAS",
+          "bend": 0.0
+        },
+        {
+          "source": "gateway",
+          "target": "auth",
+          "label": "TLS / current policy",
+          "bend": 0.0
+        },
+        {
+          "source": "gateway",
+          "target": "broker",
+          "label": "mTLS / permit key only",
+          "bend": 1.5
+        }
+      ],
+      "notes": "Every source and authority has its own storage/backup owner. Controller scratch must be protected and nonswappable. Gateway scratch holds ciphertext and permit plaintext only. Native reference uses two stateless controllers; local Git requires one fenced writer. Operational endpoints use the same private mTLS app.",
+      "sources": [
+        "pkg/witful/native/application.py",
+        "pkg/witful/native/projection/application.py",
+        "pkg/witful/native/config.py",
+        "helm/witful/references/native/values.yaml",
+        "helm/witful/references/projection/values.yaml"
+      ]
+    },
+    {
+      "id": "write-ack",
+      "title": "Write and acknowledgment",
+      "question": "What must be durable before a caller receives success?",
+      "nodes": [
+        {
+          "id": "client",
+          "label": "1. Authenticated request\nTenant / subject / grant / task\nStable operation ID",
+          "kind": "service",
+          "x": 0,
+          "y": 2
+        },
+        {
+          "id": "auth",
+          "label": "2. Current authority check\nPolicy + epoch + exact frontier\nReauthorize cached reads",
+          "kind": "authority",
+          "x": 1.5,
+          "y": 2
+        },
+        {
+          "id": "seal",
+          "label": "3. Validate and seal\nFresh DEK + nonce; pinned signer\nExplicit envelope context",
+          "kind": "service",
+          "x": 3,
+          "y": 2
+        },
+        {
+          "id": "prepare",
+          "label": "4. Durable exact prepare\nAuthority retains candidate\nUncertainty blocks new work",
+          "kind": "pending",
+          "x": 3,
+          "y": 1
+        },
+        {
+          "id": "commit",
+          "label": "5. Source acceptance CAS\nObjects + head + receipt + outbox\nOne database/Git transaction",
+          "kind": "authority",
+          "x": 1.5,
+          "y": 1
+        },
+        {
+          "id": "ack",
+          "label": "6. Authority acknowledgment\nRead back accepted exact root\nClear matching pending work",
+          "kind": "authority",
+          "x": 0,
+          "y": 1
+        },
+        {
+          "id": "reply",
+          "label": "7. Local durable receipt\nClient observes new generation\nInvalidate stale memory entries",
+          "kind": "service",
+          "x": 0,
+          "y": 0
+        },
+        {
+          "id": "projection",
+          "label": "8. Optional remote delivery\nSeparate retained requirement\nLocal receipt remains durable",
+          "kind": "pending",
+          "x": 1.5,
+          "y": 0
+        },
+        {
+          "id": "complete",
+          "label": "9. Workload completion\nAll originally required targets\nMust be independently verified",
+          "kind": "projection",
+          "x": 3,
+          "y": 0
+        }
+      ],
+      "edges": [
+        {
+          "source": "client",
+          "target": "auth",
+          "label": "admit",
+          "bend": 0.0
+        },
+        {
+          "source": "auth",
+          "target": "seal",
+          "label": "current fence",
+          "bend": 0.0
+        },
+        {
+          "source": "seal",
+          "target": "prepare",
+          "label": "exact bytes",
+          "bend": 0.0
+        },
+        {
+          "source": "prepare",
+          "target": "commit",
+          "label": "expected old root",
+          "bend": 0.0
+        },
+        {
+          "source": "commit",
+          "target": "ack",
+          "label": "fsync / WAL acceptance",
+          "bend": 0.0
+        },
+        {
+          "source": "ack",
+          "target": "reply",
+          "label": "safe local success",
+          "bend": 0.0
+        },
+        {
+          "source": "reply",
+          "target": "projection",
+          "label": "not a remote guarantee",
+          "bend": 0.0
+        },
+        {
+          "source": "projection",
+          "target": "complete",
+          "label": "verified receipts",
+          "bend": 0.0
+        }
+      ],
+      "notes": "PostgreSQL synchronous mode requires remote_apply and a configured synchronous standby. Local Git fsyncs objects and the root transition under an inherited process lock. An unknown commit is recovered by exact operation ID. No remote-required completion is inferred from an empty queue.",
+      "sources": [
+        "pkg/witful/native/service.py",
+        "pkg/witful/native/authority.py",
+        "pkg/witful/native/postgres.py",
+        "pkg/witful/native/git.py",
+        "pkg/witful/native/cache.py",
+        "pkg/witful/native/projection/verification.py"
+      ]
+    },
+    {
+      "id": "branches-review",
+      "title": "Branches and reviewed derivation",
+      "question": "Which gates separate a branch, disclosed child history and semantic adoption?",
+      "nodes": [
+        {
+          "id": "pin",
+          "label": "1. Pin source frontier\nOrdered revision parents\nExpected heads + epoch",
+          "kind": "authority",
+          "x": 0,
+          "y": 2
+        },
+        {
+          "id": "branch",
+          "label": "2a. Branch / tag\nReference existing revision\nSource remains authoritative",
+          "kind": "authority",
+          "x": 1.5,
+          "y": 2
+        },
+        {
+          "id": "candidate",
+          "label": "2b. Fork / split candidate\nExplicit selected disclosure\nIndependent child scope + keys",
+          "kind": "pending",
+          "x": 3,
+          "y": 2
+        },
+        {
+          "id": "review",
+          "label": "3. Review exact candidate\nSource and child grants current\nParent adoption is explicit",
+          "kind": "service",
+          "x": 3,
+          "y": 1
+        },
+        {
+          "id": "freeze",
+          "label": "4. Prepare exact group\nRetain project/export obligations\nFreeze all affected scopes",
+          "kind": "pending",
+          "x": 1.5,
+          "y": 1
+        },
+        {
+          "id": "apply",
+          "label": "5. Apply / verify batches\nStable IDs; byte-identical retries\nNo partial public group frontier",
+          "kind": "authority",
+          "x": 0,
+          "y": 1
+        },
+        {
+          "id": "publish",
+          "label": "6. Atomic authority publication\nAll group receipts present\nAdvance complete frontiers",
+          "kind": "authority",
+          "x": 0,
+          "y": 0
+        },
+        {
+          "id": "merge",
+          "label": "7. Reviewed reconciliation\nPinned head(s), ordered parents\nNo rewrite of source journals",
+          "kind": "service",
+          "x": 1.5,
+          "y": 0
+        },
+        {
+          "id": "remote",
+          "label": "8. Separate remote verification\nEach accepted intent retained\nAdoption is not replication",
+          "kind": "projection",
+          "x": 3,
+          "y": 0
+        }
+      ],
+      "edges": [
+        {
+          "source": "pin",
+          "target": "branch",
+          "label": "simple ref CAS",
+          "bend": 0.0
+        },
+        {
+          "source": "branch",
+          "target": "candidate",
+          "label": "distinct operation",
+          "bend": 0.0
+        },
+        {
+          "source": "candidate",
+          "target": "review",
+          "label": "candidate digest",
+          "bend": 0.0
+        },
+        {
+          "source": "review",
+          "target": "freeze",
+          "label": "approved selection",
+          "bend": 0.0
+        },
+        {
+          "source": "freeze",
+          "target": "apply",
+          "label": "exact group",
+          "bend": 0.0
+        },
+        {
+          "source": "apply",
+          "target": "publish",
+          "label": "all participants verified",
+          "bend": 0.0
+        },
+        {
+          "source": "publish",
+          "target": "merge",
+          "label": "explicit adoption",
+          "bend": 0.0
+        },
+        {
+          "source": "merge",
+          "target": "remote",
+          "label": "if policy requires",
+          "bend": 0.0
+        }
+      ],
+      "notes": "Fork/split creates selected child histories under separately provisioned scopes. The caller cannot acquire parent or sibling visibility from a child name. Group recovery preserves prepared bytes even if current scheduling changes. Ordinary branch publication does not require a derivation group.",
+      "sources": [
+        "pkg/witful/native/derivation.py",
+        "pkg/witful/native/derivation_models.py",
+        "pkg/witful/native/reconciliation.py",
+        "pkg/witful/native/models.py",
+        "tests/native/test_derivation.py"
+      ]
+    },
+    {
+      "id": "projection",
+      "title": "Projection timing and custody",
+      "question": "When may remote history lag, and what proves delivery?",
+      "nodes": [
+        {
+          "id": "intent",
+          "label": "1. Accepted encrypted intent\nDestination, permit key and policy\nRetained with original receipt",
+          "kind": "pending",
+          "x": 0,
+          "y": 2
+        },
+        {
+          "id": "due",
+          "label": "2. Explicit scheduling\nManual / interval / batch / required\nDisabled retains accepted work",
+          "kind": "service",
+          "x": 1.5,
+          "y": 2
+        },
+        {
+          "id": "prepare",
+          "label": "3. Persist exact preparation\nArchive + Git OID + expected head\nSigned permit; no remote call yet",
+          "kind": "pending",
+          "x": 3,
+          "y": 2
+        },
+        {
+          "id": "attempt",
+          "label": "4. Persist attempt / backoff\nState becomes unknown\nBefore first transport effect",
+          "kind": "pending",
+          "x": 3,
+          "y": 1
+        },
+        {
+          "id": "gateway",
+          "label": "5. Isolated gateway\nCurrent caller + writer policy\nPermit-only unwrap; verify archive",
+          "kind": "service",
+          "x": 1.5,
+          "y": 1
+        },
+        {
+          "id": "cas",
+          "label": "6. SSH expected-head update\nParent-preserving candidate\nDivergence blocks publication",
+          "kind": "projection",
+          "x": 0,
+          "y": 1
+        },
+        {
+          "id": "readback",
+          "label": "7. Independent fresh fetch\nExact commit / tree / blob\nRecheck advertised ref",
+          "kind": "projection",
+          "x": 0,
+          "y": 0
+        },
+        {
+          "id": "receipt",
+          "label": "8. Retain verified receipt\nAdvance observed watermark\nRemove only matching queue item",
+          "kind": "authority",
+          "x": 1.5,
+          "y": 0
+        },
+        {
+          "id": "gate",
+          "label": "9. Original target-set gate\nMissing evidence stays incomplete\nTimer never proves durability",
+          "kind": "service",
+          "x": 3,
+          "y": 0
+        }
+      ],
+      "edges": [
+        {
+          "source": "intent",
+          "target": "due",
+          "label": "scan durable outbox",
+          "bend": 0.0
+        },
+        {
+          "source": "due",
+          "target": "prepare",
+          "label": "oldest per target",
+          "bend": 0.0
+        },
+        {
+          "source": "prepare",
+          "target": "attempt",
+          "label": "same bytes on retry",
+          "bend": 0.0
+        },
+        {
+          "source": "attempt",
+          "target": "gateway",
+          "label": "mTLS",
+          "bend": 0.0
+        },
+        {
+          "source": "gateway",
+          "target": "cas",
+          "label": "pinned SSH identity",
+          "bend": 0.0
+        },
+        {
+          "source": "cas",
+          "target": "readback",
+          "label": "independent verification",
+          "bend": 0.0
+        },
+        {
+          "source": "readback",
+          "target": "receipt",
+          "label": "exact result binding",
+          "bend": 0.0
+        },
+        {
+          "source": "receipt",
+          "target": "gate",
+          "label": "remote_verified",
+          "bend": 0.0
+        }
+      ],
+      "notes": "Default policy is disabled. Configured defaults: 60 s interval, batch 8, lag budget 3600 s, retry 1 to 60 s, 5 attempts; actual accepted targets and key generation are immutable intent data. Entry/byte/lag pressure refuses affected writes. Full snapshots retain history and amplify storage; limits are not an incremental format.",
+      "sources": [
+        "pkg/witful/native/projection/models.py",
+        "pkg/witful/native/projection/intents.py",
+        "pkg/witful/native/projection/preparation.py",
+        "pkg/witful/native/projection/worker.py",
+        "pkg/witful/native/projection/gateway.py",
+        "pkg/witful/native/projection/transport.py",
+        "helm/witful/templates/projection-scheduler.yaml"
+      ]
+    },
+    {
+      "id": "recovery",
+      "title": "Failure and recovery boundaries",
+      "question": "Which durable evidence permits recovery, and where must work stop?",
+      "nodes": [
+        {
+          "id": "failure",
+          "label": "Failure or uncertain reply\nProcess / network / provider loss\nKeep operation ID and frontier",
+          "kind": "service",
+          "x": 0,
+          "y": 2
+        },
+        {
+          "id": "source",
+          "label": "Source transaction unknown\nResolve exact retained batch\nNever guess absence",
+          "kind": "pending",
+          "x": 1.5,
+          "y": 2
+        },
+        {
+          "id": "authority",
+          "label": "Authority pending prepare\nVerify committed candidate\nThen acknowledge or resume",
+          "kind": "authority",
+          "x": 3,
+          "y": 2
+        },
+        {
+          "id": "primary",
+          "label": "Primary or node loss\nFence old primary independently\nPromote verified replica",
+          "kind": "authority",
+          "x": 0,
+          "y": 1
+        },
+        {
+          "id": "epoch",
+          "label": "New authority epoch\nReject every stale controller\nReconcile accepted frontier",
+          "kind": "authority",
+          "x": 1.5,
+          "y": 1
+        },
+        {
+          "id": "key",
+          "label": "Key or policy outage\nBlock decrypt / write / publication\nDo not serve cached plaintext",
+          "kind": "service",
+          "x": 3,
+          "y": 1
+        },
+        {
+          "id": "remote",
+          "label": "Remote reply lost / diverged\nReuse exact bytes and read back\nDivergence needs reviewed repair",
+          "kind": "pending",
+          "x": 0,
+          "y": 0
+        },
+        {
+          "id": "restore",
+          "label": "Backup / PITR restore\nInactive target; retained keys\nVerify counts, signatures, roots",
+          "kind": "projection",
+          "x": 1.5,
+          "y": 0
+        },
+        {
+          "id": "admit",
+          "label": "Resume only after verification\nReconcile remote effects + grants\nNo revived revoked access",
+          "kind": "service",
+          "x": 3,
+          "y": 0
+        }
+      ],
+      "edges": [
+        {
+          "source": "failure",
+          "target": "source",
+          "label": "source uncertainty",
+          "bend": 0.0
+        },
+        {
+          "source": "source",
+          "target": "authority",
+          "label": "exact recovery",
+          "bend": 0.0
+        },
+        {
+          "source": "primary",
+          "target": "epoch",
+          "label": "fenced failover",
+          "bend": 0.0
+        },
+        {
+          "source": "epoch",
+          "target": "admit",
+          "label": "verified current route",
+          "bend": 0.0
+        },
+        {
+          "source": "key",
+          "target": "admit",
+          "label": "only after restoration",
+          "bend": 0.0
+        },
+        {
+          "source": "remote",
+          "target": "restore",
+          "label": "history evidence retained",
+          "bend": 0.0
+        },
+        {
+          "source": "restore",
+          "target": "admit",
+          "label": "approved frontier",
+          "bend": 0.0
+        }
+      ],
+      "notes": "Physical drill uses a killed primary, synchronous replica promotion and separate PITR from verified base backup plus archived WAL. Recovery times are local observations. Operator owns old-primary fencing, encrypted volumes, backup retention and restore trust. A live replica is not an independent backup.",
+      "sources": [
+        "pkg/witful/native/service.py",
+        "pkg/witful/native/authority.py",
+        "pkg/witful/native/projection/transport.py",
+        "tests/native/test_physical.py",
+        "docs/native-operations.md"
+      ]
+    },
+    {
+      "id": "migration",
+      "title": "Migration and rollback",
+      "question": "What permits a routing change without losing accepted history?",
+      "nodes": [
+        {
+          "id": "plan",
+          "label": "1. Explicit reviewed plan\nExact source / destination / scope\nPermissions, keys, backup proof",
+          "kind": "service",
+          "x": 0,
+          "y": 2
+        },
+        {
+          "id": "snapshot",
+          "label": "2. Pin snapshot + watermark\nComplete approved history\nRetain exact original Git objects",
+          "kind": "authority",
+          "x": 1.5,
+          "y": 2
+        },
+        {
+          "id": "backfill",
+          "label": "3. Encrypted backfill\nImmutable IDs + signatures\nIdempotent exact-byte copies",
+          "kind": "pending",
+          "x": 3,
+          "y": 2
+        },
+        {
+          "id": "catchup",
+          "label": "4. Catch up committed deltas\nRefs, receipts, mappings, grants\nNo silent second writable master",
+          "kind": "pending",
+          "x": 3,
+          "y": 1
+        },
+        {
+          "id": "fence",
+          "label": "5. Fence and drain\nResolve pending source/outbox\nFinal complete comparison",
+          "kind": "authority",
+          "x": 1.5,
+          "y": 1
+        },
+        {
+          "id": "cutover",
+          "label": "6. Exact cutover prepare\nAtomic backend + epoch change\nOld epoch immediately denied",
+          "kind": "authority",
+          "x": 0,
+          "y": 1
+        },
+        {
+          "id": "canary",
+          "label": "7. Verify target canary\nNew writes / read / branch / recovery\nRetain old source and keys",
+          "kind": "service",
+          "x": 0,
+          "y": 0
+        },
+        {
+          "id": "reverse",
+          "label": "8. Rollback after new writes\nFence target; reverse catch-up\nInclude every new accepted effect",
+          "kind": "pending",
+          "x": 1.5,
+          "y": 0
+        },
+        {
+          "id": "verify",
+          "label": "9. Verified reverse frontier\nSame integrity / permission gate\nNew epoch, then routing switch",
+          "kind": "authority",
+          "x": 3,
+          "y": 0
+        }
+      ],
+      "edges": [
+        {
+          "source": "plan",
+          "target": "snapshot",
+          "label": "named authorization",
+          "bend": 0.0
+        },
+        {
+          "source": "snapshot",
+          "target": "backfill",
+          "label": "pinned frontier",
+          "bend": 0.0
+        },
+        {
+          "source": "backfill",
+          "target": "catchup",
+          "label": "resume exact manifest",
+          "bend": 0.0
+        },
+        {
+          "source": "catchup",
+          "target": "fence",
+          "label": "drain before cutover",
+          "bend": 0.0
+        },
+        {
+          "source": "fence",
+          "target": "cutover",
+          "label": "all ranges verified",
+          "bend": 0.0
+        },
+        {
+          "source": "cutover",
+          "target": "canary",
+          "label": "new authoritative route",
+          "bend": 0.0
+        },
+        {
+          "source": "canary",
+          "target": "reverse",
+          "label": "explicit rollback",
+          "bend": 0.0
+        },
+        {
+          "source": "reverse",
+          "target": "verify",
+          "label": "no configuration-only flip",
+          "bend": 0.0
+        }
+      ],
+      "notes": "Git and PostgreSQL preserve the canonical native history sidecar. Exact original Git objects and OIDs are retained by the archive profile, not rewritten to represent new exports. Unsupported reverse representations block rollback. Retention cleanup, private migration and pilot enrollment require separate approval.",
+      "sources": [
+        "pkg/witful/native/migration.py",
+        "pkg/witful/native/original_git.py",
+        "pkg/witful/native/backup.py",
+        "tests/native/test_migration.py",
+        "tests/native/test_original_git.py"
+      ]
+    }
+  ]
+}

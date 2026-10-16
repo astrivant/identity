@@ -1,0 +1,230 @@
+{
+  "schema": 1,
+  "backend": "git",
+  "source": "3300191abca6ebe888219f352e4dcb137519fbe3",
+  "source_digest": "e9206120595f78133f685d4ae230425d48ca1b19d6a360fe99240221f0fa2f19",
+  "python": "3.13.16",
+  "platform": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+  "cpu_seconds": 31.949945,
+  "max_rss_platform_units": 107823104,
+  "writers": 1,
+  "trials_per_profile": 8,
+  "warmup_reads": 3,
+  "profiles": [
+    {
+      "initial_branch_depth": 16,
+      "cold_exact_read_ms": 96.664708,
+      "observations": {
+        "exact_read": {
+          "samples_ms": [
+            96.509,
+            94.813333,
+            476.154792,
+            97.987083,
+            92.572208,
+            90.746583,
+            89.43825,
+            86.950375
+          ],
+          "p50_ms": 93.6927705,
+          "p95_ms": 476.154792,
+          "p99_ms": 476.154792,
+          "p95_bootstrap_95_ms": [
+            96.509,
+            476.154792
+          ]
+        },
+        "head": {
+          "samples_ms": [
+            45.387375,
+            45.572625,
+            48.004375,
+            43.944292,
+            43.838083,
+            45.328958,
+            42.676292,
+            50.3175
+          ],
+          "p50_ms": 45.358166499999996,
+          "p95_ms": 50.3175,
+          "p99_ms": 50.3175,
+          "p95_bootstrap_95_ms": [
+            45.387375,
+            50.3175
+          ]
+        },
+        "history": {
+          "samples_ms": [
+            536.090959,
+            567.884292,
+            603.731959,
+            626.719,
+            652.032875,
+            695.215542,
+            718.011208,
+            751.358
+          ],
+          "p50_ms": 639.3759375,
+          "p95_ms": 751.358,
+          "p99_ms": 751.358,
+          "p95_bootstrap_95_ms": [
+            652.032875,
+            751.358
+          ]
+        },
+        "append": {
+          "samples_ms": [
+            949.335417,
+            1196.945459,
+            1122.239458,
+            1242.563,
+            1322.588041,
+            1405.617291,
+            1502.437208,
+            1615.43925
+          ],
+          "p50_ms": 1282.5755205,
+          "p95_ms": 1615.43925,
+          "p99_ms": 1615.43925,
+          "p95_bootstrap_95_ms": [
+            1322.588041,
+            1615.43925
+          ]
+        },
+        "branch": {
+          "samples_ms": [
+            504.235584,
+            549.258083,
+            670.106875,
+            694.606,
+            761.285042,
+            846.015,
+            868.42125,
+            934.828708
+          ],
+          "p50_ms": 727.945521,
+          "p95_ms": 934.828708,
+          "p99_ms": 934.828708,
+          "p95_bootstrap_95_ms": [
+            761.285042,
+            934.828708
+          ]
+        }
+      }
+    },
+    {
+      "initial_branch_depth": 64,
+      "cold_exact_read_ms": 98.7625,
+      "observations": {
+        "exact_read": {
+          "samples_ms": [
+            98.409542,
+            92.780625,
+            92.502208,
+            92.067125,
+            98.859375,
+            94.102042,
+            95.182208,
+            93.398875
+          ],
+          "p50_ms": 93.75045850000001,
+          "p95_ms": 98.859375,
+          "p99_ms": 98.859375,
+          "p95_bootstrap_95_ms": [
+            94.102042,
+            98.859375
+          ]
+        },
+        "head": {
+          "samples_ms": [
+            46.003834,
+            46.067875,
+            49.187,
+            47.516167,
+            52.098083,
+            43.093709,
+            47.179541,
+            44.64
+          ],
+          "p50_ms": 46.623708,
+          "p95_ms": 52.098083,
+          "p99_ms": 52.098083,
+          "p95_bootstrap_95_ms": [
+            47.516167,
+            52.098083
+          ]
+        },
+        "history": {
+          "samples_ms": [
+            1985.312292,
+            2050.607584,
+            1998.04525,
+            2067.431333,
+            2295.612416,
+            2243.582083,
+            2169.778917,
+            2192.122375
+          ],
+          "p50_ms": 2118.605125,
+          "p95_ms": 2295.612416,
+          "p99_ms": 2295.612416,
+          "p95_bootstrap_95_ms": [
+            2192.122375,
+            2295.612416
+          ]
+        },
+        "append": {
+          "samples_ms": [
+            3728.911417,
+            3808.751875,
+            3846.298625,
+            4046.661792,
+            4243.346458,
+            4177.117166,
+            4275.297917,
+            4393.90875
+          ],
+          "p50_ms": 4111.8894789999995,
+          "p95_ms": 4393.90875,
+          "p99_ms": 4393.90875,
+          "p95_bootstrap_95_ms": [
+            4243.346458,
+            4393.90875
+          ]
+        },
+        "branch": {
+          "samples_ms": [
+            1820.75675,
+            1912.325416,
+            1955.05375,
+            2183.617917,
+            2165.656458,
+            2145.489416,
+            2210.735125,
+            2273.505875
+          ],
+          "p50_ms": 2155.572937,
+          "p95_ms": 2273.505875,
+          "p99_ms": 2273.505875,
+          "p95_bootstrap_95_ms": [
+            2183.617917,
+            2273.505875
+          ]
+        }
+      }
+    }
+  ],
+  "durability": "local fsync/WAL on; shared independent PostgreSQL authority; no remote projection",
+  "custody": "real RSA/AES/Ed25519 with transient in-process synthetic keys; broker network excluded",
+  "exclusions": [
+    "hosted Git latency",
+    "synchronous replica performance",
+    "network key-service latency",
+    "large histories",
+    "multi-writer contention",
+    "fork/split/merge timing",
+    "cache hits",
+    "production cost"
+  ],
+  "limitations": "branch depths share a growing identity frontier; short-run p99 is sample maximum; bootstrap is not a population guarantee"
+}

@@ -17,12 +17,17 @@ env:
   MPLBACKEND: Agg
   MPLCONFIGDIR: ${{ github.workspace }}/.cache/matplotlib
 jobs:
+  native-physical:
+    name: Native physical storage
+    uses: ./.github/workflows/stage-native-storage.yml
+    with:
+      source: ${{ github.sha }}
+
   provider-contracts:
     name: Provider API contracts
     uses: ./.github/workflows/stage-provider-contracts.yml
     with:
       source: ${{ github.sha }}
-      refresh-latest: ${{ startsWith(github.ref, 'refs/tags/') }}
 
   tests:
     name: Python tests
@@ -116,11 +121,12 @@ jobs:
           mypy
           pre-commit run docstrings --all-files
           pre-commit run typed-docstrings --all-files
-          sqlfluff lint pkg/witful/sql pkg/witful/storage/tests pkg/witful/life/tests pkg/witful/checkpoints/tests
-          git ls-files -z 'scripts/*.sh' | xargs -0 shellcheck -x
-          git ls-files -z 'scripts/*.sh' | xargs -0 shfmt -d -i 4 -ci
+          sqlfluff lint pkg/witful/sql pkg/witful/storage/tests pkg/witful/life/tests tests/checkpoints tests/native/resources
+          git ls-files -z 'scripts/*.sh' 'tests/native/resources/*.sh' | xargs -0 shellcheck -x
+          git ls-files -z 'scripts/*.sh' 'tests/native/resources/*.sh' | xargs -0 shfmt -d -i 4 -ci
           pre-commit run actionlint --all-files
           python scripts/documentation/update-contents.py --check
+          python -m scripts.native.diagrams --check
 
   privacy:
     name: PII scan
@@ -202,7 +208,8 @@ jobs:
           helm lint helm/witful --strict
           git diff --exit-code -- services/compose.yaml
           docker compose -f services/compose.yaml config --quiet
-          "$RUNNER_TEMP/composer-action-venv/bin/python" -m unittest discover -s scripts/chart/tests
+          # Use the project runner so both unittest cases and pytest functions execute.
+          "$GITHUB_WORKSPACE/.venv/bin/python" -m pytest scripts/chart/tests -q
       - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
       - name: Build the runtime
         id: production
@@ -280,7 +287,7 @@ jobs:
     name: Required CI
     # Always evaluate the complete producer set, including skipped and cancelled jobs.
     if: always()
-    needs: [tests, lint, privacy, security, distributions, orchestration, views, learning, provider-contracts]
+    needs: [tests, lint, privacy, security, distributions, orchestration, views, learning, provider-contracts, native-physical]
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
@@ -447,7 +454,7 @@ jobs:
 
   publish:
     name: Publish signed release
-    needs: [tests, lint, privacy, security, distributions, orchestration, views, learning, provider-contracts]
+    needs: [tests, lint, privacy, security, distributions, orchestration, views, learning, provider-contracts, native-physical]
     if: >-
       github.repository == 'astrivant/identity'
       && github.event_name == 'push'
@@ -455,6 +462,8 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     environment: pypi
+    outputs:
+      fingerprint: ${{ steps.publication.outputs.fingerprint }}
     permissions:
       contents: write
     steps:
@@ -470,6 +479,7 @@ jobs:
         with:
           cosign-release: v3.1.3
       - name: Verify and publish existing artifacts
+        id: publication
         env:
           GH_TOKEN: ${{ github.token }}
           COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
@@ -477,6 +487,25 @@ jobs:
           POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_API_TOKEN }}
           RELEASE_TAG: ${{ github.ref_name }}
         run: bash scripts/release/publish.sh
+
+  release-feedback:
+    name: Verify publication and notify contributors
+    needs: [publish]
+    # A skipped publisher must fail the terminal tag check instead of silently omitting release verification.
+    if: >-
+      !cancelled()
+      && github.repository == 'astrivant/identity'
+      && github.event_name == 'push'
+      && startsWith(github.ref, 'refs/tags/v')
+    uses: ./.github/workflows/stage-release-feedback.yml
+    permissions:
+      contents: read
+      pull-requests: write
+    with:
+      source: ${{ github.sha }}
+      tag: ${{ github.ref_name }}
+      publication-result: ${{ needs.publish.result }}
+      fingerprint: ${{ needs.publish.outputs.fingerprint }}
 
   collection:
     name: Refresh private collection

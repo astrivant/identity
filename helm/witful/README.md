@@ -1,7 +1,7 @@
 # Witful chart
 
-Run one-shot synchronization workers against an external PostgreSQL endpoint or
-an operator-managed PostgreSQL Cluster.
+Run one-shot synchronization workers, or explicitly enable the protected native
+controller profile over an external or operator-managed PostgreSQL data store.
 Build and push the application image, prepare the database and source Secrets, then
 install this chart. See [deployment and recovery](../../../docs/storage.md).
 No credentials or lesson records belong in Helm values. CloudNativePG is a locked,
@@ -13,12 +13,14 @@ optional dependency; keep it disabled when your cluster already has an operator.
 - [Configuration references](#configuration-references)
 - [Configure and install](#configure-and-install)
 - [Availability controls](#availability-controls)
+- [Native controller profile](#native-controller-profile)
 - [Parameters](#parameters)
   - [Synchronization workers](#synchronization-workers)
   - [Job lifecycle](#job-lifecycle)
   - [Worker resources and placement](#worker-resources-and-placement)
   - [PostgreSQL operator](#postgresql-operator)
   - [Managed PostgreSQL](#managed-postgresql)
+  - [Protected native controller](#protected-native-controller)
 <!-- toc:end -->
 
 ## Configuration references
@@ -85,6 +87,16 @@ procedure before replacing a StatefulSet or changing a storage class. Changing
 values does not migrate stored data. A Cluster is retained on Helm deletion by
 `helm.sh/resource-policy: keep`; retention is not a backup. Keep its operator and
 CRDs available until database recovery or intentional deletion is complete.
+
+## Native controller profile
+
+[The native reference](references/native/README.md) documents stateless controller
+HA, complete typed configuration, Secret projections, memory-backed working storage,
+network policy, probes and an explicit single-writer Git alternative. It requires
+independently administered authority and key services and signed protection evidence.
+The default chart remains the read-only synchronization Job. The native profile
+validates its ConfigMap from the runtime model; its future CRD design is documented
+in the reference without claiming a reconciler is deployed.
 
 ## Parameters
 
@@ -173,3 +185,47 @@ CRDs available until database recovery or intentional deletion is complete.
 | `postgresql.spec.affinity.topologyKey`           | Failure domain label used for database separation                                                                                 | `kubernetes.io/hostname`                                                                                                         |
 | `postgresql.spec.smartShutdownTimeout`           | Seconds for the operator to wait for client disconnection before fast shutdown                                                    | `30`                                                                                                                             |
 | `postgresql.spec.stopDelay`                      | Total seconds allowed for PostgreSQL shutdown before forced termination                                                           | `60`                                                                                                                             |
+
+### Protected native controller
+
+| Name                                                 | Description                                                                                                                            | Value                 |
+| ---------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | --------------------- |
+| `controller.enabled`                                 | Deploy the explicit native controller profile instead of the one-shot sync Job                                                         | `false`               |
+| `controller.replicas`                                | Stateless PostgreSQL controller replicas; local Git requires exactly one                                                               | `2`                   |
+| `controller.configuration`                           | Complete closed native Settings object; validated from the Python model, never credentials or private records                          | `{}`                  |
+| `controller.secretEnvironment`                       | Existing Secret key references keyed by authoritative environment variable name                                                        | `{}`                  |
+| `controller.archiveVolumes`                          | Existing protected original-Git claims with name, existingClaim, mountPath and readOnly; scoped aliases live in configuration.archives | `[]`                  |
+| `controller.secretMounts`                            | Existing Secret projections with name, secretName, mountPath and explicit items; credentials mount read-only                           | `[]`                  |
+| `controller.terminationGracePeriodSeconds`           | Pod termination budget; must exceed the configured runtime drain timeout                                                               | `45`                  |
+| `controller.workingSizeLimit`                        | Size limit for the memory-backed runtime working directory                                                                             | `256Mi`               |
+| `controller.git.existingClaim`                       | Existing retained single-writer Git PVC; never created, formatted or removed by the chart                                              | `""`                  |
+| `controller.git.mountPath`                           | Mount path matching configuration.backend.path for local Git                                                                           | `/var/lib/witful/git` |
+| `controller.pdb.enabled`                             | Create a PodDisruptionBudget for voluntary maintenance                                                                                 | `true`                |
+| `controller.pdb.minAvailable`                        | Minimum available controller pods; use zero for an explicitly reviewed single-writer profile                                           | `1`                   |
+| `controller.networkPolicy.enabled`                   | Restrict controller traffic to explicit reviewed peer rules                                                                            | `true`                |
+| `controller.networkPolicy.ingress`                   | Native ingress rules for authenticated clients and monitoring; empty denies traffic                                                    | `[]`                  |
+| `controller.networkPolicy.egress`                    | Native egress rules for DNS, authority, storage and broker; empty denies traffic                                                       | `[]`                  |
+| `controller.probes.startup.failureThreshold`         | Startup attempts before restart                                                                                                        | `30`                  |
+| `controller.probes.startup.periodSeconds`            | Startup probe interval                                                                                                                 | `2`                   |
+| `controller.probes.readiness.failureThreshold`       | Failed readiness checks before endpoint withdrawal                                                                                     | `3`                   |
+| `controller.probes.readiness.periodSeconds`          | Readiness probe interval                                                                                                               | `10`                  |
+| `controller.probes.readiness.timeoutSeconds`         | Readiness command time budget                                                                                                          | `6`                   |
+| `controller.probes.liveness.failureThreshold`        | Local listener failures before restart                                                                                                 | `3`                   |
+| `controller.probes.liveness.periodSeconds`           | Liveness probe interval independent of upstream health                                                                                 | `10`                  |
+| `controller.scheduler.enabled`                       | Deploy bounded per-identity delivery CronJobs using only independently scoped client credentials                                       | `false`               |
+| `controller.scheduler.schedule`                      | Kubernetes CronJob schedule; the controller also enforces interval and batch policy                                                    | `* * * * *`           |
+| `controller.scheduler.seconds`                       | Complete CLI cycle budget in seconds                                                                                                   | `300`                 |
+| `controller.scheduler.activeDeadlineSeconds`         | Pod execution deadline; must exceed the CLI cycle budget                                                                               | `330`                 |
+| `controller.scheduler.terminationGracePeriodSeconds` | Shutdown budget for the bounded in-flight HTTPS request and interruptible backoff                                                      | `35`                  |
+| `controller.scheduler.networkPolicy.enabled`         | Restrict scheduler ingress and explicit controller/DNS egress                                                                          | `true`                |
+| `controller.scheduler.networkPolicy.egress`          | Approved scheduler-only network egress rules; empty denies traffic                                                                     | `[]`                  |
+| `controller.scheduler.startingDeadlineSeconds`       | Maximum late scheduled-start allowance                                                                                                 | `60`                  |
+| `controller.scheduler.successfulJobsHistoryLimit`    | Retained successful scheduling Jobs                                                                                                    | `1`                   |
+| `controller.scheduler.failedJobsHistoryLimit`        | Retained failed scheduling Jobs                                                                                                        | `3`                   |
+| `controller.scheduler.clients`                       | Identity client Secret references with name, secretName and key; each gets an independent CronJob                                      | `[]`                  |
+| `controller.scheduler.secretMounts`                  | Scheduler-only TLS Secret projections; never inherit controller custody/database credentials                                           | `[]`                  |
+| `controller.scheduler.resources`                     | Scheduler container resource requests and limits                                                                                       |                       |
+| `controller.scheduler.resources.requests.cpu`        | Requested scheduler CPU                                                                                                                | `100m`                |
+| `controller.scheduler.resources.requests.memory`     | Requested scheduler memory                                                                                                             | `128Mi`               |
+| `controller.scheduler.resources.limits.cpu`          | Maximum scheduler CPU                                                                                                                  | `1`                   |
+| `controller.scheduler.resources.limits.memory`       | Maximum scheduler memory                                                                                                               | `512Mi`               |

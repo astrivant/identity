@@ -69,6 +69,12 @@ repos:
         language: system
         pass_filenames: false
         files: '^(helm/|scripts/chart/)'
+      - id: native-storage-diagrams
+        name: Native storage diagram source and artifact bindings
+        entry: python -m scripts.native.diagrams --check
+        language: system
+        pass_filenames: false
+        always_run: true
       - id: documentation-contents
         name: README contents
         entry: python scripts/documentation/update-contents.py

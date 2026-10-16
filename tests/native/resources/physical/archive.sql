@@ -1,0 +1,1 @@
+SELECT last_archived_wal FROM pg_stat_archiver;

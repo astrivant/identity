@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="1152pt" height="792pt" viewBox="0 0 1152 792" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <metadata>
+  <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <cc:Work>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:creator>
+     <cc:Agent>
+      <dc:title>Witful native storage diagram renderer</dc:title>
+     </cc:Agent>
+    </dc:creator>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <defs>
+  <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+ </defs>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="M 0,792 
+L 1152,792 
+L 1152,0 
+L 0,0 
+z
+" style="fill: #ffffff"/>
+  </g>
+  <g id="axes_1">
+   <g id="patch_2">
+    <path d="M 361.497896,199.32 
+Q 389.998943,199.32,417.381957,199.32 
+" clip-path="url(#pd3b4f65bce)" style="fill: none; stroke: #4d5d61; stroke-linecap: round"/>
+    <path d="M 412.181957,196.72 
+L 417.381957,199.32 
+L 412.181957,201.92 
+z
+" clip-path="url(#pd3b4f65bce)" style="fill: #4d5d61; stroke: #4d5d61; stroke-linecap: round"/>
+   </g>
+   <g id="patch_3">
+    <path d="M 733.497896,199.32 
+Q 761.998943,199.32,789.381957,199.32 
+" clip-path="url(#pd3b4f65bce)" style="fill: none; stroke: #4d5d61; stroke-linecap: round"/>
+    <path d="M 784.181957,196.72 
+L 789.381957,199.32 
+L 784.181957,201.92 
+z
+" clip-path="url(#pd3b4f65bce)" style="fill: #4d5d61; stroke: #4d5d61; stroke-linecap: round"/>
+   </g>
+   <g id="patch_4">
+    <path d="M 361.497896,376.2 
+Q 389.998943,376.2,417.381957,376.2 
+" clip-path="url(#pd3b4f65bce)" style="fill: none; stroke: #4d5d61; stroke-linecap: round"/>
+    <path d="M 412.181957,373.6 
+L 417.381957,376.2 
+L 412.181957,378.8 
+z
+" clip-path="url(#pd3b4f65bce)" style="fill: #4d5d61; stroke: #4d5d61; stroke-linecap: round"/>
+   </g>
+   <g id="patch_5">
+    <path d="M 673.715375,422.662085 
+Q 761.998876,464.639466,849.272672,506.136748 
+" clip-path="url(#pd3b4f65bce)" style="fill: none; stroke: #4d5d61; stroke-linecap: round"/>
+    <path d="M 845.692985,501.555718 
+L 849.272672,506.136748 
+L 843.460035,506.25188 
+z
+" clip-path="url(#pd3b4f65bce)" style="fill: #4d5d61; stroke: #4d5d61; stroke-linecap: round"/>
+   </g>
+   <g id="patch_6">
+    <path d="M 948,423.804686 
+Q 948,464.64132,948,504.35992 
+" clip-path="url(#pd3b4f65bce)" style="fill: none; stroke: #4d5d61; stroke-linecap: round"/>
+    <path d="M 950.6,499.15992 
+L 948,504.35992 
+L 945.4,499.15992 
+z
+" clip-path="url(#pd3b4f65bce)" style="fill: #4d5d61; stroke: #4d5d61; stroke-linecap: round"/>
+   </g>
+   <g id="patch_7">
+    <path d="M 361.497896,553.08 
+Q 389.998943,553.08,417.381957,553.08 
+" clip-path="url(#pd3b4f65bce)" style="fill: none; stroke: #4d5d61; stroke-linecap: round"/>
+    <path d="M 412.181957,550.48 
+L 417.381957,553.08 
+L 412.181957,555.68 
+z
+" clip-path="url(#pd3b4f65bce)" style="fill: #4d5d61; stroke: #4d5d61; stroke-linecap: round"/>
+   </g>
+   <g id="patch_8">
+    <path d="M 733.497896,553.08 
+Q 761.998943,553.08,789.381957,553.08 
+" clip-path="url(#pd3b4f65bce)" style="fill: none; stroke: #4d5d61; stroke-linecap: round"/>
+    <path d="M 784.181957,550.48 
+L 789.381957,553.08 
+L 784.181957,555.68 
+z
+" clip-path="url(#pd3b4f65bce)" style="fill: #4d5d61; stroke: #4d5d61; stroke-linecap: round"/>
+   </g>
+   <g id="patch_9">
+    <path d="M 55.2,244.4244 
+L 352.8,244.4244 
+Q 359,244.4244,359,240.0024 
+L 359,158.6376 
+Q 359,154.2156,352.8,154.2156 
+L 55.2,154.2156 
+Q 49,154.2156,49,158.6376 
+L 49,240.0024 
+Q 49,244.4244,55.2,244.4244 
+z
+" clip-path="url(#pd3b4f65bce)" style="fill: #f0f2f3; stroke: #4d5d61; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_10">
+    <path d="M 427.2,244.4244 
+L 724.8,244.4244 
+Q 731,244.4244,731,240.0024 
+L 731,158.6376 
+Q 731,154.2156,724.8,154.2156 
+L 427.2,154.2156 
+Q 421,154.2156,421,158.6376 
+L 421,240.0024 
+Q 421,244.4244,427.2,244.4244 
+z
+" clip-path="url(#pd3b4f65bce)" style="fill: #f4e5c8; stroke: #4d5d61; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_11">
+    <path d="M 799.2,244.4244 
+L 1096.8,244.4244 
+Q 1103,244.4244,1103,240.0024 
+L 1103,158.6376 
+Q 1103,154.2156,1096.8,154.2156 
+L 799.2,154.2156 
+Q 793,154.2156,793,158.6376 
+L 793,240.0024 
+Q 793,244.4244,799.2,244.4244 
+z
+" clip-path="url(#pd3b4f65bce)" style="fill: #dceade; stroke: #4d5d61; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_12">
+    <path d="M 55.2,421.3044 
+L 352.8,421.3044 
+Q 359,421.3044,359,416.8824 
+L 359,335.5176 
+Q 359,331.0956,352.8,331.0956 
+L 55.2,331.0956 
+Q 49,331.0956,49,335.5176 
+L 49,416.8824 
+Q 49,421.3044,55.2,421.3044 
+z
+" clip-path="url(#pd3b4f65bce)" style="fill: #dceade; stroke: #4d5d61; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_13">
+    <path d="M 427.2,421.3044 
+L 724.8,421.3044 
+Q 731,421.3044,731,416.8824 
+L 731,335.5176 
+Q 731,331.0956,724.8,331.0956 
+L 427.2,331.0956 
+Q 421,331.0956,421,335.5176 
+L 421,416.8824 
+Q 421,421.3044,427.2,421.3044 
+z
+" clip-path="url(#pd3b4f65bce)" style="fill: #dceade; stroke: #4d5d61; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_14">
+    <path d="M 799.2,421.3044 
+L 1096.8,421.3044 
+Q 1103,421.3044,1103,416.8824 
+L 1103,335.5176 
+Q 1103,331.0956,1096.8,331.0956 
+L 799.2,331.0956 
+Q 793,331.0956,793,335.5176 
+L 793,416.8824 
+Q 793,421.3044,799.2,421.3044 
+z
+" clip-path="url(#pd3b4f65bce)" style="fill: #f0f2f3; stroke: #4d5d61; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_15">
+    <path d="M 55.2,598.1844 
+L 352.8,598.1844 
+Q 359,598.1844,359,593.7624 
+L 359,512.3976 
+Q 359,507.9756,352.8,507.9756 
+L 55.2,507.9756 
+Q 49,507.9756,49,512.3976 
+L 49,593.7624 
+Q 49,598.1844,55.2,598.1844 
+z
+" clip-path="url(#pd3b4f65bce)" style="fill: #f4e5c8; stroke: #4d5d61; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_16">
+    <path d="M 427.2,598.1844 
+L 724.8,598.1844 
+Q 731,598.1844,731,593.7624 
+L 731,512.3976 
+Q 731,507.9756,724.8,507.9756 
+L 427.2,507.9756 
+Q 421,507.9756,421,512.3976 
+L 421,593.7624 
+Q 421,598.1844,427.2,598.1844 
+z
+" clip-path="url(#pd3b4f65bce)" style="fill: #dbe8f3; stroke: #4d5d61; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_17">
+    <path d="M 799.2,598.1844 
+L 1096.8,598.1844 
+Q 1103,598.1844,1103,593.7624 
+L 1103,512.3976 
+Q 1103,507.9756,1096.8,507.9756 
+L 799.2,507.9756 
+Q 793,507.9756,793,512.3976 
+L 793,593.7624 
+Q 793,598.1844,799.2,598.1844 
+z
+" clip-path="url(#pd3b4f65bce)" style="fill: #f0f2f3; stroke: #4d5d61; stroke-linejoin: miter"/>
+   </g>
+   <g id="text_1">
+    <text style="font-size: 10.5px; font-family: 'DejaVu Sans'" transform="translate(138.188789 186.992344)">Failure or uncertain reply</text>
+    <text style="font-size: 10.5px; font-family: 'DejaVu Sans'" transform="translate(118.868789 202.217344)">Process / network / provider loss</text>
+    <text style="font-size: 10.5px; font-family: 'DejaVu Sans'" transform="translate(124.339453 217.442344)">Keep operation ID and frontier</text>
+   </g>
+   <g id="text_2">
+    <text style="font-size: 10.5px; font-family: 'DejaVu Sans'" transform="translate(501.120234 188.009531)">Source transaction unknown</text>
+    <text style="font-size: 10.5px; font-family: 'DejaVu Sans'" transform="translate(499.48043 203.234531)">Resolve exact retained batch</text>
+    <text style="font-size: 10.5px; font-family: 'DejaVu Sans'" transform="translate(519.688828 217.442344)">Never guess absence</text>
+   </g>
+   <g id="text_3">
+    <text style="font-size: 10.5px; font-family: 'DejaVu Sans'" transform="translate(878.593359 186.992344)">Authority pending prepare</text>
+    <text style="font-size: 10.5px; font-family: 'DejaVu Sans'" transform="translate(875.242383 202.217344)">Verify committed candidate</text>
+    <text style="font-size: 10.5px; font-family: 'DejaVu Sans'" transform="translate(870.290977 217.442344)">Then acknowledge or resume</text>
+   </g>
+   <g id="text_4">
+    <text style="font-size: 10.5px; font-family: 'DejaVu Sans'" transform="translate(150.093164 363.872344)">Primary or node loss</text>
+    <text style="font-size: 10.5px; font-family: 'DejaVu Sans'" transform="translate(117.283125 379.097344)">Fence old primary independently</text>
+    <text style="font-size: 10.5px; font-family: 'DejaVu Sans'" transform="translate(141.268242 394.322344)">Promote verified replica</text>
+   </g>
+   <g id="text_5">
+    <text style="font-size: 10.5px; font-family: 'DejaVu Sans'" transform="translate(521.297461 363.872344)">New authority epoch</text>
+    <text style="font-size: 10.5px; font-family: 'DejaVu Sans'" transform="translate(502.139883 379.097344)">Reject every stale controller</text>
+    <text style="font-size: 10.5px; font-family: 'DejaVu Sans'" transform="translate(504.04875 394.322344)">Reconcile accepted frontier</text>
+   </g>
+   <g id="text_6">
+    <text style="font-size: 10.5px; font-family: 'DejaVu Sans'" transform="translate(894.270352 363.872344)">Key or policy outage</text>
+    <text style="font-size: 10.5px; font-family: 'DejaVu Sans'" transform="translate(859.544883 379.097344)">Block decrypt / write / publication</text>
+    <text style="font-size: 10.5px; font-family: 'DejaVu Sans'" transform="translate(868.974375 394.322344)">Do not serve cached plaintext</text>
+   </g>
+   <g id="text_7">
+    <text style="font-size: 10.5px; font-family: 'DejaVu Sans'" transform="translate(129.572227 540.752344)">Remote reply lost / diverged</text>
+    <text style="font-size: 10.5px; font-family: 'DejaVu Sans'" transform="translate(116.672813 555.977344)">Reuse exact bytes and read back</text>
+    <text style="font-size: 10.5px; font-family: 'DejaVu Sans'" transform="translate(113.859961 571.202344)">Divergence needs reviewed repair</text>
+   </g>
+   <g id="text_8">
+    <text style="font-size: 10.5px; font-family: 'DejaVu Sans'" transform="translate(519.861094 540.752344)">Backup / PITR restore</text>
+    <text style="font-size: 10.5px; font-family: 'DejaVu Sans'" transform="translate(498.605156 555.977344)">Inactive target; retained keys</text>
+    <text style="font-size: 10.5px; font-family: 'DejaVu Sans'" transform="translate(494.492109 571.202344)">Verify counts, signatures, roots</text>
+   </g>
+   <g id="text_9">
+    <text style="font-size: 10.5px; font-family: 'DejaVu Sans'" transform="translate(868.998164 540.752344)">Resume only after verification</text>
+    <text style="font-size: 10.5px; font-family: 'DejaVu Sans'" transform="translate(858.349687 555.977344)">Reconcile remote effects + grants</text>
+    <text style="font-size: 10.5px; font-family: 'DejaVu Sans'" transform="translate(877.645078 572.219531)">No revived revoked access</text>
+   </g>
+   <g id="text_10">
+    <g id="patch_18">
+     <path d="M 347.220313,196.372344 
+L 432.779688,196.372344 
+L 432.779688,184.579656 
+L 347.220313,184.579656 
+z
+" style="fill: #ffffff"/>
+    </g>
+    <text style="font-size: 8.8px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #30414a" x="390" y="192.762281" transform="rotate(-0 390 192.762281)">source uncertainty</text>
+   </g>
+   <g id="text_11">
+    <g id="patch_19">
+     <path d="M 727.774875,196.372 
+L 796.225125,196.372 
+L 796.225125,184.58 
+L 727.774875,184.58 
+z
+" style="fill: #ffffff"/>
+    </g>
+    <text style="font-size: 8.8px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #30414a" x="762" y="192.761938" transform="rotate(-0 762 192.761938)">exact recovery</text>
+   </g>
+   <g id="text_12">
+    <g id="patch_20">
+     <path d="M 355.638063,373.252344 
+L 424.361938,373.252344 
+L 424.361938,361.459656 
+L 355.638063,361.459656 
+z
+" style="fill: #ffffff"/>
+    </g>
+    <text style="font-size: 8.8px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #30414a" x="390" y="369.642281" transform="rotate(-0 390 369.642281)">fenced failover</text>
+   </g>
+   <g id="text_13">
+    <g id="patch_21">
+     <path d="M 713.595188,461.692344 
+L 810.404813,461.692344 
+L 810.404813,449.899656 
+L 713.595188,449.899656 
+z
+" style="fill: #ffffff"/>
+    </g>
+    <text style="font-size: 8.8px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #30414a" x="762" y="458.082281" transform="rotate(-0 762 458.082281)">verified current route</text>
+   </g>
+   <g id="text_14">
+    <g id="patch_22">
+     <path d="M 899.928625,461.692344 
+L 996.071375,461.692344 
+L 996.071375,449.899656 
+L 899.928625,449.899656 
+z
+" style="fill: #ffffff"/>
+    </g>
+    <text style="font-size: 8.8px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #30414a" x="948" y="458.082281" transform="rotate(-0 948 458.082281)">only after restoration</text>
+   </g>
+   <g id="text_15">
+    <g id="patch_23">
+     <path d="M 352.0225,556.294406 
+L 427.9775,556.294406 
+L 427.9775,532.177594 
+L 352.0225,532.177594 
+z
+" style="fill: #ffffff"/>
+    </g>
+    <text style="font-size: 8.8px; font-family: 'DejaVu Sans'; fill: #30414a" transform="translate(353.5185 541.241078)">history evidence</text>
+    <text style="font-size: 8.8px; font-family: 'DejaVu Sans'; fill: #30414a" transform="translate(371.647875 551.803484)">retained</text>
+   </g>
+   <g id="text_16">
+    <g id="patch_24">
+     <path d="M 722.1085,550.132344 
+L 801.8915,550.132344 
+L 801.8915,538.339656 
+L 722.1085,538.339656 
+z
+" style="fill: #ffffff"/>
+    </g>
+    <text style="font-size: 8.8px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #30414a" x="762" y="546.522281" transform="rotate(-0 762 546.522281)">approved frontier</text>
+   </g>
+  </g>
+  <g id="text_17">
+   <text style="font-weight: 700; font-size: 20px; font-family: 'DejaVu Sans'; text-anchor: middle" x="576" y="50.044875" transform="rotate(-0 576 50.044875)">Failure and recovery boundaries</text>
+  </g>
+  <g id="text_18">
+   <text style="font-size: 13px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #30414a" x="576" y="74.029969" transform="rotate(-0 576 74.029969)">Which durable evidence permits recovery, and where must work stop?</text>
+  </g>
+  <g id="text_19">
+   <text style="font-size: 9.5px; font-family: 'DejaVu Sans'" transform="translate(46.08 706.706406)">Physical drill uses a killed primary, synchronous replica promotion and separate PITR from verified base backup plus archived WAL. Recovery times are local</text>
+   <text style="font-size: 9.5px; font-family: 'DejaVu Sans'" transform="translate(46.08 720.956406)">observations. Operator owns old-primary fencing, encrypted volumes, backup retention and restore trust. A live replica is not an independent backup.</text>
+  </g>
+  <g id="text_20">
+   <text style="font-size: 9px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #30414a" x="46.08" y="766.656" transform="rotate(-0 46.08 766.656)">GREEN authoritative  |  AMBER durable pending  |  BLUE replicated projection  |  PURPLE disposable cache  |  GRAY service</text>
+  </g>
+ </g>
+ <defs>
+  <clipPath id="pd3b4f65bce">
+   <rect x="40.32" y="110.88" width="1071.36" height="530.64"/>
+  </clipPath>
+ </defs>
+</svg>

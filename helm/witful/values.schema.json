@@ -6094,8 +6094,1805 @@
                 "enabled",
                 "spec"
             ]
+        },
+        "controller": {
+            "type": "object",
+            "properties": {
+                "enabled": {
+                    "type": "boolean",
+                    "description": "Deploy the explicit native controller profile instead of the one-shot sync Job",
+                    "default": false
+                },
+                "replicas": {
+                    "type": "integer",
+                    "description": "Stateless PostgreSQL controller replicas; local Git requires exactly one",
+                    "default": 2,
+                    "minimum": 1
+                },
+                "configuration": {
+                    "anyOf": [
+                        {
+                            "type": "object",
+                            "maxProperties": 0
+                        },
+                        {
+                            "type": "object",
+                            "title": "Settings",
+                            "additionalProperties": false,
+                            "properties": {
+                                "backend": {
+                                    "type": "object",
+                                    "title": "Backend",
+                                    "additionalProperties": false,
+                                    "properties": {
+                                        "id": {
+                                            "type": "string"
+                                        },
+                                        "database_environment": {
+                                            "type": "string"
+                                        },
+                                        "kind": {
+                                            "enum": [
+                                                "postgres",
+                                                "git"
+                                            ],
+                                            "type": "string"
+                                        },
+                                        "path": {
+                                            "type": "string"
+                                        },
+                                        "author": {
+                                            "type": "string"
+                                        },
+                                        "email": {
+                                            "type": "string"
+                                        },
+                                        "synchronous": {
+                                            "type": "boolean"
+                                        },
+                                        "max_objects": {
+                                            "type": "integer"
+                                        },
+                                        "max_bytes": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "required": [
+                                        "id"
+                                    ]
+                                },
+                                "tls": {
+                                    "type": "object",
+                                    "title": "TLS",
+                                    "additionalProperties": false,
+                                    "properties": {
+                                        "certificate": {
+                                            "type": "string"
+                                        },
+                                        "key": {
+                                            "type": "string"
+                                        },
+                                        "ca": {
+                                            "type": "string"
+                                        },
+                                        "server_name": {
+                                            "type": "string"
+                                        },
+                                        "client_certificate": {
+                                            "type": "string"
+                                        },
+                                        "client_key": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "certificate",
+                                        "key",
+                                        "ca",
+                                        "server_name",
+                                        "client_certificate",
+                                        "client_key"
+                                    ]
+                                },
+                                "broker": {
+                                    "type": "object",
+                                    "title": "Broker",
+                                    "additionalProperties": false,
+                                    "properties": {
+                                        "url": {
+                                            "type": "string"
+                                        },
+                                        "ca": {
+                                            "type": "string"
+                                        },
+                                        "certificate": {
+                                            "type": "string"
+                                        },
+                                        "key": {
+                                            "type": "string"
+                                        },
+                                        "wrapping": {
+                                            "type": "string"
+                                        },
+                                        "signing": {
+                                            "type": "string"
+                                        },
+                                        "authority": {
+                                            "type": "string"
+                                        },
+                                        "policy": {
+                                            "type": "string"
+                                        },
+                                        "signers": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "title": "Trust",
+                                                "additionalProperties": false,
+                                                "properties": {
+                                                    "generation": {
+                                                        "type": "string"
+                                                    },
+                                                    "public": {
+                                                        "type": "string"
+                                                    },
+                                                    "fingerprint": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "generation",
+                                                    "public",
+                                                    "fingerprint"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "url",
+                                        "ca",
+                                        "certificate",
+                                        "key",
+                                        "wrapping",
+                                        "signing",
+                                        "authority",
+                                        "policy",
+                                        "signers"
+                                    ]
+                                },
+                                "probe": {
+                                    "type": "object",
+                                    "title": "Probe",
+                                    "additionalProperties": false,
+                                    "properties": {
+                                        "tenant": {
+                                            "type": "string"
+                                        },
+                                        "identity": {
+                                            "type": "string"
+                                        },
+                                        "grant": {
+                                            "type": "string"
+                                        },
+                                        "task": {
+                                            "type": "string"
+                                        },
+                                        "epoch": {
+                                            "type": "integer"
+                                        },
+                                        "policy": {
+                                            "type": "string"
+                                        },
+                                        "envelope": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "tenant",
+                                        "identity",
+                                        "grant",
+                                        "task",
+                                        "epoch",
+                                        "policy"
+                                    ]
+                                },
+                                "protection": {
+                                    "type": "object",
+                                    "title": "Protection",
+                                    "additionalProperties": false,
+                                    "properties": {
+                                        "path": {
+                                            "type": "string"
+                                        },
+                                        "public": {
+                                            "type": "string"
+                                        },
+                                        "fingerprint": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "path",
+                                        "public",
+                                        "fingerprint"
+                                    ]
+                                },
+                                "runtime": {
+                                    "type": "object",
+                                    "title": "Runtime",
+                                    "additionalProperties": false,
+                                    "properties": {
+                                        "host": {
+                                            "type": "string"
+                                        },
+                                        "port": {
+                                            "type": "integer"
+                                        },
+                                        "workers": {
+                                            "type": "integer"
+                                        },
+                                        "threads": {
+                                            "type": "integer"
+                                        },
+                                        "worker_connections": {
+                                            "type": "integer"
+                                        },
+                                        "backlog": {
+                                            "type": "integer"
+                                        },
+                                        "admission": {
+                                            "type": "integer"
+                                        },
+                                        "recovery_admission": {
+                                            "type": "integer"
+                                        },
+                                        "timeout": {
+                                            "type": "integer"
+                                        },
+                                        "graceful_timeout": {
+                                            "type": "integer"
+                                        },
+                                        "keepalive": {
+                                            "type": "integer"
+                                        },
+                                        "working_directory": {
+                                            "type": "string"
+                                        },
+                                        "readiness_seconds": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "required": []
+                                },
+                                "budget": {
+                                    "type": "object",
+                                    "title": "Budget",
+                                    "additionalProperties": false,
+                                    "properties": {
+                                        "revisions": {
+                                            "type": "integer"
+                                        },
+                                        "refs": {
+                                            "type": "integer"
+                                        },
+                                        "seconds": {
+                                            "type": "number"
+                                        },
+                                        "bytes": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "required": []
+                                },
+                                "destinations": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "title": "Backend",
+                                        "additionalProperties": false,
+                                        "properties": {
+                                            "id": {
+                                                "type": "string"
+                                            },
+                                            "database_environment": {
+                                                "type": "string"
+                                            },
+                                            "kind": {
+                                                "enum": [
+                                                    "postgres",
+                                                    "git"
+                                                ],
+                                                "type": "string"
+                                            },
+                                            "path": {
+                                                "type": "string"
+                                            },
+                                            "author": {
+                                                "type": "string"
+                                            },
+                                            "email": {
+                                                "type": "string"
+                                            },
+                                            "synchronous": {
+                                                "type": "boolean"
+                                            },
+                                            "max_objects": {
+                                                "type": "integer"
+                                            },
+                                            "max_bytes": {
+                                                "type": "integer"
+                                            }
+                                        },
+                                        "required": [
+                                            "id"
+                                        ]
+                                    }
+                                },
+                                "archives": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "title": "ArchivePath",
+                                        "additionalProperties": false,
+                                        "properties": {
+                                            "name": {
+                                                "type": "string"
+                                            },
+                                            "tenant": {
+                                                "type": "string"
+                                            },
+                                            "identity": {
+                                                "type": "string"
+                                            },
+                                            "path": {
+                                                "type": "string"
+                                            },
+                                            "mode": {
+                                                "enum": [
+                                                    "capture",
+                                                    "restore"
+                                                ],
+                                                "type": "string"
+                                            }
+                                        },
+                                        "required": [
+                                            "name",
+                                            "tenant",
+                                            "identity",
+                                            "path",
+                                            "mode"
+                                        ]
+                                    }
+                                },
+                                "derivations": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "title": "DerivationTarget",
+                                        "additionalProperties": false,
+                                        "properties": {
+                                            "name": {
+                                                "type": "string"
+                                            },
+                                            "backend": {
+                                                "type": "string"
+                                            },
+                                            "tenant": {
+                                                "type": "string"
+                                            },
+                                            "identity": {
+                                                "type": "string"
+                                            },
+                                            "grant": {
+                                                "type": "string"
+                                            },
+                                            "task": {
+                                                "type": "string"
+                                            },
+                                            "epoch": {
+                                                "type": "integer"
+                                            },
+                                            "policy": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "required": [
+                                            "name",
+                                            "backend",
+                                            "tenant",
+                                            "identity",
+                                            "grant",
+                                            "task",
+                                            "epoch",
+                                            "policy"
+                                        ]
+                                    }
+                                },
+                                "recipients": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "title": "ExportRecipient",
+                                        "additionalProperties": false,
+                                        "properties": {
+                                            "name": {
+                                                "type": "string"
+                                            },
+                                            "tenant": {
+                                                "type": "string"
+                                            },
+                                            "identity": {
+                                                "type": "string"
+                                            },
+                                            "generation": {
+                                                "type": "string"
+                                            },
+                                            "public": {
+                                                "type": "string"
+                                            },
+                                            "fingerprint": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "required": [
+                                            "name",
+                                            "tenant",
+                                            "identity",
+                                            "generation",
+                                            "public",
+                                            "fingerprint"
+                                        ]
+                                    }
+                                },
+                                "role": {
+                                    "enum": [
+                                        "controller",
+                                        "projection"
+                                    ],
+                                    "type": "string"
+                                },
+                                "projection": {
+                                    "type": "object",
+                                    "title": "Policy",
+                                    "additionalProperties": false,
+                                    "properties": {
+                                        "mode": {
+                                            "enum": [
+                                                "disabled",
+                                                "manual",
+                                                "interval",
+                                                "batch",
+                                                "required"
+                                            ],
+                                            "type": "string"
+                                        },
+                                        "targets": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "title": "Target",
+                                                "additionalProperties": false,
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "string"
+                                                    },
+                                                    "tenant": {
+                                                        "type": "string"
+                                                    },
+                                                    "identity": {
+                                                        "type": "string"
+                                                    },
+                                                    "url": {
+                                                        "type": "string"
+                                                    },
+                                                    "ca": {
+                                                        "type": "string"
+                                                    },
+                                                    "certificate": {
+                                                        "type": "string"
+                                                    },
+                                                    "key": {
+                                                        "type": "string"
+                                                    },
+                                                    "grant": {
+                                                        "type": "string"
+                                                    },
+                                                    "task": {
+                                                        "type": "string"
+                                                    },
+                                                    "initial": {
+                                                        "anyOf": [
+                                                            {
+                                                                "type": "string"
+                                                            },
+                                                            {
+                                                                "type": "null"
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "tenant",
+                                                    "identity",
+                                                    "url",
+                                                    "ca",
+                                                    "certificate",
+                                                    "key",
+                                                    "grant",
+                                                    "task"
+                                                ]
+                                            }
+                                        },
+                                        "permit_wrapping": {
+                                            "type": "string"
+                                        },
+                                        "author": {
+                                            "type": "string"
+                                        },
+                                        "email": {
+                                            "type": "string"
+                                        },
+                                        "interval_seconds": {
+                                            "type": "integer"
+                                        },
+                                        "batch_size": {
+                                            "type": "integer"
+                                        },
+                                        "max_entries": {
+                                            "type": "integer"
+                                        },
+                                        "max_bytes": {
+                                            "type": "integer"
+                                        },
+                                        "max_lag_seconds": {
+                                            "type": "integer"
+                                        },
+                                        "attempts": {
+                                            "type": "integer"
+                                        },
+                                        "retry_seconds": {
+                                            "type": "integer"
+                                        },
+                                        "retry_max_seconds": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "required": []
+                                },
+                                "gateway": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "title": "GatewayRemote",
+                                        "additionalProperties": false,
+                                        "properties": {
+                                            "id": {
+                                                "type": "string"
+                                            },
+                                            "tenant": {
+                                                "type": "string"
+                                            },
+                                            "identity": {
+                                                "type": "string"
+                                            },
+                                            "url": {
+                                                "type": "string"
+                                            },
+                                            "ref": {
+                                                "type": "string"
+                                            },
+                                            "directory": {
+                                                "type": "string"
+                                            },
+                                            "ssh_key": {
+                                                "type": "string"
+                                            },
+                                            "known_hosts": {
+                                                "type": "string"
+                                            },
+                                            "author": {
+                                                "type": "string"
+                                            },
+                                            "email": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "required": [
+                                            "id",
+                                            "tenant",
+                                            "identity",
+                                            "url",
+                                            "ref",
+                                            "directory",
+                                            "ssh_key",
+                                            "known_hosts"
+                                        ]
+                                    }
+                                },
+                                "envelope": {
+                                    "type": "object",
+                                    "title": "Limits",
+                                    "additionalProperties": false,
+                                    "properties": {
+                                        "bytes": {
+                                            "type": "integer"
+                                        },
+                                        "items": {
+                                            "type": "integer"
+                                        },
+                                        "depth": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "required": []
+                                },
+                                "version": {
+                                    "enum": [
+                                        1
+                                    ],
+                                    "type": "integer"
+                                }
+                            },
+                            "required": [
+                                "backend",
+                                "tls",
+                                "broker",
+                                "probe",
+                                "protection"
+                            ]
+                        }
+                    ]
+                },
+                "secretEnvironment": {
+                    "type": "object",
+                    "description": "Existing Secret key references keyed by authoritative environment variable name",
+                    "default": {},
+                    "propertyNames": {
+                        "pattern": "^[A-Z_][A-Z0-9_]*$"
+                    },
+                    "additionalProperties": {
+                        "type": "object",
+                        "required": [
+                            "name",
+                            "key"
+                        ],
+                        "additionalProperties": false,
+                        "properties": {
+                            "name": {
+                                "type": "string",
+                                "minLength": 1
+                            },
+                            "key": {
+                                "type": "string",
+                                "minLength": 1
+                            }
+                        }
+                    }
+                },
+                "archiveVolumes": {
+                    "type": "array",
+                    "description": "Existing protected original-Git claims with name, existingClaim, mountPath and readOnly; scoped aliases live in configuration.archives",
+                    "default": [],
+                    "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                            "name",
+                            "existingClaim",
+                            "mountPath",
+                            "readOnly"
+                        ],
+                        "properties": {
+                            "name": {
+                                "type": "string",
+                                "minLength": 1
+                            },
+                            "existingClaim": {
+                                "type": "string",
+                                "minLength": 1
+                            },
+                            "mountPath": {
+                                "type": "string",
+                                "pattern": "^/"
+                            },
+                            "readOnly": {
+                                "type": "boolean"
+                            }
+                        }
+                    }
+                },
+                "secretMounts": {
+                    "type": "array",
+                    "description": "Existing Secret projections with name, secretName, mountPath and explicit items; credentials mount read-only",
+                    "default": [],
+                    "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                            "name",
+                            "secretName",
+                            "mountPath",
+                            "items"
+                        ],
+                        "properties": {
+                            "name": {
+                                "type": "string",
+                                "minLength": 1
+                            },
+                            "secretName": {
+                                "type": "string",
+                                "minLength": 1
+                            },
+                            "mountPath": {
+                                "type": "string",
+                                "pattern": "^/"
+                            },
+                            "items": {
+                                "type": "array",
+                                "minItems": 1,
+                                "items": {
+                                    "type": "object",
+                                    "required": [
+                                        "key",
+                                        "path"
+                                    ],
+                                    "additionalProperties": false,
+                                    "properties": {
+                                        "key": {
+                                            "type": "string",
+                                            "minLength": 1
+                                        },
+                                        "path": {
+                                            "type": "string",
+                                            "minLength": 1
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "terminationGracePeriodSeconds": {
+                    "type": "integer",
+                    "description": "Pod termination budget; must exceed the configured runtime drain timeout",
+                    "default": 45,
+                    "minimum": 1
+                },
+                "workingSizeLimit": {
+                    "type": "string",
+                    "description": "Size limit for the memory-backed runtime working directory",
+                    "default": "256Mi"
+                },
+                "git": {
+                    "type": "object",
+                    "properties": {
+                        "existingClaim": {
+                            "type": "string",
+                            "description": "Existing retained single-writer Git PVC; never created, formatted or removed by the chart",
+                            "default": ""
+                        },
+                        "mountPath": {
+                            "type": "string",
+                            "description": "Mount path matching configuration.backend.path for local Git",
+                            "default": "/var/lib/witful/git"
+                        }
+                    },
+                    "additionalProperties": false,
+                    "required": [
+                        "existingClaim",
+                        "mountPath"
+                    ]
+                },
+                "pdb": {
+                    "type": "object",
+                    "properties": {
+                        "enabled": {
+                            "type": "boolean",
+                            "description": "Create a PodDisruptionBudget for voluntary maintenance",
+                            "default": true
+                        },
+                        "minAvailable": {
+                            "type": "integer",
+                            "description": "Minimum available controller pods; use zero for an explicitly reviewed single-writer profile",
+                            "default": 1,
+                            "minimum": 0
+                        }
+                    },
+                    "additionalProperties": false,
+                    "required": [
+                        "enabled",
+                        "minAvailable"
+                    ]
+                },
+                "networkPolicy": {
+                    "type": "object",
+                    "properties": {
+                        "enabled": {
+                            "type": "boolean",
+                            "description": "Restrict controller traffic to explicit reviewed peer rules",
+                            "default": true
+                        },
+                        "ingress": {
+                            "type": "array",
+                            "description": "Native ingress rules for authenticated clients and monitoring; empty denies traffic",
+                            "default": [],
+                            "items": {
+                                "type": "object"
+                            }
+                        },
+                        "egress": {
+                            "type": "array",
+                            "description": "Native egress rules for DNS, authority, storage and broker; empty denies traffic",
+                            "default": [],
+                            "items": {
+                                "type": "object"
+                            }
+                        }
+                    },
+                    "additionalProperties": false,
+                    "required": [
+                        "enabled",
+                        "ingress",
+                        "egress"
+                    ]
+                },
+                "probes": {
+                    "type": "object",
+                    "properties": {
+                        "startup": {
+                            "type": "object",
+                            "properties": {
+                                "failureThreshold": {
+                                    "type": "integer",
+                                    "description": "Startup attempts before restart",
+                                    "default": 30,
+                                    "minimum": 1
+                                },
+                                "periodSeconds": {
+                                    "type": "integer",
+                                    "description": "Startup probe interval",
+                                    "default": 2,
+                                    "minimum": 1
+                                }
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                                "failureThreshold",
+                                "periodSeconds"
+                            ]
+                        },
+                        "readiness": {
+                            "type": "object",
+                            "properties": {
+                                "failureThreshold": {
+                                    "type": "integer",
+                                    "description": "Failed readiness checks before endpoint withdrawal",
+                                    "default": 3,
+                                    "minimum": 1
+                                },
+                                "periodSeconds": {
+                                    "type": "integer",
+                                    "description": "Readiness probe interval",
+                                    "default": 10,
+                                    "minimum": 1
+                                },
+                                "timeoutSeconds": {
+                                    "type": "integer",
+                                    "description": "Readiness command time budget",
+                                    "default": 6,
+                                    "minimum": 1
+                                }
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                                "failureThreshold",
+                                "periodSeconds",
+                                "timeoutSeconds"
+                            ]
+                        },
+                        "liveness": {
+                            "type": "object",
+                            "properties": {
+                                "failureThreshold": {
+                                    "type": "integer",
+                                    "description": "Local listener failures before restart",
+                                    "default": 3,
+                                    "minimum": 1
+                                },
+                                "periodSeconds": {
+                                    "type": "integer",
+                                    "description": "Liveness probe interval independent of upstream health",
+                                    "default": 10,
+                                    "minimum": 1
+                                }
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                                "failureThreshold",
+                                "periodSeconds"
+                            ]
+                        }
+                    },
+                    "additionalProperties": false,
+                    "required": [
+                        "startup",
+                        "readiness",
+                        "liveness"
+                    ]
+                },
+                "scheduler": {
+                    "type": "object",
+                    "properties": {
+                        "enabled": {
+                            "type": "boolean",
+                            "description": "Deploy bounded per-identity delivery CronJobs using only independently scoped client credentials",
+                            "default": false
+                        },
+                        "schedule": {
+                            "type": "string",
+                            "description": "Kubernetes CronJob schedule; the controller also enforces interval and batch policy",
+                            "default": "* * * * *"
+                        },
+                        "seconds": {
+                            "type": "integer",
+                            "description": "Complete CLI cycle budget in seconds",
+                            "default": 300,
+                            "minimum": 1
+                        },
+                        "activeDeadlineSeconds": {
+                            "type": "integer",
+                            "description": "Pod execution deadline; must exceed the CLI cycle budget",
+                            "default": 330,
+                            "minimum": 1
+                        },
+                        "terminationGracePeriodSeconds": {
+                            "type": "integer",
+                            "description": "Shutdown budget for the bounded in-flight HTTPS request and interruptible backoff",
+                            "default": 35,
+                            "minimum": 1
+                        },
+                        "networkPolicy": {
+                            "type": "object",
+                            "properties": {
+                                "enabled": {
+                                    "type": "boolean",
+                                    "description": "Restrict scheduler ingress and explicit controller/DNS egress",
+                                    "default": true
+                                },
+                                "egress": {
+                                    "type": "array",
+                                    "description": "Approved scheduler-only network egress rules; empty denies traffic",
+                                    "default": [],
+                                    "items": {
+                                        "type": "object"
+                                    }
+                                }
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                                "enabled",
+                                "egress"
+                            ]
+                        },
+                        "startingDeadlineSeconds": {
+                            "type": "integer",
+                            "description": "Maximum late scheduled-start allowance",
+                            "default": 60,
+                            "minimum": 1
+                        },
+                        "successfulJobsHistoryLimit": {
+                            "type": "integer",
+                            "description": "Retained successful scheduling Jobs",
+                            "default": 1,
+                            "minimum": 0
+                        },
+                        "failedJobsHistoryLimit": {
+                            "type": "integer",
+                            "description": "Retained failed scheduling Jobs",
+                            "default": 3,
+                            "minimum": 0
+                        },
+                        "clients": {
+                            "type": "array",
+                            "description": "Identity client Secret references with name, secretName and key; each gets an independent CronJob",
+                            "default": [],
+                            "items": {
+                                "type": "object",
+                                "required": [
+                                    "name",
+                                    "secretName",
+                                    "key"
+                                ],
+                                "additionalProperties": false,
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "pattern": "^[a-z0-9]([-a-z0-9]*[a-z0-9])?$"
+                                    },
+                                    "secretName": {
+                                        "type": "string",
+                                        "minLength": 1
+                                    },
+                                    "key": {
+                                        "type": "string",
+                                        "minLength": 1
+                                    }
+                                }
+                            }
+                        },
+                        "secretMounts": {
+                            "type": "array",
+                            "description": "Scheduler-only TLS Secret projections; never inherit controller custody/database credentials",
+                            "default": [],
+                            "items": {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "required": [
+                                    "name",
+                                    "secretName",
+                                    "mountPath",
+                                    "items"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "minLength": 1
+                                    },
+                                    "secretName": {
+                                        "type": "string",
+                                        "minLength": 1
+                                    },
+                                    "mountPath": {
+                                        "type": "string",
+                                        "pattern": "^/"
+                                    },
+                                    "items": {
+                                        "type": "array",
+                                        "minItems": 1,
+                                        "items": {
+                                            "type": "object",
+                                            "required": [
+                                                "key",
+                                                "path"
+                                            ],
+                                            "additionalProperties": false,
+                                            "properties": {
+                                                "key": {
+                                                    "type": "string",
+                                                    "minLength": 1
+                                                },
+                                                "path": {
+                                                    "type": "string",
+                                                    "minLength": 1
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "resources": {
+                            "type": "object",
+                            "properties": {
+                                "requests": {
+                                    "type": "object",
+                                    "properties": {
+                                        "cpu": {
+                                            "type": "string",
+                                            "description": "Requested scheduler CPU",
+                                            "default": "100m"
+                                        },
+                                        "memory": {
+                                            "type": "string",
+                                            "description": "Requested scheduler memory",
+                                            "default": "128Mi"
+                                        }
+                                    }
+                                },
+                                "limits": {
+                                    "type": "object",
+                                    "properties": {
+                                        "cpu": {
+                                            "type": "string",
+                                            "description": "Maximum scheduler CPU",
+                                            "default": "1"
+                                        },
+                                        "memory": {
+                                            "type": "string",
+                                            "description": "Maximum scheduler memory",
+                                            "default": "512Mi"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "additionalProperties": false,
+                    "required": [
+                        "enabled",
+                        "schedule",
+                        "seconds",
+                        "activeDeadlineSeconds",
+                        "terminationGracePeriodSeconds",
+                        "networkPolicy",
+                        "startingDeadlineSeconds",
+                        "successfulJobsHistoryLimit",
+                        "failedJobsHistoryLimit",
+                        "clients",
+                        "secretMounts",
+                        "resources"
+                    ]
+                }
+            },
+            "additionalProperties": false,
+            "required": [
+                "enabled",
+                "replicas",
+                "configuration",
+                "secretEnvironment",
+                "archiveVolumes",
+                "secretMounts",
+                "terminationGracePeriodSeconds",
+                "workingSizeLimit",
+                "git",
+                "pdb",
+                "networkPolicy",
+                "probes",
+                "scheduler"
+            ]
         }
     },
+    "allOf": [
+        {
+            "if": {
+                "properties": {
+                    "controller": {
+                        "properties": {
+                            "enabled": {
+                                "const": true
+                            }
+                        }
+                    }
+                }
+            },
+            "then": {
+                "properties": {
+                    "controller": {
+                        "properties": {
+                            "configuration": {
+                                "type": "object",
+                                "title": "Settings",
+                                "additionalProperties": false,
+                                "properties": {
+                                    "backend": {
+                                        "type": "object",
+                                        "title": "Backend",
+                                        "additionalProperties": false,
+                                        "properties": {
+                                            "id": {
+                                                "type": "string"
+                                            },
+                                            "database_environment": {
+                                                "type": "string"
+                                            },
+                                            "kind": {
+                                                "enum": [
+                                                    "postgres",
+                                                    "git"
+                                                ],
+                                                "type": "string"
+                                            },
+                                            "path": {
+                                                "type": "string"
+                                            },
+                                            "author": {
+                                                "type": "string"
+                                            },
+                                            "email": {
+                                                "type": "string"
+                                            },
+                                            "synchronous": {
+                                                "type": "boolean"
+                                            },
+                                            "max_objects": {
+                                                "type": "integer"
+                                            },
+                                            "max_bytes": {
+                                                "type": "integer"
+                                            }
+                                        },
+                                        "required": [
+                                            "id"
+                                        ]
+                                    },
+                                    "tls": {
+                                        "type": "object",
+                                        "title": "TLS",
+                                        "additionalProperties": false,
+                                        "properties": {
+                                            "certificate": {
+                                                "type": "string"
+                                            },
+                                            "key": {
+                                                "type": "string"
+                                            },
+                                            "ca": {
+                                                "type": "string"
+                                            },
+                                            "server_name": {
+                                                "type": "string"
+                                            },
+                                            "client_certificate": {
+                                                "type": "string"
+                                            },
+                                            "client_key": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "required": [
+                                            "certificate",
+                                            "key",
+                                            "ca",
+                                            "server_name",
+                                            "client_certificate",
+                                            "client_key"
+                                        ]
+                                    },
+                                    "broker": {
+                                        "type": "object",
+                                        "title": "Broker",
+                                        "additionalProperties": false,
+                                        "properties": {
+                                            "url": {
+                                                "type": "string"
+                                            },
+                                            "ca": {
+                                                "type": "string"
+                                            },
+                                            "certificate": {
+                                                "type": "string"
+                                            },
+                                            "key": {
+                                                "type": "string"
+                                            },
+                                            "wrapping": {
+                                                "type": "string"
+                                            },
+                                            "signing": {
+                                                "type": "string"
+                                            },
+                                            "authority": {
+                                                "type": "string"
+                                            },
+                                            "policy": {
+                                                "type": "string"
+                                            },
+                                            "signers": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "object",
+                                                    "title": "Trust",
+                                                    "additionalProperties": false,
+                                                    "properties": {
+                                                        "generation": {
+                                                            "type": "string"
+                                                        },
+                                                        "public": {
+                                                            "type": "string"
+                                                        },
+                                                        "fingerprint": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "generation",
+                                                        "public",
+                                                        "fingerprint"
+                                                    ]
+                                                }
+                                            }
+                                        },
+                                        "required": [
+                                            "url",
+                                            "ca",
+                                            "certificate",
+                                            "key",
+                                            "wrapping",
+                                            "signing",
+                                            "authority",
+                                            "policy",
+                                            "signers"
+                                        ]
+                                    },
+                                    "probe": {
+                                        "type": "object",
+                                        "title": "Probe",
+                                        "additionalProperties": false,
+                                        "properties": {
+                                            "tenant": {
+                                                "type": "string"
+                                            },
+                                            "identity": {
+                                                "type": "string"
+                                            },
+                                            "grant": {
+                                                "type": "string"
+                                            },
+                                            "task": {
+                                                "type": "string"
+                                            },
+                                            "epoch": {
+                                                "type": "integer"
+                                            },
+                                            "policy": {
+                                                "type": "string"
+                                            },
+                                            "envelope": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "required": [
+                                            "tenant",
+                                            "identity",
+                                            "grant",
+                                            "task",
+                                            "epoch",
+                                            "policy"
+                                        ]
+                                    },
+                                    "protection": {
+                                        "type": "object",
+                                        "title": "Protection",
+                                        "additionalProperties": false,
+                                        "properties": {
+                                            "path": {
+                                                "type": "string"
+                                            },
+                                            "public": {
+                                                "type": "string"
+                                            },
+                                            "fingerprint": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "required": [
+                                            "path",
+                                            "public",
+                                            "fingerprint"
+                                        ]
+                                    },
+                                    "runtime": {
+                                        "type": "object",
+                                        "title": "Runtime",
+                                        "additionalProperties": false,
+                                        "properties": {
+                                            "host": {
+                                                "type": "string"
+                                            },
+                                            "port": {
+                                                "type": "integer"
+                                            },
+                                            "workers": {
+                                                "type": "integer"
+                                            },
+                                            "threads": {
+                                                "type": "integer"
+                                            },
+                                            "worker_connections": {
+                                                "type": "integer"
+                                            },
+                                            "backlog": {
+                                                "type": "integer"
+                                            },
+                                            "admission": {
+                                                "type": "integer"
+                                            },
+                                            "recovery_admission": {
+                                                "type": "integer"
+                                            },
+                                            "timeout": {
+                                                "type": "integer"
+                                            },
+                                            "graceful_timeout": {
+                                                "type": "integer"
+                                            },
+                                            "keepalive": {
+                                                "type": "integer"
+                                            },
+                                            "working_directory": {
+                                                "type": "string"
+                                            },
+                                            "readiness_seconds": {
+                                                "type": "integer"
+                                            }
+                                        },
+                                        "required": []
+                                    },
+                                    "budget": {
+                                        "type": "object",
+                                        "title": "Budget",
+                                        "additionalProperties": false,
+                                        "properties": {
+                                            "revisions": {
+                                                "type": "integer"
+                                            },
+                                            "refs": {
+                                                "type": "integer"
+                                            },
+                                            "seconds": {
+                                                "type": "number"
+                                            },
+                                            "bytes": {
+                                                "type": "integer"
+                                            }
+                                        },
+                                        "required": []
+                                    },
+                                    "destinations": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object",
+                                            "title": "Backend",
+                                            "additionalProperties": false,
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                },
+                                                "database_environment": {
+                                                    "type": "string"
+                                                },
+                                                "kind": {
+                                                    "enum": [
+                                                        "postgres",
+                                                        "git"
+                                                    ],
+                                                    "type": "string"
+                                                },
+                                                "path": {
+                                                    "type": "string"
+                                                },
+                                                "author": {
+                                                    "type": "string"
+                                                },
+                                                "email": {
+                                                    "type": "string"
+                                                },
+                                                "synchronous": {
+                                                    "type": "boolean"
+                                                },
+                                                "max_objects": {
+                                                    "type": "integer"
+                                                },
+                                                "max_bytes": {
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "required": [
+                                                "id"
+                                            ]
+                                        }
+                                    },
+                                    "archives": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object",
+                                            "title": "ArchivePath",
+                                            "additionalProperties": false,
+                                            "properties": {
+                                                "name": {
+                                                    "type": "string"
+                                                },
+                                                "tenant": {
+                                                    "type": "string"
+                                                },
+                                                "identity": {
+                                                    "type": "string"
+                                                },
+                                                "path": {
+                                                    "type": "string"
+                                                },
+                                                "mode": {
+                                                    "enum": [
+                                                        "capture",
+                                                        "restore"
+                                                    ],
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "name",
+                                                "tenant",
+                                                "identity",
+                                                "path",
+                                                "mode"
+                                            ]
+                                        }
+                                    },
+                                    "derivations": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object",
+                                            "title": "DerivationTarget",
+                                            "additionalProperties": false,
+                                            "properties": {
+                                                "name": {
+                                                    "type": "string"
+                                                },
+                                                "backend": {
+                                                    "type": "string"
+                                                },
+                                                "tenant": {
+                                                    "type": "string"
+                                                },
+                                                "identity": {
+                                                    "type": "string"
+                                                },
+                                                "grant": {
+                                                    "type": "string"
+                                                },
+                                                "task": {
+                                                    "type": "string"
+                                                },
+                                                "epoch": {
+                                                    "type": "integer"
+                                                },
+                                                "policy": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "name",
+                                                "backend",
+                                                "tenant",
+                                                "identity",
+                                                "grant",
+                                                "task",
+                                                "epoch",
+                                                "policy"
+                                            ]
+                                        }
+                                    },
+                                    "recipients": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object",
+                                            "title": "ExportRecipient",
+                                            "additionalProperties": false,
+                                            "properties": {
+                                                "name": {
+                                                    "type": "string"
+                                                },
+                                                "tenant": {
+                                                    "type": "string"
+                                                },
+                                                "identity": {
+                                                    "type": "string"
+                                                },
+                                                "generation": {
+                                                    "type": "string"
+                                                },
+                                                "public": {
+                                                    "type": "string"
+                                                },
+                                                "fingerprint": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "name",
+                                                "tenant",
+                                                "identity",
+                                                "generation",
+                                                "public",
+                                                "fingerprint"
+                                            ]
+                                        }
+                                    },
+                                    "role": {
+                                        "enum": [
+                                            "controller",
+                                            "projection"
+                                        ],
+                                        "type": "string"
+                                    },
+                                    "projection": {
+                                        "type": "object",
+                                        "title": "Policy",
+                                        "additionalProperties": false,
+                                        "properties": {
+                                            "mode": {
+                                                "enum": [
+                                                    "disabled",
+                                                    "manual",
+                                                    "interval",
+                                                    "batch",
+                                                    "required"
+                                                ],
+                                                "type": "string"
+                                            },
+                                            "targets": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "object",
+                                                    "title": "Target",
+                                                    "additionalProperties": false,
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "string"
+                                                        },
+                                                        "tenant": {
+                                                            "type": "string"
+                                                        },
+                                                        "identity": {
+                                                            "type": "string"
+                                                        },
+                                                        "url": {
+                                                            "type": "string"
+                                                        },
+                                                        "ca": {
+                                                            "type": "string"
+                                                        },
+                                                        "certificate": {
+                                                            "type": "string"
+                                                        },
+                                                        "key": {
+                                                            "type": "string"
+                                                        },
+                                                        "grant": {
+                                                            "type": "string"
+                                                        },
+                                                        "task": {
+                                                            "type": "string"
+                                                        },
+                                                        "initial": {
+                                                            "anyOf": [
+                                                                {
+                                                                    "type": "string"
+                                                                },
+                                                                {
+                                                                    "type": "null"
+                                                                }
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "id",
+                                                        "tenant",
+                                                        "identity",
+                                                        "url",
+                                                        "ca",
+                                                        "certificate",
+                                                        "key",
+                                                        "grant",
+                                                        "task"
+                                                    ]
+                                                }
+                                            },
+                                            "permit_wrapping": {
+                                                "type": "string"
+                                            },
+                                            "author": {
+                                                "type": "string"
+                                            },
+                                            "email": {
+                                                "type": "string"
+                                            },
+                                            "interval_seconds": {
+                                                "type": "integer"
+                                            },
+                                            "batch_size": {
+                                                "type": "integer"
+                                            },
+                                            "max_entries": {
+                                                "type": "integer"
+                                            },
+                                            "max_bytes": {
+                                                "type": "integer"
+                                            },
+                                            "max_lag_seconds": {
+                                                "type": "integer"
+                                            },
+                                            "attempts": {
+                                                "type": "integer"
+                                            },
+                                            "retry_seconds": {
+                                                "type": "integer"
+                                            },
+                                            "retry_max_seconds": {
+                                                "type": "integer"
+                                            }
+                                        },
+                                        "required": []
+                                    },
+                                    "gateway": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object",
+                                            "title": "GatewayRemote",
+                                            "additionalProperties": false,
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                },
+                                                "tenant": {
+                                                    "type": "string"
+                                                },
+                                                "identity": {
+                                                    "type": "string"
+                                                },
+                                                "url": {
+                                                    "type": "string"
+                                                },
+                                                "ref": {
+                                                    "type": "string"
+                                                },
+                                                "directory": {
+                                                    "type": "string"
+                                                },
+                                                "ssh_key": {
+                                                    "type": "string"
+                                                },
+                                                "known_hosts": {
+                                                    "type": "string"
+                                                },
+                                                "author": {
+                                                    "type": "string"
+                                                },
+                                                "email": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "tenant",
+                                                "identity",
+                                                "url",
+                                                "ref",
+                                                "directory",
+                                                "ssh_key",
+                                                "known_hosts"
+                                            ]
+                                        }
+                                    },
+                                    "envelope": {
+                                        "type": "object",
+                                        "title": "Limits",
+                                        "additionalProperties": false,
+                                        "properties": {
+                                            "bytes": {
+                                                "type": "integer"
+                                            },
+                                            "items": {
+                                                "type": "integer"
+                                            },
+                                            "depth": {
+                                                "type": "integer"
+                                            }
+                                        },
+                                        "required": []
+                                    },
+                                    "version": {
+                                        "enum": [
+                                            1
+                                        ],
+                                        "type": "integer"
+                                    }
+                                },
+                                "required": [
+                                    "backend",
+                                    "tls",
+                                    "broker",
+                                    "probe",
+                                    "protection"
+                                ]
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    ],
     "additionalProperties": false,
     "required": [
         "workers",
@@ -6111,6 +7908,7 @@
         "podSecurityContext",
         "containerSecurityContext",
         "cloudnative-pg",
-        "postgresql"
+        "postgresql",
+        "controller"
     ]
 }

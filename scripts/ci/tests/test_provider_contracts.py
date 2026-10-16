@@ -7,6 +7,7 @@ from __future__ import annotations
 import copy
 import hashlib
 import json
+from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from io import BytesIO
 from threading import Thread
@@ -15,81 +16,18 @@ from urllib.parse import parse_qs, unquote, urlsplit
 
 import pytest
 from github import Github
-from openapi_schema_validator import OAS30ReadValidator
 from provider_contracts.refresh import DATA, encoded, redact_examples, references, refresh, select
-from requests import Session
+from requests import Response, Session
 from witful.delivery.providers.base import object_value
 from witful.delivery.tests.test_providers import github_rows, gitlab_rows
+
+from tests.support.provider_contracts import resolved, response_body
 
 if TYPE_CHECKING:
     from pathlib import Path
 
     from pytest import MonkeyPatch
-    from requests import PreparedRequest, Response
-
-
-def resolved(document: dict[str, object], value: object) -> dict[str, object]:
-    """
-    Resolve a response or example reference within the pinned snapshot.
-
-    Args:
-        document (dict[str, object]): Complete snapshot reference root.
-        value (object): Inline mapping or local reference.
-
-    Returns:
-        dict[str, object]: Referenced mapping.
-    """
-    row = object_value(value)
-    if "$ref" in row:
-        target: object = document
-        for part in str(row["$ref"]).split("/")[1:]:
-            target = object_value(target)[part]
-        return object_value(target)
-    return row
-
-
-def overlay(example: object, fixture: object) -> object:
-    """
-    Supply required example fields while retaining deliberate synthetic scenario values.
-
-    Args:
-        example (object): Vendor example, used only as structural scaffolding.
-        fixture (object): Synthetic coherent project/PR fixture.
-
-    Returns:
-        object: New response value without changing either input.
-    """
-    if isinstance(example, dict) and isinstance(fixture, dict):
-        return {**copy.deepcopy(example), **{key: overlay(example.get(key), value) for key, value in fixture.items()}}
-    if isinstance(example, list) and isinstance(fixture, list) and example:
-        return [overlay(example[0], item) for item in fixture]
-    return copy.deepcopy(fixture)
-
-
-def response_body(provider: str, operation: str, fixture: object) -> object:
-    """
-    Validate every success payload before the mock server serves it to an SDK.
-
-    Args:
-        provider (str): Pinned vendor snapshot name.
-        operation (str): Reviewed operation selection.
-        fixture (object): Coherent synthetic response overrides.
-
-    Returns:
-        object: Response conforming to the selected vendor schema.
-    """
-    document = object_value(json.loads((DATA / f"{provider}.json").read_text()))
-    response = resolved(document, object_value(document["responses"])[operation])
-    media = object_value(object_value(response["content"])["application/json"])
-    examples = object_value(media.get("examples", {}))
-    example = resolved(document, next(iter(examples.values()))).get("value") if examples else None
-    value = overlay(example, fixture)
-    # OpenAPI 3.0 nullable/readOnly semantics require its response validator, not plain JSON Schema.
-    schema = {**object_value(media["schema"]), "components": document["components"]}
-    OAS30ReadValidator.check_schema(schema)
-    errors = list(OAS30ReadValidator(schema).iter_errors(value))
-    assert not errors, [(list(error.path), error.message) for error in errors]
-    return value
+    from requests import PreparedRequest
 
 
 @pytest.mark.parametrize("provider", ["github", "gitlab"])
@@ -364,3 +302,106 @@ def test_latest_lookup_failure_cannot_reuse_old_snapshots(tmp_path: Path, monkey
         main()
     assert (tmp_path / "manifest.json").read_bytes() == original
     assert list(tmp_path.iterdir()) == [tmp_path / "manifest.json"]
+
+
+@pytest.mark.parametrize("stale", [False, True])
+def test_latest_check_requires_reviewed_committed_inputs(tmp_path: Path, monkeypatch: MonkeyPatch, stale: bool) -> None:
+    """
+    Reject a changed current specification without writing the reviewed baseline or refreshing away the failure.
+
+    Args:
+        tmp_path (Path): Disposable reviewed inputs and separate observation output.
+        monkeypatch (MonkeyPatch): Replace only the explicit upstream-resolution/download boundary.
+        stale (bool): Whether the immutable current specification differs from the committed pin.
+
+    Returns:
+        None: Current inputs pass unchanged; stale inputs fail with bounded independently retained evidence.
+    """
+    from provider_contracts.refresh import main
+
+    baseline = {"github": {"revision": "a" * 40, "latest_observed_at": "reviewed-time"}}
+    (tmp_path / "manifest.json").write_bytes(encoded(baseline))
+    (tmp_path / "github.json").write_bytes(b"snapshot\n")
+    original = (tmp_path / "manifest.json").read_bytes()
+    current = "b" * 40 if stale else "a" * 40
+
+    def fetch(manifest: dict[str, object], overrides: dict[str, str]) -> tuple[dict[str, object], dict[str, bytes]]:
+        """
+        Return exactly the resolved immutable current contract without changing the caller's inputs.
+
+        Args:
+            manifest (dict[str, object]): Reviewed source retained on disk.
+            overrides (dict[str, str]): Exactly one current resolution.
+
+        Returns:
+            tuple[dict[str, object], dict[str, bytes]]: Current contract and deterministic synthetic bytes.
+        """
+        assert overrides == {"github": current}
+        return {"github": {**object_value(manifest["github"]), "revision": current}}, {"github": b"snapshot\n"}
+
+    monkeypatch.setattr("provider_contracts.refresh.DATA", tmp_path)
+    monkeypatch.setattr("provider_contracts.refresh.latest_revisions", lambda: {"github": current})
+    monkeypatch.setattr("provider_contracts.refresh.refresh", fetch)
+    observation = tmp_path / "evidence/latest.json"
+    monkeypatch.setattr("sys.argv", ["refresh.py", "--check", "--latest", "--observation", str(observation)])
+    assert main() == int(stale)
+    assert (tmp_path / "manifest.json").read_bytes() == original
+    assert (tmp_path / "github.json").read_bytes() == b"snapshot\n"
+    assert json.loads(observation.read_text())["current"] is not stale
+
+
+def test_latest_resolution_uses_sdk_query_namespace(monkeypatch: MonkeyPatch) -> None:
+    """
+    Exercise the locked SDK URL construction so a vendor filter cannot replace its resource endpoint.
+
+    Args:
+        monkeypatch (MonkeyPatch): Intercept only HTTP transport; both real SDK managers construct requests.
+
+    Returns:
+        None: GitLab file filtering stays in the query string and both current immutable revisions are returned.
+    """
+    from provider_contracts.refresh import latest_revisions
+
+    seen: list[str] = []
+
+    def send(self: Session, request: PreparedRequest, **kwargs: object) -> Response:
+        """
+        Return minimal metadata only for the expected SDK requests, refusing every other network destination.
+
+        Args:
+            self (Session): SDK-owned request session.
+            request (PreparedRequest): Fully constructed SDK request.
+            **kwargs (object): Requests transport options, unused by this deterministic boundary.
+
+        Returns:
+            Response: Synthetic public metadata for the exact expected path and file filter.
+        """
+        assert request.url is not None
+        url = urlsplit(request.url)
+        query = parse_qs(url.query)
+        data: object
+        if url.hostname == "api.github.com" and url.path == "/repos/github/rest-api-description":
+            data = {"id": 1, "full_name": "github/rest-api-description"}
+        elif url.hostname == "api.github.com" and url.path == "/repos/github/rest-api-description/commits":
+            assert query["path"] == ["descriptions/api.github.com/api.github.com.json"]
+            assert query["sha"] == ["main"]
+            data = [{"sha": "a" * 40}]
+        else:
+            assert url.hostname == "gitlab.com"
+            assert unquote(url.path) == "/api/v4/projects/gitlab-org/gitlab/repository/commits"
+            assert query["path"] == ["doc/api/openapi/openapi_v3.yaml"]
+            assert query["ref_name"] == ["master"]
+            assert query["per_page"] == ["1"]
+            data = [{"id": "b" * 40}]
+        seen.append(url.path)
+        response = Response()
+        response.status_code = HTTPStatus.OK
+        response.headers["Content-Type"] = "application/json"
+        response._content = encoded(data)
+        response.request = request
+        response.url = request.url
+        return response
+
+    monkeypatch.setattr(Session, "send", send)
+    assert latest_revisions() == {"github": "a" * 40, "gitlab": "b" * 40}
+    assert len(seen) == 3

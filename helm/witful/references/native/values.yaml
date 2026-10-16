@@ -1,0 +1,171 @@
+## @section Native PostgreSQL reference
+## @param controller.enabled Select the opt-in native controller profile
+## @param controller.replicas Stateless controller replicas
+## @param controller.configuration.backend.id Reviewed reference input; replace placeholders to match the independently signed deployment configuration
+## @param controller.configuration.backend.kind Reviewed reference input; replace placeholders to match the independently signed deployment configuration
+## @param controller.configuration.backend.synchronous Reviewed reference input; replace placeholders to match the independently signed deployment configuration
+## @param controller.configuration.broker.url Reviewed reference input; replace placeholders to match the independently signed deployment configuration
+## @param controller.configuration.broker.ca Reviewed reference input; replace placeholders to match the independently signed deployment configuration
+## @param controller.configuration.broker.certificate Reviewed reference input; replace placeholders to match the independently signed deployment configuration
+## @param controller.configuration.broker.key Reviewed reference input; replace placeholders to match the independently signed deployment configuration
+## @param controller.configuration.broker.wrapping Reviewed reference input; replace placeholders to match the independently signed deployment configuration
+## @param controller.configuration.broker.signing Reviewed reference input; replace placeholders to match the independently signed deployment configuration
+## @param controller.configuration.broker.authority Reviewed reference input; replace placeholders to match the independently signed deployment configuration
+## @param controller.configuration.broker.policy Reviewed reference input; replace placeholders to match the independently signed deployment configuration
+## @param controller.configuration.broker.signers [array] Reviewed reference input; replace placeholders to match the independently signed deployment configuration
+## @param controller.configuration.probe.tenant Reviewed reference input; replace placeholders to match the independently signed deployment configuration
+## @param controller.configuration.probe.identity Reviewed reference input; replace placeholders to match the independently signed deployment configuration
+## @param controller.configuration.probe.grant Reviewed reference input; replace placeholders to match the independently signed deployment configuration
+## @param controller.configuration.probe.task Reviewed reference input; replace placeholders to match the independently signed deployment configuration
+## @param controller.configuration.probe.epoch Reviewed reference input; replace placeholders to match the independently signed deployment configuration
+## @param controller.configuration.probe.policy Reviewed reference input; replace placeholders to match the independently signed deployment configuration
+## @param controller.configuration.protection.path Reviewed reference input; replace placeholders to match the independently signed deployment configuration
+## @param controller.configuration.protection.public Reviewed reference input; replace placeholders to match the independently signed deployment configuration
+## @param controller.configuration.protection.fingerprint Reviewed reference input; replace placeholders to match the independently signed deployment configuration
+## @param controller.configuration.tls.certificate Reviewed reference input; replace placeholders to match the independently signed deployment configuration
+## @param controller.configuration.tls.key Reviewed reference input; replace placeholders to match the independently signed deployment configuration
+## @param controller.configuration.tls.ca Reviewed reference input; replace placeholders to match the independently signed deployment configuration
+## @param controller.configuration.tls.server_name Reviewed reference input; replace placeholders to match the independently signed deployment configuration
+## @param controller.configuration.tls.client_certificate Reviewed reference input; replace placeholders to match the independently signed deployment configuration
+## @param controller.configuration.tls.client_key Reviewed reference input; replace placeholders to match the independently signed deployment configuration
+## @param controller.configuration.runtime.workers Reviewed reference input; replace placeholders to match the independently signed deployment configuration
+## @param controller.configuration.runtime.threads Reviewed reference input; replace placeholders to match the independently signed deployment configuration
+## @param controller.configuration.runtime.admission Reviewed reference input; replace placeholders to match the independently signed deployment configuration
+## @param controller.configuration.runtime.recovery_admission Reserved recovery/cancellation slots per worker; one additional operational thread is also reserved
+## @param controller.configuration.runtime.working_directory Reviewed reference input; replace placeholders to match the independently signed deployment configuration
+## @param controller.configuration.runtime.graceful_timeout Reviewed reference input; replace placeholders to match the independently signed deployment configuration
+## @param controller.configuration.derivations [array] Explicit independently provisioned fork/split target scopes and grant bindings
+## @param controller.configuration.recipients [array] Reviewed identity-bound public export recipients; private recipient keys never enter this chart
+## @param controller.configuration.budget.revisions Reviewed reference input; replace placeholders to match the independently signed deployment configuration
+## @param controller.configuration.budget.refs Reviewed reference input; replace placeholders to match the independently signed deployment configuration
+## @param controller.configuration.budget.seconds Reviewed reference input; replace placeholders to match the independently signed deployment configuration
+## @param controller.configuration.budget.bytes Reviewed reference input; replace placeholders to match the independently signed deployment configuration
+## @param controller.secretEnvironment.WITFUL_DATABASE_URL.name Reviewed reference input; replace placeholders to match the independently signed deployment configuration
+## @param controller.secretEnvironment.WITFUL_DATABASE_URL.key Reviewed reference input; replace placeholders to match the independently signed deployment configuration
+## @param controller.secretEnvironment.WITFUL_AUTHORITY_DATABASE_URL.name Reviewed reference input; replace placeholders to match the independently signed deployment configuration
+## @param controller.secretEnvironment.WITFUL_AUTHORITY_DATABASE_URL.key Reviewed reference input; replace placeholders to match the independently signed deployment configuration
+## @param controller.secretMounts [array] Reviewed reference input; replace placeholders to match the independently signed deployment configuration
+## @param controller.networkPolicy.ingress [array] Reviewed reference input; replace placeholders to match the independently signed deployment configuration
+## @param controller.networkPolicy.egress [array] Reviewed reference input; replace placeholders to match the independently signed deployment configuration
+## @param scheduling.podAntiAffinityPreset Place controllers on separate nodes
+controller:
+  enabled: true
+  replicas: 2
+  configuration:
+    backend:
+      id: 00000000-0000-4000-8000-000000000001
+      kind: postgres
+      synchronous: true
+    broker:
+      url: https://broker.keys.svc:8443
+      ca: /etc/broker-tls/ca.pem
+      certificate: /etc/broker-tls/client.pem
+      key: /etc/broker-tls/client.key
+      wrapping: 00000000-0000-4000-8000-000000000002
+      signing: 00000000-0000-4000-8000-000000000003
+      authority: 00000000-0000-4000-8000-000000000004
+      policy: 00000000-0000-4000-8000-000000000005
+      signers:
+      - generation: 00000000-0000-4000-8000-000000000003
+        public: REPLACE_WITH_TRUSTED_BASE64_DER_PUBLIC_KEY
+        fingerprint: REPLACE_WITH_INDEPENDENT_SHA256_PIN
+    probe:
+      tenant: 00000000-0000-4000-8000-000000000006
+      identity: 00000000-0000-4000-8000-000000000007
+      grant: 00000000-0000-4000-8000-000000000008
+      task: 00000000-0000-4000-8000-000000000009
+      epoch: 1
+      policy: 00000000-0000-4000-8000-000000000010
+    protection:
+      path: /etc/protection/evidence.cbor
+      public: REPLACE_WITH_TRUSTED_BASE64_RAW_PUBLIC_KEY
+      fingerprint: REPLACE_WITH_INDEPENDENT_SHA256_PIN
+    tls:
+      certificate: /etc/native-tls/server.pem
+      key: /etc/native-tls/server.key
+      ca: /etc/native-tls/ca.pem
+      server_name: witful-native
+      client_certificate: /etc/native-tls/probe.pem
+      client_key: /etc/native-tls/probe.key
+    runtime:
+      workers: 2
+      threads: 4
+      admission: 4
+      recovery_admission: 1
+      working_directory: /run/witful
+      graceful_timeout: 30
+    derivations: []
+    recipients: []
+    budget:
+      revisions: 4096
+      refs: 256
+      seconds: 30.0
+      bytes: 67108864
+  secretEnvironment:
+    WITFUL_DATABASE_URL:
+      name: native-data-connection
+      key: url
+    WITFUL_AUTHORITY_DATABASE_URL:
+      name: native-authority-connection
+      key: url
+  secretMounts:
+  - name: native-tls
+    secretName: native-tls
+    mountPath: /etc/native-tls
+    items:
+    - key: server.pem
+      path: server.pem
+    - key: server.key
+      path: server.key
+    - key: ca.pem
+      path: ca.pem
+    - key: probe.pem
+      path: probe.pem
+    - key: probe.key
+      path: probe.key
+  - name: broker-tls
+    secretName: broker-tls
+    mountPath: /etc/broker-tls
+    items:
+    - key: client.pem
+      path: client.pem
+    - key: client.key
+      path: client.key
+    - key: ca.pem
+      path: ca.pem
+  - name: protection
+    secretName: protection
+    mountPath: /etc/protection
+    items:
+    - key: evidence.cbor
+      path: evidence.cbor
+  networkPolicy:
+    ingress:
+    - from:
+      - namespaceSelector:
+          matchLabels:
+            witful-client: approved
+      ports:
+      - protocol: TCP
+        port: 8443
+    egress:
+    - to:
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: kube-system
+      ports:
+      - protocol: UDP
+        port: 53
+      - protocol: TCP
+        port: 53
+    - to:
+      - namespaceSelector:
+          matchLabels:
+            witful-dependency: approved
+      ports:
+      - protocol: TCP
+        port: 5432
+      - protocol: TCP
+        port: 8443
+scheduling:
+  podAntiAffinityPreset: hard

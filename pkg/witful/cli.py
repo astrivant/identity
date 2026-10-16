@@ -17,6 +17,7 @@ from witful.commands import (
     instances,
     knowledge,
     life,
+    native,
     privacy,
     reflection,
     registry,
@@ -61,6 +62,7 @@ def build_parser() -> argparse.ArgumentParser:
         Command("completion", "Review completion coverage", completion.configure, "witful.completion.cli"),
         Command("context", "Resolve advisory working context", context.configure, "witful.context.cli"),
         delivery.command(),
+        native.command(),
     ):
         command.register(commands)
     return parser
