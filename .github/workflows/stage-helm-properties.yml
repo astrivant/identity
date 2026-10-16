@@ -1,0 +1,46 @@
+name: Helm properties
+on:
+  workflow_call:
+    inputs:
+      source:
+        description: Immutable source revision to validate
+        required: true
+        type: string
+permissions:
+  contents: read
+jobs:
+  properties:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.source }}
+          persist-credentials: false
+      - uses: azure/setup-helm@9bc31f4ebc9c6b171d7bfbaa5d006ae7abdb4310 # v5.0.1
+        with:
+          version: v4.3.0
+      - name: Restore reviewed chart dependencies
+        run: bash scripts/chart/dependencies.sh
+      # Keep the test tool outside Witful's runtime and preserve failure evidence.
+      - uses: astrivant/hypothesis-helm@7ad5b937dd554a82889fe06665feaf4bf76691cc # v1.3.11
+        with:
+          chart: helm/witful
+          python-version: '3.13'
+          helm-version: v4.3.0
+          config: scripts/chart/hypothesis.yaml
+          paths: 'true'
+          max-depth: '0'
+          match: test_workers_ or test_job_ or test_scheduling_podAntiAffinityPreset_ or test_scheduling_topologyKey_
+          seed: '20261015'
+          timeout: '15'
+          jobs: '2'
+          shard: none
+          cache: 'false'
+          schema-validation: 'true'
+          strict: 'true'
+          artifact-name: helm-properties
+          artifact-retention-days: '14'

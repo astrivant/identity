@@ -33,6 +33,12 @@ jobs:
     with:
       source: ${{ github.sha }}
 
+  helm-properties:
+    name: Helm properties
+    uses: ./.github/workflows/stage-helm-properties.yml
+    with:
+      source: ${{ github.sha }}
+
   tests:
     name: Python tests
     runs-on: ubuntu-24.04
@@ -291,7 +297,7 @@ jobs:
     name: Required CI
     # Always evaluate the complete producer set, including skipped and cancelled jobs.
     if: always()
-    needs: [tests, lint, privacy, security, distributions, orchestration, views, learning, provider-contracts, native-physical, codegraph]
+    needs: [tests, lint, privacy, security, distributions, orchestration, views, learning, provider-contracts, native-physical, codegraph, helm-properties]
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
@@ -458,7 +464,7 @@ jobs:
 
   publish:
     name: Publish signed release
-    needs: [tests, lint, privacy, security, distributions, orchestration, views, learning, provider-contracts, native-physical, codegraph]
+    needs: [tests, lint, privacy, security, distributions, orchestration, views, learning, provider-contracts, native-physical, codegraph, helm-properties]
     if: >-
       github.repository == 'astrivant/identity'
       && github.event_name == 'push'
