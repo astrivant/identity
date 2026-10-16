@@ -150,6 +150,19 @@ def capture(enrollment: Enrollment, revision: str) -> Snapshot:
                 raise NativeError("conflict")
             if any(fnmatch.fnmatchcase(path, pattern) for pattern in enrollment.excluded):
                 files.append(File(path, blob, "excluded"))
+            elif enrollment.profile == "sdk":
+                # Detection belongs to the locked upstream SDK. Pass UTF-8 text without guessing languages from extensions.
+                try:
+                    text = raw.decode("utf-8")
+                except UnicodeDecodeError:
+                    files.append(File(path, blob, "non-text"))
+                    continue
+                if "\0" in text:
+                    files.append(File(path, blob, "non-text"))
+                    continue
+                hashed = hashlib.sha256(raw).hexdigest()
+                sources.append(Source(path, text, hashed))
+                files.append(File(path, hashed, "pending"))
             elif not path.endswith(".py"):
                 files.append(File(path, blob, "unsupported"))
             else:

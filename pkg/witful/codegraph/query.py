@@ -5,6 +5,7 @@ Select bounded attributed graph evidence without injecting an entire graph or ad
 from __future__ import annotations
 
 import json
+from collections import Counter
 from typing import TYPE_CHECKING, Literal
 
 import networkx as nx
@@ -16,6 +17,20 @@ from witful.knowledge.contracts import as_data
 
 if TYPE_CHECKING:
     from witful.context.models import Limits
+
+
+@frozen
+class CoverageCount:
+    """
+    Summarize authenticated file dispositions without emitting their source paths.
+
+    Attributes:
+        status (str): Explicit extraction or omission category.
+        files (int): Number of files with this disposition.
+    """
+
+    status: str
+    files: int
 
 
 @frozen
@@ -32,6 +47,8 @@ class Result:
         limitations (tuple[str, ...]): Explicit static-analysis and query coverage boundaries.
         truncated (bool): Whether traversal exceeds the configured graph budget.
         freshness (Literal["current"]): Revalidated source state; stale views are not silently served.
+        languages (tuple[str, ...]): Actual SDK-detected language identifiers.
+        coverage (tuple[CoverageCount, ...]): Complete file counts by extraction or omission category.
     """
 
     extension: str
@@ -42,6 +59,8 @@ class Result:
     limitations: tuple[str, ...]
     truncated: bool
     freshness: Literal["current"] = "current"
+    languages: tuple[str, ...] = ()
+    coverage: tuple[CoverageCount, ...] = ()
 
 
 def select(graph: Graph, symbol: str, direction: Literal["symbol", "callers", "impact"], limits: Limits, depth: int) -> Result:
@@ -99,7 +118,9 @@ def select(graph: Graph, symbol: str, direction: Literal["symbol", "callers", "i
         tuple(nodes[key] for key in sorted(selected)),
         view[: limits.edges],
         (
-            "static-python-only",
+            "static-python-only" if graph.language == "python" else "static-upstream-sdk-languages",
+            "sdk-omitted-files" if any(item.coverage == "sdk-omitted" for item in graph.files) else "no-sdk-omissions",
+            "file-level-tracking" if any(item.coverage == "file-only" for item in graph.files) else "symbol-extraction",
             "dynamic-calls-may-be-missing",
             "depth-bounded",
             "no-source-snippets",
@@ -108,6 +129,8 @@ def select(graph: Graph, symbol: str, direction: Literal["symbol", "callers", "i
             "excluded-or-unsupported-files" if any(item.coverage != "indexed" for item in graph.files) else "indexed-files-only",
         ),
         truncated,
+        languages=tuple(sorted({item.language for item in graph.files if item.language and item.language != "unknown"})),
+        coverage=tuple(CoverageCount(status, count) for status, count in sorted(Counter(item.coverage for item in graph.files).items())),
     )
     # Never return a JSON prefix or silently remove references merely to fit a prompt.
     if len(json.dumps(as_data(result), ensure_ascii=True, separators=(",", ":")).encode()) > min(limits.tokens, limits.text_bytes):

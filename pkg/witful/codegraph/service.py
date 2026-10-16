@@ -8,9 +8,9 @@ import hashlib
 from typing import TYPE_CHECKING, Literal
 from uuid import uuid4
 
-from attrs import frozen
+from attrs import evolve, frozen
 
-from witful.codegraph.models import Enrollment, Graph, validate
+from witful.codegraph.models import Enrollment, File, Graph, validate
 from witful.codegraph.query import Result, select
 from witful.codegraph.snapshot import Snapshot, capture
 from witful.codegraph.worker import Extraction, extract
@@ -153,17 +153,30 @@ class RepositoryGraph:
         if capture(self.enrollment, revision) != snapshot:
             raise NativeError("conflict")
         record = str(uuid4())
+        files = snapshot.files
+        if self.enrollment.profile == "sdk":
+            # Every selected input needs an authenticated, explicit disposition from the pinned detector.
+            expected_files = {item.path: item.digest for item in files if item.coverage == "pending"}
+            reports = {item.path: item for item in extraction.files}
+            if len(reports) != len(extraction.files) or {path: item.digest for path, item in reports.items()} != expected_files:
+                raise NativeError("incomplete")
+            if any(
+                item.coverage not in {"indexed", "file-only", "unsupported", "sdk-omitted", "worker-control"} for item in reports.values()
+            ):
+                raise NativeError("invalid")
+            files = tuple(reports.get(item.path, item) for item in files)
         graph = Graph(
             self.enrollment,
             record,
             revision,
             snapshot.tree,
-            snapshot.files,
+            files,
             extraction.nodes,
             extraction.edges,
             extraction.indexer,
             extraction.unresolved,
             snapshot.untracked,
+            language=self.enrollment.profile,
         )
         validate(graph)
         line_counts = {source.path: source.text.count("\n") + 1 for source in snapshot.sources}
@@ -234,7 +247,7 @@ class RepositoryGraph:
             graph.enrollment != self.enrollment
             or graph.revision != revision
             or graph.tree != snapshot.tree
-            or graph.files != snapshot.files
+            or graph.files != source_coverage(snapshot, graph.files)
             or graph.omitted_untracked != snapshot.untracked
         ):
             raise NativeError("conflict")
@@ -245,3 +258,23 @@ class RepositoryGraph:
             raise NativeError("incomplete")
         self.native.release(access, "codegraph-query", "*", registration, started)
         return result
+
+
+def source_coverage(snapshot: Snapshot, files: tuple[File, ...]) -> tuple[File, ...]:
+    """
+    Recheck exact bytes and selection while retaining the authenticated SDK classification.
+
+    Args:
+        snapshot (Snapshot): Newly captured current source.
+        files (tuple[File, ...]): Stored complete detector coverage.
+
+    Returns:
+        tuple[File, ...]: Current source bindings with previous SDK classifications only for unchanged candidates.
+    """
+    previous = {item.path: item for item in files}
+    return tuple(
+        evolve(item, coverage=previous[item.path].coverage, language=previous[item.path].language)
+        if item.coverage == "pending" and item.path in previous
+        else item
+        for item in snapshot.files
+    )
