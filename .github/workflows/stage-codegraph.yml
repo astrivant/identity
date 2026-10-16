@@ -1,0 +1,21 @@
+name: CodeGraph compatibility
+on:
+  workflow_call:
+permissions:
+  contents: read
+jobs:
+  sdk:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/python
+      - name: Build optional SDK from pinned source and upstream dependency lock
+        run: docker build --tag witful-codegraph:contract services/codegraph
+      - name: Exercise real SDK inside isolated memory-backed worker
+        run: |
+          WITFUL_CODEGRAPH_IMAGE="$(docker image inspect --format '{{.Id}}' witful-codegraph:contract)"
+          export WITFUL_CODEGRAPH_IMAGE
+          pytest -n 0 tests/codegraph/test_worker.py

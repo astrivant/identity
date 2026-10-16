@@ -108,6 +108,15 @@ hooks. The pinned CODEOWNERS hook bootstraps its own Go environment on first use
 Run `npm --prefix scripts/documentation test` for the syntax checker regressions
 and `pytest scripts/ci/tests` for missing, skipped, failed, and cancelled CI results.
 
+Run `npm --prefix scripts/documentation run format` after editing the root README.
+Pre-commit and CI require that pinned Prettier output and run the same
+`npm --prefix scripts/documentation run markdown:lint` structural checks over all
+Git-owned Markdown, including nested READMEs. Generated documentation retains its
+generator's formatting. The GFM regression check rejects table rows separated from
+their header by a blank line; preview changed tables on GitHub as well as linting.
+The [markdownlint rules](https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md)
+and [Prettier options](https://prettier.io/docs/options) describe the maintained tools.
+
 The math check accepts a strict KaTeX subset, hosted Markdown dollar delimiters,
 and fenced Mermaid diagrams. It checks syntax, so preview changed diagrams and
 equations in their intended renderer as well. Escape literal dollars in prose.

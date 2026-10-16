@@ -10,6 +10,7 @@ from typing import TYPE_CHECKING
 from witful.commands import (
     awareness,
     checkpoints,
+    codegraph,
     collection,
     completion,
     context,
@@ -61,6 +62,7 @@ def build_parser() -> argparse.ArgumentParser:
         Command("sleeve", "Isolate concurrent work", sleeves.configure, "witful.sleeves.cli"),
         Command("completion", "Review completion coverage", completion.configure, "witful.completion.cli"),
         Command("context", "Resolve advisory working context", context.configure, "witful.context.cli"),
+        codegraph.command(),
         delivery.command(),
         native.command(),
     ):

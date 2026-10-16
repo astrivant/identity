@@ -6,6 +6,52 @@ requires explicit applicability decisions, and rejects missing or stale coverage
 The implementation uses the existing compiler and generated JSON Schema; it does
 not introduce a second knowledge model or infer completion from usage counts.
 
+## Review lifecycle
+
+What does a successful completion check establish, and when is a review stale?
+
+```mermaid
+---
+config:
+  theme: base
+  look: classic
+  themeVariables:
+    background: '#fffdf8'
+    primaryColor: '#d6e0e9'
+    primaryTextColor: '#263642'
+    primaryBorderColor: '#65737b'
+    secondaryColor: '#efd6c5'
+    tertiaryColor: '#f5f1e7'
+    tertiaryTextColor: '#263642'
+    tertiaryBorderColor: '#8b846d'
+    lineColor: '#65737b'
+    textColor: '#263642'
+    clusterBkg: '#f5f1e7'
+    clusterBorder: '#8b846d'
+    edgeLabelBackground: '#fffdf8'
+---
+flowchart TB
+    inputs["Hierarchy, task<br/>and Git workspaces"] --> plan["plan<br/>Snapshot full review scope"]
+    plan --> review["Individual review<br/>Evidence or applicability"]
+    review --> check["check<br/>Coverage and freshness"]
+    check -->|review gaps| review
+    check -->|changed inputs| plan
+    check -->|coverage passes| outcome{"Declared outcome"}
+    outcome -->|complete| complete["Task declared complete"]
+    outcome -->|handoff| handoff["Incomplete handoff<br/>Next actions retained"]
+    classDef olive fill:#e2ddba,stroke:#65737b,color:#263642
+    class inputs,complete olive
+    classDef copper fill:#efd6c5,stroke:#65737b,color:#263642
+    class plan,review,check,outcome,handoff copper
+```
+
+The [completion implementation](../pkg/witful/completion/) verifies the recorded
+review, not the truth of its evidence or the quality of the implementation. Every
+active child needs its own disposition. An incomplete handoff may pass coverage
+while reporting `complete: false`; it must not be presented as finished work.
+This final full-tree review complements the
+[working-context review](context.md#review-flow) performed for individual steps.
+
 ## Review a task
 
 Use a collection containing `lessons.jsonl` and `knowledge/catalog.json`. Keep

@@ -87,12 +87,24 @@ repos:
         language: system
         pass_filenames: false
         always_run: true
+      - id: markdown-lint
+        name: Markdown rendering structure
+        entry: npm --prefix scripts/documentation run markdown:lint
+        language: system
+        pass_filenames: false
+        always_run: true
+      - id: readme-format
+        name: README Markdown formatting
+        entry: npm --prefix scripts/documentation run format:check
+        language: system
+        pass_filenames: false
+        files: '^(README\.md|scripts/documentation/)'
       - id: documentation-javascript
         name: Documentation tooling JavaScript
         entry: npm --prefix scripts/documentation run lint
         language: system
         pass_filenames: false
-        files: '^scripts/(documentation|ci)/.*\.(mjs|json)$'
+        files: '^(scripts/(documentation|ci)|services/codegraph)/.*\.(mjs|json)$'
   - repo: https://github.com/astrivant/composer
     rev: 4ee8ce8507e10b6cbbac607d7bda01e22740cd37
     hooks:

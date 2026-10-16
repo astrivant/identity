@@ -16,6 +16,7 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[3]
 REQUIRED = (
+    "codegraph",
     "distributions",
     "helm-properties",
     "learning",

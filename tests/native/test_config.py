@@ -99,6 +99,39 @@ def test_protection_evidence_requires_current_exact_configuration(settings: Sett
         require_profile(changed, 150)
 
 
+def test_legacy_evidence_never_admits_codegraphs(settings: Settings, tmp_path: Path) -> None:
+    """
+    Preserve empty-extension compatibility while requiring new custody controls for actual enrollment.
+
+    Args:
+        settings (Settings): Valid synthetic native settings.
+        tmp_path (Path): Disposable evidence destination.
+
+    Returns:
+        None: An old exact configuration is accepted only with extensions disabled.
+    """
+    from witful.codegraph.models import Enrollment
+
+    private = Ed25519PrivateKey.generate()
+    public = private.public_key().public_bytes(serialization.Encoding.Raw, serialization.PublicFormat.Raw)
+    protected = evolve(
+        settings,
+        protection=Protection(str(tmp_path / "legacy.cbor"), base64.b64encode(public).decode(), hashlib.sha256(public).hexdigest()),
+    )
+    original = require_profile(settings, 150)
+    data = as_data(protected)
+    del data["codegraphs"]
+    evidence = evolve(original, configuration=hashlib.sha256(codec.encode(pack(data))).hexdigest())
+    payload = codec.encode(as_data(evidence))
+    (tmp_path / "legacy.cbor").write_bytes(
+        codec.encode({"payload": payload, "signature": private.sign(b"witful-storage-evidence-v1\0" + payload)})
+    )
+    assert require_profile(protected, 150) == evidence
+    enrollment = Enrollment(str(uuid4()), str(uuid4()), str(uuid4()), "a" * 64, "/approved/source", "sha256:" + "b" * 64)
+    with pytest.raises(NativeError):
+        require_profile(evolve(protected, codegraphs=(enrollment,)), 150)
+
+
 def test_configuration_errors_do_not_disclose_values(settings: Settings, tmp_path: Path) -> None:
     """
     Keep malformed user configuration out of diagnostics and reject unsupported fields.
@@ -320,3 +353,97 @@ def test_runtime_reserves_recovery_and_operational_capacity(settings: Settings, 
     large = evolve(runtime, threads=100, admission=100, recovery_admission=20, worker_connections=121)
     path.write_text(json.dumps(as_data(evolve(settings, runtime=large))))
     assert load(path).runtime == large
+
+
+def test_memory_choice_is_signed_and_does_not_waive_other_controls(
+    settings: Settings, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """
+    Require an explicit signed control substitution while preserving every other admission obligation.
+
+    Args:
+        settings (Settings): Existing signed no-swap synthetic profile.
+        tmp_path (Path): Disposable evidence output.
+        monkeypatch (pytest.MonkeyPatch): Count actual selected-profile verification calls.
+
+    Returns:
+        None: Default profiles do not select the exception; incomplete or mixed controls are denied.
+    """
+    from witful.native import memory
+
+    observed: list[str] = []
+    monkeypatch.setattr(memory, "require_macos_encrypted_swap", observed.append)
+    original = require_profile(settings, 150)
+    assert not observed
+    private = Ed25519PrivateKey.generate()
+    public = private.public_key().public_bytes(serialization.Encoding.Raw, serialization.PublicFormat.Raw)
+    path = tmp_path / "mac-profile.cbor"
+    selected = evolve(settings, protection=Protection(str(path), base64.b64encode(public).decode(), hashlib.sha256(public).hexdigest()))
+    controls = tuple("macos-encrypted-swap" if value == "temp-memory-noswap" else value for value in original.controls)
+    evidence = Evidence(
+        hashlib.sha256(codec.encode(pack(as_data(selected)))).hexdigest(), 100, 200, controls, ("Synthetic explicit Mac choice",)
+    )
+    for choice, accepted in ((controls, True), (controls + ("temp-memory-noswap",), False), (controls[:-1], False)):
+        payload = codec.encode(as_data(evolve(evidence, controls=choice)))
+        path.write_bytes(codec.encode({"payload": payload, "signature": private.sign(b"witful-storage-evidence-v1\0" + payload)}))
+        if accepted:
+            assert require_profile(selected, 150).controls == controls
+        else:
+            with pytest.raises(NativeError):
+                require_profile(selected, 150)
+    assert observed == [selected.runtime.working_directory]
+
+
+def test_local_administration_requires_signed_loopback_graph_profile(settings: Settings, tmp_path: Path) -> None:
+    """
+    Admit an explicit local demo without asserting independent administration or broadening its deployment scope.
+
+    Args:
+        settings (Settings): Existing signed production-shaped fixture.
+        tmp_path (Path): Disposable signed evidence destination.
+
+    Returns:
+        None: Remote listeners, remote brokers, shared controls and omitted protections remain denied.
+    """
+    from witful.codegraph.models import Enrollment
+
+    original = require_profile(settings, 150)
+    private = Ed25519PrivateKey.generate()
+    public = private.public_key().public_bytes(serialization.Encoding.Raw, serialization.PublicFormat.Raw)
+    path = tmp_path / "local-profile.cbor"
+    graph = Enrollment(str(uuid4()), str(uuid4()), str(uuid4()), "a" * 64, "/approved/source", "sha256:" + "b" * 64)
+    selected = evolve(
+        settings,
+        backend=evolve(settings.backend, kind="git", path="/approved/ciphertext.git"),
+        runtime=evolve(settings.runtime, host="127.0.0.1"),
+        broker=evolve(settings.broker, url="https://localhost:8443"),
+        protection=Protection(str(path), base64.b64encode(public).decode(), hashlib.sha256(public).hexdigest()),
+        codegraphs=(graph,),
+    )
+    controls = tuple("local-development-administration" if value == "role-separation" else value for value in original.controls) + (
+        "graph-engineer-only-custody",
+        "graph-runtime-egress-isolation",
+        "graph-source-rights",
+        "graph-output-sink",
+    )
+    candidates = (
+        (selected, controls, True),
+        (selected, controls + ("role-separation",), False),
+        (selected, controls[:-1], False),
+        (evolve(selected, runtime=evolve(selected.runtime, host="0.0.0.0")), controls, False),
+        (evolve(selected, broker=evolve(selected.broker, url="https://broker.example.invalid")), controls, False),
+        (evolve(selected, backend=evolve(selected.backend, kind="postgres")), controls, False),
+        (evolve(selected, codegraphs=()), controls, False),
+        (evolve(selected, destinations=(settings.backend,)), controls, False),
+    )
+    for candidate, choice, accepted in candidates:
+        evidence = Evidence(
+            hashlib.sha256(codec.encode(pack(as_data(candidate)))).hexdigest(), 100, 200, choice, ("Synthetic local demo acceptance",)
+        )
+        payload = codec.encode(as_data(evidence))
+        path.write_bytes(codec.encode({"payload": payload, "signature": private.sign(b"witful-storage-evidence-v1\0" + payload)}))
+        if accepted:
+            assert require_profile(candidate, 150) == evidence
+        else:
+            with pytest.raises(NativeError):
+                require_profile(candidate, 150)

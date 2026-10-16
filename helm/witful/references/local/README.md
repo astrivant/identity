@@ -19,10 +19,12 @@ For Kubernetes, an installed CloudNativePG operator must already be ready; follo
 its three-instance reference. The default reference does not install a second operator.
 
 <!-- toc:start -->
+
 **Table of contents**
 
 - [Parameters](#parameters)
   - [Local development database](#local-development-database)
+
 <!-- toc:end -->
 
 ## Parameters

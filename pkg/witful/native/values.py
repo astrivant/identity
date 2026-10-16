@@ -7,7 +7,6 @@ from __future__ import annotations
 import math
 
 from witful.exceptions import NativeError
-from witful.native import codec
 
 __all__ = ["pack", "unpack"]
 
@@ -54,7 +53,25 @@ def unpack(value: object) -> object:
     Returns:
         object: Original finite JSON-compatible domain value.
     """
-    if not isinstance(value, list) or not value or type(value[0]) is not int:
+    result = _unpack(value, 0)
+    # The envelope decoder already enforced the operator's byte/item budget. Do not reapply codec defaults here.
+    if pack(result) != value:
+        raise NativeError("invalid")
+    return result
+
+
+def _unpack(value: object, depth: int) -> object:
+    """
+    Decode tagged scalars with explicit depth and type checks, independently of envelope size budgets.
+
+    Args:
+        value (object): One already decoded tagged value.
+        depth (int): Current domain nesting, bounded consistently with pack.
+
+    Returns:
+        object: Exact domain value; the caller verifies canonical tags once for the complete result.
+    """
+    if depth > 24 or type(value) is not list or not value or type(value[0]) is not int:
         raise NativeError("invalid")
     tag = value[0]
     if value == [0]:
@@ -65,7 +82,7 @@ def unpack(value: object) -> object:
     result: object
     if tag == 1 and type(payload) is bool:
         result = payload
-    elif tag == 2 and type(payload) is int:
+    elif tag == 2 and type(payload) is int and -(2**63) <= payload < 2**63:
         result = payload
     elif tag == 3 and type(payload) is str:
         try:
@@ -74,12 +91,10 @@ def unpack(value: object) -> object:
             raise NativeError("invalid") from None
     elif tag == 4 and type(payload) is str:
         result = payload
-    elif tag == 5 and isinstance(payload, list):
-        result = [unpack(item) for item in payload]
-    elif tag == 6 and isinstance(payload, dict):
-        result = {key: unpack(item) for key, item in payload.items()}
+    elif tag == 5 and type(payload) is list:
+        result = [_unpack(item, depth + 1) for item in payload]
+    elif tag == 6 and type(payload) is dict and all(type(key) is str for key in payload):
+        result = {key: _unpack(item, depth + 1) for key, item in payload.items()}
     else:
-        raise NativeError("invalid")
-    if codec.encode(pack(result)) != codec.encode(value):
         raise NativeError("invalid")
     return result

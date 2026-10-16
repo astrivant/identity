@@ -8,6 +8,59 @@ The public library ships no personal collection, and its collection job stays di
 
 For replacement keys, follow [current-file rotation and retained-history recovery](key-rotation.md).
 
+## Publication boundaries
+
+Where are records readable, and what crosses into Git or the artifact store?
+
+```mermaid
+---
+config:
+  theme: base
+  look: classic
+  themeVariables:
+    background: '#fffdf8'
+    primaryColor: '#d6e0e9'
+    primaryTextColor: '#263642'
+    primaryBorderColor: '#65737b'
+    secondaryColor: '#efd6c5'
+    tertiaryColor: '#f5f1e7'
+    tertiaryTextColor: '#263642'
+    tertiaryBorderColor: '#8b846d'
+    lineColor: '#65737b'
+    textColor: '#263642'
+    clusterBkg: '#f5f1e7'
+    clusterBorder: '#8b846d'
+    edgeLabelBackground: '#fffdf8'
+---
+flowchart TB
+    subgraph local["Protected local storage"]
+        records["Readable source records"] --> seal["Validate, encrypt and sign"]
+    end
+    seal --> bundle["Ciphertext and<br/>verification material"]
+    bundle --> git["Private Git repository"]
+    git --> verify["Trusted main CI<br/>Verify signer pin"]
+    subgraph temporary["CI temporary memory: swap disabled"]
+        verify -->|decrypt with configured keys| render["Validate sources and render views"]
+        render --> reseal["Encrypt and sign derived views"]
+    end
+    reseal --> publish["Encrypted outputs"]
+    render -->|reviewed figure opt-in| figures["Readable figures<br/>Retained in history"]
+    classDef olive fill:#e2ddba,stroke:#65737b,color:#263642
+    class records,bundle,git,publish olive
+    classDef copper fill:#efd6c5,stroke:#65737b,color:#263642
+    class seal,verify,render,reseal,figures copper
+```
+
+The decryption arrow is conditional on the private-repository, trusted-event and
+configuration checks below. PR checks do not receive collection decryption keys.
+The render runtime can read plaintext while it operates; encryption protects the
+published payload, not that runtime from its authorized operators. Plaintext
+source journals are not a Git publication step. See
+[data protection](data-protection.md) for working-storage checks and retained
+history. The [collection pipeline](../pkg/witful/collection/pipeline.py) owns this
+transport and rendering path; [the native storage views](native/diagrams/README.md)
+cover the separate service-backed record path used by CodeGraph.
+
 ## First setup
 
 Requires protected local working and key-backup volumes, macOS or Linux, Python 3.12+ excluding 3.14.1, Git, `gh`, OpenSSL,

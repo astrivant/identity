@@ -7,12 +7,19 @@ the implementation it describes. They do not represent a privately enrolled depl
 <!-- TOC -->
 <!-- /TOC -->
 
+The [shared diagram palette](../../architecture.md#reading-the-diagrams) follows
+the README logo. Olive identifies authoritative state, copper pending work, blue
+projections, cream disposable caches and gray services. Labels and arrows retain
+the precise contract; color alone never establishes authorization or durability.
+
 <!-- toc:start -->
+
 **Table of contents**
 
 - [Source and configuration binding](#source-and-configuration-binding)
 - [Views](#views)
 - [Verification scope](#verification-scope)
+
 <!-- toc:end -->
 
 ## Source and configuration binding

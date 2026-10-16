@@ -178,6 +178,8 @@ def build(settings: Settings) -> Runtime:
             None: Current independent evidence authorizes this configured deployment boundary.
         """
         require_profile(settings, int(time.time()))
+        for enrollment in settings.codegraphs:
+            require_protected(Path(enrollment.repository))
 
     protection()
     try:
@@ -238,7 +240,13 @@ def build(settings: Settings) -> Runtime:
         return EnvelopeService(custody, broker.wrapping, broker.signing, signers, settings.envelope)
 
     service = Service(
-        store, Authority(authority_url, settings.backend.id), keys, protection, settings.budget, projection=settings.projection
+        store,
+        Authority(authority_url, settings.backend.id),
+        keys,
+        protection,
+        settings.budget,
+        projection=settings.projection,
+        graph_scopes=tuple((item.tenant, item.extension) for item in settings.codegraphs),
     )
     probe = settings.probe
     access = Access(Scope(probe.tenant, probe.identity), fingerprint, probe.grant, probe.task, probe.epoch, probe.policy)
@@ -254,6 +262,7 @@ def build(settings: Settings) -> Runtime:
         archives=settings.archives,
         derivations=settings.derivations,
         recipients=settings.recipients,
+        codegraphs=settings.codegraphs,
     ).build()
     application.extensions["witful.runtime"] = admission
     return Runtime(application, service, admission)

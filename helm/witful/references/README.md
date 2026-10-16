@@ -1,9 +1,11 @@
 # Chart configuration references
 
 <!-- toc:start -->
+
 **Table of contents**
 
 - [Chart configuration references](#chart-configuration-references)
+
 <!-- toc:end -->
 
 Use one reviewed values override with the main chart's defaults. Each reference

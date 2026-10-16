@@ -5,9 +5,10 @@ PostgreSQL or a local bare Git store. It implements the shared binary and encryp
 contracts proposed in [RFC 74](https://github.com/astrivant/product-research/pull/74)
 and [RFC 75](https://github.com/astrivant/product-research/pull/75).
 
-The implementation and its [synthetic acceptance evidence](native/acceptance.md)
-are staged for review. The [six as-built storage views](native/diagrams/README.md)
-bind code, schemas and reference configuration. Existing managed collections retain
+The [synthetic acceptance evidence](native/acceptance.md) and
+[six as-built storage views](native/diagrams/README.md) bind code, schemas and
+reference configuration. The [architecture guide](architecture.md) places these
+storage boundaries within the wider concept model. Existing managed collections retain
 their remote-storage block. Private enrollment and deployment require a separately
 reviewed pilot plan.
 

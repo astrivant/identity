@@ -26,6 +26,7 @@ execution; people retain authority over accepted guidance and publication.
   you share with agents or publish in your resume.
 
 <!-- toc:start -->
+
 **Table of contents**
 
 - [Getting started](#getting-started)
@@ -47,6 +48,8 @@ execution; people retain authority over accepted guidance and publication.
   - [Privacy and data protection](#privacy-and-data-protection)
   - [Development and releases](#development-and-releases)
 - [License](#license)
+- [Encrypted repository context](#encrypted-repository-context)
+
 <!-- toc:end -->
 
 ## Getting started
@@ -112,25 +115,24 @@ current directory. An explicit command-line option overrides its corresponding
 environment default. Source journals and reviewed configuration stay in the
 collection, while local indexes and caches remain outside its published records.
 
-| Input | Default | Purpose |
-| --- | --- | --- |
-| `--repo PATH` | Current directory | Collection containing `lessons.jsonl` and `knowledge/` sources. |
-| `WITFUL_HOME` / `lessons --home PATH` | Current directory's `.witful/` | Local lesson SQLite index; independent of `--repo`. |
-| `WITFUL_DATABASE_URL` | Unset, SQLite | PostgreSQL connection URI for lesson indexing and explicitly requested Life/checkpoint mirroring. Treat as a secret. |
-| `WITFUL_DATABASE_NAMESPACE` / `--namespace` | `default` | Partition used by cooperating PostgreSQL clients. |
-| `WITFUL_PII_TERMS_FILE` / `privacy scan --terms-file` | Unset | Local UTF-8 literal deny terms, one per line; never publish this file. |
-| `CODEX_HOME` / `collection setup --home` | `~/.codex` | Destination for explicitly requested collection setup. |
-| `XDG_DATA_HOME` | `~/.local/share` | Default parent for repository-scoped key backups under `witful/collections/`; `collection setup --key-dir` overrides it. |
-| `delivery --remote [PROVIDER:]REMOTE` | `origin` | Select GitHub or GitLab remotes; repeat for combined inventories. [Authentication and inputs](docs/delivery.md#inputs-and-prerequisites). |
-| `knowledge/context.json` | Optional | Reviewed rules and budgets for [working-context resolution](docs/context.md). |
-| `knowledge/catalog.json` | Collection file | Reviewed classification, concepts, and sourced relationships. |
-| `knowledge/awareness.json` | Collection file | Optional figure selection and publication configuration. |
-
-| `collection export --recipient-key` | See linked guide | Optional recipient public PEM; defaults to the operating encryption key, preserving the signer |
-| `collection export --output` | See linked guide | Required new encrypted export directory; [defaults and recovery inputs](docs/identity-exports.md#inputs-and-key-lifecycle) |
-| `WITFUL_COLLECTION_NEXT_KEYS` | See linked guide | Optional Actions secret containing a complete reviewed candidate generation |
-| `.config/collection.json: rotate_by` | See linked guide | UTC deadline for new protected writes; retained historical reads remain available |
-| `.config/collection.json: managed_files` | See linked guide | Reviewed opaque files participating alongside source and figure bundles |
+| Input                                                 | Default                        | Purpose                                                                                                                                   |
+| ----------------------------------------------------- | ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| `--repo PATH`                                         | Current directory              | Collection containing `lessons.jsonl` and `knowledge/` sources.                                                                           |
+| `WITFUL_HOME` / `lessons --home PATH`                 | Current directory's `.witful/` | Local lesson SQLite index; independent of `--repo`.                                                                                       |
+| `WITFUL_DATABASE_URL`                                 | Unset, SQLite                  | PostgreSQL connection URI for lesson indexing and explicitly requested Life/checkpoint mirroring. Treat as a secret.                      |
+| `WITFUL_DATABASE_NAMESPACE` / `--namespace`           | `default`                      | Partition used by cooperating PostgreSQL clients.                                                                                         |
+| `WITFUL_PII_TERMS_FILE` / `privacy scan --terms-file` | Unset                          | Local UTF-8 literal deny terms, one per line; never publish this file.                                                                    |
+| `CODEX_HOME` / `collection setup --home`              | `~/.codex`                     | Destination for explicitly requested collection setup.                                                                                    |
+| `XDG_DATA_HOME`                                       | `~/.local/share`               | Default parent for repository-scoped key backups under `witful/collections/`; `collection setup --key-dir` overrides it.                  |
+| `delivery --remote [PROVIDER:]REMOTE`                 | `origin`                       | Select GitHub or GitLab remotes; repeat for combined inventories. [Authentication and inputs](docs/delivery.md#inputs-and-prerequisites). |
+| `knowledge/context.json`                              | Optional                       | Reviewed rules and budgets for [working-context resolution](docs/context.md).                                                             |
+| `knowledge/catalog.json`                              | Collection file                | Reviewed classification, concepts, and sourced relationships.                                                                             |
+| `knowledge/awareness.json`                            | Collection file                | Optional figure selection and publication configuration.                                                                                  |
+| `collection export --recipient-key`                   | See linked guide               | Optional recipient public PEM; defaults to the operating encryption key, preserving the signer                                            |
+| `collection export --output`                          | See linked guide               | Required new encrypted export directory; [defaults and recovery inputs](docs/identity-exports.md#inputs-and-key-lifecycle)                |
+| `WITFUL_COLLECTION_NEXT_KEYS`                         | See linked guide               | Optional Actions secret containing a complete reviewed candidate generation                                                               |
+| `.config/collection.json: rotate_by`                  | See linked guide               | UTC deadline for new protected writes; retained historical reads remain available                                                         |
+| `.config/collection.json: managed_files`              | See linked guide               | Reviewed opaque files participating alongside source and figure bundles                                                                   |
 
 Collection rotation, expiry and managed-file inputs are detailed in [key rotation](docs/key-rotation.md).
 
@@ -141,16 +143,19 @@ use `WITFUL_TEST_DATABASE_URL`; ordinary commands never read that variable.
 
 ## How it works
 
+See the [architecture and concept diagrams](docs/architecture.md) for the knowledge
+hierarchy, evidence records, runtime boundaries and links to operation-specific flows.
+
 Policy means the reviewed expectations, constraints, and procedures that guide
 an agent's work. Learning connects those rules to sourced lessons and observed
 outcomes so colleagues can understand why a practice exists and revise it when
 new evidence warrants a change.
 
-| Component | Responsibility |
-| --- | --- |
-| Identity collection | Owns reviewed guidance, lessons, decisions, and their provenance. |
-| Witful | Validates and searches records, tracks applications, and checks completion-review coverage. |
-| Executing agent | Consults applicable guidance, performs authorized work, and records evidence. |
+| Component           | Responsibility                                                                              |
+| ------------------- | ------------------------------------------------------------------------------------------- |
+| Identity collection | Owns reviewed guidance, lessons, decisions, and their provenance.                           |
+| Witful              | Validates and searches records, tracks applications, and checks completion-review coverage. |
+| Executing agent     | Consults applicable guidance, performs authorized work, and records evidence.               |
 
 A policy-agent workflow connects these responsibilities: consult guidance, act,
 record the outcome, then review the applicable requirements before handoff.
@@ -283,10 +288,15 @@ independently and restore with only the recipient's decryption key.
 and reproducible tooling. [Release operations](docs/releases.md) describes signed
 artifacts and publication. Detailed package responsibilities live in [Witful's guide](docs/WITFUL.md).
 
-
 ## License
 
 Identity and Witful are source-available under [BSL 1.1](LICENSE), with Astrivant
 LLC as licensor and no additional production-use grant. Each version converts to
 GPLv3 four years after its first public distribution under BSL. See
 [licensing and separately licensed components](docs/licensing.md).
+
+## Encrypted repository context
+
+The optional [CodeGraph extension](docs/codegraphs.md) retrieves bounded, revision-bound
+symbol and caller evidence from separately encrypted repository graphs. It keeps
+derived code facts separate from learned guidance and requires explicit enrollment.

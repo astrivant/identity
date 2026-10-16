@@ -58,6 +58,7 @@ using those outputs.
 
 ## Guides
 
+- [Architecture and concepts](architecture.md): relate the knowledge hierarchy, evidence records and runtime boundaries.
 - [Completion audits](completion.md): review every concept before handing work back.
 
 [Architecture and collection conventions](https://github.com/astrivant/identity#readme),
