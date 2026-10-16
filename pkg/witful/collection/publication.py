@@ -9,7 +9,7 @@ import hashlib
 import json
 from typing import TYPE_CHECKING
 
-from witful.awareness.models import FIGURES as FIGURE_CATALOG
+from witful.collection.dashboard import FIGURES as FIGURE_CATALOG
 from witful.collection.managed import snapshot
 from witful.collection.models import load_config
 from witful.collection.process import run
@@ -79,9 +79,12 @@ def publish(checkout: Path, output: Path, env: dict[str, str]) -> str:
     if manifest != {"source_commit": env["GITHUB_SHA"], "files": expected}:
         raise ValueError("Candidate changed after verification or belongs to another run")
     repository = env["GITHUB_REPOSITORY"]
-    deletions = []
-    if not load_config(output / "current").publish_figures:
-        deletions = [f"docs/collection/{name}.svg" for name in FIGURE_CATALOG if (checkout / f"docs/collection/{name}.svg").is_file()]
+    # The verified candidate owns the full figure set, including disabled periodic-review outputs.
+    deletions = [
+        f"docs/collection/{name}.svg"
+        for name in FIGURE_CATALOG
+        if f"docs/collection/{name}.svg" not in contents and (checkout / f"docs/collection/{name}.svg").is_file()
+    ]
     request = json.dumps(
         {
             "query": QUERY,

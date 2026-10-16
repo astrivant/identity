@@ -54,11 +54,10 @@ def allowed(name: str, *, figures: bool = False) -> bool:
         bool: Whether the relative name belongs to this archive type.
     """
     if figures:
-        from witful.awareness.models import FIGURES
-        from witful.reflection.plotting import FIGURES as REFLECTION_FIGURES
+        from witful.collection.dashboard import FIGURES
 
         return name in {"provenance.json", "reflection-plan.json"} or name in {
-            f"{key}.{suffix}" for key in (*FIGURES, *REFLECTION_FIGURES) for suffix in ("png", "svg")
+            f"{key}.{suffix}" for key in FIGURES for suffix in ("png", "svg")
         }
 
     return (
