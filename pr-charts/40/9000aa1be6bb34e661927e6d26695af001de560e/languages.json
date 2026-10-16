@@ -1,0 +1,89 @@
+{
+  "measurement": {
+    "base": "54426c98d11a881789b45ce8838c07faacd47f75",
+    "merge_base": "54426c98d11a881789b45ce8838c07faacd47f75",
+    "head": "9000aa1be6bb34e661927e6d26695af001de560e",
+    "classifier": "Pygments 2.21.0",
+    "deltas": [
+      {
+        "before": ".github/CODEOWNERS",
+        "after": ".github/CODEOWNERS",
+        "added": 57,
+        "deleted": 59
+      },
+      {
+        "before": "docs/private-collections.md",
+        "after": "docs/private-collections.md",
+        "added": 10,
+        "deleted": 1
+      },
+      {
+        "before": "pkg/witful/collection/archive.py",
+        "after": "pkg/witful/collection/archive.py",
+        "added": 2,
+        "deleted": 3
+      },
+      {
+        "before": "pkg/witful/collection/dashboard.py",
+        "after": "pkg/witful/collection/dashboard.py",
+        "added": 99,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/collection/operations.py",
+        "after": "pkg/witful/collection/operations.py",
+        "added": 9,
+        "deleted": 53
+      },
+      {
+        "before": "pkg/witful/collection/publication.py",
+        "after": "pkg/witful/collection/publication.py",
+        "added": 7,
+        "deleted": 4
+      },
+      {
+        "before": "pkg/witful/collection/tests/test_operations.py",
+        "after": "pkg/witful/collection/tests/test_operations.py",
+        "added": 2,
+        "deleted": 1
+      },
+      {
+        "before": "pkg/witful/collection/tests/test_rotation.py",
+        "after": "pkg/witful/collection/tests/test_rotation.py",
+        "added": 7,
+        "deleted": 0
+      },
+      {
+        "before": "tests/collection/__init__.py",
+        "after": "tests/collection/__init__.py",
+        "added": 5,
+        "deleted": 0
+      },
+      {
+        "before": "tests/collection/test_dashboard.py",
+        "after": "tests/collection/test_dashboard.py",
+        "added": 69,
+        "deleted": 0
+      }
+    ],
+    "shares": [
+      {
+        "language": "Python",
+        "added": 200,
+        "deleted": 61
+      },
+      {
+        "language": "Unknown",
+        "added": 57,
+        "deleted": 59
+      },
+      {
+        "language": "Markdown",
+        "added": 10,
+        "deleted": 1
+      }
+    ]
+  },
+  "palette_sha256": "4c9611507c46aa4f10b7bfe11d61d690611c90dd2651328b4d2ce8488d773761",
+  "matplotlib": "3.11.2"
+}
