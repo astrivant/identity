@@ -49,6 +49,9 @@ through the native `postgresql.spec`; regenerate its schema from the locked CRD.
 Follow the [deployment and migration guide](helm/witful/references/postgresql/README.md)
 for credentials, readiness, data preservation and explicit volume migration.
 The Compose profile is a local substitution, not operator lifecycle validation.
+Run [hypothesis-helm property checks](docs/chart-testing.md) when changing chart
+contracts. Keep the property stage in required merge and release gates, preserve
+its failure reports, and retain the existing semantic chart tests.
 
 ## Durable agent commands
 
