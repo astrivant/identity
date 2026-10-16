@@ -42,7 +42,9 @@ def test_examples_keep_all_levels_and_evidence_inside_their_own_identity() -> No
         edges = graph_edges(example.identity, example.applications)
         assert {edge.kind for edge in edges} == {"contains", "related", "requires", "transfers", "co-use", "observed-transfer"}
         assert all(edge.source in nodes and edge.target in nodes for edge in edges)
-        assert all(event.outcome == "unassessed" for event in example.applications)
+        assert {event.outcome for event in example.applications} == {"unassessed", "verified"}
+        assert any(edge.kind == "co-use" and edge.verified > 1 and edge.strength > 0 for edge in edges)
+        assert any(edge.kind == "observed-transfer" and edge.verified > 0 for edge in edges)
 
     for left, right in combinations(identifiers, 2):
         assert left.isdisjoint(right)

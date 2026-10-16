@@ -40,6 +40,8 @@ __all__ = ["save_figure", "write_plots"]
 _COLORS = ("#366A87", "#407D61", "#A36636", "#795A91", "#996277", "#597878", "#767047", "#66758A")
 _INK = "#263748"
 _MUTED = "#697783"
+_LINK_COLOR = "#526674"
+_LINK_ALPHA = 0.8
 _BUBBLE_ALPHA = 0.18
 _GRADIENT_ALPHA = 0.34
 # Scatter size is area in points squared; scale by (2/3)^2 for two-thirds linear size.
@@ -160,7 +162,6 @@ def _map_plot(identity: Identity, applications: Sequence[Application]) -> Figure
     disciplines = {discipline.id: discipline for discipline in identity.disciplines}
     colors = {discipline.id: _COLORS[index % len(_COLORS)] for index, discipline in enumerate(identity.disciplines)}
     positions: dict[str, tuple[float, float]] = {}
-    opacity: dict[str, float] = {}
     guides: tuple[GaussianAxis, ...] = ()
 
     if bubbles:
@@ -238,7 +239,6 @@ def _map_plot(identity: Identity, applications: Sequence[Application]) -> Figure
     for bubble in bubbles:
         discipline = disciplines[bubble.id]
         positions[bubble.id] = (bubble.x, bubble.y)
-        opacity[bubble.id] = bubble.opacity
         skills = sorted(discipline.skills, key=lambda item: item.id)
         axis.add_patch(
             Circle(
@@ -262,7 +262,6 @@ def _map_plot(identity: Identity, applications: Sequence[Application]) -> Figure
         exclusions.extend(bounds)
 
         for skill in skills:
-            opacity[skill.id] = bubble.opacity
             axis.scatter(*vertices[skill.id], s=13 + 40 * bubble.radius, color=colors[bubble.id], alpha=bubble.opacity, zorder=4)
 
     # Opposite winding cuts text-sized holes in contour lines, without a visible label backplate.
@@ -281,16 +280,19 @@ def _map_plot(identity: Identity, applications: Sequence[Application]) -> Figure
 
         a, b = positions[edge.source], positions[edge.target]
         observed = edge.kind in {"co-use", "observed-transfer"}
-        # Leave clear intervals around glyphs instead of hiding links behind opaque label boxes.
-        for left, right in visible_segments(a, b, (*exclusions, *obstacles)):
+        # Evidence controls hue and relative width, never whether a relationship
+        # can be seen. Keep a readable baseline above the translucent bubble fills;
+        # label gaps preserve legibility without opaque text boxes.
+        for part, (left, right) in enumerate(visible_segments(a, b, (*exclusions, *obstacles))):
             axis.plot(
                 [left[0], right[0]],
                 [left[1], right[1]],
-                color="#407D61" if observed and edge.verified else "#BAC4CD",
-                linewidth=0.5 + 2.5 * edge.strength,
+                color="#407D61" if observed and edge.verified else _LINK_COLOR,
+                linewidth=1.0 + 2.0 * edge.strength,
                 linestyle="-" if observed or edge.kind == "contains" else "--",
-                alpha=0.55 * min(opacity[edge.source], opacity[edge.target]),
-                zorder=1,
+                alpha=_LINK_ALPHA,
+                zorder=3,
+                gid=f"map-edge:{edge.kind}:{edge.source}:{edge.target}:{part}",
             )
 
     draw_principal_axes(axis, guides, (*exclusions, *obstacles))
