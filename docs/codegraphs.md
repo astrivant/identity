@@ -5,11 +5,9 @@ from an approved Python repository. Each codebase has a separate encrypted nativ
 scope associated with one engineer's identity. Derived code facts remain separate
 from lessons, skills, application counts and compiled guidance.
 
-This implements the engineer-only local adapter in
-[RFC #76](https://github.com/astrivant/product-research/pull/76).
-Employer sharing, combined review graphs, ranking, CODEOWNERS routing, MCP exposure
-and compiler projections belong to later phases. No repository is enrolled by
-installation, and no measured model-token reduction is claimed.
+The local adapter follows [RFC #76](https://github.com/astrivant/product-research/pull/76).
+Access is restricted to the owning engineer's admitted runtime. Installation does
+not enroll repositories. Model-token reduction has not been measured.
 
 ## Runtime and custody
 
@@ -50,7 +48,7 @@ docker image inspect --format '{{.Id}}' witful-codegraph:local
 Record that immutable `sha256:` image ID in the enrollment. Builds use
 `--pull=never`; missing images fail instead of downloading executable code during
 private processing. The local Docker daemon is inside the admitted host boundary;
-remote contexts and Docker-in-Kubernetes are unsupported by this first profile.
+remote contexts and Docker-in-Kubernetes are unsupported.
 The current Helm deployment therefore does not enable this local worker.
 
 Every invocation uses a read-only image, no network, no mounts from the repository,
@@ -142,7 +140,7 @@ byte bound, not a measured tokenizer count. Static Python analysis can miss dyna
 calls; an absent edge is never proof of absence. Budget exhaustion is visible or
 fails with `incomplete`, never silently current-looking truncated JSON.
 
-## Evidence and remaining rollout
+## Validation evidence
 
 The synthetic suite uses the real pinned SDK, actual native Git/PostgreSQL stores,
 maintained PyCasbin authorization and authenticated encryption. It exercises clean
@@ -150,10 +148,6 @@ and dirty source boundaries, caller retrieval, mismatched principals/scopes,
 freshness, budget refusal, revocation and atomic publication. Synthetic fixtures
 contain instruction-like comments to verify that they remain data.
 
-Before enrolling private code, review the actual host/custody/output controls and
-restore with current keys and grants. No private pilot, model-provider benchmark,
-production enrollment or shared graph access is performed by this implementation.
-Compare direct search and graph retrieval on identical revisions and budgets;
-report correctness, citation accuracy, token categories, resident context, cold/warm
-latency and indexing amortization separately. Small query output alone does not
-establish lower total cost or better answers.
+These checks use synthetic source and test credentials. They do not establish
+production custody, model-token savings or answer quality. Deployment requires the
+host, custody and output controls described above.
