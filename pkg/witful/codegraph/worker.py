@@ -15,7 +15,7 @@ from uuid import uuid4
 
 from attrs import frozen
 
-from witful.codegraph.models import Edge, Enrollment, Node  # noqa: TC001 - Runtime schema resolution.
+from witful.codegraph.models import Edge, Enrollment, File, Node  # noqa: TC001 - Runtime schema resolution.
 from witful.exceptions import NativeError
 from witful.knowledge.contracts import as_data
 from witful.native.models import parse
@@ -36,12 +36,14 @@ class Extraction:
         edges (tuple[Edge, ...]): Extracted graph relationships.
         indexer (str): Worker-reported package version, bound also by the enrolled image digest.
         unresolved (int): Known unresolved references.
+        files (tuple[File, ...]): SDK-owned detection and coverage for every selected text input.
     """
 
     nodes: tuple[Node, ...]
     edges: tuple[Edge, ...]
     indexer: str
     unresolved: int
+    files: tuple[File, ...] = ()
 
 
 def run(arguments: Sequence[str], data: bytes, environment: Mapping[str, str], seconds: float, limit: int) -> bytes:
@@ -116,7 +118,7 @@ def extract(enrollment: Enrollment, snapshot: Snapshot) -> Extraction:
 
     Args:
         enrollment (Enrollment): Signed admission settings including an immutable local image ID.
-        snapshot (Snapshot): Exact approved Python inputs; no host directory is mounted.
+        snapshot (Snapshot): Exact approved UTF-8 inputs; no host directory is mounted.
 
     Returns:
         Extraction: Complete inert graph or a redacted failure; partial output is never published.
@@ -152,6 +154,10 @@ def extract(enrollment: Enrollment, snapshot: Snapshot) -> Extraction:
         "1000:1000",
         "--log-driver=none",
         "--interactive",
+        "--env",
+        f"WITFUL_CODEGRAPH_BYTES={enrollment.worker_bytes}",
+        "--env",
+        f"WITFUL_CODEGRAPH_FILES={enrollment.files}",
         enrollment.image,
         "/usr/bin/timeout",
         "--signal=TERM",
@@ -160,11 +166,17 @@ def extract(enrollment: Enrollment, snapshot: Snapshot) -> Extraction:
         "node",
         "/opt/codegraph/worker.mjs",
     ]
-    raw = json.dumps({"sources": [as_data(source) for source in snapshot.sources]}, ensure_ascii=True).encode()
-    if len(raw) > 16 * 1024 * 1024:
+    raw = json.dumps(
+        {
+            "sources": [as_data(source) for source in snapshot.sources],
+            "extensions": {item.suffix: item.language for item in enrollment.extensions},
+        },
+        ensure_ascii=True,
+    ).encode()
+    if len(raw) > enrollment.worker_bytes:
         raise NativeError("incomplete")
     try:
-        result = run(arguments, raw, environment, enrollment.seconds + 10, 16 * 1024 * 1024)
+        result = run(arguments, raw, environment, enrollment.seconds + 10, enrollment.worker_bytes)
         return parse(json.loads(result), Extraction)
     except (OSError, ValueError, subprocess.TimeoutExpired):
         raise NativeError("unavailable") from None

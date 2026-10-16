@@ -235,3 +235,58 @@ def test_graph_domain_does_not_adopt_learning(tmp_path: Path) -> None:
     entry = Entry("repository-codegraph", as_data(graph))
     validate((entry,))
     assert codec.decode(codec.encode(entry.value)) == entry.value
+
+
+def test_sdk_coverage_roundtrip(runtime: Runtime, databases: Databases, tmp_path: Path) -> None:
+    """
+    Retain SDK coverage through encryption, queries and exact source revalidation.
+
+    Args:
+        runtime (Runtime): Real native Git/PostgreSQL persistence.
+        databases (Databases): Separately provisioned synthetic authority.
+        tmp_path (Path): Disposable source repository.
+
+    Returns:
+        None: Omissions remain visible and changed source cannot reuse an authenticated classification.
+    """
+    enrollment, revision = repository(tmp_path / "source")
+    access = runtime.access
+    enrollment = evolve(enrollment, profile="sdk", tenant=access.scope.tenant, extension=access.scope.identity, subject=access.subject)
+    with psycopg.connect(databases.authority_admin) as admin:
+        admin.execute(
+            "UPDATE witful_native_grants SET actions = ARRAY['write','codegraph-build','codegraph-query'] WHERE id=%s", (access.grant,)
+        )
+
+    def worker(selected: Enrollment, snapshot: Snapshot) -> Extraction:
+        """
+        Return exact source-qualified synthetic classifications while exercising real storage.
+
+        Args:
+            selected (Enrollment): Reviewed synthetic enrollment.
+            snapshot (Snapshot): Actual current source bytes.
+
+        Returns:
+            Extraction: Complete dispositions for all selected text inputs.
+        """
+        result = extraction(selected, snapshot)
+        return evolve(
+            result,
+            files=tuple(
+                evolve(
+                    item,
+                    coverage="indexed" if item.path == "sample.py" else "unsupported",
+                    language="python" if item.path == "sample.py" else "unknown",
+                )
+                for item in snapshot.files
+            ),
+        )
+
+    graph = RepositoryGraph(runtime.service, enrollment, worker)
+    graph.build(access, str(uuid4()), revision, None)
+    result = graph.query(access, revision, "leaf", "callers", Limits(elapsed_ms=30000), 1)
+    assert result.languages == ("python",)
+    assert {item.status: item.files for item in result.coverage} == {"indexed": 1, "unsupported": 1}
+    assert "static-upstream-sdk-languages" in result.limitations
+    (tmp_path / "source/README.md").write_text("Changed unsupported text still invalidates the source binding.\n")
+    with pytest.raises(NativeError, match="conflict"):
+        graph.query(access, revision, "leaf", "callers", Limits(elapsed_ms=30000), 1)

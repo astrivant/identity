@@ -88,3 +88,26 @@ def test_repository_fsmonitor_never_executes(tmp_path: Path) -> None:
     command(root, "config", "core.fsmonitor", "echo unsafe > executed-marker")
     capture(enrollment, revision)
     assert not (root / "executed-marker").exists()
+
+
+def test_sdk_capture_defers_language_detection(tmp_path: Path) -> None:
+    """
+    Preserve detector inputs without imposing a parallel extension or language registry.
+
+    Args:
+        tmp_path (Path): Disposable tracked fixture.
+
+    Returns:
+        None: All selected text reaches upstream detection; binary and excluded inputs remain visible.
+    """
+    root = tmp_path / "source"
+    enrollment, _ = repository(root)
+    (root / "custom.future").write_text("a future parser may recognize this\n")
+    (root / "binary.dat").write_bytes(b"\x00\xff")
+    command(root, "add", ".")
+    command(root, "commit", "-m", "Add unknown extension and binary fixture")
+    revision = command(root, "rev-parse", "HEAD")
+    snapshot = capture(evolve(enrollment, profile="sdk", excluded=("sample.py",)), revision)
+    assert {source.path for source in snapshot.sources} == {"README.md", "custom.future"}
+    statuses = {file.path: file.coverage for file in snapshot.files}
+    assert statuses == {"README.md": "pending", "binary.dat": "non-text", "custom.future": "pending", "sample.py": "excluded"}
