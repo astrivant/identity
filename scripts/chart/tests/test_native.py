@@ -98,6 +98,39 @@ def test_native_schema_rejects_unknown_config_and_inline_credentials() -> None:
         validate(baseline, schema)
 
 
+def test_controller_pod_controls_are_independent_of_sync() -> None:
+    """
+    Preserve controller-specific deployment choices without inheriting the inactive Job's overrides.
+
+    Returns:
+        None: Controller image, resources, placement, labels and security come from its own namespace.
+    """
+    documents = render(
+        "--set",
+        "controller.image.repository=registry.example/controller,controller.image.tag=reviewed,"
+        "controller.image.pullPolicy=Always,controller.imagePullSecrets[0]=controller-registry,"
+        "controller.resources.requests.cpu=275m,controller.scheduling.nodeSelector.pool=native,"
+        "controller.podLabels.team=platform,controller.podAnnotations.review=accepted,"
+        "controller.podSecurityContext.runAsUser=20001,controller.containerSecurityContext.runAsGroup=20001,"
+        "sync.image.repository=registry.example/sync,sync.image.tag=other,"
+        "sync.resources.requests.cpu=900m,sync.scheduling.nodeSelector.pool=batch,sync.podLabels.team=batch",
+    )
+    deployment = next(item for item in documents if item["kind"] == "Deployment")
+    specification = deployment["spec"]
+    assert isinstance(specification, dict)
+    pod = specification["template"]
+    assert pod["metadata"]["labels"]["team"] == "platform"
+    assert pod["metadata"]["annotations"]["review"] == "accepted"
+    assert pod["spec"]["nodeSelector"] == {"pool": "native"}
+    assert pod["spec"]["imagePullSecrets"] == [{"name": "controller-registry"}]
+    assert pod["spec"]["securityContext"]["runAsUser"] == 20001
+    container = pod["spec"]["containers"][0]
+    assert container["image"] == "registry.example/controller:reviewed"
+    assert container["imagePullPolicy"] == "Always"
+    assert container["resources"]["requests"]["cpu"] == "275m"
+    assert container["securityContext"]["runAsGroup"] == 20001
+
+
 @pytest.mark.parametrize(
     "override",
     (
@@ -105,6 +138,8 @@ def test_native_schema_rejects_unknown_config_and_inline_credentials() -> None:
         "controller.terminationGracePeriodSeconds=30",
         "controller.pdb.minAvailable=2",
         "controller.secretEnvironment.TMPDIR.name=unsafe,controller.secretEnvironment.TMPDIR.key=value",
+        "controller.scheduling.podAntiAffinityPreset=hard,controller.scheduling.affinity.nodeAffinity={}",
+        "controller.podLabels.app\\.kubernetes\\.io/instance=another-release",
     ),
 )
 def test_native_chart_refuses_unsafe_ownership(override: str) -> None:
@@ -183,7 +218,13 @@ def test_projection_scheduler_uses_one_network_policy_and_distinct_scoped_client
         None: Each bounded cycle owns its service account and client mount, with one shared deny-by-default network policy.
     """
     clients = json.dumps([{"name": name, "secretName": name + "-client", "key": "client.json"} for name in ("one", "two")])
-    resources = render("--set", "controller.scheduler.enabled=true", "--set-json", f"controller.scheduler.clients={clients}")
+    resources = render(
+        "--set",
+        "controller.scheduler.enabled=true,controller.image.repository=registry.example/controller,"
+        "controller.image.tag=reviewed,sync.image.repository=registry.example/sync,sync.image.tag=other",
+        "--set-json",
+        f"controller.scheduler.clients={clients}",
+    )
     jobs = [item for item in resources if item["kind"] == "CronJob"]
     policies: list[dict[str, object]] = []
     for item in resources:
@@ -202,6 +243,7 @@ def test_projection_scheduler_uses_one_network_policy_and_distinct_scoped_client
         pod = spec["template"]["spec"]
         assert pod["automountServiceAccountToken"] is False
         container = pod["containers"][0]
+        assert container["image"] == "registry.example/controller:reviewed"
         assert container["args"][:3] == ["native", "projection", "tick"]
         assert all("valueFrom" not in item for item in container["env"])
         assert {item["name"] for item in pod["volumes"]} == {"client", "working"}

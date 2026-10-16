@@ -137,6 +137,19 @@ def main() -> None:
         rules[path] = {"default": {}}
 
     rules["containerSecurityContext.capabilities.drop"] = {"default": ["ALL"], "items": {"type": "string"}}
+
+    # Share constraint definitions, not user values: each workload owns its independent overrides.
+    shared = {"image", "imagePullSecrets", "scheduling", "podLabels", "podAnnotations", "containerSecurityContext"}
+    scoped: dict[str, dict[str, object]] = {}
+    for path, constraints in rules.items():
+        if path.startswith("controller."):
+            scoped[path] = constraints
+        elif path.split(".")[0] in shared:
+            for component in ("sync", "controller"):
+                scoped[f"{component}.{path}"] = constraints
+        else:
+            scoped[f"sync.{path}"] = constraints
+    rules = scoped
     for path, constraints in rules.items():
         field(schema, path).update(constraints)
 
@@ -182,13 +195,16 @@ def main() -> None:
     # Catch misspelled chart-owned parameters, while native Kubernetes maps stay extensible.
     for path in (
         "",
-        "image",
-        "source",
-        "database",
-        "job",
-        "scheduling",
+        "sync",
+        "sync.image",
+        "sync.source",
+        "sync.database",
+        "sync.job",
+        "sync.scheduling",
         "postgresql",
         "controller",
+        "controller.image",
+        "controller.scheduling",
         "controller.scheduler",
         "controller.scheduler.networkPolicy",
         "controller.git",

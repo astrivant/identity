@@ -49,26 +49,26 @@ spec:
           serviceAccountName: {{ $name }}
           automountServiceAccountToken: false
           terminationGracePeriodSeconds: {{ $scheduler.terminationGracePeriodSeconds }}
-          securityContext: {{- toYaml $root.Values.podSecurityContext | nindent 12 }}
-          {{- with $root.Values.imagePullSecrets }}
+          securityContext: {{- toYaml $root.Values.controller.podSecurityContext | nindent 12 }}
+          {{- with $root.Values.controller.imagePullSecrets }}
           imagePullSecrets:
             {{- range . }}
             - name: {{ . | quote }}
             {{- end }}
           {{- end }}
-          {{- with $root.Values.scheduling.nodeSelector }}
+          {{- with $root.Values.controller.scheduling.nodeSelector }}
           nodeSelector: {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- with $root.Values.scheduling.tolerations }}
+          {{- with $root.Values.controller.scheduling.tolerations }}
           tolerations: {{- toYaml . | nindent 12 }}
           {{- end }}
           containers:
             - name: delivery
-              image: "{{ $root.Values.image.repository }}:{{ $root.Values.image.tag }}"
-              imagePullPolicy: {{ $root.Values.image.pullPolicy }}
+              image: "{{ $root.Values.controller.image.repository }}:{{ $root.Values.controller.image.tag }}"
+              imagePullPolicy: {{ $root.Values.controller.image.pullPolicy }}
               command: [/usr/bin/tini, -g, --, witful]
               args: [native, projection, tick, --client, /etc/witful/client/client.json, --seconds, {{ $scheduler.seconds | quote }}]
-              securityContext: {{- toYaml $root.Values.containerSecurityContext | nindent 16 }}
+              securityContext: {{- toYaml $root.Values.controller.containerSecurityContext | nindent 16 }}
               resources: {{- toYaml $scheduler.resources | nindent 16 }}
               env:
                 - name: WITFUL_SECURE_TEMP

@@ -52,6 +52,11 @@ The Compose profile is a local substitution, not operator lifecycle validation.
 Run [hypothesis-helm property checks](docs/chart-testing.md) when changing chart
 contracts. Keep the property stage in required merge and release gates, preserve
 its failure reports, and retain the existing semantic chart tests.
+Keep workload controls under their owning `sync` or `controller` values namespace.
+Update template consumers, generated schemas and parameter tables, reference values,
+Compose mappings and property-test selectors together. Follow the chart's
+[existing-values mapping](helm/witful/README.md#update-existing-values) when moving
+overrides; compare rendered resources to confirm their behavior is preserved.
 
 ## Durable agent commands
 

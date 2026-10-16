@@ -34,7 +34,7 @@ jobs:
           config: scripts/chart/hypothesis.yaml
           paths: 'true'
           max-depth: '0'
-          match: test_workers_ or test_job_ or test_scheduling_podAntiAffinityPreset_ or test_scheduling_topologyKey_
+          match: test_sync_workers_ or test_sync_job_ or test_sync_scheduling_podAntiAffinityPreset_ or test_sync_scheduling_topologyKey_
           seed: '20261015'
           timeout: '15'
           jobs: '2'
