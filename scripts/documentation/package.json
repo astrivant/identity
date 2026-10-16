@@ -8,7 +8,7 @@
   "scripts": {
     "check": "node check-markdown.mjs",
     "test": "node --test check-markdown.test.mjs ../ci/coverage.test.mjs native-codec.test.mjs",
-    "lint": "cd ../.. && node scripts/documentation/node_modules/eslint/bin/eslint.js --config scripts/documentation/eslint.config.mjs scripts/documentation scripts/ci"
+    "lint": "cd ../.. && node scripts/documentation/node_modules/eslint/bin/eslint.js --config scripts/documentation/eslint.config.mjs scripts/documentation scripts/ci services/codegraph"
   },
   "overrides": {
     "katex": "$katex"

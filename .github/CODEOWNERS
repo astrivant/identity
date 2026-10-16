@@ -78,3 +78,9 @@
 /docs/checkpoints.md @emmeowzing
 /docs/releases.md @emmeowzing
 /scripts/release/ @emmeowzing
+
+/pkg/witful/codegraph/ @emmeowzing
+/pkg/witful/commands/codegraph.py @emmeowzing
+/tests/codegraph/ @emmeowzing
+/services/codegraph/ @emmeowzing
+/docs/codegraphs.md @emmeowzing

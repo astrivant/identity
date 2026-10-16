@@ -14,6 +14,7 @@ from attrs import frozen
 from flask import Blueprint, Flask, Response, g, request
 from werkzeug.exceptions import HTTPException
 
+from witful.codegraph.api import routes as codegraph_routes
 from witful.exceptions import NativeError
 from witful.native import codec
 from witful.native.api.archives import routes as archive_routes
@@ -26,6 +27,7 @@ from witful.native.api.sharing import routes as sharing_routes
 if TYPE_CHECKING:
     from collections.abc import Callable
 
+    from witful.codegraph.models import Enrollment
     from witful.native.api.admission import Admission
     from witful.native.config import ArchivePath, DerivationTarget, ExportRecipient
     from witful.native.service import Service
@@ -63,6 +65,7 @@ class Builder:
         archives (tuple[ArchivePath, ...]): Explicit identity-bound filesystem locations from signed settings.
         derivations (tuple[DerivationTarget, ...]): Independently authorized fork/split target aliases.
         recipients (tuple[ExportRecipient, ...]): Explicit identity-bound public recipients from signed settings.
+        codegraphs (tuple[Enrollment, ...]): Optional protected repository extensions from signed settings.
     """
 
     service: Service
@@ -73,6 +76,17 @@ class Builder:
     archives: tuple[ArchivePath, ...] = ()
     derivations: tuple[DerivationTarget, ...] = ()
     recipients: tuple[ExportRecipient, ...] = ()
+    codegraphs: tuple[Enrollment, ...] = ()
+
+    def __attrs_post_init__(self) -> None:
+        """
+        Keep generic-route denial aligned with the exact enrolled graph scopes.
+
+        Returns:
+            None: Every configured graph scope is fenced from generic HTTP operations.
+        """
+        if set(self.service.graph_scopes) != {(item.tenant, item.extension) for item in self.codegraphs}:
+            raise NativeError("invalid")
 
     def build(self) -> Flask:
         """
@@ -88,6 +102,7 @@ class Builder:
             self.readiness,
             (
                 routes(self.service, self.authenticate),
+                codegraph_routes(self.service, self.authenticate, self.codegraphs),
                 projection_routes(self.service, self.authenticate),
                 maintenance_routes(self.service, self.authenticate, self.destinations),
                 archive_routes(self.service, self.authenticate, self.archives),

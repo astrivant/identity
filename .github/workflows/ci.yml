@@ -17,6 +17,10 @@ env:
   MPLBACKEND: Agg
   MPLCONFIGDIR: ${{ github.workspace }}/.cache/matplotlib
 jobs:
+  codegraph:
+    name: CodeGraph SDK compatibility
+    uses: ./.github/workflows/stage-codegraph.yml
+
   native-physical:
     name: Native physical storage
     uses: ./.github/workflows/stage-native-storage.yml
@@ -287,7 +291,7 @@ jobs:
     name: Required CI
     # Always evaluate the complete producer set, including skipped and cancelled jobs.
     if: always()
-    needs: [tests, lint, privacy, security, distributions, orchestration, views, learning, provider-contracts, native-physical]
+    needs: [tests, lint, privacy, security, distributions, orchestration, views, learning, provider-contracts, native-physical, codegraph]
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
@@ -454,7 +458,7 @@ jobs:
 
   publish:
     name: Publish signed release
-    needs: [tests, lint, privacy, security, distributions, orchestration, views, learning, provider-contracts, native-physical]
+    needs: [tests, lint, privacy, security, distributions, orchestration, views, learning, provider-contracts, native-physical, codegraph]
     if: >-
       github.repository == 'astrivant/identity'
       && github.event_name == 'push'

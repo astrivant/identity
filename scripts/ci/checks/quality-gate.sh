@@ -6,6 +6,6 @@ set -euo pipefail
 # Require the complete producer set; an empty or partial needs object is not success.
 jq -e '
     type == "object"
-    and keys == ["distributions", "learning", "lint", "native-physical", "orchestration", "privacy", "provider-contracts", "security", "tests", "views"]
+    and keys == ["codegraph", "distributions", "learning", "lint", "native-physical", "orchestration", "privacy", "provider-contracts", "security", "tests", "views"]
     and all(.[]; .result == "success")
 ' <<<"${NEEDS_JSON:?Set NEEDS_JSON to the GitHub Actions needs object}"

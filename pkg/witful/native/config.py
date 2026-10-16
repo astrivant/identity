@@ -14,6 +14,7 @@ from attrs import frozen
 from cryptography.exceptions import InvalidSignature
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PublicKey
 
+from witful.codegraph.models import Enrollment  # noqa: TC001 - Runtime schema resolution.
 from witful.exceptions import NativeError
 from witful.knowledge.contracts import as_data
 from witful.native import codec
@@ -315,6 +316,7 @@ class Settings:
         projection (Policy): Controller delivery, backlog and required-completion policy.
         gateway (tuple[GatewayRemote, ...]): Isolated projection-role remote allowlist, empty on native controllers.
         envelope (codec.Limits): Per-record binary payload and structural bounds, including explicit full-history package capacity.
+        codegraphs (tuple[Enrollment, ...]): Optional individually approved engineer-only graph scopes.
         version (Literal[1]): Configuration schema version.
     """
 
@@ -333,6 +335,7 @@ class Settings:
     projection: Policy = Policy()
     gateway: tuple[GatewayRemote, ...] = ()
     envelope: codec.Limits = codec.DEFAULT_LIMITS
+    codegraphs: tuple[Enrollment, ...] = ()
     version: Literal[1] = 1
 
 
@@ -378,6 +381,18 @@ def load(path: Path) -> Settings:
         raise NativeError("invalid") from None
     from witful.native.projection.configuration import validate as validate_projection
 
+    scopes = {(item.tenant, item.extension) for item in settings.codegraphs}
+    if len(scopes) != len(settings.codegraphs) or (settings.codegraphs and settings.role != "controller"):
+        raise NativeError("invalid")
+    # Dedicated graph scopes must not inherit any whole-history sharing or derivation route.
+    if any((item.tenant, item.identity) in scopes for item in settings.archives):
+        raise NativeError("denied")
+    if any((item.tenant, item.identity) in scopes for item in settings.recipients):
+        raise NativeError("denied")
+    if any((item.tenant, item.identity) in scopes for item in settings.derivations):
+        raise NativeError("denied")
+    if any(settings.projection.select(tenant, identity) for tenant, identity in scopes):
+        raise NativeError("denied")
     validate_projection(settings)
     backends = (settings.backend, *settings.destinations)
     if len({backend.id for backend in backends}) != len(backends):
@@ -500,7 +515,15 @@ def require_profile(settings: Settings, now: int) -> Evidence:
         "old-primary-fencing",
         "recovery-tested",
     }
-    if evidence.configuration != hashlib.sha256(codec.encode(pack(as_data(settings)))).hexdigest():
+    if settings.codegraphs:
+        required.update({"graph-engineer-only-custody", "graph-runtime-egress-isolation", "graph-source-rights", "graph-output-sink"})
+    configuration = as_data(settings)
+    accepted = {hashlib.sha256(codec.encode(pack(configuration))).hexdigest()}
+    # An absent optional extension must not invalidate otherwise identical pre-extension evidence.
+    if not settings.codegraphs:
+        legacy = {key: value for key, value in configuration.items() if key != "codegraphs"}
+        accepted.add(hashlib.sha256(codec.encode(pack(legacy))).hexdigest())
+    if evidence.configuration not in accepted:
         raise NativeError("conflict")
     if not evidence.issued <= now < evidence.expires or set(evidence.controls) != required or not evidence.references:
         raise NativeError("denied")

@@ -269,3 +269,10 @@ children and runtime-free help. Keep dispatch out of manual `sys.argv` slicing.
 provider inventories. `mr` is an alias for `pr`; rebase preparation selects one
 remote and publication uses its bound receipt. See [delivery inputs](delivery.md#inputs-and-prerequisites)
 for SDK authentication, provider evidence and operation boundaries.
+
+## Repository codegraphs
+
+`witful codegraph build` and `witful codegraph query` operate on explicitly enrolled
+engineer-only encrypted extensions. See [inputs, commands and custody](codegraphs.md).
+The SDK worker is optional and uses a separate locked runtime; the CLI never
+automatically installs it, enrolls repositories or provisions keys.

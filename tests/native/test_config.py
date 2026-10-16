@@ -99,6 +99,39 @@ def test_protection_evidence_requires_current_exact_configuration(settings: Sett
         require_profile(changed, 150)
 
 
+def test_legacy_evidence_never_admits_codegraphs(settings: Settings, tmp_path: Path) -> None:
+    """
+    Preserve empty-extension compatibility while requiring new custody controls for actual enrollment.
+
+    Args:
+        settings (Settings): Valid synthetic native settings.
+        tmp_path (Path): Disposable evidence destination.
+
+    Returns:
+        None: An old exact configuration is accepted only with extensions disabled.
+    """
+    from witful.codegraph.models import Enrollment
+
+    private = Ed25519PrivateKey.generate()
+    public = private.public_key().public_bytes(serialization.Encoding.Raw, serialization.PublicFormat.Raw)
+    protected = evolve(
+        settings,
+        protection=Protection(str(tmp_path / "legacy.cbor"), base64.b64encode(public).decode(), hashlib.sha256(public).hexdigest()),
+    )
+    original = require_profile(settings, 150)
+    data = as_data(protected)
+    del data["codegraphs"]
+    evidence = evolve(original, configuration=hashlib.sha256(codec.encode(pack(data))).hexdigest())
+    payload = codec.encode(as_data(evidence))
+    (tmp_path / "legacy.cbor").write_bytes(
+        codec.encode({"payload": payload, "signature": private.sign(b"witful-storage-evidence-v1\0" + payload)})
+    )
+    assert require_profile(protected, 150) == evidence
+    enrollment = Enrollment(str(uuid4()), str(uuid4()), str(uuid4()), "a" * 64, "/approved/source", "sha256:" + "b" * 64)
+    with pytest.raises(NativeError):
+        require_profile(evolve(protected, codegraphs=(enrollment,)), 150)
+
+
 def test_configuration_errors_do_not_disclose_values(settings: Settings, tmp_path: Path) -> None:
     """
     Keep malformed user configuration out of diagnostics and reject unsupported fields.
