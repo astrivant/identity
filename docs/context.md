@@ -17,6 +17,25 @@ How does one task select guidance without treating every retrieved statement as
 applicable or authoritative?
 
 ```mermaid
+---
+config:
+  theme: base
+  look: classic
+  themeVariables:
+    background: '#fffdf8'
+    primaryColor: '#d6e0e9'
+    primaryTextColor: '#263642'
+    primaryBorderColor: '#65737b'
+    secondaryColor: '#efd6c5'
+    tertiaryColor: '#f5f1e7'
+    tertiaryTextColor: '#263642'
+    tertiaryBorderColor: '#8b846d'
+    lineColor: '#65737b'
+    textColor: '#263642'
+    clusterBkg: '#f5f1e7'
+    clusterBorder: '#8b846d'
+    edgeLabelBackground: '#fffdf8'
+---
 flowchart TB
     hierarchy["Hierarchy and<br/>relationships"] --> plan
     task["Mapping, task<br/>and workspace"] --> plan["plan<br/>Bounded candidates"]
@@ -27,6 +46,10 @@ flowchart TB
     receipt --> check["check<br/>Re-read current inputs"]
     check -->|stale inputs| plan
     check -->|coverage passes| use["Caller uses guidance<br/>Existing permissions apply"]
+    classDef olive fill:#e2ddba,stroke:#65737b,color:#263642
+    class hierarchy,task,receipt olive
+    classDef copper fill:#efd6c5,stroke:#65737b,color:#263642
+    class plan,review,resolve,check copper
 ```
 
 The [resolver](../pkg/witful/context/core.py) follows outgoing `requires`

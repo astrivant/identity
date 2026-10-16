@@ -16,6 +16,25 @@ How can concurrent sessions preserve independent work without sharing a mutable
 plaintext collection?
 
 ```mermaid
+---
+config:
+  theme: base
+  look: classic
+  themeVariables:
+    background: '#fffdf8'
+    primaryColor: '#d6e0e9'
+    primaryTextColor: '#263642'
+    primaryBorderColor: '#65737b'
+    secondaryColor: '#efd6c5'
+    tertiaryColor: '#f5f1e7'
+    tertiaryTextColor: '#263642'
+    tertiaryBorderColor: '#8b846d'
+    lineColor: '#65737b'
+    textColor: '#263642'
+    clusterBkg: '#f5f1e7'
+    clusterBorder: '#8b846d'
+    edgeLabelBackground: '#fffdf8'
+---
 flowchart TB
     main["Private remote main<br/>Starting revision"] -->|start| a["Sleeve A<br/>Isolated files"]
     main -->|start| b["Sleeve B<br/>Isolated files"]
@@ -27,6 +46,10 @@ flowchart TB
     open -->|reviewed resolution| reconcile
     reconcile -->|push and verify| integrated["Main contains sleeve history"]
     integrated --> guard["guard<br/>Normal closure"]
+    classDef olive fill:#e2ddba,stroke:#65737b,color:#263642
+    class main,branchA,branchB,integrated olive
+    classDef copper fill:#efd6c5,stroke:#65737b,color:#263642
+    class reconcile,open,guard copper
 ```
 
 For encrypted collections, each source directory is readable only on protected

@@ -7,11 +7,42 @@ those outputs within the permissions supplied by its host and the user.
 These diagrams describe implemented responsibilities and interfaces. Arrows show
 ownership or named data flow, not automatic execution or permission grants.
 
+## Reading the diagrams
+
+The palette complements the [README logo](assets/identity-logo.png): muted blue
+for components and ownership, copper for work and review, and olive for retained
+records and state. Pale node fills and charcoal labels preserve contrast; sequence
+diagrams use a light canvas to remain readable on a dark viewer background. Color supports the named roles;
+it does not indicate a permission grant, completion or safety guarantee.
+
+The [native storage views](native/diagrams/README.md) use the same palette with
+an explicit state legend. Their existing labels distinguish authoritative state,
+pending work, projections, disposable caches and services.
+
 ## The knowledge hierarchy
 
 What owns a teaching, and where does a concrete finding belong?
 
 ```mermaid
+---
+config:
+  theme: base
+  look: classic
+  themeVariables:
+    background: '#fffdf8'
+    primaryColor: '#d6e0e9'
+    primaryTextColor: '#263642'
+    primaryBorderColor: '#65737b'
+    secondaryColor: '#efd6c5'
+    tertiaryColor: '#f5f1e7'
+    tertiaryTextColor: '#263642'
+    tertiaryBorderColor: '#8b846d'
+    lineColor: '#65737b'
+    textColor: '#263642'
+    clusterBkg: '#f5f1e7'
+    clusterBorder: '#8b846d'
+    edgeLabelBackground: '#fffdf8'
+---
 flowchart LR
     identity["Identity"]
     discipline["Discipline"]
@@ -22,6 +53,10 @@ flowchart LR
     discipline -->|groups| skill
     skill -->|contains| lesson
     lesson -->|has| insight
+    classDef olive fill:#e2ddba,stroke:#65737b,color:#263642
+    class skill olive
+    classDef copper fill:#efd6c5,stroke:#65737b,color:#263642
+    class lesson,insight copper
 ```
 
 An Identity owns the collection; a Discipline groups an area of practice; a Skill
@@ -49,6 +84,25 @@ How do learned practices and repository facts reach an agent without becoming th
 same kind of knowledge?
 
 ```mermaid
+---
+config:
+  theme: base
+  look: classic
+  themeVariables:
+    background: '#fffdf8'
+    primaryColor: '#d6e0e9'
+    primaryTextColor: '#263642'
+    primaryBorderColor: '#65737b'
+    secondaryColor: '#efd6c5'
+    tertiaryColor: '#f5f1e7'
+    tertiaryTextColor: '#263642'
+    tertiaryBorderColor: '#8b846d'
+    lineColor: '#65737b'
+    textColor: '#263642'
+    clusterBkg: '#f5f1e7'
+    clusterBorder: '#8b846d'
+    edgeLabelBackground: '#fffdf8'
+---
 flowchart TB
     subgraph knowledge["Reviewed learning collection"]
         teachings["Lessons and catalog"] --> hierarchy["Hierarchy and<br/>reuse relationships"]
@@ -61,6 +115,10 @@ flowchart TB
     end
     context -->|reviewed guidance| agent["Executing agent"]
     query -->|source evidence| agent
+    classDef olive fill:#e2ddba,stroke:#65737b,color:#263642
+    class teachings,hierarchy,source,encrypted olive
+    classDef copper fill:#efd6c5,stroke:#65737b,color:#263642
+    class context,indexer,query copper
 ```
 
 The two paths are separate interfaces. `witful context` selects guidance from the

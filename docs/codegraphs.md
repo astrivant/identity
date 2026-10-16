@@ -14,6 +14,25 @@ not enroll repositories. Model-token reduction has not been measured.
 Where can readable source exist, and which component can contact other services?
 
 ```mermaid
+---
+config:
+  theme: base
+  look: classic
+  themeVariables:
+    background: '#fffdf8'
+    primaryColor: '#d6e0e9'
+    primaryTextColor: '#263642'
+    primaryBorderColor: '#65737b'
+    secondaryColor: '#efd6c5'
+    tertiaryColor: '#f5f1e7'
+    tertiaryTextColor: '#263642'
+    tertiaryBorderColor: '#8b846d'
+    lineColor: '#65737b'
+    textColor: '#263642'
+    clusterBkg: '#f5f1e7'
+    clusterBorder: '#8b846d'
+    edgeLabelBackground: '#fffdf8'
+---
 flowchart TB
     subgraph host["Admitted host"]
         source["Approved clean Git worktree"] -->|verified source bytes| runtime["Native controller<br/>CodeGraph service"]
@@ -25,6 +44,10 @@ flowchart TB
     runtime -->|current admission| authority["Independent authority"]
     runtime -->|scoped key operations| broker["Independent key broker"]
     runtime -->|signed ciphertext| storage["Native Git or PostgreSQL store"]
+    classDef olive fill:#e2ddba,stroke:#65737b,color:#263642
+    class source,image,authority,storage olive
+    classDef copper fill:#efd6c5,stroke:#65737b,color:#263642
+    class worker copper
 ```
 
 The network restriction applies to the SDK worker. The controller still contacts
@@ -192,27 +215,57 @@ fails with `incomplete`, never silently current-looking truncated JSON.
 What happens before a stored graph can supply context to its admitted consumer?
 
 ```mermaid
+---
+config:
+  theme: base
+  look: classic
+  themeVariables:
+    background: '#fffdf8'
+    primaryColor: '#d6e0e9'
+    primaryTextColor: '#263642'
+    primaryBorderColor: '#65737b'
+    secondaryColor: '#efd6c5'
+    tertiaryColor: '#f5f1e7'
+    tertiaryTextColor: '#263642'
+    tertiaryBorderColor: '#8b846d'
+    lineColor: '#65737b'
+    textColor: '#263642'
+    clusterBkg: '#f5f1e7'
+    clusterBorder: '#8b846d'
+    edgeLabelBackground: '#fffdf8'
+    actorBkg: '#d6e0e9'
+    actorTextColor: '#263642'
+    actorBorder: '#65737b'
+    actorLineColor: '#65737b'
+    signalColor: '#65737b'
+    signalTextColor: '#263642'
+    noteBkgColor: '#e2ddba'
+    noteTextColor: '#263642'
+    noteBorderColor: '#8b846d'
+---
 sequenceDiagram
     participant Client as Native client
     participant API as CodeGraph service
     participant Authority as Authority
     participant Store as Native store
     participant Keys as Key broker
-    Client->>API: mTLS query: revision and budgets
-    API->>Authority: Check scope and admission
-    Authority-->>API: Registration and frontier binding
-    API->>Store: Read selected encrypted graph
-    Store-->>API: Ciphertext and signatures
-    API->>Keys: Request scoped key operation
-    Keys-->>API: Authorized cryptographic result
-    API->>API: Verify and decrypt graph in memory
-    API->>API: Match enrollment and source
-    API->>API: Select bounded evidence
-    API->>API: Recheck source and elapsed budget
-    API->>Authority: Recheck admission before release
-    Authority-->>API: Current authorization
-    API-->>Client: Revision-bound evidence over mTLS
-    Note over Client: CLI forwards to admitted pipe or socket
+    rect rgb(255, 253, 248)
+        Client->>API: mTLS query: revision and budgets
+        API->>Authority: Check scope and admission
+        Authority-->>API: Registration and frontier binding
+        API->>Store: Read selected encrypted graph
+        Store-->>API: Ciphertext and signatures
+        API->>Keys: Request scoped key operation
+        Keys-->>API: Authorized cryptographic result
+        API->>API: Verify and decrypt graph in memory
+        API->>API: Match enrollment and source
+        API->>API: Select bounded evidence
+        API->>API: Recheck source and elapsed budget
+        API->>Authority: Recheck admission before release
+        Authority-->>API: Current authorization
+        API-->>Client: Revision-bound evidence over mTLS
+        Note over Client: CLI forwards to admitted pipe or socket
+    end
 ```
 
 This shows the logical flow of a successful request through

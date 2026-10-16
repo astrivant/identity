@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "source_commit": "77f621ceb9afc1b673fb19b87f50df1d8d6d26d6",
-  "verification_date": "2026-10-16",
+  "source_commit": "087058946f0ad44103caef8bbc65ba6003aa3ae3",
+  "verification_date": "2026-10-15",
   "scope": "Implemented synthetic/reference profiles; no production deployment or storage attestation asserted",
   "versions": {
     "native_codec": 1,
@@ -103,18 +103,18 @@
     "pkg/witful/sql/postgres/native/standbys.sql": "fef3f7ba8cf97b259ebc5312c89a53812cf0b37ea11686201941b1c7c811d498",
     "pkg/witful/sql/postgres/native/synchronous.sql": "589c1ee419a57b3ed1184a44441ccfba77ce909deebb5b2aee318bb421a144d2",
     "poetry.lock": "ec6dcbd27ac234ffe9ba9161bbe0619b696cfca3501bc6876694a2b1b6e735b6",
-    "scripts/native/diagrams.py": "60335990816aa00166b718753ff23963997a238bf520bf351a743a66add5601c",
+    "scripts/native/diagrams.py": "2dd81569f81371dca48b561b72a01aa187fb52756e5627868361db5e0a2a1a27",
     "tests/native/test_derivation.py": "af5491648bbe79f5aa80e21fb111d5b5b53352cac6290e34e40f01b020e87bea",
     "tests/native/test_migration.py": "569dd4d62c9c843afe83cbb6794ade72fc33bd65e093b1858ecd326454d5b26f",
     "tests/native/test_original_git.py": "68e3b9a5d035ff4bc1804c4b3ffa391eaed389c5888da52f382a6c9982dae147",
     "tests/native/test_physical.py": "e55a74394f78ac1d59e4f420ee6a38f6a507ac53406abf708ce1e84ee8906a9a"
   },
   "outputs": {
-    "state-trust.svg": "b3ec217538974a801f8a6ea07f41f8da879076cc3c1097bdeff300b1b6f1c7c5",
-    "write-ack.svg": "84e48a4fdc50d0654883cca6896f960a0657a3ae731e0d2de2ca59d9e2a4901b",
-    "branches-review.svg": "835eeeea855a91c126f061a4859fd4151ba415121200ae1ac14f0b0d062cc5a6",
-    "projection.svg": "77c4f00f0244e5bebeb97e5a2722263207b1306929f03f2eac28d9aa92801f03",
-    "recovery.svg": "e67bd995d5f5cc8b574618c4521120059b234b34a8ea7579976965816c5a7629",
-    "migration.svg": "cb4512dd7d6a6432e11774b721739b66ef0ef92c3044e7bbc9677b2a9ee6b124"
+    "state-trust.svg": "066c9ac117af651f6d2ff9e6bb9678d72a4dd37bc453c06197ec764c70d4059c",
+    "write-ack.svg": "04160eb563fd67ada14a0c725896052240d6810992283fbca00c243d83bd3e04",
+    "branches-review.svg": "a959c7dbac367ec3f95d8896efdeaec336d53fe401cd5e347821db631d029898",
+    "projection.svg": "9ebeddc77ca702e458503a545113ae0e83db8585b2b251b6f423b46c600cb0f1",
+    "recovery.svg": "67d55d54a4cc013bc5d410dd4b74fbe156cec90936e1b05fd362be16d91aa63c",
+    "migration.svg": "a8bf163758bdc715bdbc4b5e979766784fc867a9c4cd5893665871b45dddea08"
   }
 }

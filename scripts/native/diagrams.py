@@ -21,7 +21,8 @@ from witful.knowledge.contracts import structure
 
 ROOT = Path(__file__).resolve().parents[2]
 DIRECTORY = ROOT / "docs/native/diagrams"
-COLORS = {"authority": "#dceade", "pending": "#f4e5c8", "projection": "#dbe8f3", "cache": "#e8e5ef", "service": "#f0f2f3"}
+# Echo the README logo without making color the only indication of a state class.
+COLORS = {"authority": "#e2ddba", "pending": "#efd6c5", "projection": "#d6e0e9", "cache": "#f5f1e7", "service": "#eeeff0"}
 
 
 @frozen
@@ -175,7 +176,7 @@ def render(view: View, preview: Path | None) -> None:
             0.46,
             boxstyle="round,pad=0.025",
             facecolor=COLORS[node.kind],
-            edgecolor="#4d5d61",
+            edgecolor="#65737b",
             linewidth=1.0,
             zorder=2,
         )
@@ -192,7 +193,7 @@ def render(view: View, preview: Path | None) -> None:
                 patchB=boxes[edge.target],
                 arrowstyle="-|>",
                 mutation_scale=13,
-                color="#4d5d61",
+                color="#65737b",
                 linewidth=1.0,
                 connectionstyle=f"arc3,rad={edge.bend}",
                 zorder=1,
@@ -205,19 +206,19 @@ def render(view: View, preview: Path | None) -> None:
             ha="center",
             va="center",
             fontsize=8.8,
-            color="#30414a",
+            color="#263642",
             zorder=4,
-            bbox={"facecolor": "white", "edgecolor": "none", "pad": 1.5},
+            bbox={"facecolor": "#fffdf8", "edgecolor": "none", "pad": 1.5},
         )
     figure.text(0.5, 0.956, view.title, ha="center", va="top", fontsize=20, weight="bold")
-    figure.text(0.5, 0.919, view.question, ha="center", va="top", fontsize=13, color="#30414a")
+    figure.text(0.5, 0.919, view.question, ha="center", va="top", fontsize=13, color="#263642")
     figure.text(0.04, 0.12, textwrap.fill(view.notes, 165), ha="left", va="top", fontsize=9.5, linespacing=1.5)
     figure.text(
         0.04,
         0.032,
-        "GREEN authoritative  |  AMBER durable pending  |  BLUE replicated projection  |  PURPLE disposable cache  |  GRAY service",
+        "OLIVE authoritative  |  COPPER durable pending  |  BLUE replicated projection  |  CREAM disposable cache  |  GRAY service",
         fontsize=9,
-        color="#30414a",
+        color="#263642",
     )
     figure.savefig(DIRECTORY / (view.id + ".svg"), metadata={"Date": None, "Creator": "Witful native storage diagram renderer"})
     output = DIRECTORY / (view.id + ".svg")
@@ -252,7 +253,15 @@ def main() -> int:
         return 0
     assert args.date, "Supply --date after reviewing the current contracts"
     matplotlib.use("Agg")
-    with plt.rc_context({"font.family": "DejaVu Sans", "svg.fonttype": "none", "svg.hashsalt": "witful-native-storage-v1"}):
+    with plt.rc_context(
+        {
+            "font.family": "DejaVu Sans",
+            "text.color": "#263642",
+            "figure.facecolor": "#fffdf8",
+            "svg.fonttype": "none",
+            "svg.hashsalt": "witful-native-storage-v1",
+        }
+    ):
         for view in package.views:
             render(view, args.preview)
     revision = subprocess.run(["git", "rev-parse", "HEAD"], cwd=ROOT, capture_output=True, text=True, check=True).stdout.strip()
