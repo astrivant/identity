@@ -95,3 +95,24 @@ nonoverlap, recency decay, once-per-ancestor counting, revision handling, and an
 unchanged complete graph. Projection tests render every supported figure family,
 check that outer headings are absent while data labels remain, verify repeated
 PNG bytes, and exercise the privacy scan against visible labels.
+
+## Public README example
+
+The [README preview](../README.md#see-how-your-skills-connect) uses invented
+engineering disciplines and task observations from
+[`knowledge-preview.py`](../scripts/documentation/knowledge-preview.py).
+It reads no collection, repository history or credentials. Fixed dates make the
+working-emphasis calculation reproducible; the example is not evidence of actual
+project activity or measured productivity.
+
+From the source checkout's locked development environment:
+
+```bash
+python scripts/documentation/knowledge-preview.py --output .cache/readme-preview
+cp .cache/readme-preview/knowledge-map.svg docs/assets/knowledge-map-example.svg
+```
+
+The script uses the same renderer as real collection figures and produces SVG/PNG
+previews for inspection. Review the labels and layout before replacing the README
+asset. The separately linked project-comparison example has its own
+[source and regeneration contract](view-freshness.md).

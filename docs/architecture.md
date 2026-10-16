@@ -1,8 +1,20 @@
 # Architecture and concepts
 
-Identity owns a collection of reviewed knowledge and evidence. Witful is the
-library and CLI that validates, retrieves and records it. An executing agent uses
-those outputs within the permissions supplied by its host and the user.
+Make the next project benefit from what you learned on the last. Identity brings
+your lessons, decisions and supporting evidence together, so you can inspect the
+guidance your agents use and improve it as you work.
+
+## How the pieces fit
+
+| Component | Its role in your workflow |
+| --- | --- |
+| **Identity: your knowledge collection** | Keep reviewed lessons, decisions and evidence available across projects and agent sessions. You decide which guidance to accept. |
+| **Witful: your library and CLI** | Validate the collection, find relevant guidance and record what happened when you applied it. |
+| **Agent: your execution partner** | Use that guidance during a task, within the permissions you and its host provide. |
+
+The workflow is practical: capture a useful finding, review its evidence, retrieve
+it when a related task comes up, and record the outcome. The sections below show
+where each kind of knowledge belongs and how it moves through the system.
 
 These diagrams describe implemented responsibilities and interfaces. Arrows show
 ownership or named data flow, not automatic execution or permission grants.
