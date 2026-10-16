@@ -328,3 +328,17 @@ with exact-version links. Recover uncertain notification outcomes through the
 reporting receipt and rerun only the reporting job; never republish immutable
 artifacts to repair a comment. Reading this guide does not authorize a release
 or live notification outside the selected pipeline.
+## Discover capabilities through intent evidence
+
+Use [intent discovery](docs/intent-graphs.md) on an explicitly enrolled CodeGraph
+with an `intent-query` grant. Start with `witful intent find` and inspect exact
+source, coverage, counterevidence and missing requirements before selecting a
+helper. Verified intent requires an explicit authorized semantic review; drafts
+remain inferred. Discovery never records a use or supplies permission to execute.
+Respect the admitted output pipe and keep responses out of logs and ordinary files.
+
+Recheck graph/source generation and current authority on consumption. A changed
+input invalidates dependent review bindings; do not carry them forward based on
+an unchanged commit or a matching name. Use the existing context resolver for
+mandatory teachings and preserve their exact text. `preflight` describes checks;
+it does not run them or authorize publication.

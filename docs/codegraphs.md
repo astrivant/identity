@@ -79,6 +79,13 @@ Native storage retains the encrypted normalized graph and its history, not the
 worker's SQLite database. See the [concept map](architecture.md) for the separate
 roles of repository evidence, learned guidance and review receipts.
 
+## Intent discovery
+
+[Intent graphs](intent-graphs.md) connect canonical repertoire capabilities to this
+exact repository generation, with separate reviewed and inferred views, read
+coverage and complete evidence requirements. Discovery remains read-only; explicit
+publication and semantic review use separate native grants.
+
 ## Runtime and custody
 
 For explicit development bootstrap, [CodeGraph setup](codegraph-setup.md) defaults

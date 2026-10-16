@@ -17,6 +17,8 @@ from witful.codegraph.models import validate as validate_graph
 from witful.exceptions import NativeError
 from witful.instances import journal as instances
 from witful.instances.models import Event as InstanceEvent
+from witful.intent.contracts import validate as validate_intent
+from witful.intent.models import State as IntentState
 from witful.knowledge.applications import validate_applications
 from witful.knowledge.compiler import compile_identity, index
 from witful.knowledge.contracts import structure
@@ -36,6 +38,7 @@ __all__ = ["Entry", "decode", "encode", "validate"]
 
 MODELS: dict[str, type[object]] = {
     "repository-codegraph": Graph,
+    "repository-intent": IntentState,
     "reconciliation": Reconciliation,
     "catalog": Catalog,
     "application": Application,
@@ -82,6 +85,8 @@ def encode(entry: Entry) -> object:
             model = structure(entry.value, MODELS[entry.domain])
             if isinstance(model, Graph):
                 validate_graph(model)
+            elif isinstance(model, IntentState):
+                validate_intent(model)
         else:
             raise NativeError("unsupported")
         return {"domain": entry.domain, "value": pack(entry.value)}
