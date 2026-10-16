@@ -51,7 +51,7 @@ Then propose updated snapshots:
 ```bash
 poetry run python scripts/ci/provider_contracts/refresh.py \
     --github-ref REVIEWED_GITHUB_SPEC_SHA --gitlab-ref REVIEWED_GITLAB_SPEC_SHA
-poetry run pytest -n 0 scripts/ci/tests/test_provider_contracts.py tests/releases
+poetry run pytest -n 0 scripts/ci/tests/test_provider_contracts.py tests/provider_contracts tests/releases
 poetry run python scripts/ci/provider_contracts/refresh.py --check
 poetry run pre-commit run --all-files
 ```
@@ -66,8 +66,29 @@ package versions; those remain governed by the committed lockfile.
 Either revision override can be omitted to retain its committed pin. No override
 means reproducible regeneration at existing pins. `--check` fetches those pins and
 fails on source-byte or generated-output drift; it neither discovers newer versions
-nor edits files. Downloads are bounded, public and unauthenticated. Unavailable
-sources fail visibly rather than falling back to a stale success result.
+nor edits files. Specification downloads remain bounded, public and unauthenticated.
+GitHub metadata lookup uses `GH_TOKEN`, then `GITHUB_TOKEN`, when explicitly provided;
+otherwise local lookup remains anonymous. CI supplies its existing token only to the
+refresh step with `contents: read`. The token is confined to the GitHub SDK and is
+never passed to GitLab, specification downloads, observation artifacts or mock tests.
+The SDK requests one commit and avoids an extra repository-metadata lookup.
+
+This avoids relying on the shared runner IP's [anonymous GitHub quota](https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api).
+No new secret or permission is needed; the workflow uses GitHub's
+[built-in authentication](https://docs.github.com/en/actions/tutorials/authenticate-with-github_token).
+The locked SDK retries GET metadata requests at most twice. It interprets
+`X-RateLimit-Reset` and secondary-limit responses; urllib3 parses `Retry-After`,
+including HTTP dates. A small adapter adds up to one second of random jitter after
+the selected minimum and applies a 120-second maximum to each server-directed wait.
+A longer delay fails the gate for a later rerun instead of retrying before the
+server permits it. Total retry sleep is bounded at 242 seconds per request, in
+addition to the existing request timeout and job timeout.
+
+Permanent authentication/permission failures, exhausted retries and unavailable
+sources still block the gate. Credentials never fall back to anonymous access,
+and failures never accept stale snapshots. Loopback HTTP regressions exercise the
+real SDK retry transport with deterministic clocks and sleep capture; they do not
+claim live quota-exhaustion coverage.
 
 Review endpoint/schema changes, explicit fixture adjustments, license changes and
 SDK behavior together. Commit the manifest and generated snapshots in the same PR.

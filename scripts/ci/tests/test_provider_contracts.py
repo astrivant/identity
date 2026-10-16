@@ -7,7 +7,6 @@ from __future__ import annotations
 import copy
 import hashlib
 import json
-from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from io import BytesIO
 from threading import Thread
@@ -348,60 +347,3 @@ def test_latest_check_requires_reviewed_committed_inputs(tmp_path: Path, monkeyp
     assert (tmp_path / "manifest.json").read_bytes() == original
     assert (tmp_path / "github.json").read_bytes() == b"snapshot\n"
     assert json.loads(observation.read_text())["current"] is not stale
-
-
-def test_latest_resolution_uses_sdk_query_namespace(monkeypatch: MonkeyPatch) -> None:
-    """
-    Exercise the locked SDK URL construction so a vendor filter cannot replace its resource endpoint.
-
-    Args:
-        monkeypatch (MonkeyPatch): Intercept only HTTP transport; both real SDK managers construct requests.
-
-    Returns:
-        None: GitLab file filtering stays in the query string and both current immutable revisions are returned.
-    """
-    from provider_contracts.refresh import latest_revisions
-
-    seen: list[str] = []
-
-    def send(self: Session, request: PreparedRequest, **kwargs: object) -> Response:
-        """
-        Return minimal metadata only for the expected SDK requests, refusing every other network destination.
-
-        Args:
-            self (Session): SDK-owned request session.
-            request (PreparedRequest): Fully constructed SDK request.
-            **kwargs (object): Requests transport options, unused by this deterministic boundary.
-
-        Returns:
-            Response: Synthetic public metadata for the exact expected path and file filter.
-        """
-        assert request.url is not None
-        url = urlsplit(request.url)
-        query = parse_qs(url.query)
-        data: object
-        if url.hostname == "api.github.com" and url.path == "/repos/github/rest-api-description":
-            data = {"id": 1, "full_name": "github/rest-api-description"}
-        elif url.hostname == "api.github.com" and url.path == "/repos/github/rest-api-description/commits":
-            assert query["path"] == ["descriptions/api.github.com/api.github.com.json"]
-            assert query["sha"] == ["main"]
-            data = [{"sha": "a" * 40}]
-        else:
-            assert url.hostname == "gitlab.com"
-            assert unquote(url.path) == "/api/v4/projects/gitlab-org/gitlab/repository/commits"
-            assert query["path"] == ["doc/api/openapi/openapi_v3.yaml"]
-            assert query["ref_name"] == ["master"]
-            assert query["per_page"] == ["1"]
-            data = [{"id": "b" * 40}]
-        seen.append(url.path)
-        response = Response()
-        response.status_code = HTTPStatus.OK
-        response.headers["Content-Type"] = "application/json"
-        response._content = encoded(data)
-        response.request = request
-        response.url = request.url
-        return response
-
-    monkeypatch.setattr(Session, "send", send)
-    assert latest_revisions() == {"github": "a" * 40, "gitlab": "b" * 40}
-    assert len(seen) == 3

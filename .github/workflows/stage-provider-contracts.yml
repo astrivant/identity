@@ -22,13 +22,15 @@ jobs:
           persist-credentials: false
       - uses: ./.github/actions/python
       - name: Require committed latest contracts before PR or release acceptance
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: python scripts/ci/provider_contracts/refresh.py --check --latest --observation .cache/provider-contracts/latest.json
       - name: Bind SDK versions and tested API contracts to this source
         env:
           SOURCE_REVISION: ${{ inputs.source }}
         run: python scripts/ci/provider_contracts/report.py --source "$SOURCE_REVISION" --output .cache/provider-contracts/provenance.json
       - name: Exercise SDKs against isolated HTTP mock servers
-        run: pytest -n 0 scripts/ci/tests/test_provider_contracts.py tests/releases --junitxml=.cache/provider-contracts/junit.xml
+        run: pytest -n 0 scripts/ci/tests/test_provider_contracts.py tests/provider_contracts tests/releases --junitxml=.cache/provider-contracts/junit.xml
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
