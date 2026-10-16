@@ -16,6 +16,7 @@ from witful.codegraph.models import Graph
 from witful.codegraph.service import RepositoryGraph, source_coverage
 from witful.codegraph.snapshot import capture, read_source
 from witful.exceptions import NativeError
+from witful.intent.breadcrumbs import attach
 from witful.intent.contracts import extends, fingerprint, review_binding, validate
 from witful.intent.core import bounded, resolve
 from witful.intent.draft import environment, prepare
@@ -252,7 +253,13 @@ class IntentGraph:
         registration, frontier = self.graph.admit(access, "intent-query")
         graph, snapshot = self.snapshot(access, frontier)
         files = self.manifest(snapshot)
-        result = prepare(graph, files, inventory, int(native.clock()))
+        now = int(native.clock())
+        sources = {
+            item.path: read_source(Path(self.graph.enrollment.repository), item.path, item.size)
+            for item in files
+            if item.disposition == "source"
+        }
+        result = attach(prepare(graph, files, inventory, now), sources, now)
         validate(result)
         if len(json.dumps(as_data(result), ensure_ascii=True, separators=(",", ":")).encode()) > min(limits.text_bytes, limits.tokens):
             raise NativeError("incomplete")

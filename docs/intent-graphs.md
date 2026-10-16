@@ -7,7 +7,8 @@ claims. A later engineer or agent can retrieve that context and identify what
 needs inspection again instead of reconstructing it from names and old prose.
 
 CodeGraph supplies source topology; intent assertions explain purpose and
-constraints. Comments, docstrings, maintained contracts and inspected source can
+constraints.<sup>[\[1\]](codegraphs.md)</sup> Comments, docstrings, maintained
+contracts and inspected source can
 support a claim, with their exact source bindings retained. An assertion needs no
 executable entrypoint or tool registration. Canonical repertoire IDs connect tools,
 SDKs and services where those relationships apply; finding a helper is one use of
@@ -48,7 +49,8 @@ and error handling. Intent and CodeGraph share the engineer's reserved native
 scope, with separate refs inside one authenticated frontier. Native Git or
 PostgreSQL stores only signed ciphertext. Refresh uses the existing fenced
 compare-and-swap transaction and recovery path; an interrupted write cannot expose
-half a projection. Generic record, export and sharing routes remain unavailable
+half a projection.<sup>[\[2\]](native-storage.md)</sup> Generic record, export and
+sharing routes remain unavailable
 for this scope.
 
 The implementation follows [RFC #79](https://github.com/astrivant/product-research/pull/79).
@@ -130,30 +132,33 @@ limits. Results never search across identities or repositories.
 
 ### Prepare and review a candidate
 
-`witful intent draft` reads a canonical `Inventory` JSON snapshot from stdin and
-returns an unpublished `State`. It joins existing tool IDs and local entrypoint
-paths to the current graph. All generated assertions are inferred, with no review
+`witful intent draft` reads a canonical [`Inventory`][code:repertoire.inventory] JSON snapshot from stdin and
+returns an unpublished [`State`][code:intent.state]. It joins existing tool IDs and local entrypoint
+paths to the current graph. It also reads explicit documentation breadcrumbs
+from admitted source comments.<sup>[\[3\]](source-links.md#source-comments-and-consumers)</sup>
+All generated assertions are inferred, with no review
 or semantic reading receipt. Preparing or querying a draft does not increment tool
 use, create lessons or modify inventory.
 
 Submit the reviewed candidate through `witful intent publish --client PATH
---pipe --operation UUID --initial`, with the `State` on stdin. For a refresh, replace
+--pipe --operation UUID --initial`, with the [`State`][code:intent.state] on stdin. For a refresh, replace
 `--initial` with `--expected INTENT_REVISION` from a current query. A matching
 operation retry returns its original durable receipt; changed retry inputs conflict.
 
 `witful intent review --client PATH --pipe --operation UUID --expected INTENT_REVISION`
-accepts a `Review` on stdin. Leave `reviewer`, `authority` and `binding` empty and
+accepts a [`Review`][code:intent.review] on stdin. Leave `reviewer`, `authority` and `binding` empty and
 `reviewed` zero so the server can supply them. Name the precise assertion, versioned
 criterion, maintained intent-declaration evidence and rationale. A subsequent
 review names its predecessor. Withdrawals and refutations append history.
 
 Generate machine-readable contracts directly from the public Python models with
-`witful.knowledge.contracts.schema(State)`, `schema(Query)` and `schema(Result)`.
+`witful.knowledge.contracts.schema` with [`State`][code:intent.state],
+[`Query`][code:intent.query] or [`Result`][code:intent.result].
 Unknown fields and coercible wrong types are rejected at the API boundary.
 
 ## Witnesses, freshness and missing checks
 
-A `Requirement` contains alternative `Bundle` records. Every bundle is a complete
+A [`Requirement`][code:intent.requirement] contains alternative [`Bundle`][code:intent.bundle] records. Every bundle is a complete
 AND witness; `selected` freezes one reviewed OR choice. The resolver does not
 optimize or mix alternatives. It checks required evidence classes, common
 provenance roots when independence is required, freshness and recursively grounded
@@ -173,13 +178,15 @@ Changed configuration, parser, query/schema contract, repertoire, lockfile or
 supporting evidence makes that review stale. This deliberately conservative
 binding can require re-review after an additive evidence change. Reverse dependency
 closure identifies affected records deterministically; history remains unchanged.
+For documentation breadcrumbs, changing a source anchor identifies its declared
+document consumers through `affected`.<sup>[\[3\]](source-links.md#source-comments-and-consumers)</sup>
 A new CodeGraph generation requires a newly bound intent candidate.
 
 ## Transfer understanding between sessions and dependencies
 
 Publish an assertion with `tool` set to an empty string when it describes ordinary
-code rather than a registered repertoire item. Bind it to the relevant `Anchor`
-records and supporting `Evidence`, then append a semantic review when an
+code rather than a registered repertoire item. Bind it to the relevant [`Anchor`][code:intent.anchor]
+records and supporting [`Evidence`][code:intent.evidence], then append a semantic review when an
 authorized reviewer has checked its maintained intent source. The encrypted
 history persists independently of the caller session. A later session uses
 `find`, `explain` and `coverage` against that same admitted repository generation.
@@ -205,14 +212,15 @@ describe a dependency across projects; they neither import another repository's
 private graph nor grant access to it. This API queries one repository scope and
 does not perform cross-repository resolution or remote health checks.
 
-The `draft` command currently seeds assertions from the repertoire only. It does
-not automatically interpret every function or record everything an agent reads.
+The `draft` command seeds repertoire assertions and explicit documentation
+dependencies declared in source comments. It does not automatically interpret
+every function or record everything an agent reads.
 Repository-wide understanding is accumulated through explicit source-bound
 assertions, reading receipts, publication and review.
 
 ## Revalidate runtime conditions before acting
 
-The pure Python resolver accepts explicit fresh `Observation` values from a trusted
+The pure Python resolver accepts explicit fresh [`Observation`][code:intent.observation] values from a trusted
 orchestration boundary. HTTP clients cannot assert their own live observations.
 The HTTP facade therefore leaves live worktree/index, remote, authentication and
 approval checks missing when a procedure requires them. `preflight` describes
@@ -241,3 +249,18 @@ Run focused checks with `pytest tests/intent`. Native tests require the document
 These checks do not establish semantic adequacy, production enrollment, reduced
 model-token use or improved answer quality. No model service, telemetry, external
 optimizer or plaintext search cache is installed by this feature.
+
+<!-- docrefs:begin -->
+
+[code:intent.anchor]: ../pkg/witful/intent/models.py#L84
+[code:intent.bundle]: ../pkg/witful/intent/models.py#L251
+[code:intent.evidence]: ../pkg/witful/intent/models.py#L157
+[code:intent.observation]: ../pkg/witful/intent/models.py#L342
+[code:intent.query]: ../pkg/witful/intent/models.py#L359
+[code:intent.requirement]: ../pkg/witful/intent/models.py#L266
+[code:intent.result]: ../pkg/witful/intent/models.py#L410
+[code:intent.review]: ../pkg/witful/intent/models.py#L218
+[code:intent.state]: ../pkg/witful/intent/models.py#L307
+[code:repertoire.inventory]: ../pkg/witful/repertoire/models.py#L51
+
+<!-- docrefs:end -->

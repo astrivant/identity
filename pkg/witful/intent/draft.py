@@ -4,6 +4,7 @@ Prepare unreviewed capability candidates from the canonical repertoire and exact
 
 from __future__ import annotations
 
+from importlib.metadata import version
 from typing import TYPE_CHECKING
 
 from witful.intent.contracts import QUERY_VERSION, SCHEMA_VERSION, fingerprint
@@ -28,6 +29,7 @@ def environment(graph: Graph, files: tuple[File, ...]) -> dict[str, str]:
     """
     return {
         "parser": fingerprint(graph.indexer),
+        "documentation-parser": fingerprint(("docref/1", version("Pygments"))),
         "configuration": fingerprint(graph.enrollment),
         "dependency-locks": fingerprint(tuple(item for item in files if "lock" in item.path.rsplit("/", 1)[-1])),
     }

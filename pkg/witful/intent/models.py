@@ -80,6 +80,7 @@ class File:
     disposition: Literal["source", "generated", "excluded", "unsupported"] = "source"
 
 
+# docref:1 intent.anchor -> docs/intent-graphs.md
 @frozen
 class Anchor:
     """
@@ -152,6 +153,7 @@ class Coverage:
     observed: int
 
 
+# docref:1 intent.evidence -> docs/intent-graphs.md
 @frozen
 class Evidence:
     """
@@ -212,6 +214,7 @@ class Assertion:
     aliases: tuple[str, ...] = ()
 
 
+# docref:1 intent.review -> docs/intent-graphs.md
 @frozen
 class Review:
     """
@@ -244,6 +247,7 @@ class Review:
     binding: str = ""
 
 
+# docref:1 intent.bundle -> docs/intent-graphs.md
 @frozen
 class Bundle:
     """
@@ -258,6 +262,7 @@ class Bundle:
     members: tuple[str, ...]
 
 
+# docref:1 intent.requirement -> docs/intent-graphs.md
 @frozen
 class Requirement:
     """
@@ -298,6 +303,7 @@ class Dependency:
     prerequisites: tuple[str, ...]
 
 
+# docref:1 intent.state -> docs/intent-graphs.md
 @frozen
 class State:
     """
@@ -332,6 +338,7 @@ class State:
     globals: tuple[str, ...] = ()
 
 
+# docref:1 intent.observation -> docs/intent-graphs.md
 @frozen
 class Observation:
     """
@@ -348,6 +355,7 @@ class Observation:
     observed: int
 
 
+# docref:1 intent.query -> docs/intent-graphs.md
 @frozen
 class Query:
     """
@@ -398,6 +406,7 @@ class Claim:
     conformance: Literal["unknown"] = "unknown"
 
 
+# docref:1 intent.result -> docs/intent-graphs.md
 @frozen
 class Result:
     """

@@ -117,6 +117,7 @@ jobs:
       - run: npm ci --prefix scripts/documentation --ignore-scripts --no-fund
       - run: npm --prefix scripts/documentation test
       - run: pre-commit run codeowners --all-files
+      - run: pre-commit run documentation-source-links --all-files
       - run: pre-commit run documentation-syntax --all-files
       - run: pre-commit run markdown-lint --all-files
       - run: pre-commit run readme-format --all-files
