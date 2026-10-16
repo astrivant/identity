@@ -126,3 +126,18 @@ The isolated Linux SDK worker retains its no-swap controls in either profile.
 All other admission controls remain required. Setup does not sign the deployment
 attestation automatically, and an existing no-swap attestation does not implicitly
 select the macOS exception.
+
+For a local CodeGraph demo, an operator may explicitly trust the host administrator
+and substitute `local-development-administration` for `role-separation` in signed
+evidence. This accepts that the administrator can change both runtime and custody
+policy. It does not claim independently administered custody. The verifier confines
+this choice to a loopback controller and broker, local Git storage, enrolled graphs,
+and no configured export, migration, derivation or projection destinations.
+Service credentials, mutual TLS, grant checks and all remaining protection controls
+still apply. Ordinary deployment evidence retains independent role separation.
+
+For larger repositories, review `envelope.bytes` and `envelope.items` alongside
+the enrollment's source and worker limits. Native operation time, listener timeout,
+client timeout and query `--elapsed-ms` must accommodate the actual broker and
+indexing latency. These are separate bounds; increasing a worker limit does not
+increase the storage or query budget. Renew signed evidence after changing settings.

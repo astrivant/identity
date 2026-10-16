@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "source_commit": "3590a7137ea9f7554862d1da90bc6129cfe257c4",
+  "source_commit": "b11db156037a44980e42841a4f32fcab66d92de4",
   "verification_date": "2026-10-16",
   "scope": "Implemented synthetic/reference profiles; no production deployment or storage attestation asserted",
   "versions": {
@@ -40,7 +40,7 @@
     "pkg/witful/native/cli.py": "1fc33d3fbacd5a2d87e4c79bf453aad900f6659ab6389c37db0cd9f477f5407f",
     "pkg/witful/native/client.py": "5482d1017a8c33f619a586073c1a0314712b363473af49005b6d8747d1355088",
     "pkg/witful/native/codec.py": "927561fd6f228b102a9f5c80f677d346575e1d3c544803f3f7ff0a21d859bf73",
-    "pkg/witful/native/config.py": "f254f731b1ee029ba49d47e9aa5eefa0bbac2ece7a5f6cc0c3317c7b097c1490",
+    "pkg/witful/native/config.py": "829806b200da10616e0ff1a913b440425b7876f314616054ce2346aa6e00891c",
     "pkg/witful/native/context.py": "458ba6ee7c2898459ad77c9470c8ecc38c3f709cf912e96510baa747ab35b3f9",
     "pkg/witful/native/derivation.py": "fc16ebdb899094276989907287d9ca36201afd1d7d94935833d47d1b3ab8bd4a",
     "pkg/witful/native/derivation_models.py": "a9c56be915bc1989b6794fdc1cfa829099d19dc6f18cc16080c196c9ccc51aa3",
@@ -73,7 +73,7 @@
     "pkg/witful/native/sharing.py": "950b7bedc9f726210f2c697603fb9b0d01352d8f570f40942e8af7f580a972ae",
     "pkg/witful/native/sharing_cli.py": "405f72f917c16bebe108b3483d0bbf2bbebc7bb3b494c480e81e09232fe9d6d0",
     "pkg/witful/native/storage.py": "2246e4fab0cedfcbafbc1e5764f78b82c764bcbb08978f76d72cd7a5bb640f87",
-    "pkg/witful/native/values.py": "75e795cbf603d69241c85d99245c777ce64f20e05002e655182627e01187a9e6",
+    "pkg/witful/native/values.py": "354fa2250d934646dfe2a5bf7c61d6e4309ef921ea2013c34d852a5ae7e9e19c",
     "pkg/witful/native/views.py": "23ae200390c0f1d16375b43da50f841acfb5b50882a077d990c93751a4d281f5",
     "pkg/witful/native/wire.py": "672bfa2c38a40cbe61fbc086cd5ee3cc6d553640b25c9ae00d089796ad05b15c",
     "pkg/witful/sql/postgres/native/administration/authority.sql": "3114d2f2d60d364694bc64d68608ab3b69000719f1c9d99012e56b82c92bc084",
