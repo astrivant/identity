@@ -7,17 +7,72 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
+import random
 import re
+import time
 from datetime import UTC, datetime
 from pathlib import Path
+from typing import TYPE_CHECKING
 from urllib.request import urlopen
 
 import yaml
-from github import Github
+from github import Auth, Github
+from github.GithubRetry import GithubRetry
 from gitlab import Gitlab
 from witful.delivery.providers.base import object_value, string
 
+if TYPE_CHECKING:
+    from urllib3.response import BaseHTTPResponse
+
 DATA = Path(__file__).with_name("data")
+
+MAX_SERVER_WAIT = 120.0
+MAX_JITTER = 1.0
+
+
+class BoundedGithubRetry(GithubRetry):
+    """
+    Keep SDK rate-limit classification while bounding every wait, including Retry-After.
+    """
+
+    def sleep(self, response: BaseHTTPResponse | None = None) -> None:
+        """
+        Wait at least the server delay plus jitter, or fail without retrying early.
+
+        Args:
+            response (BaseHTTPResponse | None): Failed response, absent for transport errors.
+
+        Returns:
+            None: The selected bounded delay has elapsed.
+
+        Raises:
+            TimeoutError: The server requires more than the per-retry wait budget.
+        """
+        # The SDK handles reset timestamps and secondary limits; urllib3 parses Retry-After seconds or dates.
+        retry_after = self.get_retry_after(response) if response is not None else None
+        delay = retry_after if retry_after is not None else self.get_backoff_time()
+        if delay > MAX_SERVER_WAIT:
+            raise TimeoutError("GitHub retry requires more than the 120-second wait budget; rerun after the rate limit resets")
+
+        # Jitter must follow the server's minimum, never shorten it or let concurrent runners retry together.
+        time.sleep(max(0.0, delay) + random.uniform(0.0, MAX_JITTER))
+
+
+def github_retry() -> BoundedGithubRetry:
+    """
+    Limit read-only metadata requests to three attempts and at most 242 seconds of retry sleep.
+
+    Returns:
+        BoundedGithubRetry: SDK retry policy with finite transport/status attempts and header-aware waits.
+    """
+    return BoundedGithubRetry(
+        total=2,
+        other=0,
+        allowed_methods=frozenset({"GET"}),
+        backoff_factor=1.0,
+        max_rate_limit_wait=MAX_SERVER_WAIT,
+    )
 
 
 def encoded(value: object) -> bytes:
@@ -163,8 +218,9 @@ def latest_revisions() -> dict[str, str]:
     Returns:
         dict[str, str]: Immutable source commits observed during this invocation.
     """
-    # Public metadata needs no token, local login lookup or credential-bearing environment.
-    with Github(retry=0, timeout=30) as github:
+    # Shared runner IPs can exhaust anonymous quota; scope an explicit token to the GitHub SDK only.
+    token = os.environ.get("GH_TOKEN") or os.environ.get("GITHUB_TOKEN")
+    with Github(auth=Auth.Token(token) if token else None, retry=github_retry(), timeout=30, per_page=1, lazy=True) as github:
         github_revision = (
             github.get_repo("github/rest-api-description")
             .get_commits(sha="main", path="descriptions/api.github.com/api.github.com.json")[0]
