@@ -12,6 +12,8 @@ from jsonschema import ValidationError
 
 from witful.checkpoints import journal as checkpoints
 from witful.checkpoints.models import Checkpoint
+from witful.codegraph.models import Graph
+from witful.codegraph.models import validate as validate_graph
 from witful.exceptions import NativeError
 from witful.instances import journal as instances
 from witful.instances.models import Event as InstanceEvent
@@ -33,6 +35,7 @@ from witful.repertoire.models import Inventory, Use
 __all__ = ["Entry", "decode", "encode", "validate"]
 
 MODELS: dict[str, type[object]] = {
+    "repository-codegraph": Graph,
     "reconciliation": Reconciliation,
     "catalog": Catalog,
     "application": Application,
@@ -76,7 +79,9 @@ def encode(entry: Entry) -> object:
             fields = {"id", "topic", "lesson", "source", "observed_at", "supersedes"}
             mapping(entry.value, fields)
         elif entry.domain in MODELS:
-            structure(entry.value, MODELS[entry.domain])
+            model = structure(entry.value, MODELS[entry.domain])
+            if isinstance(model, Graph):
+                validate_graph(model)
         else:
             raise NativeError("unsupported")
         return {"domain": entry.domain, "value": pack(entry.value)}

@@ -130,6 +130,10 @@ class Client:
             ):
                 raise NativeError("invalid")
             if operation not in {
+                "codegraph-build",
+                "codegraph-query",
+                "codegraph-recover",
+                "codegraph-rotate",
                 "append",
                 "read",
                 "read-conditional",

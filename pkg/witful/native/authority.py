@@ -319,7 +319,7 @@ class Authority:
         if (
             not permissions
             or len(set(permissions)) != len(permissions)
-            or not set(permissions) <= {"write", "review", "rotate", "import", "project", "export"}
+            or not set(permissions) <= {"write", "review", "rotate", "import", "project", "export", "codegraph-build"}
         ):
             raise NativeError("invalid")
         return permissions, decode_batch(binary(body["batch"]), self.limits)
@@ -346,7 +346,7 @@ class Authority:
             None: Candidate is durable; no data-store mutation is implied.
         """
         permissions = tuple(dict.fromkeys((permission, *requirements)))
-        if not set(permissions) <= {"write", "review", "rotate", "import", "project", "export"}:
+        if not set(permissions) <= {"write", "review", "rotate", "import", "project", "export", "codegraph-build"}:
             raise NativeError("invalid")
         payload = codec.encode({"permissions": list(permissions), "batch": encode_batch(batch, self.limits)}, self.limits)
         with self.guard(access, "write", "*", now, permissions) as (connection, registration):

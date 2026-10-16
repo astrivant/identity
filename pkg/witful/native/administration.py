@@ -54,7 +54,22 @@ class Enrollment:
             None: The request is structurally valid; an independent administrator still reviews and applies it.
         """
         identifier(self.backend)
-        allowed = {"read", "traverse", "search", "write", "review", "derive", "import", "export", "recover", "migrate", "rotate", "project"}
+        allowed = {
+            "read",
+            "traverse",
+            "search",
+            "write",
+            "review",
+            "derive",
+            "import",
+            "export",
+            "recover",
+            "migrate",
+            "rotate",
+            "project",
+            "codegraph-build",
+            "codegraph-query",
+        }
         if (
             self.access.epoch != 1
             or not self.actions

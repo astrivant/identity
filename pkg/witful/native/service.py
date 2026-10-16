@@ -79,6 +79,7 @@ class Service:
         clock (Callable[[], float]): UTC epoch observation boundary.
         monotonic (Callable[[], float]): Elapsed-time boundary for bounded operations.
         projection (Policy): Explicit durable outbox and remote-verification policy, disabled by default.
+        graph_scopes (tuple[tuple[str, str], ...]): Reserved extension scopes excluded from generic HTTP operations.
     """
 
     store: Store = field(repr=False)
@@ -89,6 +90,7 @@ class Service:
     clock: Callable[[], float] = time.time
     monotonic: Callable[[], float] = time.monotonic
     projection: Policy = Policy()
+    graph_scopes: tuple[tuple[str, str], ...] = ()
 
     def seal(self, access: Access, record: str, kind: int, value: object) -> tuple[Pointer, Object]:
         """

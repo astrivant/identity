@@ -6727,6 +6727,63 @@
                                     },
                                     "required": []
                                 },
+                                "codegraphs": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "title": "Enrollment",
+                                        "additionalProperties": false,
+                                        "properties": {
+                                            "tenant": {
+                                                "type": "string"
+                                            },
+                                            "extension": {
+                                                "type": "string"
+                                            },
+                                            "owner": {
+                                                "type": "string"
+                                            },
+                                            "subject": {
+                                                "type": "string"
+                                            },
+                                            "repository": {
+                                                "type": "string"
+                                            },
+                                            "image": {
+                                                "type": "string"
+                                            },
+                                            "excluded": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "retention": {
+                                                "type": "string"
+                                            },
+                                            "source_bytes": {
+                                                "type": "integer"
+                                            },
+                                            "files": {
+                                                "type": "integer"
+                                            },
+                                            "seconds": {
+                                                "type": "integer"
+                                            },
+                                            "memory_mb": {
+                                                "type": "integer"
+                                            }
+                                        },
+                                        "required": [
+                                            "tenant",
+                                            "extension",
+                                            "owner",
+                                            "subject",
+                                            "repository",
+                                            "image"
+                                        ]
+                                    }
+                                },
                                 "version": {
                                     "enum": [
                                         1
@@ -7871,6 +7928,63 @@
                                             }
                                         },
                                         "required": []
+                                    },
+                                    "codegraphs": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object",
+                                            "title": "Enrollment",
+                                            "additionalProperties": false,
+                                            "properties": {
+                                                "tenant": {
+                                                    "type": "string"
+                                                },
+                                                "extension": {
+                                                    "type": "string"
+                                                },
+                                                "owner": {
+                                                    "type": "string"
+                                                },
+                                                "subject": {
+                                                    "type": "string"
+                                                },
+                                                "repository": {
+                                                    "type": "string"
+                                                },
+                                                "image": {
+                                                    "type": "string"
+                                                },
+                                                "excluded": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "retention": {
+                                                    "type": "string"
+                                                },
+                                                "source_bytes": {
+                                                    "type": "integer"
+                                                },
+                                                "files": {
+                                                    "type": "integer"
+                                                },
+                                                "seconds": {
+                                                    "type": "integer"
+                                                },
+                                                "memory_mb": {
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "required": [
+                                                "tenant",
+                                                "extension",
+                                                "owner",
+                                                "subject",
+                                                "repository",
+                                                "image"
+                                            ]
+                                        }
                                     },
                                     "version": {
                                         "enum": [

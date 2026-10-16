@@ -31,7 +31,10 @@ def decode(service: Service, authenticate: Callable[[], str]) -> tuple[Access, o
     Returns:
         tuple[Access, object]: Typed authentication bindings and operation-owned arguments.
     """
-    return decode_request(authenticate, service.protection, service.budget.bytes)
+    access, arguments = decode_request(authenticate, service.protection, service.budget.bytes)
+    if (access.scope.tenant, access.scope.identity) in service.graph_scopes:
+        raise NativeError("denied")
+    return access, arguments
 
 
 def decode_request(authenticate: Callable[[], str], protection: Callable[[], None], byte_limit: int) -> tuple[Access, object]:

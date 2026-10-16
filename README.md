@@ -47,6 +47,7 @@ execution; people retain authority over accepted guidance and publication.
   - [Privacy and data protection](#privacy-and-data-protection)
   - [Development and releases](#development-and-releases)
 - [License](#license)
+- [Encrypted repository context](#encrypted-repository-context)
 <!-- toc:end -->
 
 ## Getting started
@@ -140,6 +141,9 @@ See [CLI options](docs/CLI.md), [database and Helm inputs](docs/storage.md),
 use `WITFUL_TEST_DATABASE_URL`; ordinary commands never read that variable.
 
 ## How it works
+
+See the [architecture and concept diagrams](docs/architecture.md) for the knowledge
+hierarchy, evidence records, runtime boundaries and links to operation-specific flows.
 
 Policy means the reviewed expectations, constraints, and procedures that guide
 an agent's work. Learning connects those rules to sourced lessons and observed
@@ -290,3 +294,9 @@ Identity and Witful are source-available under [BSL 1.1](LICENSE), with Astrivan
 LLC as licensor and no additional production-use grant. Each version converts to
 GPLv3 four years after its first public distribution under BSL. See
 [licensing and separately licensed components](docs/licensing.md).
+
+## Encrypted repository context
+
+The optional [CodeGraph extension](docs/codegraphs.md) retrieves bounded, revision-bound
+symbol and caller evidence from separately encrypted repository graphs. It keeps
+derived code facts separate from learned guidance and requires explicit enrollment.

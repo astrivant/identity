@@ -124,6 +124,10 @@ contracts, evidence limits, and follow-up work. No tag or release is part of tha
 
 ## Measured coverage
 
+Projects with Helm charts also require hypothesis-helm property tests. Follow
+[the chart testing guide](docs/chart-testing.md) for the tested domains, local
+reproduction and CI failure artifacts. These supplement the existing chart examples.
+
 The Python test job combines pytest-xdist workers through pytest-cov and measures
 line and branch coverage for `witful`, excluding only test modules. It retains
 JSON, XML, raw coverage data, and a badge/provenance pair in the `python-coverage`
