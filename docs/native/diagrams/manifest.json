@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "source_commit": "b11db156037a44980e42841a4f32fcab66d92de4",
+  "source_commit": "3351afb545734c5595e328ab9c285a16a1b42821",
   "verification_date": "2026-10-16",
   "scope": "Implemented synthetic/reference profiles; no production deployment or storage attestation asserted",
   "versions": {
@@ -19,7 +19,7 @@
     "helm/witful/references/native/values.yaml": "0101e85f886e1dc3b9f1f17b7d572c84b4255622ba0b46442e1c4792a4578efa",
     "helm/witful/references/projection/values.yaml": "cb4177194e6ed3698603e4431ef4f3db4fc957ada441f0df76f59d5b2f249bab",
     "helm/witful/templates/projection-scheduler.yaml": "30069f96574e412932ac3708b4a90317eafda1ef34e12663caecd488c9bf9608",
-    "helm/witful/values.schema.json": "dfc33c6c36404b7920ae92ec6aa7ad0d786efc3a35e5e94a96304789fa17da49",
+    "helm/witful/values.schema.json": "dedf820a7fe89bddf22489bbd0202196ccc9f566070a05689021cb915e3ae16c",
     "pkg/witful/native/__init__.py": "52e475efa3ef82ee46d6e7e2af3ccfeee7a48556c3567ae9e20f6f65390dc5e1",
     "pkg/witful/native/administration.py": "6353d79be9d1434f22e2787b46f20c946fb7c9cfe5843c258786f2c45cf63cf5",
     "pkg/witful/native/api/__init__.py": "feb4b8855de1de8cf8eb3d6714307b16a273d4e07eed84df0791fdfb4c4591b9",

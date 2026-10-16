@@ -6772,6 +6772,36 @@
                                             },
                                             "memory_mb": {
                                                 "type": "integer"
+                                            },
+                                            "profile": {
+                                                "enum": [
+                                                    "python",
+                                                    "sdk"
+                                                ],
+                                                "type": "string"
+                                            },
+                                            "worker_bytes": {
+                                                "type": "integer"
+                                            },
+                                            "extensions": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "object",
+                                                    "title": "Extension",
+                                                    "additionalProperties": false,
+                                                    "properties": {
+                                                        "suffix": {
+                                                            "type": "string"
+                                                        },
+                                                        "language": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "suffix",
+                                                        "language"
+                                                    ]
+                                                }
                                             }
                                         },
                                         "required": [
@@ -7974,6 +8004,36 @@
                                                 },
                                                 "memory_mb": {
                                                     "type": "integer"
+                                                },
+                                                "profile": {
+                                                    "enum": [
+                                                        "python",
+                                                        "sdk"
+                                                    ],
+                                                    "type": "string"
+                                                },
+                                                "worker_bytes": {
+                                                    "type": "integer"
+                                                },
+                                                "extensions": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "title": "Extension",
+                                                        "additionalProperties": false,
+                                                        "properties": {
+                                                            "suffix": {
+                                                                "type": "string"
+                                                            },
+                                                            "language": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "suffix",
+                                                            "language"
+                                                        ]
+                                                    }
                                                 }
                                             },
                                             "required": [

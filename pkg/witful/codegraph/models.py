@@ -4,6 +4,7 @@ Define inert revision-bound graph records and independently approved enrollment 
 
 from __future__ import annotations
 
+import re
 from pathlib import PurePosixPath
 from typing import Literal
 
@@ -11,6 +12,22 @@ from attrs import frozen
 
 from witful.exceptions import NativeError
 from witful.native.context import identifier
+
+Coverage = Literal["indexed", "file-only", "excluded", "unsupported", "sdk-omitted", "worker-control", "non-text", "pending"]
+
+
+@frozen
+class Extension:
+    """
+    Bind a custom suffix to a language validated by the actual pinned SDK.
+
+    Attributes:
+        suffix (str): Canonical lowercase dot-prefixed suffix.
+        language (str): Upstream language identifier, never executable parser code.
+    """
+
+    suffix: str
+    language: str
 
 
 @frozen
@@ -31,6 +48,9 @@ class Enrollment:
         files (int): Maximum tracked paths inspected.
         seconds (int): Maximum worker lifetime.
         memory_mb (int): Worker memory including its nonswappable temporary filesystem.
+        profile (Literal["python", "sdk"]): Legacy Python selection or the upstream SDK's complete language detector.
+        worker_bytes (int): Maximum serialized worker input and output bytes.
+        extensions (tuple[Extension, ...]): Explicit custom suffix mappings; the SDK validates language support.
     """
 
     tenant: str
@@ -45,6 +65,9 @@ class Enrollment:
     files: int = 2048
     seconds: int = 60
     memory_mb: int = 512
+    profile: Literal["python", "sdk"] = "python"
+    worker_bytes: int = 16 * 1024 * 1024
+    extensions: tuple[Extension, ...] = ()
 
     def __attrs_post_init__(self) -> None:
         """
@@ -59,8 +82,23 @@ class Enrollment:
             raise NativeError("invalid")
         if not digest(self.subject) or not self.image.startswith("sha256:") or not digest(self.image[7:]):
             raise NativeError("invalid")
-        if any(type(value) is not int or value < 1 for value in (self.source_bytes, self.files, self.seconds, self.memory_mb)):
+        if any(
+            type(value) is not int or value < 1
+            for value in (self.source_bytes, self.files, self.seconds, self.memory_mb, self.worker_bytes)
+        ):
             raise NativeError("invalid")
+        if self.profile not in {"python", "sdk"}:
+            raise NativeError("invalid")
+        if self.extensions and self.profile != "sdk":
+            raise NativeError("invalid")
+        if len({item.suffix for item in self.extensions}) != len(self.extensions):
+            raise NativeError("invalid")
+        for item in self.extensions:
+            if (
+                re.fullmatch(r"\.[a-z0-9][a-z0-9_-]{0,63}", item.suffix) is None
+                or re.fullmatch(r"[a-z][a-z0-9_-]{0,63}", item.language) is None
+            ):
+                raise NativeError("invalid")
         for pattern in self.excluded:
             relative(pattern)
 
@@ -72,7 +110,7 @@ class Source:
 
     Attributes:
         path (str): Repository-relative source path.
-        text (str): Exact UTF-8 source; never interpreted as instructions.
+        text (str): Exact UTF-8 text; never interpreted as instructions.
         digest (str): SHA-256 of original bytes.
     """
 
@@ -89,12 +127,14 @@ class File:
     Attributes:
         path (str): Repository-relative path.
         digest (str): Original Git blob ID for omitted files or SHA-256 of indexed bytes.
-        coverage (Literal["indexed", "excluded", "unsupported"]): Explicit inspection scope.
+        coverage (Coverage): Explicit selection, extraction, omission or encoding status; pending is transient only.
+        language (str): SDK-detected language, empty for legacy or unclassified files.
     """
 
     path: str
     digest: str
-    coverage: Literal["indexed", "excluded", "unsupported"]
+    coverage: Coverage
+    language: str = ""
 
 
 @frozen
@@ -154,7 +194,7 @@ class Graph:
         unresolved (int): Unresolved references reported by the SDK.
         omitted_untracked (bool): Whether Git reported untracked files omitted from this build.
         schema (Literal["repository-codegraph/0.1.0"]): Closed extension schema.
-        language (Literal["python"]): First supported language profile.
+        language (Literal["python", "sdk"]): Source selection profile; per-file language is reported by the SDK.
     """
 
     enrollment: Enrollment
@@ -168,7 +208,7 @@ class Graph:
     unresolved: int
     omitted_untracked: bool
     schema: Literal["repository-codegraph/0.1.0"] = "repository-codegraph/0.1.0"
-    language: Literal["python"] = "python"
+    language: Literal["python", "sdk"] = "python"
 
 
 def digest(value: str, lengths: tuple[int, ...] = (64,)) -> bool:
@@ -221,11 +261,15 @@ def validate(graph: Graph) -> None:
     identifier(graph.generation)
     if not digest(graph.revision, (40, 64)) or not digest(graph.tree, (40, 64)) or graph.unresolved < 0:
         raise NativeError("invalid")
+    if graph.language != graph.enrollment.profile:
+        raise NativeError("invalid")
     for item in graph.files:
+        if item.coverage == "pending":
+            raise NativeError("incomplete")
         relative(item.path)
         if not digest(item.digest, (40, 64)):
             raise NativeError("invalid")
-    paths = {relative(item.path) for item in graph.files if item.coverage == "indexed"}
+    paths = {relative(item.path) for item in graph.files if item.coverage in {"indexed", "file-only"}}
     ids = {node.id for node in graph.nodes}
     if len(ids) != len(graph.nodes) or len({item.path for item in graph.files}) != len(graph.files):
         raise NativeError("invalid")

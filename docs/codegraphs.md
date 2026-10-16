@@ -1,7 +1,7 @@
 # Encrypted repository codegraphs
 
 The optional CodeGraph extension retrieves bounded symbol and caller references
-from an approved Python repository. Each codebase has a separate encrypted native
+from an approved repository using the upstream CodeGraph SDK's language support. Each codebase has a separate encrypted native
 scope associated with one engineer's identity. Derived code facts remain separate
 from lessons, skills, application counts and compiled guidance.
 
@@ -51,7 +51,7 @@ flowchart TB
 ```
 
 The network restriction applies to the SDK worker. The controller still contacts
-its configured authority, broker and storage. Only verified Python source bytes
+its configured authority, broker and storage. Only verified selected source bytes
 enter the worker; it receives no host-directory mount, broker credentials or
 identity learning records. Source text and SDK index files are readable during
 processing. The controller also handles readable graph data while sealing or
@@ -134,10 +134,10 @@ The current Helm deployment therefore does not enable this local worker.
 
 Every invocation uses a read-only image, no network, no mounts from the repository,
 no Linux capabilities, no core dumps, no persistent container logs and bounded
-memory/processes/time. Python source arrives through stdin and is copied into a
-private, nonswappable `/work` tmpfs. SDK SQLite, WAL, journal, config and temporary
+memory/processes/time. UTF-8 source and supporting text arrive through stdin and are
+copied into a private, nonswappable `/work` tmpfs. SDK SQLite, WAL, journal, config and temporary
 files stay there. Telemetry is disabled before SDK import. No repository installer,
-hooks, filters, imported Python or instruction files execute. Timeout and cancellation
+hooks, filters, source programs or instruction files execute. Timeout and cancellation
 remove the named daemon-owned container, not merely its CLI parent.
 
 ## Enrollment inputs
@@ -157,6 +157,9 @@ schemas include every input. Defaults disable the feature with an empty list.
 | `excluded` | Relative glob exclusions, applied before extraction |
 | `retention` | Reviewed policy reference; no implicit deletion |
 | `source_bytes`, `files` | Bounds for complete tracked input inspection |
+| `profile` | `sdk` delegates all language detection to upstream; `python` retains the existing enrollment behavior |
+| `extensions` | Optional `{suffix, language}` entries for the SDK's custom extension mapping |
+| `worker_bytes` | Maximum serialized worker input and output bytes |
 | `seconds`, `memory_mb` | Worker lifetime and memory budgets |
 
 Renew the native deployment evidence after changing settings. Enrollments additionally
@@ -167,6 +170,47 @@ recipient's protected output handling. Existing evidence fails if it omits these
 controls. Settings changes require evidence renewal because the signature binds the complete
 effective configuration. Unchanged pre-extension evidence remains valid when
 `codegraphs` is empty; that compatibility path never admits an enrolled graph.
+
+## Language support and coverage
+
+Set `profile: sdk` on a new enrollment to use every language recognized by the
+locked upstream SDK. Witful maintains no separate language whitelist. Detection
+runs inside the isolated worker and includes ordinary extensions, compound suffixes,
+content-dependent dialects and context-specific files. Supporting manifests are
+read as data for upstream analysis; source programs and installers never execute.
+
+Existing enrollments default to `profile: python` to preserve their input selection.
+To broaden one, select `sdk`, review its byte/file/memory budgets, renew signed
+configuration evidence and build a new generation using `--expected`. Retained
+ciphertext and the preceding generation stay intact. Scope and key permissions do
+not expand merely because language detection changes.
+
+Optional custom suffixes use upstream language identifiers:
+
+```json
+{
+  "profile": "sdk",
+  "extensions": [{"suffix": ".custom", "language": "javascript"}]
+}
+```
+
+The SDK validates these mappings. Repository-owned `codegraph.json` and
+`.gitignore` files cannot override the signed enrollment. They receive the explicit
+`worker-control` disposition; only the approved extension mappings become SDK
+configuration. The SDK's own built-in exclusions remain visible as `sdk-omitted`.
+
+Every tracked file receives a recorded disposition: `indexed`, `file-only`,
+`excluded`, `unsupported`, `sdk-omitted`, `worker-control` or `non-text`. The SDK
+reports each detected language. Query results include language and coverage counts;
+file-level tracking does not imply symbol or caller extraction. Unsupported text
+and non-UTF-8/binary input remain visible in the encrypted manifest. Parser failures,
+incomplete extraction and resource exhaustion fail the build without publishing a
+partial generation. Source freshness remains separate from extraction coverage.
+
+The compatibility job discovers the SDK's advertised language registry dynamically
+and exercises every entry, alongside meaningful mixed-language source fixtures.
+SDK upgrades therefore test actual bundled parsers without silently narrowing the
+supported set. Exact revisions and image IDs remain bound to each enrollment.
 
 ## Build, retrieve and refresh
 
@@ -217,7 +261,7 @@ revoked authority is checked again immediately before release.
 Results contain qualified source spans and edge provenance, not full source files.
 `symbol`, `callers` and `impact` queries bound traversal and complete serialized
 output through existing context limits. The token budget is a conservative UTF-8
-byte bound, not a measured tokenizer count. Static Python analysis can miss dynamic
+byte bound, not a measured tokenizer count. Static analysis can miss dynamic
 calls; an absent edge is never proof of absence. Budget exhaustion is visible or
 fails with `incomplete`, never silently current-looking truncated JSON.
 

@@ -126,6 +126,11 @@ For an explicitly accepted macOS development deployment, signed evidence may
 select `macos-encrypted-swap`; verify the actual encrypted-swap and FileVault state.
 Keep the no-swap default elsewhere and retain every other admission control.
 
+For new multilingual enrollments, select `profile: sdk`; the pinned upstream SDK
+owns language detection, including custom suffix mappings. Review per-file coverage
+and keep file-level tracking, parser failures and unsupported inputs distinct.
+Existing Python enrollments require an explicit reviewed refresh to broaden scope.
+
 Follow [the optional CodeGraph contract](docs/codegraphs.md) only for explicitly
 enrolled codebases. Use the existing admitted runtime and independent graph-scoped
 keys/grants. Build against exact clean commits and request bounded source evidence;
