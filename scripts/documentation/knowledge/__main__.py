@@ -41,7 +41,9 @@ def main() -> int:
     for example in collections:
         alias = example.identity.id.removeprefix("example:")
 
-        for path in write_plots(example.identity, example.applications, args.output / alias):
+        # Match awareness/resume exports: the surrounding document supplies the
+        # heading, while labels, legends and the common map style stay intact.
+        for path in write_plots(example.identity, example.applications, args.output / alias, projection=True):
             print(path)
 
     inputs = [

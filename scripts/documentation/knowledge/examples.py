@@ -12,6 +12,7 @@ from witful.knowledge.models import Application, Discipline, Identity, Insight, 
 
 type Teaching = tuple[str, str, str]
 type Area = tuple[str, tuple[Teaching, ...]]
+type Scenario = tuple[str, str, tuple[str, ...]]
 
 _SOURCE = "Invented documentation example; no personal collection or actual task outcome."
 _SYNC: Teaching = ("Synchronize identity", "Refresh before work", "Preserve local edits")
@@ -102,6 +103,31 @@ _COLLECTIONS: tuple[tuple[str, str, tuple[Area, ...]], ...] = (
         ),
     ),
 )
+_REUSE: dict[str, tuple[Scenario, ...]] = {
+    "application": (
+        ("review-api-change", "Delivery", ("API contracts", "Testing", "Code review", "Documentation")),
+        ("release-api-change", "Delivery", ("Testing", "Signed releases", "Code review", "Documentation")),
+        ("document-contract", "Communication", ("API contracts", "Documentation", "Visual evidence")),
+        ("review-follow-up", "Continual learning", ("Completion review", "Testing", "Code review")),
+    ),
+    "platform": (
+        ("rollout-service", "Operations", ("Deployment", "Observability", "Access policy")),
+        ("release-rollout", "Delivery", ("Signed releases", "Key custody", "Deployment")),
+        ("rehearse-recovery", "Delivery", ("Recovery", "Observability", "Key custody")),
+        ("review-incident", "Continual learning", ("Incident learning", "Observability", "Deployment")),
+    ),
+    "research": (
+        ("publish-study", "Communication", ("Data quality", "Provenance", "Reproducibility", "Visual evidence")),
+        ("compare-revisions", "Experiment design", ("Comparison", "Data quality", "Provenance", "Visual evidence")),
+        ("replay-result", "Experiment design", ("Reproducibility", "Provenance", "Documentation")),
+        ("review-experiment", "Continual learning", ("Experiment review", "Comparison", "Visual evidence")),
+    ),
+}
+_PREREQUISITES: dict[str, tuple[str, str, str]] = {
+    "application": ("Signed releases", "Code review", "Review the change before publishing it."),
+    "platform": ("Signed releases", "Key custody", "Controlled signing keys are needed to verify a release."),
+    "research": ("Visual evidence", "Data quality", "Validate plotted measurements before drawing a conclusion."),
+}
 
 
 @frozen
@@ -111,7 +137,7 @@ class Example:
 
     Attributes:
         identity (Identity): Independently namespaced synthetic collection.
-        applications (tuple[Application, ...]): Invented, unassessed task observations scoped to this collection.
+        applications (tuple[Application, ...]): Invented task observations and outcomes scoped to this collection.
     """
 
     identity: Identity
@@ -166,21 +192,24 @@ def examples() -> tuple[Example, ...]:
         )
         # Curated bridges remain inside the owning identity. Similar labels in
         # another collection never imply shared records or a transfer grant.
-        first, second, third, learning = disciplines
+        first, _, _, learning = disciplines
+        skills = {skill.name: skill.id for discipline in disciplines for skill in discipline.skills}
+        contexts = {discipline.name: discipline.id for discipline in disciplines}
+        source, target, rationale = _PREREQUISITES[alias]
         identity = Identity(
             f"example:{alias}",
             name,
             disciplines,
             (
                 Relation(first.skills[0].id, first.skills[1].id, "related", "Synthetic bridge: complementary practice."),
-                Relation(second.skills[0].id, third.skills[0].id, "requires", "Synthetic prerequisite for this collection."),
+                Relation(skills[source], skills[target], "requires", "Synthetic prerequisite: " + rationale),
                 Relation(learning.skills[1].id, first.skills[1].id, "transfers", "Synthetic proposal to reuse the review practice."),
             ),
         )
         applications: list[Application] = []
 
-        # Fixed task dates supply activity for the emphasis map. Unassessed
-        # outcomes cannot manufacture successful reuse or a real productivity claim.
+        # Early observations show activity without reporting an outcome. The
+        # explicit scenarios below then demonstrate verified, repeated reuse.
         for ordinal, discipline in enumerate(disciplines):
             for part, skill in enumerate(discipline.skills):
                 companion = disciplines[(ordinal + 1) % len(disciplines)].skills[part]
@@ -194,6 +223,21 @@ def examples() -> tuple[Example, ...]:
                     f"2026-01-{30 - ordinal * 7 - part:02d}T12:00:00+00:00",
                 )
                 applications.append(evolve(event, id=application_id(event)))
+
+        # These successful outcomes are invented demo inputs, not measurements.
+        # Repeat skills across named scenarios so relative co-use has real graph
+        # structure instead of assigning a decorative weight to an edge.
+        for ordinal, (task, context, names) in enumerate(_REUSE[alias]):
+            event = Application(
+                "",
+                f"example:{alias}:{task}",
+                contexts[context],
+                tuple(sorted(skills[name] for name in names)),
+                "verified",
+                "Invented successful scenario for the reuse demonstration. " + _SOURCE,
+                f"2026-02-{ordinal + 2:02d}T12:00:00+00:00",
+            )
+            applications.append(evolve(event, id=application_id(event)))
 
         validate_applications(identity, applications)
         result.append(Example(identity, tuple(applications)))

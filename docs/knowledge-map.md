@@ -33,10 +33,13 @@ See [collection operations](private-collections.md) and the explicit
 
 ### From observations to connections
 
-Each example also contains eight invented task observations. They refer to
-concepts inside that identity and have an `unassessed` outcome. Their purpose is
-to exercise the real renderer, not to claim that any engineer completed those
-tasks. The [data export](assets/knowledge-collections-example.json) preserves the
+Each example contains twelve invented task observations: eight initial uses with
+an `unassessed` outcome, followed by four scenarios marked `verified` to demonstrate
+successful reuse. Application engineering repeats testing and review across API
+changes; platform engineering reuses deployment and observability across rollouts
+and incidents; research engineering carries provenance through comparisons and
+publication. Their dates, checks and outcomes are synthetic, not evidence that any
+engineer performed these tasks. The [data export](assets/knowledge-collections-example.json) preserves the
 full hierarchy, application records and typed edges separately for each identity.
 
 | Link in the graph data | Source and meaning |
@@ -49,6 +52,10 @@ full hierarchy, application records and typed edges separately for each identity
 The maps below are separate projections of those collections. Each computes its
 own counts, recency and fitted Gaussian. The multi-identity overview is a
 documentation illustration, not a federated search or a merged collection.
+
+Repeated verified co-use produces stronger, green connections through the ordinary
+metrics calculation. The named scenarios and their outcomes make each connection
+traceable to the synthetic source records.
 
 | Collection | Areas of practice | Connection map |
 | --- | --- | --- |
@@ -135,6 +142,13 @@ observed reuse, and green identifies reuse reported as verified. Links to
 offscreen disciplines remain in the complete graph export. The map reports how
 many disciplines are visible.
 
+Every relationship has a visible baseline: a dark slate stroke for containment,
+curated links and unassessed observations, with green retained for reported verified
+reuse. Lines start at one point wide and increase with observed affinity. Their
+opacity stays at 80%, above the translucent bubble fills; peripheral emphasis
+fades the bubbles rather than erasing connections. Label gaps keep strokes clear
+of text. Sparse or unassessed collections use the same styling as dense histories.
+
 ## Resume projection
 
 Standalone figures keep their title and question subtitle. Awareness publication
@@ -178,6 +192,8 @@ connection, hierarchy and usage views. A
 [documentation renderer](../scripts/documentation/knowledge/overview.py) adds the
 fully labeled ownership overview, using the logo's blue, olive and copper palette.
 SVG/PNG previews support visual inspection; JSON exposes every input and edge.
+The collection views use `projection=True`, just like awareness/resume exports:
+the containing document supplies headings, while labels and legends remain.
 Tests check collection isolation, all five hierarchy levels and rendered label
 bounds. Review the labels and layout before replacing the assets. The separately
 linked project-comparison example has its own

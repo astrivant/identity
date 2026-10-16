@@ -219,7 +219,9 @@ keeps identifiers, evidence and application counts separate even where labels ma
 **From individual tasks to a connected body of experience.** This view focuses on
 the application engineer's collection above, using the same renderer as collection
 dashboards and Resumeme exports. Bubbles group skills by discipline; links expose
-curated relationships and recorded co-use. The
+curated relationships and recorded co-use. Twelve synthetic scenarios demonstrate
+how experience connects: green links show successful reuse in the demo, and thicker
+strokes show stronger recorded affinity. The
 fitted Gaussian shows **working emphasis dispersion**: the concentration and spread
 of recent recorded activity. Counts describe activity, not proficiency.
 [Compare the other two collections](docs/knowledge-map.md#multiple-identities)

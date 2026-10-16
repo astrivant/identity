@@ -215,10 +215,10 @@
             "evidence": "Synthetic bridge: complementary practice."
           },
           {
-            "source": "example:application:skill:1:0",
-            "target": "example:application:skill:2:0",
+            "source": "example:application:skill:1:1",
+            "target": "example:application:skill:1:0",
             "kind": "requires",
-            "evidence": "Synthetic prerequisite for this collection."
+            "evidence": "Synthetic prerequisite: Review the change before publishing it."
           },
           {
             "source": "example:application:skill:3:1",
@@ -324,16 +324,97 @@
           "outcome": "unassessed",
           "evidence": "Invented documentation example; no personal collection or actual task outcome.",
           "observed_at": "2026-01-08T12:00:00+00:00"
+        },
+        {
+          "id": "031296329eeab4d09cb4355e1889d8462db5e80e3b4e01dcb742a18a6582c56b",
+          "task": "example:application:review-api-change",
+          "discipline_id": "example:application:area:1",
+          "concept_ids": [
+            "example:application:skill:0:0",
+            "example:application:skill:0:1",
+            "example:application:skill:1:0",
+            "example:application:skill:2:0"
+          ],
+          "outcome": "verified",
+          "evidence": "Invented successful scenario for the reuse demonstration. Invented documentation example; no personal collection or actual task outcome.",
+          "observed_at": "2026-02-02T12:00:00+00:00"
+        },
+        {
+          "id": "2d1632386ab7d29ea885cbd82afa4b296c11bd65da5a795530c8f2c8fb216385",
+          "task": "example:application:release-api-change",
+          "discipline_id": "example:application:area:1",
+          "concept_ids": [
+            "example:application:skill:0:1",
+            "example:application:skill:1:0",
+            "example:application:skill:1:1",
+            "example:application:skill:2:0"
+          ],
+          "outcome": "verified",
+          "evidence": "Invented successful scenario for the reuse demonstration. Invented documentation example; no personal collection or actual task outcome.",
+          "observed_at": "2026-02-03T12:00:00+00:00"
+        },
+        {
+          "id": "b60224c03f1a3243e4a328988157f19988968de1cc2a322814804bea6c157397",
+          "task": "example:application:document-contract",
+          "discipline_id": "example:application:area:2",
+          "concept_ids": [
+            "example:application:skill:0:0",
+            "example:application:skill:2:0",
+            "example:application:skill:2:1"
+          ],
+          "outcome": "verified",
+          "evidence": "Invented successful scenario for the reuse demonstration. Invented documentation example; no personal collection or actual task outcome.",
+          "observed_at": "2026-02-04T12:00:00+00:00"
+        },
+        {
+          "id": "ad2f808489258a3d5ddd2e67672066ce0c1302dd729d7bbc68d6c734f0f1f566",
+          "task": "example:application:review-follow-up",
+          "discipline_id": "example:application:area:3",
+          "concept_ids": [
+            "example:application:skill:0:1",
+            "example:application:skill:1:0",
+            "example:application:skill:3:1"
+          ],
+          "outcome": "verified",
+          "evidence": "Invented successful scenario for the reuse demonstration. Invented documentation example; no personal collection or actual task outcome.",
+          "observed_at": "2026-02-05T12:00:00+00:00"
         }
       ],
       "edges": [
         {
           "source": "example:application:skill:0:0",
-          "target": "example:application:skill:1:0",
+          "target": "example:application:skill:0:1",
           "kind": "co-use",
           "applications": 1,
-          "verified": 0,
-          "strength": 0.0,
+          "verified": 1,
+          "strength": 0.4082482904638631,
+          "evidence": ""
+        },
+        {
+          "source": "example:application:skill:0:0",
+          "target": "example:application:skill:1:0",
+          "kind": "co-use",
+          "applications": 2,
+          "verified": 1,
+          "strength": 0.4082482904638631,
+          "evidence": ""
+        },
+        {
+          "source": "example:application:skill:0:0",
+          "target": "example:application:skill:2:0",
+          "kind": "co-use",
+          "applications": 2,
+          "verified": 2,
+          "strength": 0.8164965809277261,
+          "evidence": ""
+        },
+        {
+          "source": "example:application:skill:0:0",
+          "target": "example:application:skill:2:1",
+          "kind": "co-use",
+          "applications": 1,
+          "verified": 1,
+          "strength": 0.7071067811865475,
           "evidence": ""
         },
         {
@@ -365,20 +446,38 @@
         },
         {
           "source": "example:application:skill:0:1",
+          "target": "example:application:skill:1:0",
+          "kind": "co-use",
+          "applications": 3,
+          "verified": 3,
+          "strength": 1.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:application:skill:0:1",
           "target": "example:application:skill:1:1",
           "kind": "co-use",
-          "applications": 1,
-          "verified": 0,
-          "strength": 0.0,
+          "applications": 2,
+          "verified": 1,
+          "strength": 0.5773502691896258,
+          "evidence": ""
+        },
+        {
+          "source": "example:application:skill:0:1",
+          "target": "example:application:skill:2:0",
+          "kind": "co-use",
+          "applications": 2,
+          "verified": 2,
+          "strength": 0.6666666666666666,
           "evidence": ""
         },
         {
           "source": "example:application:skill:0:1",
           "target": "example:application:skill:3:1",
           "kind": "co-use",
-          "applications": 1,
-          "verified": 0,
-          "strength": 0.0,
+          "applications": 2,
+          "verified": 1,
+          "strength": 0.5773502691896258,
           "evidence": ""
         },
         {
@@ -401,11 +500,29 @@
         },
         {
           "source": "example:application:skill:1:0",
-          "target": "example:application:skill:2:0",
+          "target": "example:application:skill:1:1",
           "kind": "co-use",
           "applications": 1,
-          "verified": 0,
-          "strength": 0.0,
+          "verified": 1,
+          "strength": 0.5773502691896258,
+          "evidence": ""
+        },
+        {
+          "source": "example:application:skill:1:0",
+          "target": "example:application:skill:2:0",
+          "kind": "co-use",
+          "applications": 3,
+          "verified": 2,
+          "strength": 0.6666666666666666,
+          "evidence": ""
+        },
+        {
+          "source": "example:application:skill:1:0",
+          "target": "example:application:skill:3:1",
+          "kind": "co-use",
+          "applications": 1,
+          "verified": 1,
+          "strength": 0.5773502691896258,
           "evidence": ""
         },
         {
@@ -415,6 +532,15 @@
           "applications": 1,
           "verified": 0,
           "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:application:skill:1:1",
+          "target": "example:application:skill:2:0",
+          "kind": "co-use",
+          "applications": 1,
+          "verified": 1,
+          "strength": 0.5773502691896258,
           "evidence": ""
         },
         {
@@ -433,6 +559,15 @@
           "applications": 1,
           "verified": 0,
           "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:application:skill:2:0",
+          "target": "example:application:skill:2:1",
+          "kind": "co-use",
+          "applications": 1,
+          "verified": 1,
+          "strength": 0.5773502691896258,
           "evidence": ""
         },
         {
@@ -725,6 +860,24 @@
         },
         {
           "source": "example:application:skill:0:0",
+          "target": "example:application:area:1",
+          "kind": "observed-transfer",
+          "applications": 1,
+          "verified": 1,
+          "strength": 0.5,
+          "evidence": ""
+        },
+        {
+          "source": "example:application:skill:0:0",
+          "target": "example:application:area:2",
+          "kind": "observed-transfer",
+          "applications": 1,
+          "verified": 1,
+          "strength": 0.5,
+          "evidence": ""
+        },
+        {
+          "source": "example:application:skill:0:0",
           "target": "example:application:area:3",
           "kind": "observed-transfer",
           "applications": 1,
@@ -734,11 +887,20 @@
         },
         {
           "source": "example:application:skill:0:1",
+          "target": "example:application:area:1",
+          "kind": "observed-transfer",
+          "applications": 2,
+          "verified": 2,
+          "strength": 0.6666666666666666,
+          "evidence": ""
+        },
+        {
+          "source": "example:application:skill:0:1",
           "target": "example:application:area:3",
           "kind": "observed-transfer",
-          "applications": 1,
-          "verified": 0,
-          "strength": 0.0,
+          "applications": 2,
+          "verified": 1,
+          "strength": 0.3333333333333333,
           "evidence": ""
         },
         {
@@ -748,6 +910,15 @@
           "applications": 1,
           "verified": 0,
           "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:application:skill:1:0",
+          "target": "example:application:area:3",
+          "kind": "observed-transfer",
+          "applications": 1,
+          "verified": 1,
+          "strength": 0.3333333333333333,
           "evidence": ""
         },
         {
@@ -763,9 +934,9 @@
           "source": "example:application:skill:2:0",
           "target": "example:application:area:1",
           "kind": "observed-transfer",
-          "applications": 1,
-          "verified": 0,
-          "strength": 0.0,
+          "applications": 3,
+          "verified": 2,
+          "strength": 0.6666666666666666,
           "evidence": ""
         },
         {
@@ -805,13 +976,13 @@
           "evidence": "Synthetic bridge: complementary practice."
         },
         {
-          "source": "example:application:skill:1:0",
-          "target": "example:application:skill:2:0",
+          "source": "example:application:skill:1:1",
+          "target": "example:application:skill:1:0",
           "kind": "requires",
           "applications": 0,
           "verified": 0,
           "strength": 0.0,
-          "evidence": "Synthetic prerequisite for this collection."
+          "evidence": "Synthetic prerequisite: Review the change before publishing it."
         },
         {
           "source": "example:application:skill:3:1",
@@ -1038,10 +1209,10 @@
             "evidence": "Synthetic bridge: complementary practice."
           },
           {
-            "source": "example:platform:skill:1:0",
-            "target": "example:platform:skill:2:0",
+            "source": "example:platform:skill:2:0",
+            "target": "example:platform:skill:1:0",
             "kind": "requires",
-            "evidence": "Synthetic prerequisite for this collection."
+            "evidence": "Synthetic prerequisite: Controlled signing keys are needed to verify a release."
           },
           {
             "source": "example:platform:skill:3:1",
@@ -1147,16 +1318,95 @@
           "outcome": "unassessed",
           "evidence": "Invented documentation example; no personal collection or actual task outcome.",
           "observed_at": "2026-01-08T12:00:00+00:00"
+        },
+        {
+          "id": "ce258ed013416add3b3251cfa55753e16cb9c842960f8c89ee77474078154d3d",
+          "task": "example:platform:rollout-service",
+          "discipline_id": "example:platform:area:0",
+          "concept_ids": [
+            "example:platform:skill:0:0",
+            "example:platform:skill:0:1",
+            "example:platform:skill:1:1"
+          ],
+          "outcome": "verified",
+          "evidence": "Invented successful scenario for the reuse demonstration. Invented documentation example; no personal collection or actual task outcome.",
+          "observed_at": "2026-02-02T12:00:00+00:00"
+        },
+        {
+          "id": "faeed56ce2e5a32919188072643b106a24c0ac41fe73bad26e41afe5a989ec34",
+          "task": "example:platform:release-rollout",
+          "discipline_id": "example:platform:area:2",
+          "concept_ids": [
+            "example:platform:skill:0:0",
+            "example:platform:skill:1:0",
+            "example:platform:skill:2:0"
+          ],
+          "outcome": "verified",
+          "evidence": "Invented successful scenario for the reuse demonstration. Invented documentation example; no personal collection or actual task outcome.",
+          "observed_at": "2026-02-03T12:00:00+00:00"
+        },
+        {
+          "id": "01800daae179e2be406c4e24c6341cdb9db7dec7576b728bb48e657a8a74230b",
+          "task": "example:platform:rehearse-recovery",
+          "discipline_id": "example:platform:area:2",
+          "concept_ids": [
+            "example:platform:skill:0:1",
+            "example:platform:skill:1:0",
+            "example:platform:skill:2:1"
+          ],
+          "outcome": "verified",
+          "evidence": "Invented successful scenario for the reuse demonstration. Invented documentation example; no personal collection or actual task outcome.",
+          "observed_at": "2026-02-04T12:00:00+00:00"
+        },
+        {
+          "id": "3aeb3b9b1347fb449d7d9578fbaf6a74af1ed4ea72c26014549666bd9d6f6b86",
+          "task": "example:platform:review-incident",
+          "discipline_id": "example:platform:area:3",
+          "concept_ids": [
+            "example:platform:skill:0:0",
+            "example:platform:skill:0:1",
+            "example:platform:skill:3:1"
+          ],
+          "outcome": "verified",
+          "evidence": "Invented successful scenario for the reuse demonstration. Invented documentation example; no personal collection or actual task outcome.",
+          "observed_at": "2026-02-05T12:00:00+00:00"
         }
       ],
       "edges": [
         {
           "source": "example:platform:skill:0:0",
+          "target": "example:platform:skill:0:1",
+          "kind": "co-use",
+          "applications": 2,
+          "verified": 2,
+          "strength": 0.6666666666666666,
+          "evidence": ""
+        },
+        {
+          "source": "example:platform:skill:0:0",
           "target": "example:platform:skill:1:0",
           "kind": "co-use",
+          "applications": 2,
+          "verified": 1,
+          "strength": 0.4082482904638631,
+          "evidence": ""
+        },
+        {
+          "source": "example:platform:skill:0:0",
+          "target": "example:platform:skill:1:1",
+          "kind": "co-use",
           "applications": 1,
-          "verified": 0,
-          "strength": 0.0,
+          "verified": 1,
+          "strength": 0.5773502691896258,
+          "evidence": ""
+        },
+        {
+          "source": "example:platform:skill:0:0",
+          "target": "example:platform:skill:2:0",
+          "kind": "co-use",
+          "applications": 1,
+          "verified": 1,
+          "strength": 0.5773502691896258,
           "evidence": ""
         },
         {
@@ -1178,6 +1428,15 @@
           "evidence": ""
         },
         {
+          "source": "example:platform:skill:0:0",
+          "target": "example:platform:skill:3:1",
+          "kind": "co-use",
+          "applications": 1,
+          "verified": 1,
+          "strength": 0.5773502691896258,
+          "evidence": ""
+        },
+        {
           "source": "example:platform:skill:0:0:insight",
           "target": "example:platform:skill:1:0",
           "kind": "co-use",
@@ -1188,20 +1447,38 @@
         },
         {
           "source": "example:platform:skill:0:1",
-          "target": "example:platform:skill:1:1",
+          "target": "example:platform:skill:1:0",
           "kind": "co-use",
           "applications": 1,
-          "verified": 0,
-          "strength": 0.0,
+          "verified": 1,
+          "strength": 0.4082482904638631,
+          "evidence": ""
+        },
+        {
+          "source": "example:platform:skill:0:1",
+          "target": "example:platform:skill:1:1",
+          "kind": "co-use",
+          "applications": 2,
+          "verified": 1,
+          "strength": 0.5773502691896258,
+          "evidence": ""
+        },
+        {
+          "source": "example:platform:skill:0:1",
+          "target": "example:platform:skill:2:1",
+          "kind": "co-use",
+          "applications": 1,
+          "verified": 1,
+          "strength": 0.5773502691896258,
           "evidence": ""
         },
         {
           "source": "example:platform:skill:0:1",
           "target": "example:platform:skill:3:1",
           "kind": "co-use",
-          "applications": 1,
-          "verified": 0,
-          "strength": 0.0,
+          "applications": 2,
+          "verified": 1,
+          "strength": 0.5773502691896258,
           "evidence": ""
         },
         {
@@ -1226,9 +1503,18 @@
           "source": "example:platform:skill:1:0",
           "target": "example:platform:skill:2:0",
           "kind": "co-use",
+          "applications": 2,
+          "verified": 1,
+          "strength": 0.7071067811865475,
+          "evidence": ""
+        },
+        {
+          "source": "example:platform:skill:1:0",
+          "target": "example:platform:skill:2:1",
+          "kind": "co-use",
           "applications": 1,
-          "verified": 0,
-          "strength": 0.0,
+          "verified": 1,
+          "strength": 0.7071067811865475,
           "evidence": ""
         },
         {
@@ -1548,20 +1834,38 @@
         },
         {
           "source": "example:platform:skill:0:0",
-          "target": "example:platform:area:3",
+          "target": "example:platform:area:2",
           "kind": "observed-transfer",
           "applications": 1,
-          "verified": 0,
-          "strength": 0.0,
+          "verified": 1,
+          "strength": 0.3333333333333333,
+          "evidence": ""
+        },
+        {
+          "source": "example:platform:skill:0:0",
+          "target": "example:platform:area:3",
+          "kind": "observed-transfer",
+          "applications": 2,
+          "verified": 1,
+          "strength": 0.3333333333333333,
+          "evidence": ""
+        },
+        {
+          "source": "example:platform:skill:0:1",
+          "target": "example:platform:area:2",
+          "kind": "observed-transfer",
+          "applications": 1,
+          "verified": 1,
+          "strength": 0.3333333333333333,
           "evidence": ""
         },
         {
           "source": "example:platform:skill:0:1",
           "target": "example:platform:area:3",
           "kind": "observed-transfer",
-          "applications": 1,
-          "verified": 0,
-          "strength": 0.0,
+          "applications": 2,
+          "verified": 1,
+          "strength": 0.3333333333333333,
           "evidence": ""
         },
         {
@@ -1574,12 +1878,21 @@
           "evidence": ""
         },
         {
+          "source": "example:platform:skill:1:0",
+          "target": "example:platform:area:2",
+          "kind": "observed-transfer",
+          "applications": 2,
+          "verified": 2,
+          "strength": 1.0,
+          "evidence": ""
+        },
+        {
           "source": "example:platform:skill:1:1",
           "target": "example:platform:area:0",
           "kind": "observed-transfer",
-          "applications": 1,
-          "verified": 0,
-          "strength": 0.0,
+          "applications": 2,
+          "verified": 1,
+          "strength": 1.0,
           "evidence": ""
         },
         {
@@ -1628,13 +1941,13 @@
           "evidence": "Synthetic bridge: complementary practice."
         },
         {
-          "source": "example:platform:skill:1:0",
-          "target": "example:platform:skill:2:0",
+          "source": "example:platform:skill:2:0",
+          "target": "example:platform:skill:1:0",
           "kind": "requires",
           "applications": 0,
           "verified": 0,
           "strength": 0.0,
-          "evidence": "Synthetic prerequisite for this collection."
+          "evidence": "Synthetic prerequisite: Controlled signing keys are needed to verify a release."
         },
         {
           "source": "example:platform:skill:3:1",
@@ -1861,10 +2174,10 @@
             "evidence": "Synthetic bridge: complementary practice."
           },
           {
-            "source": "example:research:skill:1:0",
-            "target": "example:research:skill:2:0",
+            "source": "example:research:skill:2:1",
+            "target": "example:research:skill:0:0",
             "kind": "requires",
-            "evidence": "Synthetic prerequisite for this collection."
+            "evidence": "Synthetic prerequisite: Validate plotted measurements before drawing a conclusion."
           },
           {
             "source": "example:research:skill:3:1",
@@ -1970,16 +2283,97 @@
           "outcome": "unassessed",
           "evidence": "Invented documentation example; no personal collection or actual task outcome.",
           "observed_at": "2026-01-08T12:00:00+00:00"
+        },
+        {
+          "id": "3e276e5e6b1593604c735c7f7ee83de76d6a5ea385335944264047846bf5ad7e",
+          "task": "example:research:publish-study",
+          "discipline_id": "example:research:area:2",
+          "concept_ids": [
+            "example:research:skill:0:0",
+            "example:research:skill:0:1",
+            "example:research:skill:1:0",
+            "example:research:skill:2:1"
+          ],
+          "outcome": "verified",
+          "evidence": "Invented successful scenario for the reuse demonstration. Invented documentation example; no personal collection or actual task outcome.",
+          "observed_at": "2026-02-02T12:00:00+00:00"
+        },
+        {
+          "id": "c299d11ed537f34659f76c487dd0d5d2be4d1694e3ff07cf77a3d896468bdd72",
+          "task": "example:research:compare-revisions",
+          "discipline_id": "example:research:area:1",
+          "concept_ids": [
+            "example:research:skill:0:0",
+            "example:research:skill:0:1",
+            "example:research:skill:1:1",
+            "example:research:skill:2:1"
+          ],
+          "outcome": "verified",
+          "evidence": "Invented successful scenario for the reuse demonstration. Invented documentation example; no personal collection or actual task outcome.",
+          "observed_at": "2026-02-03T12:00:00+00:00"
+        },
+        {
+          "id": "f22ef8a36d4f2bc5a73e0f21d615b7e2c6c70c9b7c4a822b182911c98498ae88",
+          "task": "example:research:replay-result",
+          "discipline_id": "example:research:area:1",
+          "concept_ids": [
+            "example:research:skill:0:1",
+            "example:research:skill:1:0",
+            "example:research:skill:2:0"
+          ],
+          "outcome": "verified",
+          "evidence": "Invented successful scenario for the reuse demonstration. Invented documentation example; no personal collection or actual task outcome.",
+          "observed_at": "2026-02-04T12:00:00+00:00"
+        },
+        {
+          "id": "c74f33102ed62857aad29aa171b84008f1723a5f647373ce89a066eaf481fe53",
+          "task": "example:research:review-experiment",
+          "discipline_id": "example:research:area:3",
+          "concept_ids": [
+            "example:research:skill:1:1",
+            "example:research:skill:2:1",
+            "example:research:skill:3:1"
+          ],
+          "outcome": "verified",
+          "evidence": "Invented successful scenario for the reuse demonstration. Invented documentation example; no personal collection or actual task outcome.",
+          "observed_at": "2026-02-05T12:00:00+00:00"
         }
       ],
       "edges": [
         {
           "source": "example:research:skill:0:0",
+          "target": "example:research:skill:0:1",
+          "kind": "co-use",
+          "applications": 2,
+          "verified": 2,
+          "strength": 0.8164965809277261,
+          "evidence": ""
+        },
+        {
+          "source": "example:research:skill:0:0",
           "target": "example:research:skill:1:0",
           "kind": "co-use",
+          "applications": 2,
+          "verified": 1,
+          "strength": 0.5,
+          "evidence": ""
+        },
+        {
+          "source": "example:research:skill:0:0",
+          "target": "example:research:skill:1:1",
+          "kind": "co-use",
           "applications": 1,
-          "verified": 0,
-          "strength": 0.0,
+          "verified": 1,
+          "strength": 0.5,
+          "evidence": ""
+        },
+        {
+          "source": "example:research:skill:0:0",
+          "target": "example:research:skill:2:1",
+          "kind": "co-use",
+          "applications": 2,
+          "verified": 2,
+          "strength": 0.8164965809277261,
           "evidence": ""
         },
         {
@@ -2011,11 +2405,38 @@
         },
         {
           "source": "example:research:skill:0:1",
+          "target": "example:research:skill:1:0",
+          "kind": "co-use",
+          "applications": 2,
+          "verified": 2,
+          "strength": 0.8164965809277261,
+          "evidence": ""
+        },
+        {
+          "source": "example:research:skill:0:1",
           "target": "example:research:skill:1:1",
           "kind": "co-use",
+          "applications": 2,
+          "verified": 1,
+          "strength": 0.4082482904638631,
+          "evidence": ""
+        },
+        {
+          "source": "example:research:skill:0:1",
+          "target": "example:research:skill:2:0",
+          "kind": "co-use",
           "applications": 1,
-          "verified": 0,
-          "strength": 0.0,
+          "verified": 1,
+          "strength": 0.5773502691896258,
+          "evidence": ""
+        },
+        {
+          "source": "example:research:skill:0:1",
+          "target": "example:research:skill:2:1",
+          "kind": "co-use",
+          "applications": 2,
+          "verified": 2,
+          "strength": 0.6666666666666666,
           "evidence": ""
         },
         {
@@ -2049,9 +2470,18 @@
           "source": "example:research:skill:1:0",
           "target": "example:research:skill:2:0",
           "kind": "co-use",
+          "applications": 2,
+          "verified": 1,
+          "strength": 0.7071067811865475,
+          "evidence": ""
+        },
+        {
+          "source": "example:research:skill:1:0",
+          "target": "example:research:skill:2:1",
+          "kind": "co-use",
           "applications": 1,
-          "verified": 0,
-          "strength": 0.0,
+          "verified": 1,
+          "strength": 0.4082482904638631,
           "evidence": ""
         },
         {
@@ -2067,9 +2497,18 @@
           "source": "example:research:skill:1:1",
           "target": "example:research:skill:2:1",
           "kind": "co-use",
+          "applications": 3,
+          "verified": 2,
+          "strength": 0.8164965809277261,
+          "evidence": ""
+        },
+        {
+          "source": "example:research:skill:1:1",
+          "target": "example:research:skill:3:1",
+          "kind": "co-use",
           "applications": 1,
-          "verified": 0,
-          "strength": 0.0,
+          "verified": 1,
+          "strength": 0.7071067811865475,
           "evidence": ""
         },
         {
@@ -2103,9 +2542,9 @@
           "source": "example:research:skill:2:1",
           "target": "example:research:skill:3:1",
           "kind": "co-use",
-          "applications": 1,
-          "verified": 0,
-          "strength": 0.0,
+          "applications": 2,
+          "verified": 1,
+          "strength": 0.5773502691896258,
           "evidence": ""
         },
         {
@@ -2371,11 +2810,47 @@
         },
         {
           "source": "example:research:skill:0:0",
+          "target": "example:research:area:1",
+          "kind": "observed-transfer",
+          "applications": 1,
+          "verified": 1,
+          "strength": 0.5,
+          "evidence": ""
+        },
+        {
+          "source": "example:research:skill:0:0",
+          "target": "example:research:area:2",
+          "kind": "observed-transfer",
+          "applications": 1,
+          "verified": 1,
+          "strength": 0.5,
+          "evidence": ""
+        },
+        {
+          "source": "example:research:skill:0:0",
           "target": "example:research:area:3",
           "kind": "observed-transfer",
           "applications": 1,
           "verified": 0,
           "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:research:skill:0:1",
+          "target": "example:research:area:1",
+          "kind": "observed-transfer",
+          "applications": 2,
+          "verified": 2,
+          "strength": 0.6666666666666666,
+          "evidence": ""
+        },
+        {
+          "source": "example:research:skill:0:1",
+          "target": "example:research:area:2",
+          "kind": "observed-transfer",
+          "applications": 1,
+          "verified": 1,
+          "strength": 0.3333333333333333,
           "evidence": ""
         },
         {
@@ -2397,6 +2872,15 @@
           "evidence": ""
         },
         {
+          "source": "example:research:skill:1:0",
+          "target": "example:research:area:2",
+          "kind": "observed-transfer",
+          "applications": 1,
+          "verified": 1,
+          "strength": 0.5,
+          "evidence": ""
+        },
+        {
           "source": "example:research:skill:1:1",
           "target": "example:research:area:0",
           "kind": "observed-transfer",
@@ -2406,21 +2890,39 @@
           "evidence": ""
         },
         {
+          "source": "example:research:skill:1:1",
+          "target": "example:research:area:3",
+          "kind": "observed-transfer",
+          "applications": 1,
+          "verified": 1,
+          "strength": 0.5,
+          "evidence": ""
+        },
+        {
           "source": "example:research:skill:2:0",
           "target": "example:research:area:1",
           "kind": "observed-transfer",
-          "applications": 1,
-          "verified": 0,
-          "strength": 0.0,
+          "applications": 2,
+          "verified": 1,
+          "strength": 1.0,
           "evidence": ""
         },
         {
           "source": "example:research:skill:2:1",
           "target": "example:research:area:1",
           "kind": "observed-transfer",
+          "applications": 2,
+          "verified": 1,
+          "strength": 0.3333333333333333,
+          "evidence": ""
+        },
+        {
+          "source": "example:research:skill:2:1",
+          "target": "example:research:area:3",
+          "kind": "observed-transfer",
           "applications": 1,
-          "verified": 0,
-          "strength": 0.0,
+          "verified": 1,
+          "strength": 0.3333333333333333,
           "evidence": ""
         },
         {
@@ -2451,13 +2953,13 @@
           "evidence": "Synthetic bridge: complementary practice."
         },
         {
-          "source": "example:research:skill:1:0",
-          "target": "example:research:skill:2:0",
+          "source": "example:research:skill:2:1",
+          "target": "example:research:skill:0:0",
           "kind": "requires",
           "applications": 0,
           "verified": 0,
           "strength": 0.0,
-          "evidence": "Synthetic prerequisite for this collection."
+          "evidence": "Synthetic prerequisite: Validate plotted measurements before drawing a conclusion."
         },
         {
           "source": "example:research:skill:3:1",
