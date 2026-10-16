@@ -37,6 +37,7 @@ execution; people retain authority over accepted guidance and publication.
 - [Inputs and configuration](#inputs-and-configuration)
 - [How it works](#how-it-works)
 - [Your collection](#your-collection)
+  - [Several identities, clear ownership](#several-identities-clear-ownership)
   - [See how your skills connect](#see-how-your-skills-connect)
   - [Lessons and decisions](#lessons-and-decisions)
   - [Project history and tools](#project-history-and-tools)
@@ -196,16 +197,33 @@ for the concrete tooling and [Git and GitOps](#git-and-gitops) for the operating
 
 ## Your collection
 
+### Several identities, clear ownership
+
+[![Three synthetic identities, each with a complete discipline, skill, lesson and insight hierarchy](https://raw.githubusercontent.com/astrivant/identity/main/docs/assets/knowledge-collections-example.svg)](docs/knowledge-map.md#multiple-identities)
+
+**Follow a practice all the way to the finding behind it.** These three synthetic
+collections cover application, platform and research engineering. Every displayed
+skill has a lesson and a concrete insight, including the practices that maintain
+the collection itself: synchronization, review and continual learning.
+
+Each identity owns its records. A capability such as **Synchronize identity** can
+appear in several collections; it refreshes the selected collection from its
+remote and preserves local work. It does not combine their knowledge. The example
+keeps identifiers, evidence and application counts separate even where labels match.
+[Explore the full graph and its evidence](docs/knowledge-map.md#multiple-identities).
+
 ### See how your skills connect
 
-[![Synthetic knowledge map showing engineering disciplines and skill connections](https://raw.githubusercontent.com/astrivant/identity/main/docs/assets/knowledge-map-example.svg)](docs/knowledge-map.md)
+[![Application engineer's synthetic knowledge map showing discipline and skill connections](https://raw.githubusercontent.com/astrivant/identity/main/docs/assets/knowledge-map-example.svg)](docs/knowledge-map.md)
 
-**From individual tasks to a connected body of experience.** This synthetic example
-uses the same renderer as collection dashboards and Resumeme exports. Bubbles group
-skills by discipline; links expose curated relationships and recorded co-use. The
+**From individual tasks to a connected body of experience.** This view focuses on
+the application engineer's collection above, using the same renderer as collection
+dashboards and Resumeme exports. Bubbles group skills by discipline; links expose
+curated relationships and recorded co-use. The
 fitted Gaussian shows **working emphasis dispersion**: the concentration and spread
 of recent recorded activity. Counts describe activity, not proficiency.
-[Read the map](docs/knowledge-map.md) or [reproduce the example](docs/knowledge-map.md#public-readme-example).
+[Compare the other two collections](docs/knowledge-map.md#multiple-identities)
+or [reproduce the example](docs/knowledge-map.md#public-readme-example).
 
 ### Lessons and decisions
 

@@ -5,6 +5,63 @@ connect?** It is a bounded view of recorded applications. The complete hierarchy
 relationship export, lessons, and historical observations remain available;
 peripheral fading never means a concept was deleted or forgotten.
 
+## Multiple identities
+
+An identity owns a complete hierarchy, not just a cluster of skill labels. This
+synthetic example contains three independent collections, with 87 named concepts:
+three identities, twelve disciplines, and twenty-four each of skills, lessons and
+insights. It shows every concept, including the maintenance skills that keep
+guidance current.
+
+![Complete ownership trees for three synthetic identities](assets/knowledge-collections-example.svg)
+
+Read each branch left to right. An application engineer's **Software design**
+discipline contains **API contracts**; the lesson **Keep interfaces explicit**
+contains the insight **Reject unknown fields**. Each lesson and insight also keeps
+its statement and source in the [complete example data](assets/knowledge-collections-example.json).
+Solid arrows in this overview show ownership. They do not represent successful
+application, authorization, or a flow of private records between identities.
+
+**Synchronize identity** appears under Continual learning in all three trees.
+It is a maintenance capability: refresh the selected collection and guidance from
+its owning remote, reconcile local changes, then consult current records. An agent
+session, a collection and a synchronization operation are different concepts.
+Repeated capability names here have independent IDs and records. A shared label
+does not select another identity, transfer its history or grant access to it.
+See [collection operations](private-collections.md) and the explicit
+[sharing and recipient contract](identity-exports.md) for the actual boundaries.
+
+### From observations to connections
+
+Each example also contains eight invented task observations. They refer to
+concepts inside that identity and have an `unassessed` outcome. Their purpose is
+to exercise the real renderer, not to claim that any engineer completed those
+tasks. The [data export](assets/knowledge-collections-example.json) preserves the
+full hierarchy, application records and typed edges separately for each identity.
+
+| Link in the graph data | Source and meaning |
+| --- | --- |
+| `contains` | Canonical ownership from Identity through Insight; shown in the overview above |
+| `related`, `requires`, `transfers` | Explicitly curated connections, prerequisites and proposed reuse, with a rationale |
+| `co-use` | Concepts named together in a task observation; counts roll up to their skills |
+| `observed-transfer` | A skill applied in a discipline other than its canonical home, within the same identity |
+
+The maps below are separate projections of those collections. Each computes its
+own counts, recency and fitted Gaussian. The multi-identity overview is a
+documentation illustration, not a federated search or a merged collection.
+
+| Collection | Areas of practice | Connection map |
+| --- | --- | --- |
+| Application engineer | Software design, delivery, communication and continual learning | [Open application map](assets/knowledge-map-example.svg) |
+| Platform engineer | Operations, security, delivery and continual learning | [Open platform map](assets/knowledge-map-platform.svg) |
+| Research engineer | Data engineering, experiment design, communication and continual learning | [Open research map](assets/knowledge-map-research.svg) |
+
+Decisions, project checkpoints, tool-use observations and completion receipts
+provide additional evidence with their own contracts; they are not extra hierarchy
+levels. The [records guide](architecture.md#records-describe-different-observations)
+explains what each establishes. Repository CodeGraphs likewise retain their own
+scopes and source spans; they are not silently converted into lessons.
+
 ## Evidence and selection
 
 Each effective task/context observation contributes once to the owning disciplines
@@ -98,9 +155,9 @@ PNG bytes, and exercise the privacy scan against visible labels.
 
 ## Public README example
 
-The [README preview](../README.md#see-how-your-skills-connect) uses invented
-engineering disciplines and task observations from
-[`knowledge-preview.py`](../scripts/documentation/knowledge-preview.py).
+The [README overview](../README.md#several-identities-clear-ownership) and connection
+maps use invented engineering collections and task observations from
+[`examples.py`](../scripts/documentation/knowledge/examples.py).
 It reads no collection, repository history or credentials. Fixed dates make the
 working-emphasis calculation reproducible; the example is not evidence of actual
 project activity or measured productivity.
@@ -108,11 +165,20 @@ project activity or measured productivity.
 From the source checkout's locked development environment:
 
 ```bash
-python scripts/documentation/knowledge-preview.py --output .cache/readme-preview
-cp .cache/readme-preview/knowledge-map.svg docs/assets/knowledge-map-example.svg
+python -m scripts.documentation.knowledge --output .cache/readme-preview
+cp .cache/readme-preview/knowledge-collections.svg docs/assets/knowledge-collections-example.svg
+cp .cache/readme-preview/knowledge-collections.json docs/assets/knowledge-collections-example.json
+cp .cache/readme-preview/application/knowledge-map.svg docs/assets/knowledge-map-example.svg
+cp .cache/readme-preview/platform/knowledge-map.svg docs/assets/knowledge-map-platform.svg
+cp .cache/readme-preview/research/knowledge-map.svg docs/assets/knowledge-map-research.svg
 ```
 
-The script uses the same renderer as real collection figures and produces SVG/PNG
-previews for inspection. Review the labels and layout before replacing the README
-asset. The separately linked project-comparison example has its own
+The command uses the same renderer as real collection figures for each identity's
+connection, hierarchy and usage views. A
+[documentation renderer](../scripts/documentation/knowledge/overview.py) adds the
+fully labeled ownership overview, using the logo's blue, olive and copper palette.
+SVG/PNG previews support visual inspection; JSON exposes every input and edge.
+Tests check collection isolation, all five hierarchy levels and rendered label
+bounds. Review the labels and layout before replacing the assets. The separately
+linked project-comparison example has its own
 [source and regeneration contract](view-freshness.md).
