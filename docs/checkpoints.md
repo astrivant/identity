@@ -50,6 +50,13 @@ another project creates a new checkpoint. Recording appends
 `knowledge/checkpoints.jsonl` and updates the local SQLite mirror; it does not
 render plots or contact PostgreSQL. Commit the reviewed journal with the collection.
 
+Successful recording prints the checkpoint ID to standard output. Exit status `0`
+means both the journal and local mirror are current. Exit status `3` means the ID
+was saved in the journal but the mirror could not synchronize; standard error
+explains recovery without displaying source records or backend errors. A failure
+before a confirmed append remains status `2` and does not print a success ID.
+Use the saved ID to inspect the journal, rather than creating a replacement event.
+
 ## Compare chapters
 
 ```bash
@@ -109,9 +116,20 @@ contract in [storage](storage.md).
 
 Compatible prefixes and repeated seeds are safe. Divergent history fails without
 replacing records; reconcile the reviewed source before seeding. Local recording
-persists the journal first, so an interrupted mirror update can be repaired with
-`sync`. To rebuild a corrupt local mirror, retain the journal, remove only the
-local checkpoint database, then sync. Never delete or reorder source events to
+persists the journal first. A branch switch can leave the local mirror on another
+valid history; status `3` does not mean that the source append failed. Check the
+journal, preserve the existing mirror, and select a branch-specific local database:
+
+```bash
+witful checkpoints --repo /path/to/collection check
+witful checkpoints --repo /path/to/collection \
+    --database /path/to/collection/.witful/checkpoints-branch.sqlite3 sync
+```
+
+Use that same `--database` for later records. Ensure `WITFUL_DATABASE_URL` is unset
+when recovering a local mirror; an explicit `sync` otherwise selects PostgreSQL.
+To rebuild a corrupt local mirror, preserve it for diagnosis and recreate only
+the disposable database from the reviewed journal. Never delete or reorder source events to
 make a mirror accept them. `build --from-database` and `diff --from-database` use
 the selected database without current collection files.
 

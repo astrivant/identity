@@ -8,6 +8,7 @@ import argparse
 import json
 import os
 import subprocess
+import sys
 from typing import TYPE_CHECKING
 
 from jsonschema import ValidationError
@@ -36,7 +37,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         argv (Sequence[str] | None): Explicit arguments or process command line.
 
     Returns:
-        int: Zero on success; parser exit two for invalid data, references, or unavailable storage.
+        int: Zero on success, three for a saved checkpoint with a stale mirror; invalid operations exit two.
     """
     parser = argparse.ArgumentParser(description=__doc__)
     configure(parser)
@@ -52,7 +53,7 @@ def execute(args: argparse.Namespace, parser: argparse.ArgumentParser) -> int:
         parser (argparse.ArgumentParser): Owning parser for consistent error reporting.
 
     Returns:
-        int: Selected operation status.
+        int: Zero on success, three when the journal is saved but its disposable mirror needs recovery.
     """
     root = args.repo.resolve()
     database = args.database or root / ".witful/checkpoints.sqlite3"
@@ -74,9 +75,20 @@ def execute(args: argparse.Namespace, parser: argparse.ArgumentParser) -> int:
         if args.command == "record":
             event = record(root, args.project, args.project_id)
 
-            # Journal persistence precedes the disposable local mirror; an interrupted sync is safe to retry.
-            SQLiteCheckpointStore(database, args.namespace).seed(read(root / "knowledge/checkpoints.jsonl"))
-            print(event.id)
+            # Report the authoritative append even when the disposable projection cannot accept it.
+            print(event.id, flush=True)
+            try:
+                SQLiteCheckpointStore(database, args.namespace).seed(read(root / "knowledge/checkpoints.jsonl"))
+            except (OSError, ValueError, RuntimeError, ValidationError):
+                print(
+                    "Checkpoint saved; local SQLite mirror synchronization failed. "
+                    "The journal and existing mirror were retained. Validate the journal with checkpoints check, "
+                    "then repair or select a separate local mirror and run checkpoints sync. "
+                    "Do not repeat the recording merely to repair synchronization. "
+                    "No source text or credentials were logged.",
+                    file=sys.stderr,
+                )
+                return 3
             return 0
 
         stored = args.command in {"build", "diff"} and args.from_database

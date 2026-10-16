@@ -287,3 +287,15 @@ shared orchestration owns Git, checks and recovery. Refer to the
 For CLI maintenance, compose lightweight argparse builders and typed handlers.
 Reuse those builders for standalone entrypoints and parse once; preserve existing
 syntax, help and input validation through the public command tests.
+
+
+## Close the release loop
+
+Follow [the release communication contract](docs/releases.md#contributor-notifications-and-change-notes).
+Review PR labels and consumer-facing titles, preserve existing release details,
+and prepare the signed contribution inventory before publishing. The same logical
+pipeline verifies hosted artifacts and registry files before notifying PR openers
+with exact-version links. Recover uncertain notification outcomes through the
+reporting receipt and rerun only the reporting job; never republish immutable
+artifacts to repair a comment. Reading this guide does not authorize a release
+or live notification outside the selected pipeline.

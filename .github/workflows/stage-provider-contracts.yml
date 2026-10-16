@@ -28,7 +28,7 @@ jobs:
           SOURCE_REVISION: ${{ inputs.source }}
         run: python scripts/ci/provider_contracts/report.py --source "$SOURCE_REVISION" --output .cache/provider-contracts/provenance.json
       - name: Exercise SDKs against isolated HTTP mock servers
-        run: pytest -n 0 scripts/ci/tests/test_provider_contracts.py --junitxml=.cache/provider-contracts/junit.xml
+        run: pytest -n 0 scripts/ci/tests/test_provider_contracts.py tests/releases --junitxml=.cache/provider-contracts/junit.xml
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
