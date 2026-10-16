@@ -1,0 +1,2474 @@
+{
+  "synthetic": true,
+  "collections": [
+    {
+      "identity": {
+        "id": "example:application",
+        "name": "Application engineer",
+        "disciplines": [
+          {
+            "id": "example:application:area:0",
+            "name": "Software design",
+            "skills": [
+              {
+                "id": "example:application:skill:0:0",
+                "name": "API contracts",
+                "lessons": [
+                  {
+                    "id": "18da9b67688f68e4724bfabaecd5a5c084487c1c258c7c12f3c199395c598f5c",
+                    "name": "Keep interfaces explicit",
+                    "statement": "Keep interfaces explicit.",
+                    "source": "Invented documentation example; no personal collection or actual task outcome.",
+                    "observed_at": "2026-01-01T12:00:00+00:00",
+                    "supersedes": null,
+                    "insights": [
+                      {
+                        "id": "example:application:skill:0:0:insight",
+                        "name": "Reject unknown fields",
+                        "statement": "Reject unknown fields.",
+                        "source": "Invented documentation example; no personal collection or actual task outcome."
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "example:application:skill:0:1",
+                "name": "Testing",
+                "lessons": [
+                  {
+                    "id": "aaef32d9319d7ae3dc2ac05539f36ad71d8e0410864baa8c7e407252e63b6777",
+                    "name": "Exercise failure paths",
+                    "statement": "Exercise failure paths.",
+                    "source": "Invented documentation example; no personal collection or actual task outcome.",
+                    "observed_at": "2026-01-01T12:00:00+00:00",
+                    "supersedes": null,
+                    "insights": [
+                      {
+                        "id": "example:application:skill:0:1:insight",
+                        "name": "Keep a regression",
+                        "statement": "Keep a regression.",
+                        "source": "Invented documentation example; no personal collection or actual task outcome."
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "example:application:area:1",
+            "name": "Delivery",
+            "skills": [
+              {
+                "id": "example:application:skill:1:0",
+                "name": "Code review",
+                "lessons": [
+                  {
+                    "id": "ebb7eb7c746ca5fbee8ab9f743c12fdc09a8f03229c91623ab15459a5763b003",
+                    "name": "Explain the change",
+                    "statement": "Explain the change.",
+                    "source": "Invented documentation example; no personal collection or actual task outcome.",
+                    "observed_at": "2026-01-01T12:00:00+00:00",
+                    "supersedes": null,
+                    "insights": [
+                      {
+                        "id": "example:application:skill:1:0:insight",
+                        "name": "Link validation evidence",
+                        "statement": "Link validation evidence.",
+                        "source": "Invented documentation example; no personal collection or actual task outcome."
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "example:application:skill:1:1",
+                "name": "Signed releases",
+                "lessons": [
+                  {
+                    "id": "80afba196b74a7f2771da87a8f48882761f74fac8ddaca72bbf4153fa99c6971",
+                    "name": "Verify published bytes",
+                    "statement": "Verify published bytes.",
+                    "source": "Invented documentation example; no personal collection or actual task outcome.",
+                    "observed_at": "2026-01-01T12:00:00+00:00",
+                    "supersedes": null,
+                    "insights": [
+                      {
+                        "id": "example:application:skill:1:1:insight",
+                        "name": "Check the signature",
+                        "statement": "Check the signature.",
+                        "source": "Invented documentation example; no personal collection or actual task outcome."
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "example:application:area:2",
+            "name": "Communication",
+            "skills": [
+              {
+                "id": "example:application:skill:2:0",
+                "name": "Documentation",
+                "lessons": [
+                  {
+                    "id": "f3801342bb8f3046dc153d1e2da736c56a29359b3d2e79d63d488748ae3e9225",
+                    "name": "Explain intent",
+                    "statement": "Explain intent.",
+                    "source": "Invented documentation example; no personal collection or actual task outcome.",
+                    "observed_at": "2026-01-01T12:00:00+00:00",
+                    "supersedes": null,
+                    "insights": [
+                      {
+                        "id": "example:application:skill:2:0:insight",
+                        "name": "Name the invariant",
+                        "statement": "Name the invariant.",
+                        "source": "Invented documentation example; no personal collection or actual task outcome."
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "example:application:skill:2:1",
+                "name": "Visual evidence",
+                "lessons": [
+                  {
+                    "id": "dcf5ea76bc1101888bb99ae7c1029915c2dc9d3e30205af1bb83ddbcca285075",
+                    "name": "Show the relationship",
+                    "statement": "Show the relationship.",
+                    "source": "Invented documentation example; no personal collection or actual task outcome.",
+                    "observed_at": "2026-01-01T12:00:00+00:00",
+                    "supersedes": null,
+                    "insights": [
+                      {
+                        "id": "example:application:skill:2:1:insight",
+                        "name": "Label what links mean",
+                        "statement": "Label what links mean.",
+                        "source": "Invented documentation example; no personal collection or actual task outcome."
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "example:application:area:3",
+            "name": "Continual learning",
+            "skills": [
+              {
+                "id": "example:application:skill:3:0",
+                "name": "Synchronize identity",
+                "lessons": [
+                  {
+                    "id": "577cb37f40d7aba010777d5402eb812a67d83b0836655a25b923877c395f069a",
+                    "name": "Refresh before work",
+                    "statement": "Refresh before work.",
+                    "source": "Invented documentation example; no personal collection or actual task outcome.",
+                    "observed_at": "2026-01-01T12:00:00+00:00",
+                    "supersedes": null,
+                    "insights": [
+                      {
+                        "id": "example:application:skill:3:0:insight",
+                        "name": "Preserve local edits",
+                        "statement": "Preserve local edits.",
+                        "source": "Invented documentation example; no personal collection or actual task outcome."
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "example:application:skill:3:1",
+                "name": "Completion review",
+                "lessons": [
+                  {
+                    "id": "a1699ee3affddcc718c2d192590774160f97204a69b5ef47bf73bc06985ce60b",
+                    "name": "Check each requirement",
+                    "statement": "Check each requirement.",
+                    "source": "Invented documentation example; no personal collection or actual task outcome.",
+                    "observed_at": "2026-01-01T12:00:00+00:00",
+                    "supersedes": null,
+                    "insights": [
+                      {
+                        "id": "example:application:skill:3:1:insight",
+                        "name": "Coverage needs evidence",
+                        "statement": "Coverage needs evidence.",
+                        "source": "Invented documentation example; no personal collection or actual task outcome."
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "relations": [
+          {
+            "source": "example:application:skill:0:0",
+            "target": "example:application:skill:0:1",
+            "kind": "related",
+            "evidence": "Synthetic bridge: complementary practice."
+          },
+          {
+            "source": "example:application:skill:1:0",
+            "target": "example:application:skill:2:0",
+            "kind": "requires",
+            "evidence": "Synthetic prerequisite for this collection."
+          },
+          {
+            "source": "example:application:skill:3:1",
+            "target": "example:application:skill:0:1",
+            "kind": "transfers",
+            "evidence": "Synthetic proposal to reuse the review practice."
+          }
+        ]
+      },
+      "applications": [
+        {
+          "id": "0373ab9ba1b3c6824b5119c62224148b86694a675d445a34d47153fbd48a8294",
+          "task": "example:application:task:0:0",
+          "discipline_id": "example:application:area:0",
+          "concept_ids": [
+            "example:application:skill:0:0:insight",
+            "example:application:skill:1:0"
+          ],
+          "outcome": "unassessed",
+          "evidence": "Invented documentation example; no personal collection or actual task outcome.",
+          "observed_at": "2026-01-30T12:00:00+00:00"
+        },
+        {
+          "id": "929828b227b45efcb7b73ea6100181e0a6c6e06488491a0c30d8fcc262f3b233",
+          "task": "example:application:task:0:1",
+          "discipline_id": "example:application:area:0",
+          "concept_ids": [
+            "example:application:skill:0:1:insight",
+            "example:application:skill:1:1"
+          ],
+          "outcome": "unassessed",
+          "evidence": "Invented documentation example; no personal collection or actual task outcome.",
+          "observed_at": "2026-01-29T12:00:00+00:00"
+        },
+        {
+          "id": "bdaab5ff0e47b9dec2daecbdd9cb0f8363c040729af352514ec4ed826bda4f88",
+          "task": "example:application:task:1:0",
+          "discipline_id": "example:application:area:1",
+          "concept_ids": [
+            "example:application:skill:1:0:insight",
+            "example:application:skill:2:0"
+          ],
+          "outcome": "unassessed",
+          "evidence": "Invented documentation example; no personal collection or actual task outcome.",
+          "observed_at": "2026-01-23T12:00:00+00:00"
+        },
+        {
+          "id": "22b6f9c207f2f45a60bb2c0a8db7c97e148858edb6071e548705c9ce470520d3",
+          "task": "example:application:task:1:1",
+          "discipline_id": "example:application:area:1",
+          "concept_ids": [
+            "example:application:skill:1:1:insight",
+            "example:application:skill:2:1"
+          ],
+          "outcome": "unassessed",
+          "evidence": "Invented documentation example; no personal collection or actual task outcome.",
+          "observed_at": "2026-01-22T12:00:00+00:00"
+        },
+        {
+          "id": "81df515fbb24227f5a5e27858fda6e2aa94af7a3cdd098eb4e00686f974bcd2e",
+          "task": "example:application:task:2:0",
+          "discipline_id": "example:application:area:2",
+          "concept_ids": [
+            "example:application:skill:2:0:insight",
+            "example:application:skill:3:0"
+          ],
+          "outcome": "unassessed",
+          "evidence": "Invented documentation example; no personal collection or actual task outcome.",
+          "observed_at": "2026-01-16T12:00:00+00:00"
+        },
+        {
+          "id": "cefe68dccbb93673b01e83ac8c273835e3095f5e8c54ce6fcc7ea536e18a3842",
+          "task": "example:application:task:2:1",
+          "discipline_id": "example:application:area:2",
+          "concept_ids": [
+            "example:application:skill:2:1:insight",
+            "example:application:skill:3:1"
+          ],
+          "outcome": "unassessed",
+          "evidence": "Invented documentation example; no personal collection or actual task outcome.",
+          "observed_at": "2026-01-15T12:00:00+00:00"
+        },
+        {
+          "id": "bc0d7f9e332ef968ad0568c63e8751b9f56f50be1844184accd1db392c8d3e2c",
+          "task": "example:application:task:3:0",
+          "discipline_id": "example:application:area:3",
+          "concept_ids": [
+            "example:application:skill:0:0",
+            "example:application:skill:3:0:insight"
+          ],
+          "outcome": "unassessed",
+          "evidence": "Invented documentation example; no personal collection or actual task outcome.",
+          "observed_at": "2026-01-09T12:00:00+00:00"
+        },
+        {
+          "id": "33346dec7f011bdf53fbbcadc0561286904fb6add4fcb8ccb25e2b08f920f90c",
+          "task": "example:application:task:3:1",
+          "discipline_id": "example:application:area:3",
+          "concept_ids": [
+            "example:application:skill:0:1",
+            "example:application:skill:3:1:insight"
+          ],
+          "outcome": "unassessed",
+          "evidence": "Invented documentation example; no personal collection or actual task outcome.",
+          "observed_at": "2026-01-08T12:00:00+00:00"
+        }
+      ],
+      "edges": [
+        {
+          "source": "example:application:skill:0:0",
+          "target": "example:application:skill:1:0",
+          "kind": "co-use",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:application:skill:0:0",
+          "target": "example:application:skill:3:0",
+          "kind": "co-use",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:application:skill:0:0",
+          "target": "example:application:skill:3:0:insight",
+          "kind": "co-use",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:application:skill:0:0:insight",
+          "target": "example:application:skill:1:0",
+          "kind": "co-use",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:application:skill:0:1",
+          "target": "example:application:skill:1:1",
+          "kind": "co-use",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:application:skill:0:1",
+          "target": "example:application:skill:3:1",
+          "kind": "co-use",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:application:skill:0:1",
+          "target": "example:application:skill:3:1:insight",
+          "kind": "co-use",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:application:skill:0:1:insight",
+          "target": "example:application:skill:1:1",
+          "kind": "co-use",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:application:skill:1:0",
+          "target": "example:application:skill:2:0",
+          "kind": "co-use",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:application:skill:1:0:insight",
+          "target": "example:application:skill:2:0",
+          "kind": "co-use",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:application:skill:1:1",
+          "target": "example:application:skill:2:1",
+          "kind": "co-use",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:application:skill:1:1:insight",
+          "target": "example:application:skill:2:1",
+          "kind": "co-use",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:application:skill:2:0",
+          "target": "example:application:skill:3:0",
+          "kind": "co-use",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:application:skill:2:0:insight",
+          "target": "example:application:skill:3:0",
+          "kind": "co-use",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:application:skill:2:1",
+          "target": "example:application:skill:3:1",
+          "kind": "co-use",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:application:skill:2:1:insight",
+          "target": "example:application:skill:3:1",
+          "kind": "co-use",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "18da9b67688f68e4724bfabaecd5a5c084487c1c258c7c12f3c199395c598f5c",
+          "target": "example:application:skill:0:0:insight",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "577cb37f40d7aba010777d5402eb812a67d83b0836655a25b923877c395f069a",
+          "target": "example:application:skill:3:0:insight",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "80afba196b74a7f2771da87a8f48882761f74fac8ddaca72bbf4153fa99c6971",
+          "target": "example:application:skill:1:1:insight",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "a1699ee3affddcc718c2d192590774160f97204a69b5ef47bf73bc06985ce60b",
+          "target": "example:application:skill:3:1:insight",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "aaef32d9319d7ae3dc2ac05539f36ad71d8e0410864baa8c7e407252e63b6777",
+          "target": "example:application:skill:0:1:insight",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "dcf5ea76bc1101888bb99ae7c1029915c2dc9d3e30205af1bb83ddbcca285075",
+          "target": "example:application:skill:2:1:insight",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "ebb7eb7c746ca5fbee8ab9f743c12fdc09a8f03229c91623ab15459a5763b003",
+          "target": "example:application:skill:1:0:insight",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:application",
+          "target": "example:application:area:0",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:application",
+          "target": "example:application:area:1",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:application",
+          "target": "example:application:area:2",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:application",
+          "target": "example:application:area:3",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:application:area:0",
+          "target": "example:application:skill:0:0",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:application:area:0",
+          "target": "example:application:skill:0:1",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:application:area:1",
+          "target": "example:application:skill:1:0",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:application:area:1",
+          "target": "example:application:skill:1:1",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:application:area:2",
+          "target": "example:application:skill:2:0",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:application:area:2",
+          "target": "example:application:skill:2:1",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:application:area:3",
+          "target": "example:application:skill:3:0",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:application:area:3",
+          "target": "example:application:skill:3:1",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:application:skill:0:0",
+          "target": "18da9b67688f68e4724bfabaecd5a5c084487c1c258c7c12f3c199395c598f5c",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:application:skill:0:1",
+          "target": "aaef32d9319d7ae3dc2ac05539f36ad71d8e0410864baa8c7e407252e63b6777",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:application:skill:1:0",
+          "target": "ebb7eb7c746ca5fbee8ab9f743c12fdc09a8f03229c91623ab15459a5763b003",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:application:skill:1:1",
+          "target": "80afba196b74a7f2771da87a8f48882761f74fac8ddaca72bbf4153fa99c6971",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:application:skill:2:0",
+          "target": "f3801342bb8f3046dc153d1e2da736c56a29359b3d2e79d63d488748ae3e9225",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:application:skill:2:1",
+          "target": "dcf5ea76bc1101888bb99ae7c1029915c2dc9d3e30205af1bb83ddbcca285075",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:application:skill:3:0",
+          "target": "577cb37f40d7aba010777d5402eb812a67d83b0836655a25b923877c395f069a",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:application:skill:3:1",
+          "target": "a1699ee3affddcc718c2d192590774160f97204a69b5ef47bf73bc06985ce60b",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "f3801342bb8f3046dc153d1e2da736c56a29359b3d2e79d63d488748ae3e9225",
+          "target": "example:application:skill:2:0:insight",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:application:skill:0:0",
+          "target": "example:application:area:3",
+          "kind": "observed-transfer",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:application:skill:0:1",
+          "target": "example:application:area:3",
+          "kind": "observed-transfer",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:application:skill:1:0",
+          "target": "example:application:area:0",
+          "kind": "observed-transfer",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:application:skill:1:1",
+          "target": "example:application:area:0",
+          "kind": "observed-transfer",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:application:skill:2:0",
+          "target": "example:application:area:1",
+          "kind": "observed-transfer",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:application:skill:2:1",
+          "target": "example:application:area:1",
+          "kind": "observed-transfer",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:application:skill:3:0",
+          "target": "example:application:area:2",
+          "kind": "observed-transfer",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:application:skill:3:1",
+          "target": "example:application:area:2",
+          "kind": "observed-transfer",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:application:skill:0:0",
+          "target": "example:application:skill:0:1",
+          "kind": "related",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": "Synthetic bridge: complementary practice."
+        },
+        {
+          "source": "example:application:skill:1:0",
+          "target": "example:application:skill:2:0",
+          "kind": "requires",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": "Synthetic prerequisite for this collection."
+        },
+        {
+          "source": "example:application:skill:3:1",
+          "target": "example:application:skill:0:1",
+          "kind": "transfers",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": "Synthetic proposal to reuse the review practice."
+        }
+      ]
+    },
+    {
+      "identity": {
+        "id": "example:platform",
+        "name": "Platform engineer",
+        "disciplines": [
+          {
+            "id": "example:platform:area:0",
+            "name": "Operations",
+            "skills": [
+              {
+                "id": "example:platform:skill:0:0",
+                "name": "Deployment",
+                "lessons": [
+                  {
+                    "id": "54196e8a20f41c21c9bee72826be396045000eb7ecc6da31e441670fee0362a7",
+                    "name": "Test the rollout",
+                    "statement": "Test the rollout.",
+                    "source": "Invented documentation example; no personal collection or actual task outcome.",
+                    "observed_at": "2026-01-01T12:00:00+00:00",
+                    "supersedes": null,
+                    "insights": [
+                      {
+                        "id": "example:platform:skill:0:0:insight",
+                        "name": "Check readiness",
+                        "statement": "Check readiness.",
+                        "source": "Invented documentation example; no personal collection or actual task outcome."
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "example:platform:skill:0:1",
+                "name": "Observability",
+                "lessons": [
+                  {
+                    "id": "7ef661d4b5341b475d7b588da126d2e62fc67cd2bdf2708fbff8cd6e566882bb",
+                    "name": "Measure owned queues",
+                    "statement": "Measure owned queues.",
+                    "source": "Invented documentation example; no personal collection or actual task outcome.",
+                    "observed_at": "2026-01-01T12:00:00+00:00",
+                    "supersedes": null,
+                    "insights": [
+                      {
+                        "id": "example:platform:skill:0:1:insight",
+                        "name": "Separate health signals",
+                        "statement": "Separate health signals.",
+                        "source": "Invented documentation example; no personal collection or actual task outcome."
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "example:platform:area:1",
+            "name": "Security",
+            "skills": [
+              {
+                "id": "example:platform:skill:1:0",
+                "name": "Key custody",
+                "lessons": [
+                  {
+                    "id": "225433ea9ccee23b63074055f010c519b9d313e6e93fab45c5ec2c1bb4234b40",
+                    "name": "Separate key access",
+                    "statement": "Separate key access.",
+                    "source": "Invented documentation example; no personal collection or actual task outcome.",
+                    "observed_at": "2026-01-01T12:00:00+00:00",
+                    "supersedes": null,
+                    "insights": [
+                      {
+                        "id": "example:platform:skill:1:0:insight",
+                        "name": "Verify recipient scope",
+                        "statement": "Verify recipient scope.",
+                        "source": "Invented documentation example; no personal collection or actual task outcome."
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "example:platform:skill:1:1",
+                "name": "Access policy",
+                "lessons": [
+                  {
+                    "id": "324072d31077d87a89d03abff0011f3804ecb7f274d0e9f2760bf8266a32572e",
+                    "name": "Use explicit grants",
+                    "statement": "Use explicit grants.",
+                    "source": "Invented documentation example; no personal collection or actual task outcome.",
+                    "observed_at": "2026-01-01T12:00:00+00:00",
+                    "supersedes": null,
+                    "insights": [
+                      {
+                        "id": "example:platform:skill:1:1:insight",
+                        "name": "Test denied requests",
+                        "statement": "Test denied requests.",
+                        "source": "Invented documentation example; no personal collection or actual task outcome."
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "example:platform:area:2",
+            "name": "Delivery",
+            "skills": [
+              {
+                "id": "example:platform:skill:2:0",
+                "name": "Signed releases",
+                "lessons": [
+                  {
+                    "id": "027de05668dc15cd01c427feb1a7f3518e4179efd64fd549511b1568eda03388",
+                    "name": "Verify published bytes",
+                    "statement": "Verify published bytes.",
+                    "source": "Invented documentation example; no personal collection or actual task outcome.",
+                    "observed_at": "2026-01-01T12:00:00+00:00",
+                    "supersedes": null,
+                    "insights": [
+                      {
+                        "id": "example:platform:skill:2:0:insight",
+                        "name": "Check the signature",
+                        "statement": "Check the signature.",
+                        "source": "Invented documentation example; no personal collection or actual task outcome."
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "example:platform:skill:2:1",
+                "name": "Recovery",
+                "lessons": [
+                  {
+                    "id": "8b0a77990706b719f67032dad2ea2b45878db829731a7873d27b936e5ccd6a0c",
+                    "name": "Rehearse restoration",
+                    "statement": "Rehearse restoration.",
+                    "source": "Invented documentation example; no personal collection or actual task outcome.",
+                    "observed_at": "2026-01-01T12:00:00+00:00",
+                    "supersedes": null,
+                    "insights": [
+                      {
+                        "id": "example:platform:skill:2:1:insight",
+                        "name": "Keep recovery evidence",
+                        "statement": "Keep recovery evidence.",
+                        "source": "Invented documentation example; no personal collection or actual task outcome."
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "example:platform:area:3",
+            "name": "Continual learning",
+            "skills": [
+              {
+                "id": "example:platform:skill:3:0",
+                "name": "Synchronize identity",
+                "lessons": [
+                  {
+                    "id": "c706293317cf29d93ea69f649398ef7d4b9db4f8fa03a581e3508115641b7fe2",
+                    "name": "Refresh before work",
+                    "statement": "Refresh before work.",
+                    "source": "Invented documentation example; no personal collection or actual task outcome.",
+                    "observed_at": "2026-01-01T12:00:00+00:00",
+                    "supersedes": null,
+                    "insights": [
+                      {
+                        "id": "example:platform:skill:3:0:insight",
+                        "name": "Preserve local edits",
+                        "statement": "Preserve local edits.",
+                        "source": "Invented documentation example; no personal collection or actual task outcome."
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "example:platform:skill:3:1",
+                "name": "Incident learning",
+                "lessons": [
+                  {
+                    "id": "bb04aabad55b89bd3f40e8bb74548973e55e60093f2485aba2eb20226a22272b",
+                    "name": "Record confirmed causes",
+                    "statement": "Record confirmed causes.",
+                    "source": "Invented documentation example; no personal collection or actual task outcome.",
+                    "observed_at": "2026-01-01T12:00:00+00:00",
+                    "supersedes": null,
+                    "insights": [
+                      {
+                        "id": "example:platform:skill:3:1:insight",
+                        "name": "Distinguish hypotheses",
+                        "statement": "Distinguish hypotheses.",
+                        "source": "Invented documentation example; no personal collection or actual task outcome."
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "relations": [
+          {
+            "source": "example:platform:skill:0:0",
+            "target": "example:platform:skill:0:1",
+            "kind": "related",
+            "evidence": "Synthetic bridge: complementary practice."
+          },
+          {
+            "source": "example:platform:skill:1:0",
+            "target": "example:platform:skill:2:0",
+            "kind": "requires",
+            "evidence": "Synthetic prerequisite for this collection."
+          },
+          {
+            "source": "example:platform:skill:3:1",
+            "target": "example:platform:skill:0:1",
+            "kind": "transfers",
+            "evidence": "Synthetic proposal to reuse the review practice."
+          }
+        ]
+      },
+      "applications": [
+        {
+          "id": "de7c859d192ecb68dd6b608b969a0e0f71160abb3edc87ac594dfae7bdec5a57",
+          "task": "example:platform:task:0:0",
+          "discipline_id": "example:platform:area:0",
+          "concept_ids": [
+            "example:platform:skill:0:0:insight",
+            "example:platform:skill:1:0"
+          ],
+          "outcome": "unassessed",
+          "evidence": "Invented documentation example; no personal collection or actual task outcome.",
+          "observed_at": "2026-01-30T12:00:00+00:00"
+        },
+        {
+          "id": "e75e5136680f58789ceeb5b2318c9decd7cd559393b51773ad084006d32b7017",
+          "task": "example:platform:task:0:1",
+          "discipline_id": "example:platform:area:0",
+          "concept_ids": [
+            "example:platform:skill:0:1:insight",
+            "example:platform:skill:1:1"
+          ],
+          "outcome": "unassessed",
+          "evidence": "Invented documentation example; no personal collection or actual task outcome.",
+          "observed_at": "2026-01-29T12:00:00+00:00"
+        },
+        {
+          "id": "1fca3373fbbc5f012556946cb57e89e8b0f0fc3873cd7ae5d423bb6f80ac47ae",
+          "task": "example:platform:task:1:0",
+          "discipline_id": "example:platform:area:1",
+          "concept_ids": [
+            "example:platform:skill:1:0:insight",
+            "example:platform:skill:2:0"
+          ],
+          "outcome": "unassessed",
+          "evidence": "Invented documentation example; no personal collection or actual task outcome.",
+          "observed_at": "2026-01-23T12:00:00+00:00"
+        },
+        {
+          "id": "1b3587b716df09896ac12d10cff6966220ded55432613f659d02289e85df0b33",
+          "task": "example:platform:task:1:1",
+          "discipline_id": "example:platform:area:1",
+          "concept_ids": [
+            "example:platform:skill:1:1:insight",
+            "example:platform:skill:2:1"
+          ],
+          "outcome": "unassessed",
+          "evidence": "Invented documentation example; no personal collection or actual task outcome.",
+          "observed_at": "2026-01-22T12:00:00+00:00"
+        },
+        {
+          "id": "def3b31d6ccf3526d0f445d64ea8714fdf539a2d1fa22957024e6eb5370d561c",
+          "task": "example:platform:task:2:0",
+          "discipline_id": "example:platform:area:2",
+          "concept_ids": [
+            "example:platform:skill:2:0:insight",
+            "example:platform:skill:3:0"
+          ],
+          "outcome": "unassessed",
+          "evidence": "Invented documentation example; no personal collection or actual task outcome.",
+          "observed_at": "2026-01-16T12:00:00+00:00"
+        },
+        {
+          "id": "cdf3f8aafa136f0191e44d6bdaaf20d751fc96e9d9d3112460da77d8318765d5",
+          "task": "example:platform:task:2:1",
+          "discipline_id": "example:platform:area:2",
+          "concept_ids": [
+            "example:platform:skill:2:1:insight",
+            "example:platform:skill:3:1"
+          ],
+          "outcome": "unassessed",
+          "evidence": "Invented documentation example; no personal collection or actual task outcome.",
+          "observed_at": "2026-01-15T12:00:00+00:00"
+        },
+        {
+          "id": "565578e18ee236e9f74548ae7685794be79d0b8495756ba9c81f92abe0207031",
+          "task": "example:platform:task:3:0",
+          "discipline_id": "example:platform:area:3",
+          "concept_ids": [
+            "example:platform:skill:0:0",
+            "example:platform:skill:3:0:insight"
+          ],
+          "outcome": "unassessed",
+          "evidence": "Invented documentation example; no personal collection or actual task outcome.",
+          "observed_at": "2026-01-09T12:00:00+00:00"
+        },
+        {
+          "id": "f43a99184cd61d62581307f93d8bc68a789215ccd3ee51a314a18a2eea605745",
+          "task": "example:platform:task:3:1",
+          "discipline_id": "example:platform:area:3",
+          "concept_ids": [
+            "example:platform:skill:0:1",
+            "example:platform:skill:3:1:insight"
+          ],
+          "outcome": "unassessed",
+          "evidence": "Invented documentation example; no personal collection or actual task outcome.",
+          "observed_at": "2026-01-08T12:00:00+00:00"
+        }
+      ],
+      "edges": [
+        {
+          "source": "example:platform:skill:0:0",
+          "target": "example:platform:skill:1:0",
+          "kind": "co-use",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:platform:skill:0:0",
+          "target": "example:platform:skill:3:0",
+          "kind": "co-use",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:platform:skill:0:0",
+          "target": "example:platform:skill:3:0:insight",
+          "kind": "co-use",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:platform:skill:0:0:insight",
+          "target": "example:platform:skill:1:0",
+          "kind": "co-use",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:platform:skill:0:1",
+          "target": "example:platform:skill:1:1",
+          "kind": "co-use",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:platform:skill:0:1",
+          "target": "example:platform:skill:3:1",
+          "kind": "co-use",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:platform:skill:0:1",
+          "target": "example:platform:skill:3:1:insight",
+          "kind": "co-use",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:platform:skill:0:1:insight",
+          "target": "example:platform:skill:1:1",
+          "kind": "co-use",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:platform:skill:1:0",
+          "target": "example:platform:skill:2:0",
+          "kind": "co-use",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:platform:skill:1:0:insight",
+          "target": "example:platform:skill:2:0",
+          "kind": "co-use",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:platform:skill:1:1",
+          "target": "example:platform:skill:2:1",
+          "kind": "co-use",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:platform:skill:1:1:insight",
+          "target": "example:platform:skill:2:1",
+          "kind": "co-use",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:platform:skill:2:0",
+          "target": "example:platform:skill:3:0",
+          "kind": "co-use",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:platform:skill:2:0:insight",
+          "target": "example:platform:skill:3:0",
+          "kind": "co-use",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:platform:skill:2:1",
+          "target": "example:platform:skill:3:1",
+          "kind": "co-use",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:platform:skill:2:1:insight",
+          "target": "example:platform:skill:3:1",
+          "kind": "co-use",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "027de05668dc15cd01c427feb1a7f3518e4179efd64fd549511b1568eda03388",
+          "target": "example:platform:skill:2:0:insight",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "225433ea9ccee23b63074055f010c519b9d313e6e93fab45c5ec2c1bb4234b40",
+          "target": "example:platform:skill:1:0:insight",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "324072d31077d87a89d03abff0011f3804ecb7f274d0e9f2760bf8266a32572e",
+          "target": "example:platform:skill:1:1:insight",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "54196e8a20f41c21c9bee72826be396045000eb7ecc6da31e441670fee0362a7",
+          "target": "example:platform:skill:0:0:insight",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "7ef661d4b5341b475d7b588da126d2e62fc67cd2bdf2708fbff8cd6e566882bb",
+          "target": "example:platform:skill:0:1:insight",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "8b0a77990706b719f67032dad2ea2b45878db829731a7873d27b936e5ccd6a0c",
+          "target": "example:platform:skill:2:1:insight",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "bb04aabad55b89bd3f40e8bb74548973e55e60093f2485aba2eb20226a22272b",
+          "target": "example:platform:skill:3:1:insight",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "c706293317cf29d93ea69f649398ef7d4b9db4f8fa03a581e3508115641b7fe2",
+          "target": "example:platform:skill:3:0:insight",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:platform",
+          "target": "example:platform:area:0",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:platform",
+          "target": "example:platform:area:1",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:platform",
+          "target": "example:platform:area:2",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:platform",
+          "target": "example:platform:area:3",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:platform:area:0",
+          "target": "example:platform:skill:0:0",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:platform:area:0",
+          "target": "example:platform:skill:0:1",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:platform:area:1",
+          "target": "example:platform:skill:1:0",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:platform:area:1",
+          "target": "example:platform:skill:1:1",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:platform:area:2",
+          "target": "example:platform:skill:2:0",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:platform:area:2",
+          "target": "example:platform:skill:2:1",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:platform:area:3",
+          "target": "example:platform:skill:3:0",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:platform:area:3",
+          "target": "example:platform:skill:3:1",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:platform:skill:0:0",
+          "target": "54196e8a20f41c21c9bee72826be396045000eb7ecc6da31e441670fee0362a7",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:platform:skill:0:1",
+          "target": "7ef661d4b5341b475d7b588da126d2e62fc67cd2bdf2708fbff8cd6e566882bb",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:platform:skill:1:0",
+          "target": "225433ea9ccee23b63074055f010c519b9d313e6e93fab45c5ec2c1bb4234b40",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:platform:skill:1:1",
+          "target": "324072d31077d87a89d03abff0011f3804ecb7f274d0e9f2760bf8266a32572e",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:platform:skill:2:0",
+          "target": "027de05668dc15cd01c427feb1a7f3518e4179efd64fd549511b1568eda03388",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:platform:skill:2:1",
+          "target": "8b0a77990706b719f67032dad2ea2b45878db829731a7873d27b936e5ccd6a0c",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:platform:skill:3:0",
+          "target": "c706293317cf29d93ea69f649398ef7d4b9db4f8fa03a581e3508115641b7fe2",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:platform:skill:3:1",
+          "target": "bb04aabad55b89bd3f40e8bb74548973e55e60093f2485aba2eb20226a22272b",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:platform:skill:0:0",
+          "target": "example:platform:area:3",
+          "kind": "observed-transfer",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:platform:skill:0:1",
+          "target": "example:platform:area:3",
+          "kind": "observed-transfer",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:platform:skill:1:0",
+          "target": "example:platform:area:0",
+          "kind": "observed-transfer",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:platform:skill:1:1",
+          "target": "example:platform:area:0",
+          "kind": "observed-transfer",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:platform:skill:2:0",
+          "target": "example:platform:area:1",
+          "kind": "observed-transfer",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:platform:skill:2:1",
+          "target": "example:platform:area:1",
+          "kind": "observed-transfer",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:platform:skill:3:0",
+          "target": "example:platform:area:2",
+          "kind": "observed-transfer",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:platform:skill:3:1",
+          "target": "example:platform:area:2",
+          "kind": "observed-transfer",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:platform:skill:0:0",
+          "target": "example:platform:skill:0:1",
+          "kind": "related",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": "Synthetic bridge: complementary practice."
+        },
+        {
+          "source": "example:platform:skill:1:0",
+          "target": "example:platform:skill:2:0",
+          "kind": "requires",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": "Synthetic prerequisite for this collection."
+        },
+        {
+          "source": "example:platform:skill:3:1",
+          "target": "example:platform:skill:0:1",
+          "kind": "transfers",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": "Synthetic proposal to reuse the review practice."
+        }
+      ]
+    },
+    {
+      "identity": {
+        "id": "example:research",
+        "name": "Research engineer",
+        "disciplines": [
+          {
+            "id": "example:research:area:0",
+            "name": "Data engineering",
+            "skills": [
+              {
+                "id": "example:research:skill:0:0",
+                "name": "Data quality",
+                "lessons": [
+                  {
+                    "id": "baa094519d887aa19b545d50015491cdfda802780b01fce7949ab56e7fc56ddd",
+                    "name": "Validate source data",
+                    "statement": "Validate source data.",
+                    "source": "Invented documentation example; no personal collection or actual task outcome.",
+                    "observed_at": "2026-01-01T12:00:00+00:00",
+                    "supersedes": null,
+                    "insights": [
+                      {
+                        "id": "example:research:skill:0:0:insight",
+                        "name": "Keep missing values visible",
+                        "statement": "Keep missing values visible.",
+                        "source": "Invented documentation example; no personal collection or actual task outcome."
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "example:research:skill:0:1",
+                "name": "Provenance",
+                "lessons": [
+                  {
+                    "id": "1436102440faabad0fbebb75ab7c4358b18b2b22fe8ac5d34637b82a3ed8a75f",
+                    "name": "Bind outputs to inputs",
+                    "statement": "Bind outputs to inputs.",
+                    "source": "Invented documentation example; no personal collection or actual task outcome.",
+                    "observed_at": "2026-01-01T12:00:00+00:00",
+                    "supersedes": null,
+                    "insights": [
+                      {
+                        "id": "example:research:skill:0:1:insight",
+                        "name": "Record source revisions",
+                        "statement": "Record source revisions.",
+                        "source": "Invented documentation example; no personal collection or actual task outcome."
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "example:research:area:1",
+            "name": "Experiment design",
+            "skills": [
+              {
+                "id": "example:research:skill:1:0",
+                "name": "Reproducibility",
+                "lessons": [
+                  {
+                    "id": "719d50fdd8d912141e0a2edc6a80137d908b0d5773726e08f4ed6d8bfdd2ef4f",
+                    "name": "Fix replay inputs",
+                    "statement": "Fix replay inputs.",
+                    "source": "Invented documentation example; no personal collection or actual task outcome.",
+                    "observed_at": "2026-01-01T12:00:00+00:00",
+                    "supersedes": null,
+                    "insights": [
+                      {
+                        "id": "example:research:skill:1:0:insight",
+                        "name": "Record the random seed",
+                        "statement": "Record the random seed.",
+                        "source": "Invented documentation example; no personal collection or actual task outcome."
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "example:research:skill:1:1",
+                "name": "Comparison",
+                "lessons": [
+                  {
+                    "id": "284a968a86894e148b53c788022ae36ded6a7f41f405ba6fd59601cbdffce487",
+                    "name": "Match comparison scope",
+                    "statement": "Match comparison scope.",
+                    "source": "Invented documentation example; no personal collection or actual task outcome.",
+                    "observed_at": "2026-01-01T12:00:00+00:00",
+                    "supersedes": null,
+                    "insights": [
+                      {
+                        "id": "example:research:skill:1:1:insight",
+                        "name": "Use the same baseline",
+                        "statement": "Use the same baseline.",
+                        "source": "Invented documentation example; no personal collection or actual task outcome."
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "example:research:area:2",
+            "name": "Communication",
+            "skills": [
+              {
+                "id": "example:research:skill:2:0",
+                "name": "Documentation",
+                "lessons": [
+                  {
+                    "id": "5b5230f1dd8d0a1a52ec01e4a469a3da17051f5d8715afc5d5f24812d391b99a",
+                    "name": "Explain the method",
+                    "statement": "Explain the method.",
+                    "source": "Invented documentation example; no personal collection or actual task outcome.",
+                    "observed_at": "2026-01-01T12:00:00+00:00",
+                    "supersedes": null,
+                    "insights": [
+                      {
+                        "id": "example:research:skill:2:0:insight",
+                        "name": "Name the assumptions",
+                        "statement": "Name the assumptions.",
+                        "source": "Invented documentation example; no personal collection or actual task outcome."
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "example:research:skill:2:1",
+                "name": "Visual evidence",
+                "lessons": [
+                  {
+                    "id": "88c0c1acd078314eaaaba5221acfb22a8b304efc476dbee9925e9b48f955f561",
+                    "name": "Show measured results",
+                    "statement": "Show measured results.",
+                    "source": "Invented documentation example; no personal collection or actual task outcome.",
+                    "observed_at": "2026-01-01T12:00:00+00:00",
+                    "supersedes": null,
+                    "insights": [
+                      {
+                        "id": "example:research:skill:2:1:insight",
+                        "name": "Label units and limits",
+                        "statement": "Label units and limits.",
+                        "source": "Invented documentation example; no personal collection or actual task outcome."
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "example:research:area:3",
+            "name": "Continual learning",
+            "skills": [
+              {
+                "id": "example:research:skill:3:0",
+                "name": "Synchronize identity",
+                "lessons": [
+                  {
+                    "id": "0a7cf20c04956b0e0ad103baab3388073686c0f688016e7a9394f55ce74ff7e1",
+                    "name": "Refresh before work",
+                    "statement": "Refresh before work.",
+                    "source": "Invented documentation example; no personal collection or actual task outcome.",
+                    "observed_at": "2026-01-01T12:00:00+00:00",
+                    "supersedes": null,
+                    "insights": [
+                      {
+                        "id": "example:research:skill:3:0:insight",
+                        "name": "Preserve local edits",
+                        "statement": "Preserve local edits.",
+                        "source": "Invented documentation example; no personal collection or actual task outcome."
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "example:research:skill:3:1",
+                "name": "Experiment review",
+                "lessons": [
+                  {
+                    "id": "dcdb05380689facba108b588f252d2bd202af411c0de5de90b443dca19e9cdd1",
+                    "name": "Revisit the conclusion",
+                    "statement": "Revisit the conclusion.",
+                    "source": "Invented documentation example; no personal collection or actual task outcome.",
+                    "observed_at": "2026-01-01T12:00:00+00:00",
+                    "supersedes": null,
+                    "insights": [
+                      {
+                        "id": "example:research:skill:3:1:insight",
+                        "name": "Retain negative results",
+                        "statement": "Retain negative results.",
+                        "source": "Invented documentation example; no personal collection or actual task outcome."
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "relations": [
+          {
+            "source": "example:research:skill:0:0",
+            "target": "example:research:skill:0:1",
+            "kind": "related",
+            "evidence": "Synthetic bridge: complementary practice."
+          },
+          {
+            "source": "example:research:skill:1:0",
+            "target": "example:research:skill:2:0",
+            "kind": "requires",
+            "evidence": "Synthetic prerequisite for this collection."
+          },
+          {
+            "source": "example:research:skill:3:1",
+            "target": "example:research:skill:0:1",
+            "kind": "transfers",
+            "evidence": "Synthetic proposal to reuse the review practice."
+          }
+        ]
+      },
+      "applications": [
+        {
+          "id": "4a12e2f05731e6b9a7ddbc754ee0382fc6a2748e2f26080cf273028cc46a9c63",
+          "task": "example:research:task:0:0",
+          "discipline_id": "example:research:area:0",
+          "concept_ids": [
+            "example:research:skill:0:0:insight",
+            "example:research:skill:1:0"
+          ],
+          "outcome": "unassessed",
+          "evidence": "Invented documentation example; no personal collection or actual task outcome.",
+          "observed_at": "2026-01-30T12:00:00+00:00"
+        },
+        {
+          "id": "6ae68add7df2133e75e883702e4194d699f0d389bee118365685f2f8946362d9",
+          "task": "example:research:task:0:1",
+          "discipline_id": "example:research:area:0",
+          "concept_ids": [
+            "example:research:skill:0:1:insight",
+            "example:research:skill:1:1"
+          ],
+          "outcome": "unassessed",
+          "evidence": "Invented documentation example; no personal collection or actual task outcome.",
+          "observed_at": "2026-01-29T12:00:00+00:00"
+        },
+        {
+          "id": "10d5031eaae0829c69d59894a495fcc09fcf46fa2eba1608159b7496952de013",
+          "task": "example:research:task:1:0",
+          "discipline_id": "example:research:area:1",
+          "concept_ids": [
+            "example:research:skill:1:0:insight",
+            "example:research:skill:2:0"
+          ],
+          "outcome": "unassessed",
+          "evidence": "Invented documentation example; no personal collection or actual task outcome.",
+          "observed_at": "2026-01-23T12:00:00+00:00"
+        },
+        {
+          "id": "da59c39f82acff1c39623f19e06b1c7377ecd807620d901c08a1e3ac5284aed7",
+          "task": "example:research:task:1:1",
+          "discipline_id": "example:research:area:1",
+          "concept_ids": [
+            "example:research:skill:1:1:insight",
+            "example:research:skill:2:1"
+          ],
+          "outcome": "unassessed",
+          "evidence": "Invented documentation example; no personal collection or actual task outcome.",
+          "observed_at": "2026-01-22T12:00:00+00:00"
+        },
+        {
+          "id": "3a9df9a22bdbf4d57fa4fa81f5718b760157d801486d87282b5888e5e26a8a78",
+          "task": "example:research:task:2:0",
+          "discipline_id": "example:research:area:2",
+          "concept_ids": [
+            "example:research:skill:2:0:insight",
+            "example:research:skill:3:0"
+          ],
+          "outcome": "unassessed",
+          "evidence": "Invented documentation example; no personal collection or actual task outcome.",
+          "observed_at": "2026-01-16T12:00:00+00:00"
+        },
+        {
+          "id": "7b6cf4a9ab23f83bf3211ce922787b70743981aa1a19f081d3bda2a689d7bab1",
+          "task": "example:research:task:2:1",
+          "discipline_id": "example:research:area:2",
+          "concept_ids": [
+            "example:research:skill:2:1:insight",
+            "example:research:skill:3:1"
+          ],
+          "outcome": "unassessed",
+          "evidence": "Invented documentation example; no personal collection or actual task outcome.",
+          "observed_at": "2026-01-15T12:00:00+00:00"
+        },
+        {
+          "id": "964f941ce69cad2981d6da02bb83202858c19e807a1c75ea8cf8b04e84703a46",
+          "task": "example:research:task:3:0",
+          "discipline_id": "example:research:area:3",
+          "concept_ids": [
+            "example:research:skill:0:0",
+            "example:research:skill:3:0:insight"
+          ],
+          "outcome": "unassessed",
+          "evidence": "Invented documentation example; no personal collection or actual task outcome.",
+          "observed_at": "2026-01-09T12:00:00+00:00"
+        },
+        {
+          "id": "e4e13d4593fce1b8d608bc1ab4c01e3a6f063221f0d9e9fe194730d86d91b0ae",
+          "task": "example:research:task:3:1",
+          "discipline_id": "example:research:area:3",
+          "concept_ids": [
+            "example:research:skill:0:1",
+            "example:research:skill:3:1:insight"
+          ],
+          "outcome": "unassessed",
+          "evidence": "Invented documentation example; no personal collection or actual task outcome.",
+          "observed_at": "2026-01-08T12:00:00+00:00"
+        }
+      ],
+      "edges": [
+        {
+          "source": "example:research:skill:0:0",
+          "target": "example:research:skill:1:0",
+          "kind": "co-use",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:research:skill:0:0",
+          "target": "example:research:skill:3:0",
+          "kind": "co-use",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:research:skill:0:0",
+          "target": "example:research:skill:3:0:insight",
+          "kind": "co-use",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:research:skill:0:0:insight",
+          "target": "example:research:skill:1:0",
+          "kind": "co-use",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:research:skill:0:1",
+          "target": "example:research:skill:1:1",
+          "kind": "co-use",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:research:skill:0:1",
+          "target": "example:research:skill:3:1",
+          "kind": "co-use",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:research:skill:0:1",
+          "target": "example:research:skill:3:1:insight",
+          "kind": "co-use",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:research:skill:0:1:insight",
+          "target": "example:research:skill:1:1",
+          "kind": "co-use",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:research:skill:1:0",
+          "target": "example:research:skill:2:0",
+          "kind": "co-use",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:research:skill:1:0:insight",
+          "target": "example:research:skill:2:0",
+          "kind": "co-use",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:research:skill:1:1",
+          "target": "example:research:skill:2:1",
+          "kind": "co-use",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:research:skill:1:1:insight",
+          "target": "example:research:skill:2:1",
+          "kind": "co-use",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:research:skill:2:0",
+          "target": "example:research:skill:3:0",
+          "kind": "co-use",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:research:skill:2:0:insight",
+          "target": "example:research:skill:3:0",
+          "kind": "co-use",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:research:skill:2:1",
+          "target": "example:research:skill:3:1",
+          "kind": "co-use",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:research:skill:2:1:insight",
+          "target": "example:research:skill:3:1",
+          "kind": "co-use",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "0a7cf20c04956b0e0ad103baab3388073686c0f688016e7a9394f55ce74ff7e1",
+          "target": "example:research:skill:3:0:insight",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "1436102440faabad0fbebb75ab7c4358b18b2b22fe8ac5d34637b82a3ed8a75f",
+          "target": "example:research:skill:0:1:insight",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "284a968a86894e148b53c788022ae36ded6a7f41f405ba6fd59601cbdffce487",
+          "target": "example:research:skill:1:1:insight",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "5b5230f1dd8d0a1a52ec01e4a469a3da17051f5d8715afc5d5f24812d391b99a",
+          "target": "example:research:skill:2:0:insight",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "719d50fdd8d912141e0a2edc6a80137d908b0d5773726e08f4ed6d8bfdd2ef4f",
+          "target": "example:research:skill:1:0:insight",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "88c0c1acd078314eaaaba5221acfb22a8b304efc476dbee9925e9b48f955f561",
+          "target": "example:research:skill:2:1:insight",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "baa094519d887aa19b545d50015491cdfda802780b01fce7949ab56e7fc56ddd",
+          "target": "example:research:skill:0:0:insight",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "dcdb05380689facba108b588f252d2bd202af411c0de5de90b443dca19e9cdd1",
+          "target": "example:research:skill:3:1:insight",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:research",
+          "target": "example:research:area:0",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:research",
+          "target": "example:research:area:1",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:research",
+          "target": "example:research:area:2",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:research",
+          "target": "example:research:area:3",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:research:area:0",
+          "target": "example:research:skill:0:0",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:research:area:0",
+          "target": "example:research:skill:0:1",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:research:area:1",
+          "target": "example:research:skill:1:0",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:research:area:1",
+          "target": "example:research:skill:1:1",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:research:area:2",
+          "target": "example:research:skill:2:0",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:research:area:2",
+          "target": "example:research:skill:2:1",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:research:area:3",
+          "target": "example:research:skill:3:0",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:research:area:3",
+          "target": "example:research:skill:3:1",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:research:skill:0:0",
+          "target": "baa094519d887aa19b545d50015491cdfda802780b01fce7949ab56e7fc56ddd",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:research:skill:0:1",
+          "target": "1436102440faabad0fbebb75ab7c4358b18b2b22fe8ac5d34637b82a3ed8a75f",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:research:skill:1:0",
+          "target": "719d50fdd8d912141e0a2edc6a80137d908b0d5773726e08f4ed6d8bfdd2ef4f",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:research:skill:1:1",
+          "target": "284a968a86894e148b53c788022ae36ded6a7f41f405ba6fd59601cbdffce487",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:research:skill:2:0",
+          "target": "5b5230f1dd8d0a1a52ec01e4a469a3da17051f5d8715afc5d5f24812d391b99a",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:research:skill:2:1",
+          "target": "88c0c1acd078314eaaaba5221acfb22a8b304efc476dbee9925e9b48f955f561",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:research:skill:3:0",
+          "target": "0a7cf20c04956b0e0ad103baab3388073686c0f688016e7a9394f55ce74ff7e1",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:research:skill:3:1",
+          "target": "dcdb05380689facba108b588f252d2bd202af411c0de5de90b443dca19e9cdd1",
+          "kind": "contains",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:research:skill:0:0",
+          "target": "example:research:area:3",
+          "kind": "observed-transfer",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:research:skill:0:1",
+          "target": "example:research:area:3",
+          "kind": "observed-transfer",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:research:skill:1:0",
+          "target": "example:research:area:0",
+          "kind": "observed-transfer",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:research:skill:1:1",
+          "target": "example:research:area:0",
+          "kind": "observed-transfer",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:research:skill:2:0",
+          "target": "example:research:area:1",
+          "kind": "observed-transfer",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:research:skill:2:1",
+          "target": "example:research:area:1",
+          "kind": "observed-transfer",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:research:skill:3:0",
+          "target": "example:research:area:2",
+          "kind": "observed-transfer",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:research:skill:3:1",
+          "target": "example:research:area:2",
+          "kind": "observed-transfer",
+          "applications": 1,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": ""
+        },
+        {
+          "source": "example:research:skill:0:0",
+          "target": "example:research:skill:0:1",
+          "kind": "related",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": "Synthetic bridge: complementary practice."
+        },
+        {
+          "source": "example:research:skill:1:0",
+          "target": "example:research:skill:2:0",
+          "kind": "requires",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": "Synthetic prerequisite for this collection."
+        },
+        {
+          "source": "example:research:skill:3:1",
+          "target": "example:research:skill:0:1",
+          "kind": "transfers",
+          "applications": 0,
+          "verified": 0,
+          "strength": 0.0,
+          "evidence": "Synthetic proposal to reuse the review practice."
+        }
+      ]
+    }
+  ]
+}

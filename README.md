@@ -33,9 +33,12 @@ execution; people retain authority over accepted guidance and publication.
   - [Install Witful](#install-witful)
   - [Create a private identity](#create-a-private-identity)
   - [Work with an AI agent](#work-with-an-ai-agent)
+- [Works with your tools](#works-with-your-tools)
 - [Inputs and configuration](#inputs-and-configuration)
 - [How it works](#how-it-works)
 - [Your collection](#your-collection)
+  - [Several identities, clear ownership](#several-identities-clear-ownership)
+  - [See how your skills connect](#see-how-your-skills-connect)
   - [Lessons and decisions](#lessons-and-decisions)
   - [Project history and tools](#project-history-and-tools)
   - [Instance evidence](#instance-evidence)
@@ -48,7 +51,6 @@ execution; people retain authority over accepted guidance and publication.
   - [Privacy and data protection](#privacy-and-data-protection)
   - [Development and releases](#development-and-releases)
 - [License](#license)
-- [Encrypted repository context](#encrypted-repository-context)
 
 <!-- toc:end -->
 
@@ -107,6 +109,26 @@ Witful CLI and an explicitly selected local collection. Use this prompt:
 See [Agent chat commands](docs/agent-commands.md) for the command catalog, aliases,
 and their scope. These are chat instructions for an agent that has loaded
 [SKILL.md](SKILL.md). For executable commands, see the [CLI reference](docs/CLI.md).
+
+## Works with your tools
+
+Bring your existing workflow. Identity connects code evidence, reviewed engineering
+practices and delivery history so useful experience carries into the next task.
+Choose the integrations you need; the basic collection runs locally.
+
+| Integration                                                                                       | What it adds to your workflow                                                                                                                                                                                                                                                                       |
+| ------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **[CodeGraph](https://github.com/colbymchenry/codegraph)**                                        | Investigate symbols, callers and change impact through the upstream SDK. Identity adds separately encrypted repository graphs, commit-bound citations and bounded queries, giving your agent focused code evidence alongside your reviewed practices. [Enrollment and queries](docs/codegraphs.md). |
+| **Codex and CLI-capable agents**                                                                  | Bring your accepted lessons and completion checks into agent sessions. The supplied Codex setup installs the collection skill; other agents can use the documented Witful CLI. [Agent workflow](SKILL.md).                                                                                          |
+| **GitHub and GitLab**                                                                             | Keep your existing PR/MR workflow. Order reviews by dependencies and prepare signed rebases with explicit review and publication steps. [Delivery helpers](docs/delivery.md).                                                                                                                       |
+| **1Password through the [1Password broker](https://github.com/astrivant/1password-agent-broker)** | Keep provider credentials and key operations in a separately deployed service. Witful uses its lightweight client SDK and scoped access for protected native storage and CodeGraph. [Custody setup](docs/codegraph-setup.md).                                                                       |
+| **[Resumeme](https://github.com/astrivant/resumeme)**                                             | Turn selected learning and decision figures into an optional resume appendix. Publish approved figures and request a PDF rebuild through GitHub, making your experience easier to explain with evidence. [Figure publishing](docs/awareness.md).                                                    |
+
+For example, before changing an API, an agent can retrieve its callers through
+CodeGraph, consult your contract-testing lessons, then record what validation
+established. CodeGraph supplies repository facts; Identity carries the reviewed
+practices and outcomes forward. Graph access requires explicit enrollment, and
+source references stay separate from accepted guidance.
 
 ## Inputs and configuration
 
@@ -175,6 +197,34 @@ for the concrete tooling and [Git and GitOps](#git-and-gitops) for the operating
 
 ## Your collection
 
+### Several identities, clear ownership
+
+[![Three synthetic identities, each with a complete discipline, skill, lesson and insight hierarchy](https://raw.githubusercontent.com/astrivant/identity/main/docs/assets/knowledge-collections-example.svg)](docs/knowledge-map.md#multiple-identities)
+
+**Follow a practice all the way to the finding behind it.** These three synthetic
+collections cover application, platform and research engineering. Every displayed
+skill has a lesson and a concrete insight, including the practices that maintain
+the collection itself: synchronization, review and continual learning.
+
+Each identity owns its records. A capability such as **Synchronize identity** can
+appear in several collections; it refreshes the selected collection from its
+remote and preserves local work. It does not combine their knowledge. The example
+keeps identifiers, evidence and application counts separate even where labels match.
+[Explore the full graph and its evidence](docs/knowledge-map.md#multiple-identities).
+
+### See how your skills connect
+
+[![Application engineer's synthetic knowledge map showing discipline and skill connections](https://raw.githubusercontent.com/astrivant/identity/main/docs/assets/knowledge-map-example.svg)](docs/knowledge-map.md)
+
+**From individual tasks to a connected body of experience.** This view focuses on
+the application engineer's collection above, using the same renderer as collection
+dashboards and Resumeme exports. Bubbles group skills by discipline; links expose
+curated relationships and recorded co-use. The
+fitted Gaussian shows **working emphasis dispersion**: the concentration and spread
+of recent recorded activity. Counts describe activity, not proficiency.
+[Compare the other two collections](docs/knowledge-map.md#multiple-identities)
+or [reproduce the example](docs/knowledge-map.md#public-readme-example).
+
 ### Lessons and decisions
 
 `Identity -> Discipline -> Skill -> Lesson -> Insight` is a composed hierarchy.
@@ -188,8 +238,12 @@ drift checks make historical comparisons reviewable.
 
 ### Project history and tools
 
-[View the synthetic project-chapter example](docs/assets/project-chapters/checkpoint-transitions.svg).
-[Inspect its regeneration and source receipt](docs/view-freshness.md).
+[![Synthetic comparison of lessons and skill use across project visits](https://raw.githubusercontent.com/astrivant/identity/main/docs/assets/project-chapters/checkpoint-comparisons.svg)](docs/checkpoints.md)
+
+**See what changed as you moved between projects.** This synthetic comparison
+separates changes to documented lessons from changes to observed use, keeping each
+project boundary visible. [Explore transitions](docs/assets/project-chapters/checkpoint-transitions.svg)
+and [inspect the source and regeneration receipt](docs/view-freshness.md).
 [Project checkpoints](docs/checkpoints.md) compare documented learning and skill
 use across Git boundaries. The [toolbox and problem taxonomy](docs/CLI.md#toolbox-and-problems)
 connect tools to observed work, with source-backed task-frequency plots.
@@ -294,9 +348,3 @@ Identity and Witful are source-available under [BSL 1.1](LICENSE), with Astrivan
 LLC as licensor and no additional production-use grant. Each version converts to
 GPLv3 four years after its first public distribution under BSL. See
 [licensing and separately licensed components](docs/licensing.md).
-
-## Encrypted repository context
-
-The optional [CodeGraph extension](docs/codegraphs.md) retrieves bounded, revision-bound
-symbol and caller evidence from separately encrypted repository graphs. It keeps
-derived code facts separate from learned guidance and requires explicit enrollment.
