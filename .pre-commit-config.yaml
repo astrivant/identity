@@ -16,6 +16,12 @@ repos:
           - github.com/mszostok/codeowners-validator@7f3f5e28c6d7b8dfae5731e54ce2272ca384592f # v0.7.4
         pass_filenames: false
         always_run: true
+      - id: documentation-source-links
+        name: Documentation source links
+        entry: python scripts/documentation/source-links.py --check
+        language: system
+        pass_filenames: false
+        always_run: true
       - id: ruff
         name: Ruff lint
         entry: ruff check

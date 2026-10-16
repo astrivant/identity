@@ -16,7 +16,7 @@ from witful.codegraph.worker import Extraction
 from witful.context.models import Limits
 from witful.exceptions import NativeError
 from witful.intent.contracts import fingerprint, review_binding
-from witful.intent.draft import environment
+from witful.intent.draft import prepare as draft
 from witful.intent.models import Anchor, Assertion, Evidence, Query, Review, Scope, State
 from witful.intent.service import IntentGraph
 from witful.knowledge.contracts import as_data
@@ -104,7 +104,8 @@ def prepare(runtime: Runtime, databases: Databases, path: Path) -> tuple[IntentG
         (),
         100,
     )
-    bound_inputs = tuple(evolve(item, digest=environment(source, files).get(item.kind, item.digest)) for item in base.inputs)
+    # Keep every required environment binding, including parsers added after the synthetic example.
+    bound_inputs = draft(source, files, base.inventory, 100).inputs
     state = evolve(
         base,
         inputs=bound_inputs,
@@ -133,6 +134,9 @@ def test_publication_review_custody(runtime: Runtime, databases: Databases, tmp_
     service, state = prepare(runtime, databases, tmp_path / "source")
     access = runtime.access
     operation = str(uuid4())
+    parser = next(item for item in state.inputs if item.kind == "documentation-parser")
+    with pytest.raises(NativeError, match="conflict"):
+        service.publish(access, operation, None, evolve(state, inputs=tuple(item for item in state.inputs if item != parser)))
     receipt = service.publish(access, operation, None, state)
     assert service.publish(access, operation, None, state) == receipt
     result = service.query(access, Query("find"), LIMITS)

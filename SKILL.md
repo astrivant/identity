@@ -352,3 +352,13 @@ Bind external SDK contracts to exact revisions and remote preconditions to scope
 expiring observations. Reuse durable evidence across sessions while rechecking live
 conditions. Cross-project dependency evidence does not authorize importing or
 querying another repository's graph.
+
+## Maintain documentation references
+
+Use [source documentation links](docs/source-links.md) when prose names a type or
+implementation contract. Link to its definition and use compact numbered superscript
+citations for supporting sections. Keep stable `docref:1` breadcrumbs in actual
+single-line source comments, never strings or docstrings. Move the comment with
+its declaration, refresh explicit consumers with the source-link compiler and
+review explanatory prose when a contract changes. Generated links and inferred
+Intent Graph dependencies do not constitute semantic approval.
