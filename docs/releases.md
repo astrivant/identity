@@ -94,7 +94,7 @@ may come from `GITHUB_REPOSITORY`, `RELEASE_TAG` and `GITHUB_SHA`, or explicit f
 Prepare an unpublished tagged candidate without remote writes:
 
 ```bash
-python -m scripts.release.report --repo OWNER/REPOSITORY --tag VERSION_TAG \
+python -m scripts.release.cli --repo OWNER/REPOSITORY --tag VERSION_TAG \
     --source COMMIT_SHA prepare --output .cache/release-preview
 ```
 
@@ -103,7 +103,7 @@ published release, use the original build artifacts and independently trusted
 signing fingerprint to preview missing comments without posting:
 
 ```bash
-python -m scripts.release.report --repo OWNER/REPOSITORY --tag VERSION_TAG \
+python -m scripts.release.cli --repo OWNER/REPOSITORY --tag VERSION_TAG \
     --source COMMIT_SHA notify --built dist --download .cache/release-check \
     --fingerprint TRUSTED_SHA256 --receipt .cache/release-preview/receipt.json --dry-run
 ```

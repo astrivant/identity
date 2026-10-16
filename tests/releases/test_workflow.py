@@ -35,7 +35,7 @@ def test_reporting_stage_is_tag_scoped_and_serializes_comment_writers() -> None:
     assert "inputs.tag" in feedback["concurrency"]["group"]
     steps = feedback["steps"]
     assert steps[0]["run"] == 'test "$PUBLICATION_RESULT" = success'
-    notification = next(step for step in steps if "scripts.release.report" in step.get("run", ""))
+    notification = next(step for step in steps if "scripts.release.cli" in step.get("run", ""))
     assert "notify" in notification["run"] and "--fingerprint" in notification["run"]
     assert steps[-1]["if"] == "always()"
     assert steps[-1]["with"]["name"] == "release-feedback"
@@ -49,7 +49,7 @@ def test_publisher_signs_inventory_and_preserves_existing_note_details() -> None
         None: The existing publisher signs the inventory and uses the shared notes renderer.
     """
     script = (ROOT / "scripts/release/publish.sh").read_text()
-    assert script.index("scripts.release.report prepare") < script.index("cosign sign-blob")
+    assert script.index("scripts.release.cli prepare") < script.index("cosign sign-blob")
     assert "./RELEASE.json >SHA256SUMS" in script
     assert "fingerprint=$fingerprint" in script
     assert '--notes-file "$notes"' in script

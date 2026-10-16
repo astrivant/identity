@@ -4,12 +4,18 @@ Resolve one released contribution inventory for notes and persistent PR notifica
 
 from __future__ import annotations
 
+import json
+import os
 import re
+from http import HTTPStatus
+from pathlib import Path
 from typing import TYPE_CHECKING
 
 from attrs import frozen
 
 if TYPE_CHECKING:
+    import argparse
+
     from github.Repository import Repository
 
 CATEGORIES = (
@@ -241,3 +247,37 @@ def comment(value: Inventory, pull: Contribution, release_url: str) -> str:
         f"{greeting} contribution in #{pull.number} was released in [Witful {value.tag}]({release_url}). "
         "Thank you for contributing."
     )
+
+
+def execute(args: argparse.Namespace, parser: argparse.ArgumentParser) -> int:
+    """
+    Prepare signed-inventory inputs and release notes without remote mutation.
+
+    Args:
+        args (argparse.Namespace): Once-parsed source identity and output directory.
+        parser (argparse.ArgumentParser): Owning preparation parser.
+
+    Returns:
+        int: Zero after writing reviewed candidate metadata locally.
+    """
+    from github import Auth, Github, GithubException
+    from witful.knowledge.contracts import as_data
+
+    token = os.environ.get("GH_TOKEN") or os.environ.get("GITHUB_TOKEN")
+    with Github(auth=Auth.Token(token) if token else None, retry=0, timeout=30, per_page=100) as api:
+        repository = api.get_repo(args.repo)
+        value = inventory(repository, args.tag, args.source)
+        existing = Path(__file__).with_name("notes.md").read_text()
+        try:
+            release = repository.get_release(args.tag)
+        except GithubException as error:
+            if error.status != HTTPStatus.NOT_FOUND:
+                raise
+        else:
+            if not release.draft:
+                raise ValueError("Published release notes are immutable")
+            existing = release.body or existing
+        args.output.mkdir(parents=True, exist_ok=True)
+        (args.output / "RELEASE.json").write_text(json.dumps(as_data(value), indent=2) + "\n")
+        (args.output / "release-notes.md").write_text(notes(value, existing))
+    return 0

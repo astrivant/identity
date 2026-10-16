@@ -4,25 +4,22 @@ Prepare release notes or notify contributors after independently verifying publi
 
 from __future__ import annotations
 
-import argparse
 import json
 import os
-import subprocess
 import sys
-from http import HTTPStatus
-from pathlib import Path
 from typing import TYPE_CHECKING
 
 from github import Auth, Github, GithubException
-from jsonschema import ValidationError
 from requests.exceptions import RequestException
 from witful.files import replace_file
-from witful.knowledge.contracts import as_data
 
-from .feedback import Inventory, comment, inventory, notes
+from .feedback import Inventory, comment
 from .verification import verify_release
 
 if TYPE_CHECKING:
+    import argparse
+    from pathlib import Path
+
     from github.Repository import Repository
 
 
@@ -92,63 +89,26 @@ def notify(repository: Repository, value: Inventory, release_url: str, receipt: 
     return complete
 
 
-def main() -> int:
+def execute(args: argparse.Namespace, parser: argparse.ArgumentParser) -> int:
     """
-    Compose explicit preview/preparation and verified notification operations.
+    Verify a published release before running the selected notification operation.
+
+    Args:
+        args (argparse.Namespace): Once-parsed release identity and verification paths.
+        parser (argparse.ArgumentParser): Owning notification parser.
 
     Returns:
-        int: Zero on success; two for invalid/unverified publication or incomplete reporting.
+        int: Zero after complete reporting; two when a contribution remains unconfirmed.
     """
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--repo", default=os.environ.get("GITHUB_REPOSITORY"), required=not os.environ.get("GITHUB_REPOSITORY"))
-    parser.add_argument("--tag", default=os.environ.get("RELEASE_TAG"), required=not os.environ.get("RELEASE_TAG"))
-    parser.add_argument("--source", default=os.environ.get("GITHUB_SHA"), required=not os.environ.get("GITHUB_SHA"))
-    commands = parser.add_subparsers(dest="command", required=True)
-    prepare = commands.add_parser("prepare", help="Read release metadata and write notes/inventory locally; no remote writes")
-    prepare.add_argument("--output", type=Path, required=True)
-    report = commands.add_parser("notify", help="Verify publication, then post missing permanent PR notifications")
-    report.add_argument("--built", type=Path, required=True)
-    report.add_argument("--download", type=Path, required=True)
-    report.add_argument("--receipt", type=Path, required=True)
-    report.add_argument("--fingerprint", required=True)
-    report.add_argument("--dry-run", action="store_true")
-    args = parser.parse_args()
     token = os.environ.get("GH_TOKEN") or os.environ.get("GITHUB_TOKEN")
-    try:
-        # Explicit zero retries prevents transport-level POST retries from duplicating notifications.
-        with Github(auth=Auth.Token(token) if token else None, retry=0, timeout=30, per_page=100) as api:
-            repository = api.get_repo(args.repo)
-            if args.command == "prepare":
-                value = inventory(repository, args.tag, args.source)
-                existing = Path(__file__).with_name("notes.md").read_text()
-                try:
-                    release = repository.get_release(args.tag)
-                except GithubException as error:
-                    if error.status != HTTPStatus.NOT_FOUND:
-                        raise
-                else:
-                    if not release.draft:
-                        raise ValueError("Published release notes are immutable")
-                    existing = release.body or existing
-                args.output.mkdir(parents=True, exist_ok=True)
-                (args.output / "RELEASE.json").write_text(json.dumps(as_data(value), indent=2) + "\n")
-                (args.output / "release-notes.md").write_text(notes(value, existing))
-            else:
-                release, value = verify_release(repository, args.tag, args.source, args.built, args.download, args.fingerprint)
-                if not notify(repository, value, release.html_url, args.receipt, dry_run=args.dry_run):
-                    print(
-                        "Release verified; contributor reporting is incomplete. Inspect the receipt and rerun the reporting job.",
-                        file=sys.stderr,
-                    )
-                    return 2
-    except (OSError, ValueError, GithubException, RequestException, ValidationError, subprocess.SubprocessError):
-        print(
-            "Release reporting failed; inspect source, publication and access. No provider payload or credential was logged.",
-            file=sys.stderr,
-        )
-        return 2
+    # Explicit zero retries prevents transport-level POST retries from duplicating notifications.
+    with Github(auth=Auth.Token(token) if token else None, retry=0, timeout=30, per_page=100) as api:
+        repository = api.get_repo(args.repo)
+        release, value = verify_release(repository, args.tag, args.source, args.built, args.download, args.fingerprint)
+        if not notify(repository, value, release.html_url, args.receipt, dry_run=args.dry_run):
+            print(
+                "Release verified; contributor reporting is incomplete. Inspect the receipt and rerun the reporting job.",
+                file=sys.stderr,
+            )
+            return 2
     return 0
-
-
-if __name__ == "__main__":
-    raise SystemExit(main())

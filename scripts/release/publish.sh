@@ -18,7 +18,7 @@ fi
 mkdir -p .cache/release
 cp dist/* .cache/release/
 artifact_dir="$PWD/.cache/release"
-python -m scripts.release.report prepare --output "$RUNNER_TEMP/release-feedback"
+python -m scripts.release.cli prepare --output "$RUNNER_TEMP/release-feedback"
 cp "$RUNNER_TEMP/release-feedback/RELEASE.json" "$artifact_dir/RELEASE.json"
 cosign public-key --key env://COSIGN_PRIVATE_KEY >"$artifact_dir/cosign.pub"
 openssl pkey -pubin -in "$artifact_dir/cosign.pub" -outform DER |

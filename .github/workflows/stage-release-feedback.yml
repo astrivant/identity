@@ -48,7 +48,7 @@ jobs:
           SOURCE_REVISION: ${{ inputs.source }}
           RELEASE_SIGNING_FINGERPRINT: ${{ inputs.fingerprint }}
         run: >-
-          python -m scripts.release.report --source "$SOURCE_REVISION" notify
+          python -m scripts.release.cli --source "$SOURCE_REVISION" notify
           --built dist --download "$RUNNER_TEMP/release-download"
           --fingerprint "$RELEASE_SIGNING_FINGERPRINT"
           --receipt .cache/release-feedback/receipt.json
