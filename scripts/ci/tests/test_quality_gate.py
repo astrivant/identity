@@ -161,24 +161,36 @@ def test_figure_publication_follows_both_current_run_producers() -> None:
     assert jobs["learning"]["steps"][-1]["with"]["name"] == "continual-learning-example"
 
 
-def test_pr_and_tag_gate_requires_committed_latest_contracts() -> None:
+def test_pr_and_tag_gate_tests_renewed_latest_contracts() -> None:
     """
-    Prevent PR merge or tag publication from relying on stale or uncommitted API inputs.
+    Refresh current upstream inputs before requiring their compatibility with the locked SDKs.
 
     Returns:
-        None: Every caller checks committed freshness before tests; no transient CI-only refresh can satisfy acceptance.
+        None: Every caller tests renewed inputs; failures remain required and publication is restricted to passing main runs.
     """
     workflow = yaml.load((ROOT / ".github/workflows/ci.yml").read_text(), Loader=yaml.BaseLoader)
     gate = workflow["jobs"]["provider-contracts"]
     assert gate["with"] == {"source": "${{ github.sha }}"}
     stage = yaml.load((ROOT / ".github/workflows/stage-provider-contracts.yml").read_text(), Loader=yaml.BaseLoader)
     steps = stage["jobs"]["contracts"]["steps"]
-    refresh = next(step for step in steps if "refresh.py --check --latest --observation" in step.get("run", ""))
+    refresh = next(step for step in steps if "refresh.py --latest --observation" in step.get("run", ""))
     test = next(step for step in steps if step.get("run", "").startswith("pytest "))
     assert "if" not in refresh
     assert steps.index(refresh) < steps.index(test)
     assert "if" not in test and "continue-on-error" not in refresh and "continue-on-error" not in test
     assert "provider-contracts" in workflow["jobs"]["publish"]["needs"]
+    publication = workflow["jobs"]["generated-updates"]
+    assert publication["needs"] == ["quality-gate", "provider-contracts"]
+    assert "needs.quality-gate.result == 'success'" in publication["if"]
+    assert "needs.provider-contracts.result == 'success'" in publication["if"]
+    assert "github.event_name == 'push'" in publication["if"]
+    assert "github.ref == 'refs/heads/main'" in publication["if"]
+    assert publication["permissions"] == {"contents": "write", "pull-requests": "write", "actions": "write"}
+    download = next(step for step in publication["steps"] if "actions/download-artifact@" in step.get("uses", ""))
+    assert download["with"] == {"name": "provider-contracts", "path": ".cache/provider-contracts/"}
+    upload = next(step for step in steps if "actions/upload-artifact@" in step.get("uses", ""))
+    assert upload["with"]["name"] == download["with"]["name"]
+    assert "provider-contracts" not in workflow["jobs"]["tests"].get("needs", [])
 
 
 def test_python_setup_selects_project_interpreter(tmp_path: Path) -> None:

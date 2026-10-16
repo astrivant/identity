@@ -295,6 +295,40 @@ jobs:
             const { main } = await import(`${process.env.GITHUB_WORKSPACE}/scripts/ci/publish-coverage.mjs`);
             await main({ github, context, core });
 
+  generated-updates:
+    name: Propose validated generated updates
+    needs: [quality-gate, provider-contracts]
+    if: >-
+      !cancelled()
+      && needs.quality-gate.result == 'success'
+      && needs.provider-contracts.result == 'success'
+      && github.event_name == 'push'
+      && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: write
+      pull-requests: write
+      actions: write
+    concurrency:
+      group: generated-updates
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      # Reuse the exact tested bytes from this run, never resolve upstream a second time.
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: provider-contracts
+          path: .cache/provider-contracts/
+      - uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        with:
+          script: |
+            const { main } = await import(`${process.env.GITHUB_WORKSPACE}/scripts/ci/publish-contracts.mjs`);
+            await main({ github, context, core });
+
   quality-gate:
     name: Required CI
     # Always evaluate the complete producer set, including skipped and cancelled jobs.

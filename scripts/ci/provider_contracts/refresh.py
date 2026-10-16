@@ -250,7 +250,7 @@ def main() -> int:
         "--latest", action="store_true", help="Resolve current official spec heads, then refresh at those immutable commits"
     )
     parser.add_argument("--check", action="store_true", help="Fetch pinned sources and reject generated drift without writing")
-    parser.add_argument("--observation", type=Path, help="Separate current-check evidence file; never rewrites reviewed inputs")
+    parser.add_argument("--observation", type=Path, help="Write per-run freshness evidence separately from reusable snapshots")
     parser.add_argument("--github-ref", help="Reviewed 40-character specification commit")
     parser.add_argument("--gitlab-ref", help="Reviewed 40-character specification commit")
     args = parser.parse_args()
@@ -262,38 +262,33 @@ def main() -> int:
     if args.latest:
         overrides = latest_revisions()
     updated, snapshots = refresh(manifest, overrides)
-    if args.latest and not args.check:
-        observed_at = datetime.now(UTC).isoformat()
-        for name, raw in updated.items():
-            updated[name] = {**object_value(raw), "latest_observed_at": observed_at}
-    elif overrides and not args.check:
+    if not args.check:
+        # Observation time belongs to the run artifact, keeping renewed bytes stable across retries.
         for name in overrides:
             entry = object_value(updated[name])
             entry.pop("latest_observed_at", None)
             updated[name] = entry
     outputs = {DATA / f"{name}.json": content for name, content in snapshots.items()}
     outputs[manifest_path] = encoded(updated)
-    if args.check:
-        stale = [str(path.relative_to(DATA)) for path, content in outputs.items() if not path.exists() or path.read_bytes() != content]
-        if args.observation is not None:
-            args.observation.parent.mkdir(parents=True, exist_ok=True)
-            args.observation.write_bytes(
-                encoded(
-                    {
-                        "observed_at": datetime.now(UTC).isoformat(),
-                        "latest": args.latest,
-                        "revisions": overrides,
-                        "current": not stale,
-                        "manifest_sha256": hashlib.sha256(manifest_path.read_bytes()).hexdigest(),
-                    }
-                )
+    stale = [str(path.relative_to(DATA)) for path, content in outputs.items() if not path.exists() or path.read_bytes() != content]
+    if args.observation is not None:
+        args.observation.parent.mkdir(parents=True, exist_ok=True)
+        args.observation.write_bytes(
+            encoded(
+                {
+                    "observed_at": datetime.now(UTC).isoformat(),
+                    "latest": args.latest,
+                    "revisions": overrides,
+                    "current": not stale if args.check else True,
+                    "changed": stale,
+                    "manifest_sha256": hashlib.sha256(manifest_path.read_bytes() if args.check else outputs[manifest_path]).hexdigest(),
+                }
             )
+        )
+    if args.check:
         if stale:
             print("Stale API contracts: " + ", ".join(stale))
-            print(
-                "Run refresh.py --latest, review and test the diff, then commit the updated manifest and snapshots "
-                "or rebase on that update."
-            )
+            print("Run refresh.py --latest and test the refreshed contracts.")
         return int(bool(stale))
     for path, content in outputs.items():
         path.write_bytes(content)

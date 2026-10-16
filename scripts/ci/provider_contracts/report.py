@@ -43,6 +43,7 @@ def main() -> int:
         "installed_packages": installed,
         "poetry_lock_sha256": hashlib.sha256(lock).hexdigest(),
         "vendor_contracts": json.loads(manifest.read_text()),
+        "files": {item.name: hashlib.sha256(item.read_bytes()).hexdigest() for item in sorted(manifest.parent.iterdir()) if item.is_file()},
         "test_result": "See junit.xml from this run; this document records inputs, not success.",
         "scope": "Local HTTP mocks and response schemas, not live SaaS behavior or a running vendor platform.",
     }
