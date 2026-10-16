@@ -1,16 +1,30 @@
-# Evidence-backed capability discovery
+# Retain code intent across working sessions
 
-Find the tool that fits a task, inspect its intended behavior, and see which checks
-remain. Witful joins the canonical repertoire to an enrolled CodeGraph and keeps
-reviewed intent separate from inference. You can reuse a discovery result without
-mistaking it for permission to publish, deploy or execute a helper.
+Carry reviewed understanding of a codebase into the next working session. Intent
+graphs retain what functions and components are meant to do, the invariants and
+design decisions they preserve, their dependencies, and the evidence behind those
+claims. A later engineer or agent can retrieve that context and identify what
+needs inspection again instead of reconstructing it from names and old prose.
+
+CodeGraph supplies source topology; intent assertions explain purpose and
+constraints. Comments, docstrings, maintained contracts and inspected source can
+support a claim, with their exact source bindings retained. An assertion needs no
+executable entrypoint or tool registration. Canonical repertoire IDs connect tools,
+SDKs and services where those relationships apply; finding a helper is one use of
+the same model.
+
+The implementation is Python, but intent records use language-neutral source
+paths, exact byte ranges and optional symbol references. Source indexing follows
+the [CodeGraph language contract](codegraphs.md#language-support-and-coverage).
+An unsupported parser or dynamic edge remains a visible coverage limitation.
 
 ## Architecture
 
 ```mermaid
 flowchart TD
-    repertoire["Canonical repertoire<br/>Tool IDs and entrypoints"] --> draft["Unreviewed candidates"]
+    repertoire["Optional repertoire binding<br/>Tools, SDKs and services"] --> draft["Unreviewed intent assertions"]
     code["Enrolled CodeGraph<br/>Exact commit and source manifest"] --> draft
+    contracts["Maintained contracts and inspection<br/>Purpose, invariants and dependencies"] --> draft
     draft --> store["Encrypted native intent history"]
     reviewer["Authorized semantic review<br/>Maintained intent source and criterion"] --> store
     store --> verified["Verified-intent view"]
@@ -23,7 +37,7 @@ flowchart TD
     classDef authority fill:#e2ddba,stroke:#65737b,color:#263642;
     classDef projection fill:#d6e0e9,stroke:#65737b,color:#263642;
     classDef pending fill:#efd6c5,stroke:#65737b,color:#263642;
-    class repertoire,code source;
+    class repertoire,code,contracts source;
     class reviewer,executor authority;
     class verified,inferred,result projection;
     class draft,store,closure pending;
@@ -160,6 +174,43 @@ supporting evidence makes that review stale. This deliberately conservative
 binding can require re-review after an additive evidence change. Reverse dependency
 closure identifies affected records deterministically; history remains unchanged.
 A new CodeGraph generation requires a newly bound intent candidate.
+
+## Transfer understanding between sessions and dependencies
+
+Publish an assertion with `tool` set to an empty string when it describes ordinary
+code rather than a registered repertoire item. Bind it to the relevant `Anchor`
+records and supporting `Evidence`, then append a semantic review when an
+authorized reviewer has checked its maintained intent source. The encrypted
+history persists independently of the caller session. A later session uses
+`find`, `explain` and `coverage` against that same admitted repository generation.
+The graph preserves review evidence and uncertainty, not an unqualified claim
+that the next agent understands the code.
+
+For example, an assertion can describe why a service retries transient failures,
+which operations must remain idempotent, or which invariant a library function
+preserves. Its aliases can name the component and behavior without inventing a
+CLI command. A source or dependency change requires renewed bindings; an old
+session's supported review is retained as history rather than silently renewed.
+
+| Dependency context | Retained evidence | Recheck boundary |
+| --- | --- | --- |
+| SDK used by another project | Exact package/source revision, contract digest and applicable guarantee | Changed SDK, contract or consumer configuration |
+| Required remote service | Admitted service reference, protocol/schema requirement and scoped observation | Current remote state and observation expiry |
+| Authorization or deployment state | Opaque admission/configuration references and required checks | Each action's current authority and atomic preconditions |
+
+Record SDK contracts as explicitly admitted evidence and dependency inputs in the
+consumer's scope. Shared service prerequisites can use complete witness bundles
+combining a maintained contract with a fresh runtime observation. These records
+describe a dependency across projects; they neither import another repository's
+private graph nor grant access to it. This API queries one repository scope and
+does not perform cross-repository resolution or remote health checks.
+
+The `draft` command currently seeds assertions from the repertoire only. It does
+not automatically interpret every function or record everything an agent reads.
+Repository-wide understanding is accumulated through explicit source-bound
+assertions, reading receipts, publication and review.
+
+## Revalidate runtime conditions before acting
 
 The pure Python resolver accepts explicit fresh `Observation` values from a trusted
 orchestration boundary. HTTP clients cannot assert their own live observations.

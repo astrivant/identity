@@ -167,6 +167,31 @@ def test_publication_review_custody(runtime: Runtime, databases: Databases, tmp_
     assert response.status_code == HTTPStatus.FORBIDDEN
 
 
+def test_source_intent_survives_new_facade(runtime: Runtime, databases: Databases, tmp_path: Path) -> None:
+    """
+    Retrieve stored ordinary-code intent from a new facade without the publishing caller's state.
+
+    Args:
+        runtime (Runtime): Actual Git or PostgreSQL ciphertext store.
+        databases (Databases): Independent synthetic authority.
+        tmp_path (Path): Disposable clean repository.
+
+    Returns:
+        None: Fresh facade objects retrieve the same persisted source assertion and generation.
+    """
+    writer, candidate = prepare(runtime, databases, tmp_path / "source")
+    claim = evolve(candidate.assertions[0], tool="", statement="The sample module preserves its declared interface.")
+    candidate = evolve(candidate, assertions=(claim,))
+    writer.publish(runtime.access, str(uuid4()), None, candidate)
+    expected = writer.query(runtime.access, Query("explain", claim.id), LIMITS)
+
+    # Recreate the query boundary so retrieval cannot depend on a facade-local candidate cache.
+    reader = IntentGraph(RepositoryGraph(runtime.service, writer.graph.enrollment, extraction))
+    actual = reader.query(runtime.access, Query("explain", claim.id), LIMITS)
+    assert actual == expected and actual.claims[0].assertion == claim
+    assert actual.claims[0].entrypoint == "" and actual.generation
+
+
 def test_denials_and_atomicity(runtime: Runtime, databases: Databases, tmp_path: Path) -> None:
     """
     Refuse forged reviewers, mismatched scopes, stale sources and revoked access without partial publication.

@@ -12,13 +12,146 @@ from witful.context.models import Limits
 from witful.exceptions import NativeError
 from witful.intent.contracts import extends, fingerprint, review_binding, validate
 from witful.intent.core import affected, resolve
-from witful.intent.models import Bundle, Dependency, Evidence, Query, Requirement, Review, Span
+from witful.intent.models import Anchor, Bundle, Dependency, Evidence, File, Input, Observation, Query, Requirement, Review, Span
 from witful.knowledge.contracts import as_data
 from witful.native.models import parse
+from witful.repertoire.models import Inventory
 
 from tests.intent.support import example
 
 LIMITS = Limits(tokens=100000)
+
+
+@pytest.mark.parametrize(
+    ("path", "source"),
+    [
+        ("pkg/selection.py", b"def select(paths):\n    return paths\n"),
+        ("src/selection.ts", b"export const select = (paths: string[]) => paths;\n"),
+        ("selection.go", b"package selection\nfunc Select(paths []string) []string { return paths }\n"),
+    ],
+)
+def test_source_intent_without_tool_registration(path: str, source: bytes) -> None:
+    """
+    Preserve ordinary code intent across serialization independently of source language or tool inventory.
+
+    Args:
+        path (str): Synthetic source location, not an executable entrypoint.
+        source (bytes): Exact source bytes; this test validates intent contracts, not language parsers.
+
+    Returns:
+        None: Source anchors, partial reading and explicit review survive without inventing a tool.
+    """
+    base = example()
+    statement = "The selection module preserves the caller's exact path selection."
+    declaration = statement.encode()
+    contract = File("contract.md", hashlib.sha256(declaration).hexdigest(), len(declaration))
+    code = File(path, hashlib.sha256(source).hexdigest(), len(source))
+    files = tuple(sorted((contract, code), key=lambda item: item.path))
+    scope = evolve(base.scope, manifest=fingerprint(files))
+    inventory = Inventory()
+    anchors = tuple(Anchor("anchor:" + item.path, item.path, item.digest, 0, item.size, "synthetic/1", "exact-bytes") for item in files)
+    contract_anchor = next(item for item in anchors if item.path == contract.path)
+    inputs = tuple(evolve(item, digest=fingerprint(inventory)) if item.kind == "inventory" else item for item in base.inputs)
+    coverage = evolve(
+        base.coverage[0],
+        manifest=scope.manifest,
+        files=tuple(item.path for item in files),
+        spans=(Span(contract.path, 0, contract.size, "inspected"), Span(code.path, 0, code.size, "uninspected")),
+        question="What selection invariant does the maintained contract declare?",
+    )
+    evidence = evolve(
+        base.evidence[0], source=contract_anchor.id, digest=contract.digest, dependencies=(contract_anchor.id,), text=statement
+    )
+    claim = evolve(
+        base.assertions[0], tool="", anchors=tuple(item.id for item in anchors), statement=statement, aliases=("selection invariant",)
+    )
+    state = evolve(
+        base,
+        scope=scope,
+        inventory=inventory,
+        inputs=inputs,
+        files=files,
+        anchors=anchors,
+        coverage=(coverage,),
+        evidence=(evidence,),
+        assertions=(claim,),
+    )
+    decision = Review(
+        "review:module",
+        claim.id,
+        "maintained-intent/1",
+        (evidence.id,),
+        "supported",
+        "Narrow declared invariant",
+        "b" * 64,
+        "fixture-reviewer",
+        101,
+    )
+    decision = evolve(decision, binding=review_binding(state, claim.id))
+    state = evolve(state, reviews=(decision,))
+
+    # A new caller reconstructs the stored records, including their limits, rather than inferring intent again.
+    restored = parse(as_data(state), type(state))
+    result = resolve(restored, Query("find", "selection invariant", view="verified"), LIMITS, 102)
+    assert result.result == "complete" and result.claims[0].assertion == claim
+    assert result.claims[0].entrypoint == "" and restored.inventory.tools == ()
+    assert result.claims[0].conformance == "unknown"
+    assert result.coverage == (coverage,) and result.anchors == tuple(sorted(anchors, key=lambda item: item.id))
+    assert result.reviews == (decision,)
+
+
+def test_sdk_contract_and_remote_preconditions() -> None:
+    """
+    Retain cross-project dependency evidence while requiring fresh runtime observations.
+
+    Returns:
+        None: A retained SDK declaration never substitutes for current service state or execution authority.
+    """
+    base = example()
+    sdk = Input("input:sdk-contract", "sdk-contract", "b" * 64, 100)
+    remote = Input("input:remote-service", "remote-service-schema", "c" * 64, 100, 110, True)
+    contract = Evidence(
+        "evidence:sdk", "intent_declaration", "package:synthetic-client#immutable-contract", sdk.digest, "sdk-maintainer", 100, (sdk.id,)
+    )
+    observed = Evidence(
+        "evidence:service", "runtime_observation", "service:admitted-reference", remote.digest, "service-observer", 100, (remote.id,)
+    )
+    requirement = Requirement(
+        "dependency-contracts-current",
+        "sdk-and-service/1",
+        (Bundle("complete", (contract.id, observed.id)),),
+        "complete",
+        ("intent_declaration", "runtime_observation"),
+        independent=True,
+        disclose_missing=True,
+    )
+    claim = evolve(
+        base.assertions[0],
+        tool="",
+        dependencies=(requirement.id,),
+        statement="The client requires the declared SDK and remote service contracts.",
+    )
+    state = evolve(
+        base,
+        inputs=(*base.inputs, sdk, remote),
+        evidence=(*base.evidence, contract, observed),
+        assertions=(claim,),
+        requirements=(requirement,),
+    )
+    missing = resolve(state, Query("preflight", claim.id), LIMITS, 101)
+    assert missing.result == "blocked" and missing.missing == (requirement.id,)
+    current = Query("preflight", claim.id, observations=(Observation(remote.id, remote.digest, 101),))
+    result = resolve(state, current, LIMITS, 101)
+    assert result.result == "complete" and {contract.id, observed.id} <= set(result.witnesses)
+    assert result.readiness == "blocked" and result.execution_authority == "not-evaluated"
+
+    # Either dependency can invalidate consumption without changing the consumer's source commit.
+    changed = evolve(current, observations=(*current.observations, Observation(sdk.id, "d" * 64, 101)))
+    assert resolve(state, changed, LIMITS, 101).result == "blocked"
+    expired = evolve(current, observations=(Observation(remote.id, remote.digest, 110),))
+    assert resolve(state, expired, LIMITS, 110).result == "blocked"
+    assert claim.id in affected(state, (sdk.id,))
+    assert claim.id in affected(state, (remote.id,))
 
 
 def test_no_automatic_verification() -> None:

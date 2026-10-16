@@ -81,10 +81,12 @@ roles of repository evidence, learned guidance and review receipts.
 
 ## Intent discovery
 
-[Intent graphs](intent-graphs.md) connect canonical repertoire capabilities to this
-exact repository generation, with separate reviewed and inferred views, read
-coverage and complete evidence requirements. Discovery remains read-only; explicit
-publication and semantic review use separate native grants.
+[Intent graphs](intent-graphs.md) retain source-bound purpose, invariants and
+dependency contracts for reuse across working sessions. Ordinary code can carry
+intent without tool registration; repertoire IDs connect tools, SDKs and services
+where relevant. Separate reviewed and inferred views retain exact read coverage
+and evidence requirements. Discovery remains read-only; explicit publication and
+semantic review use separate native grants.
 
 ## Runtime and custody
 

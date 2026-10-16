@@ -181,11 +181,11 @@ class Evidence:
 @frozen
 class Assertion:
     """
-    Retain a narrow capability claim separately from its review history.
+    Retain code intent separately from its review history and optional tool binding.
 
     Attributes:
         id (str): Immutable claim ID.
-        tool (str): Canonical repertoire Tool ID; empty for an unregistered capability.
+        tool (str): Canonical repertoire Tool ID when applicable; empty for ordinary code intent.
         anchors (tuple[str, ...]): Exact source anchor IDs.
         statement (str): Narrow intent statement.
         applicability (str): Explicit scope of the claim.
@@ -381,7 +381,7 @@ class Claim:
 
     Attributes:
         assertion (Assertion): Exact scoped candidate, including known counterevidence.
-        entrypoint (str): Authoritative canonical repertoire reference, possibly non-executable.
+        entrypoint (str): Canonical repertoire reference when bound; empty for ordinary source intent.
         projection (Literal["verified", "inferred"]): Qualified current projection.
         verification (Literal["unreviewed", "supported", "disputed", "refuted", "withdrawn"]): Latest explicit review outcome.
         freshness (Literal["current", "stale", "unknown"]): Current declared-input validity.
@@ -406,7 +406,7 @@ class Result:
     Attributes:
         result (Literal["complete", "incomplete", "blocked"]): Discovery completeness only.
         scope (Scope | None): Admitted scope; omitted in opaque blocked responses.
-        claims (tuple[Claim, ...]): Individually qualified capabilities.
+        claims (tuple[Claim, ...]): Individually qualified code-intent assertions and optional capability bindings.
         witnesses (tuple[str, ...]): Complete selected closure IDs.
         evidence (tuple[Evidence, ...]): Exact closure evidence including mandatory teachings and counterevidence.
         reviews (tuple[Review, ...]): Explicit semantic decisions in the closure.

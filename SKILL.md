@@ -328,13 +328,18 @@ with exact-version links. Recover uncertain notification outcomes through the
 reporting receipt and rerun only the reporting job; never republish immutable
 artifacts to repair a comment. Reading this guide does not authorize a release
 or live notification outside the selected pipeline.
-## Discover capabilities through intent evidence
+## Carry code intent between working sessions
 
 Use [intent discovery](docs/intent-graphs.md) on an explicitly enrolled CodeGraph
 with an `intent-query` grant. Start with `witful intent find` and inspect exact
-source, coverage, counterevidence and missing requirements before selecting a
-helper. Verified intent requires an explicit authorized semantic review; drafts
-remain inferred. Discovery never records a use or supplies permission to execute.
+source, coverage, counterevidence and missing requirements before changing code or
+using a capability. Retain purpose, invariants, design decisions and dependency
+contracts as source-bound assertions; ordinary code needs no repertoire Tool ID.
+The model is language-neutral, within the enrolled CodeGraph's coverage. The draft
+command seeds repertoire candidates only, so it does not automatically capture a
+working session's understanding. Publish explicit candidates and reading receipts;
+verified intent requires an authorized semantic review. Discovery never records
+a use or supplies permission to execute.
 Respect the admitted output pipe and keep responses out of logs and ordinary files.
 
 Recheck graph/source generation and current authority on consumption. A changed
@@ -342,3 +347,8 @@ input invalidates dependent review bindings; do not carry them forward based on
 an unchanged commit or a matching name. Use the existing context resolver for
 mandatory teachings and preserve their exact text. `preflight` describes checks;
 it does not run them or authorize publication.
+
+Bind external SDK contracts to exact revisions and remote preconditions to scoped,
+expiring observations. Reuse durable evidence across sessions while rechecking live
+conditions. Cross-project dependency evidence does not authorize importing or
+querying another repository's graph.
