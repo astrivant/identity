@@ -29,7 +29,6 @@ dependencies = [
     "PyGithub>=2.10,<2.11",
     "python-gitlab>=8.6,<8.7",
     "Pygments>=2.21,<2.22",
-    "markdown-it-py>=4.2,<4.3",
 ]
 
 [project.urls]
@@ -50,7 +49,6 @@ native = [
 [project.scripts]
 witful = "witful.cli:main"
 witful-pii = "witful.privacy.cli:main"
-witful-source-links = "witful.documentation:main"
 
 [tool.poetry]
 packages = [{include = "witful", from = "pkg"}]
@@ -63,6 +61,7 @@ include = [
 exclude = ["pkg/witful/**/tests"]
 
 [tool.poetry.group.dev.dependencies]
+markdown-it-py = ">=4.2,<4.3"
 sqlfluff = "4.4.0"
 PyYAML = "6.0.3"
 types-PyYAML = "6.0.12.20260906"

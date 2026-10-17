@@ -8,7 +8,8 @@ import hashlib
 from typing import TYPE_CHECKING
 
 import pytest
-from witful.documentation import BEGIN, END, declare, discover, main, references, render, updates
+from documentation.source_links import BEGIN, END, declare, main, render, updates
+from witful.intent.docrefs import discover, references
 
 if TYPE_CHECKING:
     from pathlib import Path

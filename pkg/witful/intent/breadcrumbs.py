@@ -9,8 +9,8 @@ from typing import TYPE_CHECKING
 
 from attrs import evolve
 
-from witful.documentation import discover
 from witful.exceptions import NativeError
+from witful.intent.docrefs import discover
 from witful.intent.models import Anchor, Assertion, Evidence
 
 if TYPE_CHECKING:

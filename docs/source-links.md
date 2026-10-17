@@ -57,6 +57,10 @@ not explanatory prose. A valid link does not establish that the explanation is c
 
 ## Regenerate and check
 
+Link generation is checkout maintenance under `scripts/documentation/`; it uses
+the development environment. The installed runtime only parses declarations for
+Intent Graph evidence and does not provide a documentation-writing command.
+
 The source-link linter is followed immediately by the same focused boundary suite
 in commit hooks, push hooks and CI:
 
