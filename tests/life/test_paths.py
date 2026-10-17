@@ -20,6 +20,7 @@ from witful.life.models import Archive
 from witful.life.path_plot import RESOURCES, figure
 from witful.life.paths import lookup, select
 from witful.life.replay import render
+from witful.privacy.scanner import scan_svg
 
 if TYPE_CHECKING:
     from pytest import CaptureFixture, MonkeyPatch
@@ -130,6 +131,7 @@ def test_paths_render_with_bounded_labels_and_packaged_style(tmp_path: Path) -> 
     assert report["paths"]["omitted_events"] == 3
     # Byte identity is checked within this toolchain, not against a preview rendered on another OS.
     assert 'id="EBGaramond' in (tmp_path / "life.svg").read_text()
+    assert not scan_svg((tmp_path / "life.svg").read_text())
     assert (RESOURCES / "palette.json").read_bytes() == (ROOT / "docs/assets/brand/pr-palette.json").read_bytes()
 
 

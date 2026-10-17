@@ -13,7 +13,7 @@ from witful.collection.dashboard import FIGURES as FIGURE_CATALOG
 from witful.collection.managed import snapshot
 from witful.collection.models import load_config
 from witful.collection.process import run
-from witful.privacy.scanner import scan_text
+from witful.privacy.scanner import scan_svg, scan_text
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -50,7 +50,10 @@ def publication_files(current: Path) -> dict[str, bytes]:
     if actual != set(contents) or any(path.is_symlink() for path in current.rglob("*")):
         raise ValueError("Candidate contains unexpected paths")
     for name, data in contents.items():
-        if (name == "README.md" or name.endswith(".svg")) and scan_text(data.decode()):
+        if name != "README.md" and not name.endswith(".svg"):
+            continue
+        inspect = scan_svg if name.endswith(".svg") else scan_text
+        if inspect(data.decode()):
             raise ValueError("Review readable publication content before disclosure")
     return contents
 

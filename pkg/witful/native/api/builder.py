@@ -16,6 +16,7 @@ from werkzeug.exceptions import HTTPException
 
 from witful.codegraph.api import routes as codegraph_routes
 from witful.exceptions import NativeError
+from witful.intent.api import routes as intent_routes
 from witful.native import codec
 from witful.native.api.archives import routes as archive_routes
 from witful.native.api.derivation import routes as derivation_routes
@@ -103,6 +104,7 @@ class Builder:
             (
                 routes(self.service, self.authenticate),
                 codegraph_routes(self.service, self.authenticate, self.codegraphs),
+                intent_routes(self.service, self.authenticate, self.codegraphs),
                 projection_routes(self.service, self.authenticate),
                 maintenance_routes(self.service, self.authenticate, self.destinations),
                 archive_routes(self.service, self.authenticate, self.archives),

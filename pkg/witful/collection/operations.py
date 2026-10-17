@@ -34,7 +34,7 @@ from witful.lessons import read_journal
 from witful.life.journal import read_archive
 from witful.life.plotting import write_influences
 from witful.life.replay import render as life_plots
-from witful.privacy.scanner import scan_text
+from witful.privacy.scanner import scan_svg
 from witful.reflection.journal import config as reflection_config
 from witful.reflection.journal import read as read_reviews
 from witful.reflection.planning import plan as reflection_plan
@@ -210,7 +210,7 @@ def refresh(checkout: Path, environment: dict[str, str] | None = None, *, histor
             for identifier in figure_ids:
                 content = (figures / f"{identifier}.svg").read_text()
 
-                if scan_text(content):
+                if scan_svg(content):
                     raise ValueError("Readable figure contains a detected personal-data pattern; keep figures encrypted or revise labels")
 
             readable.mkdir(parents=True, exist_ok=True)

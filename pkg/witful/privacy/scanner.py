@@ -10,6 +10,7 @@ import json
 import re
 import subprocess
 from typing import TYPE_CHECKING, Literal
+from xml.parsers import expat
 
 from attrs import frozen
 from jsonschema import ValidationError
@@ -21,7 +22,7 @@ if TYPE_CHECKING:
     from collections.abc import Sequence
     from pathlib import Path
 
-__all__ = ["Finding", "GapReason", "ScanGap", "ScanReport", "scan", "scan_report", "scan_text"]
+__all__ = ["Finding", "GapReason", "ScanGap", "ScanReport", "scan", "scan_report", "scan_svg", "scan_text"]
 
 GapReason = Literal["binary-content", "non-utf8-content", "encrypted-envelope", "read-error", "invalid-envelope", "file-too-large"]
 
@@ -141,6 +142,95 @@ def scan_text(text: str, terms: Sequence[str] = ()) -> tuple[tuple[int, str], ..
                 found.add((text.count("\n", 0, match.start()) + 1, "deny-term"))
 
     return tuple(sorted(found))
+
+
+def scan_svg(text: str, terms: Sequence[str] = ()) -> tuple[tuple[int, str], ...]:
+    """
+    Inspect SVG text and attributes without mistaking numeric path geometry for personal data.
+
+    Args:
+        text (str): Complete generated SVG document; entity declarations are forbidden.
+        terms (Sequence[str]): Private deny terms, including literal matches in geometry.
+
+    Returns:
+        tuple[tuple[int, str], ...]: Stable line/rule findings from parsed content and attributes.
+
+    Raises:
+        ValueError: XML is malformed, declares entities or has a non-SVG document root.
+    """
+    parser = expat.ParserCreate(namespace_separator="}")
+    parser.buffer_text = True
+    findings: set[tuple[int, str]] = set()
+    root_seen = False
+
+    def inspect(value: str, *, geometry: bool = False) -> None:
+        """
+        Scan a decoded XML value while preserving literal deny terms in numeric geometry.
+
+        Args:
+            value (str): Attribute, text, comment or processing-instruction content.
+            geometry (bool): Whether the value is a numeric SVG path attribute.
+
+        Returns:
+            None: Redacted findings accumulate without retaining matched values.
+        """
+        for _, rule in scan_text(value, terms):
+            if not geometry or rule == "deny-term":
+                findings.add((parser.CurrentLineNumber, rule))
+
+    def start(name: str, attributes: dict[str, str]) -> None:
+        """
+        Validate the document root and inspect every attribute at its element boundary.
+
+        Args:
+            name (str): Namespace-expanded XML element name.
+            attributes (dict[str, str]): Decoded XML attributes.
+
+        Returns:
+            None: Only numeric drawing commands in actual SVG path data are exempted.
+
+        Raises:
+            ValueError: The document root is not an SVG element.
+        """
+        nonlocal root_seen
+        if not root_seen:
+            if name != "http://www.w3.org/2000/svg}svg":
+                raise ValueError("Figure must have an SVG document root")
+            root_seen = True
+        for attribute, value in attributes.items():
+            geometry = (
+                name == "http://www.w3.org/2000/svg}path"
+                and attribute == "d"
+                and re.fullmatch(r"[MmZzLlHhVvCcSsQqTtAaEe0-9+.,\s-]*", value) is not None
+            )
+            inspect(value, geometry=geometry)
+
+    def reject_entity(*arguments: object) -> None:
+        """
+        Refuse entity declarations before expansion or any external resource access.
+
+        Args:
+            *arguments (object): Expat declaration fields, deliberately unused.
+
+        Returns:
+            None: This callback always refuses the declaration.
+
+        Raises:
+            ValueError: Entity declarations are unsupported in generated figures.
+        """
+        raise ValueError("Figure must not declare XML entities")
+
+    parser.StartElementHandler = start
+    parser.CharacterDataHandler = inspect
+    parser.CommentHandler = inspect
+    parser.ProcessingInstructionHandler = lambda target, value: inspect(target + " " + value)
+    parser.EntityDeclHandler = reject_entity
+    parser.StartDoctypeDeclHandler = lambda name, system, public, internal: inspect(" ".join((name, system or "", public or "")))
+    try:
+        parser.Parse(text, True)
+    except expat.ExpatError as error:
+        raise ValueError("Figure contains invalid XML") from error
+    return tuple(sorted(findings))
 
 
 def _git(root: Path, *arguments: str) -> bytes:
@@ -277,7 +367,14 @@ def scan_report(root: Path, *, staged: bool = False, terms: Sequence[str] = (), 
         except UnicodeError:
             skipped.append(ScanGap(label, "non-utf8-content"))
             continue
-        findings.extend(Finding(label, line, rule) for line, rule in scan_text(content, terms))
+        # SVG glyph outlines contain numeric drawing commands, not readable contact details.
+        inspect = scan_svg if name.lower().endswith(".svg") else scan_text
+        try:
+            matches = inspect(content, terms)
+        except ValueError:
+            errors.append(ScanGap(label, "read-error"))
+            continue
+        findings.extend(Finding(label, line, rule) for line, rule in matches)
 
     return ScanReport(tuple(findings), tuple(skipped), tuple(errors))
 

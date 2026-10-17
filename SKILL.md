@@ -354,3 +354,58 @@ verify that consequential decisions were recorded or remain explicitly unresolve
 Consulting, recording and periodic reflection are separate actions. Do not claim
 use merely because records exist, and never invent hidden reasoning or outcomes.
 See [the Life workflow](https://github.com/astrivant/identity/blob/main/docs/life.md).
+
+## Carry code intent between working sessions
+
+Use [intent discovery](docs/intent-graphs.md) on an explicitly enrolled CodeGraph
+with an `intent-query` grant. Start with `witful intent find` and inspect exact
+source, coverage, counterevidence and missing requirements before changing code or
+using a capability. Retain purpose, invariants, design decisions and dependency
+contracts as source-bound assertions; ordinary code needs no repertoire Tool ID.
+The model is language-neutral, within the enrolled CodeGraph's coverage. The draft
+command seeds repertoire candidates and declared documentation dependencies, so it does not automatically capture a
+working session's understanding. Publish explicit candidates and reading receipts;
+verified intent requires an authorized semantic review. Discovery never records
+a use or supplies permission to execute.
+Respect the admitted output pipe and keep responses out of logs and ordinary files.
+
+For a new agent, follow the [setup and session loop](docs/intent-graphs.md#agent-setup-and-session-loop).
+Check installed CLI support, the existing enrollment and scoped grants before using
+the commands. Record supported intent as engineers make or revise decisions, with
+exact source anchors and explicit reading coverage. After a source change, rebuild
+the graph and publish a newly bound candidate; a review of the old generation does
+not transfer automatically. Check for unrecorded decisions and unresolved evidence
+at handoff. Keep general Life decisions separate from repository assertions.
+
+Recheck graph/source generation and current authority on consumption. A changed
+input invalidates dependent review bindings; do not carry them forward based on
+an unchanged commit or a matching name. Use the existing context resolver for
+mandatory teachings and preserve their exact text. `preflight` describes checks;
+it does not run them or authorize publication.
+
+Bind external SDK contracts to exact revisions and remote preconditions to scoped,
+expiring observations. Reuse durable evidence across sessions while rechecking live
+conditions. Cross-project dependency evidence does not authorize importing or
+querying another repository's graph.
+
+## Maintain documentation references
+
+Use [source documentation links](docs/source-links.md) when prose names a type or
+implementation contract. Link to its definition and use compact numbered superscript
+citations for supporting sections. Keep stable `docref:1` breadcrumbs in actual
+single-line source comments, never strings or docstrings. Move the comment with
+its declaration, refresh explicit consumers with the source-link compiler and
+review explanatory prose when a contract changes. Generated links and inferred
+Intent Graph dependencies do not constitute semantic approval.
+Run the focused source-link boundary guard immediately after its linter in local
+hooks and CI; it checks line endings, Markdown suffixes and isolated Git fixtures.
+
+## Repair generated conflicts
+
+Maintain the [generated-artifact inventory](.github/generated-artifacts.json) when
+adding or changing generators. Follow [the repair contract](docs/generated-artifacts.md):
+trusted CI can reconcile declared, bounded outputs only after canonical inputs
+merge cleanly. Never run candidate code with write credentials or choose changed
+ownership policy. Keep ordinary PR checks and review required on every repaired
+head. Run the ownership compiler together with ownership edits, then review and
+stage its output; the pre-push check validates committed HEAD.
