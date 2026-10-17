@@ -1,0 +1,576 @@
+{
+  "measurement": {
+    "base": "49625acccfda9ed26786abe93854ca9d8b034796",
+    "merge_base": "49625acccfda9ed26786abe93854ca9d8b034796",
+    "head": "5f0f81ecf61b81c775b77bc19242085ce007150a",
+    "classifier": "Pygments 2.21.0",
+    "deltas": [
+      {
+        "before": ".github/CODEOWNERS",
+        "after": ".github/CODEOWNERS",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "SKILL.md",
+        "after": "SKILL.md",
+        "added": 21,
+        "deleted": 0
+      },
+      {
+        "before": "docs/CLI.md",
+        "after": "docs/CLI.md",
+        "added": 11,
+        "deleted": 12
+      },
+      {
+        "before": "docs/assets/life-example.png",
+        "after": "docs/assets/life-example.png",
+        "added": null,
+        "deleted": null
+      },
+      {
+        "before": "docs/continual-learning.md",
+        "after": "docs/continual-learning.md",
+        "added": 5,
+        "deleted": 1
+      },
+      {
+        "before": "docs/life.md",
+        "after": "docs/life.md",
+        "added": 131,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/collection/dashboard.py",
+        "after": "pkg/witful/collection/dashboard.py",
+        "added": 2,
+        "deleted": 2
+      },
+      {
+        "before": "pkg/witful/collection/resources/SKILL.md",
+        "after": "pkg/witful/collection/resources/SKILL.md",
+        "added": 21,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/commands/life.py",
+        "after": "pkg/witful/commands/life.py",
+        "added": 3,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/life/cli.py",
+        "after": "pkg/witful/life/cli.py",
+        "added": 3,
+        "deleted": 3
+      },
+      {
+        "before": "pkg/witful/life/journal.py",
+        "after": "pkg/witful/life/journal.py",
+        "added": 5,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/life/path_plot.py",
+        "after": "pkg/witful/life/path_plot.py",
+        "added": 111,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/life/paths.py",
+        "after": "pkg/witful/life/paths.py",
+        "added": 123,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/life/replay.py",
+        "after": "pkg/witful/life/replay.py",
+        "added": 6,
+        "deleted": 30
+      },
+      {
+        "before": "pkg/witful/life/resources/EBGaramond-Regular.otf",
+        "after": "pkg/witful/life/resources/EBGaramond-Regular.otf",
+        "added": null,
+        "deleted": null
+      },
+      {
+        "before": "pkg/witful/life/resources/OFL.txt",
+        "after": "pkg/witful/life/resources/OFL.txt",
+        "added": 93,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/life/resources/README.md",
+        "after": "pkg/witful/life/resources/README.md",
+        "added": 22,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/life/resources/palette.json",
+        "after": "pkg/witful/life/resources/palette.json",
+        "added": 18,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/reflection/planning.py",
+        "after": "pkg/witful/reflection/planning.py",
+        "added": 32,
+        "deleted": 4
+      },
+      {
+        "before": "pkg/witful/reflection/tests/test_reflection.py",
+        "after": "pkg/witful/reflection/tests/test_reflection.py",
+        "added": 1,
+        "deleted": 1
+      },
+      {
+        "before": "pyproject.toml",
+        "after": "pyproject.toml",
+        "added": 1,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/documentation/life_example.py",
+        "after": "scripts/documentation/life_example.py",
+        "added": 108,
+        "deleted": 0
+      },
+      {
+        "before": "tests/life/test_cadence.py",
+        "after": "tests/life/test_cadence.py",
+        "added": 89,
+        "deleted": 0
+      },
+      {
+        "before": "tests/life/test_paths.py",
+        "after": "tests/life/test_paths.py",
+        "added": 157,
+        "deleted": 0
+      }
+    ],
+    "shares": [
+      {
+        "language": "Python",
+        "added": 640,
+        "deleted": 40
+      },
+      {
+        "language": "Markdown",
+        "added": 211,
+        "deleted": 13
+      },
+      {
+        "language": "Text only",
+        "added": 93,
+        "deleted": 0
+      },
+      {
+        "language": "JSON",
+        "added": 18,
+        "deleted": 0
+      },
+      {
+        "language": "Unknown",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "language": "TOML",
+        "added": 1,
+        "deleted": 0
+      }
+    ]
+  },
+  "rows": [
+    {
+      "delta": {
+        "before": "tests/life/test_paths.py",
+        "after": "tests/life/test_paths.py",
+        "added": 157,
+        "deleted": 0
+      },
+      "description": "+157 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "docs/life.md",
+        "after": "docs/life.md",
+        "added": 131,
+        "deleted": 0
+      },
+      "description": "+131 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "pkg/witful/life/paths.py",
+        "after": "pkg/witful/life/paths.py",
+        "added": 123,
+        "deleted": 0
+      },
+      "description": "+123 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "pkg/witful/life/path_plot.py",
+        "after": "pkg/witful/life/path_plot.py",
+        "added": 111,
+        "deleted": 0
+      },
+      "description": "+111 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "scripts/documentation/life_example.py",
+        "after": "scripts/documentation/life_example.py",
+        "added": 108,
+        "deleted": 0
+      },
+      "description": "+108 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "pkg/witful/life/resources/OFL.txt",
+        "after": "pkg/witful/life/resources/OFL.txt",
+        "added": 93,
+        "deleted": 0
+      },
+      "description": "+93 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "tests/life/test_cadence.py",
+        "after": "tests/life/test_cadence.py",
+        "added": 89,
+        "deleted": 0
+      },
+      "description": "+89 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "pkg/witful/life/replay.py",
+        "after": "pkg/witful/life/replay.py",
+        "added": 6,
+        "deleted": 30
+      },
+      "description": "+6 added / -30 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "pkg/witful/reflection/planning.py",
+        "after": "pkg/witful/reflection/planning.py",
+        "added": 32,
+        "deleted": 4
+      },
+      "description": "+32 added / -4 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "docs/CLI.md",
+        "after": "docs/CLI.md",
+        "added": 11,
+        "deleted": 12
+      },
+      "description": "+11 added / -12 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "pkg/witful/life/resources/README.md",
+        "after": "pkg/witful/life/resources/README.md",
+        "added": 22,
+        "deleted": 0
+      },
+      "description": "+22 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "SKILL.md",
+        "after": "SKILL.md",
+        "added": 21,
+        "deleted": 0
+      },
+      "description": "+21 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "pkg/witful/collection/resources/SKILL.md",
+        "after": "pkg/witful/collection/resources/SKILL.md",
+        "added": 21,
+        "deleted": 0
+      },
+      "description": "+21 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "pkg/witful/life/resources/palette.json",
+        "after": "pkg/witful/life/resources/palette.json",
+        "added": 18,
+        "deleted": 0
+      },
+      "description": "+18 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": ".github/CODEOWNERS",
+        "after": ".github/CODEOWNERS",
+        "added": 6,
+        "deleted": 0
+      },
+      "description": "+6 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "docs/continual-learning.md",
+        "after": "docs/continual-learning.md",
+        "added": 5,
+        "deleted": 1
+      },
+      "description": "+5 added / -1 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "pkg/witful/life/cli.py",
+        "after": "pkg/witful/life/cli.py",
+        "added": 3,
+        "deleted": 3
+      },
+      "description": "+3 added / -3 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "pkg/witful/life/journal.py",
+        "after": "pkg/witful/life/journal.py",
+        "added": 5,
+        "deleted": 0
+      },
+      "description": "+5 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "pkg/witful/collection/dashboard.py",
+        "after": "pkg/witful/collection/dashboard.py",
+        "added": 2,
+        "deleted": 2
+      },
+      "description": "+2 added / -2 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "pkg/witful/commands/life.py",
+        "after": "pkg/witful/commands/life.py",
+        "added": 3,
+        "deleted": 0
+      },
+      "description": "+3 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "pkg/witful/reflection/tests/test_reflection.py",
+        "after": "pkg/witful/reflection/tests/test_reflection.py",
+        "added": 1,
+        "deleted": 1
+      },
+      "description": "+1 added / -1 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "pyproject.toml",
+        "after": "pyproject.toml",
+        "added": 1,
+        "deleted": 0
+      },
+      "description": "+1 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "docs/assets/life-example.png",
+        "after": "docs/assets/life-example.png",
+        "added": null,
+        "deleted": null
+      },
+      "description": "Binary change; text-line count unavailable",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "pkg/witful/life/resources/EBGaramond-Regular.otf",
+        "after": "pkg/witful/life/resources/EBGaramond-Regular.otf",
+        "added": null,
+        "deleted": null
+      },
+      "description": "Binary change; text-line count unavailable",
+      "kind": "diff"
+    }
+  ],
+  "pages": [
+    {
+      "file": "files-001.png",
+      "paths": [
+        "pkg/witful/life/paths.py",
+        "pkg/witful/life/path_plot.py",
+        "pkg/witful/life/resources/OFL.txt",
+        "pkg/witful/life/replay.py",
+        "pkg/witful/life/resources/README.md",
+        "pkg/witful/life/resources/palette.json",
+        "pkg/witful/life/cli.py",
+        "pkg/witful/life/journal.py",
+        "pkg/witful/life/resources/EBGaramond-Regular.otf",
+        "tests/life/test_paths.py",
+        "tests/life/test_cadence.py",
+        "docs/life.md",
+        "docs/CLI.md",
+        "docs/continual-learning.md",
+        "docs/assets/life-example.png",
+        "scripts/documentation/life_example.py",
+        "pkg/witful/reflection/planning.py",
+        "pkg/witful/reflection/tests/test_reflection.py",
+        "pkg/witful/collection/resources/SKILL.md",
+        "pkg/witful/collection/dashboard.py",
+        "SKILL.md",
+        ".github/CODEOWNERS",
+        "pkg/witful/commands/life.py",
+        "pyproject.toml"
+      ],
+      "sha256": "9bf6ba940da5ee5d61a818d377fcc4a50d01bc748229bf998b8657844a91768e"
+    }
+  ],
+  "projection": {
+    "version": "directory-partition/1",
+    "max_rows": 10,
+    "height_inches": 4.8,
+    "groups": [
+      {
+        "label": "pkg/witful/life/",
+        "paths": [
+          "pkg/witful/life/paths.py",
+          "pkg/witful/life/path_plot.py",
+          "pkg/witful/life/resources/OFL.txt",
+          "pkg/witful/life/replay.py",
+          "pkg/witful/life/resources/README.md",
+          "pkg/witful/life/resources/palette.json",
+          "pkg/witful/life/cli.py",
+          "pkg/witful/life/journal.py",
+          "pkg/witful/life/resources/EBGaramond-Regular.otf"
+        ],
+        "added": 381,
+        "deleted": 33,
+        "binary": 1
+      },
+      {
+        "label": "tests/",
+        "paths": [
+          "tests/life/test_paths.py",
+          "tests/life/test_cadence.py"
+        ],
+        "added": 246,
+        "deleted": 0,
+        "binary": 0
+      },
+      {
+        "label": "docs/",
+        "paths": [
+          "docs/life.md",
+          "docs/CLI.md",
+          "docs/continual-learning.md",
+          "docs/assets/life-example.png"
+        ],
+        "added": 147,
+        "deleted": 13,
+        "binary": 1
+      },
+      {
+        "label": "scripts/",
+        "paths": [
+          "scripts/documentation/life_example.py"
+        ],
+        "added": 108,
+        "deleted": 0,
+        "binary": 0
+      },
+      {
+        "label": "pkg/witful/reflection/",
+        "paths": [
+          "pkg/witful/reflection/planning.py",
+          "pkg/witful/reflection/tests/test_reflection.py"
+        ],
+        "added": 33,
+        "deleted": 5,
+        "binary": 0
+      },
+      {
+        "label": "pkg/witful/collection/",
+        "paths": [
+          "pkg/witful/collection/resources/SKILL.md",
+          "pkg/witful/collection/dashboard.py"
+        ],
+        "added": 23,
+        "deleted": 2,
+        "binary": 0
+      },
+      {
+        "label": "SKILL.md",
+        "paths": [
+          "SKILL.md"
+        ],
+        "added": 21,
+        "deleted": 0,
+        "binary": 0
+      },
+      {
+        "label": ".github/",
+        "paths": [
+          ".github/CODEOWNERS"
+        ],
+        "added": 6,
+        "deleted": 0,
+        "binary": 0
+      },
+      {
+        "label": "pkg/witful/commands/",
+        "paths": [
+          "pkg/witful/commands/life.py"
+        ],
+        "added": 3,
+        "deleted": 0,
+        "binary": 0
+      },
+      {
+        "label": "pyproject.toml",
+        "paths": [
+          "pyproject.toml"
+        ],
+        "added": 1,
+        "deleted": 0,
+        "binary": 0
+      }
+    ]
+  },
+  "palette_sha256": "df3607dacd40a0c4dbfb4b0053752953f4b40d060401fe4e42a3d842f6a8a15c",
+  "matplotlib": "3.11.2",
+  "description_inputs": {},
+  "intent_checked_at": null,
+  "model_calls": 0
+}
