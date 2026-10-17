@@ -1,0 +1,91 @@
+{
+  "measurement": {
+    "base": "d6d9fbe40e8c3a616db6b750e24ad6514432cd41",
+    "merge_base": "d6d9fbe40e8c3a616db6b750e24ad6514432cd41",
+    "head": "c44125a862e67778e538a4381cdccf45ce91c697",
+    "classifier": "Pygments 2.21.0",
+    "deltas": [
+      {
+        "before": "pkg/witful/knowledge/cli.py",
+        "after": "pkg/witful/knowledge/cli.py",
+        "added": 2,
+        "deleted": 1
+      },
+      {
+        "before": "tests/knowledge/test_cli_concept_ids.py",
+        "after": "tests/knowledge/test_cli_concept_ids.py",
+        "added": 80,
+        "deleted": 0
+      }
+    ],
+    "shares": [
+      {
+        "language": "Python",
+        "added": 82,
+        "deleted": 1
+      }
+    ]
+  },
+  "rows": [
+    {
+      "delta": {
+        "before": "tests/knowledge/test_cli_concept_ids.py",
+        "after": "tests/knowledge/test_cli_concept_ids.py",
+        "added": 80,
+        "deleted": 0
+      },
+      "description": "+80 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "pkg/witful/knowledge/cli.py",
+        "after": "pkg/witful/knowledge/cli.py",
+        "added": 2,
+        "deleted": 1
+      },
+      "description": "+2 added / -1 removed",
+      "kind": "diff"
+    }
+  ],
+  "pages": [
+    {
+      "file": "files-001.png",
+      "paths": [
+        "tests/knowledge/test_cli_concept_ids.py",
+        "pkg/witful/knowledge/cli.py"
+      ],
+      "sha256": "32aba846945610dbf65cfebd5bc39a83ec3ede269450976a8097ec7c782f1a49"
+    }
+  ],
+  "projection": {
+    "version": "directory-partition/1",
+    "max_rows": 10,
+    "height_inches": 4.8,
+    "groups": [
+      {
+        "label": "tests/knowledge/test_cli_concept_ids.py",
+        "paths": [
+          "tests/knowledge/test_cli_concept_ids.py"
+        ],
+        "added": 80,
+        "deleted": 0,
+        "binary": 0
+      },
+      {
+        "label": "pkg/witful/knowledge/cli.py",
+        "paths": [
+          "pkg/witful/knowledge/cli.py"
+        ],
+        "added": 2,
+        "deleted": 1,
+        "binary": 0
+      }
+    ]
+  },
+  "palette_sha256": "df3607dacd40a0c4dbfb4b0053752953f4b40d060401fe4e42a3d842f6a8a15c",
+  "matplotlib": "3.11.2",
+  "description_inputs": {},
+  "intent_checked_at": null,
+  "model_calls": 0
+}
