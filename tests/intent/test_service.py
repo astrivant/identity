@@ -35,7 +35,7 @@ if TYPE_CHECKING:
     from witful.codegraph.models import Enrollment
     from witful.codegraph.snapshot import Snapshot
     from witful.intent.models import Result
-    from witful.native.authority import Access
+    from witful.native.authority import Access, Registration
     from witful.native.models import Receipt
 
     from tests.native.database import Databases
@@ -374,3 +374,78 @@ def test_result_release_rechecks_revocation(
     monkeypatch.setattr(module, "resolve", revoke)
     with pytest.raises(NativeError, match="denied"):
         service.query(access, Query("find"), LIMITS)
+
+
+@pytest.mark.parametrize("operation", ["draft", "query", "source"])
+def test_read_deadline_includes_authority_release(
+    runtime: Runtime, databases: Databases, tmp_path: Path, monkeypatch: pytest.MonkeyPatch, operation: str
+) -> None:
+    """
+    Expire the requested budget during final authorization without sleeping or changing grants.
+
+    Args:
+        runtime (Runtime): Actual encrypted Git or PostgreSQL backend.
+        databases (Databases): Disposable independent authority.
+        tmp_path (Path): Synthetic source repository.
+        monkeypatch (pytest.MonkeyPatch): Deterministic elapsed-time injection.
+        operation (str): Read-only facade whose result must not escape its deadline.
+
+    Returns:
+        None: Every read includes the final authorization call in its elapsed-time budget.
+    """
+    from witful.native.service import Service
+
+    service, state = prepare(runtime, databases, tmp_path / "source")
+    access = runtime.access
+    service.publish(access, str(uuid4()), None, state)
+    clock = [100.0]
+    native = evolve(service.graph.native, monotonic=lambda: clock[0])
+    service = evolve(service, graph=evolve(service.graph, native=native))
+    original = Service.release
+
+    def delayed_release(self: Service, access: Access, action: str, record: str, registration: Registration, started: float) -> None:
+        """
+        Advance the synthetic clock after real current-authority verification.
+
+        Args:
+            self (Service): Actual configured service.
+            access (Access): Original admitted peer.
+            action (str): Requested permission.
+            record (str): Selected record scope.
+            registration (Registration): Expected authority state.
+            started (float): Original operation start.
+
+        Returns:
+            None: Authorization succeeds but the caller's shorter deadline has elapsed.
+        """
+        original(self, access, action, record, registration, started)
+        clock[0] += 0.002
+
+    monkeypatch.setattr(Service, "release", delayed_release)
+    limits = evolve(LIMITS, elapsed_ms=1)
+    if operation == "query":
+        assert service.query(access, Query("find"), limits).result == "incomplete"
+    else:
+        with pytest.raises(NativeError, match="incomplete"):
+            if operation == "draft":
+                service.draft(access, state.inventory, limits)
+            else:
+                anchor = state.anchors[0]
+                service.source(access, anchor.id, anchor.digest, anchor.start, anchor.end, limits)
+
+
+def test_draft_respects_graph_limits(runtime: Runtime, databases: Databases, tmp_path: Path) -> None:
+    """
+    Apply declared node limits to drafts as well as persisted discovery queries.
+
+    Args:
+        runtime (Runtime): Actual ciphertext backend and synthetic peer.
+        databases (Databases): Independent disposable authority.
+        tmp_path (Path): Source fixture.
+
+    Returns:
+        None: A draft exceeding the requested graph budget fails without publication.
+    """
+    service, state = prepare(runtime, databases, tmp_path / "source")
+    with pytest.raises(NativeError, match="incomplete"):
+        service.draft(runtime.access, state.inventory, evolve(LIMITS, nodes=1))

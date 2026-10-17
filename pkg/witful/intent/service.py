@@ -17,8 +17,8 @@ from witful.codegraph.service import RepositoryGraph, source_coverage
 from witful.codegraph.snapshot import capture, read_source
 from witful.exceptions import NativeError
 from witful.intent.breadcrumbs import attach
-from witful.intent.contracts import extends, fingerprint, review_binding, validate
-from witful.intent.core import bounded, resolve
+from witful.intent.contracts import extends, fingerprint, network, review_binding, validate
+from witful.intent.core import bounded, resolve, validate_limits
 from witful.intent.draft import environment, prepare
 from witful.intent.models import File, Query, Result, Review, State
 from witful.knowledge.contracts import as_data
@@ -248,6 +248,7 @@ class IntentGraph:
         """
         import json
 
+        validate_limits(limits)
         native = self.graph.native
         started = native.monotonic()
         registration, frontier = self.graph.admit(access, "intent-query")
@@ -261,11 +262,17 @@ class IntentGraph:
         }
         result = attach(prepare(graph, files, inventory, now), sources, now)
         validate(result)
+        relations = network(result)
+        if len(relations) > limits.nodes or relations.number_of_edges() > limits.edges:
+            raise NativeError("incomplete")
         if len(json.dumps(as_data(result), ensure_ascii=True, separators=(",", ":")).encode()) > min(limits.text_bytes, limits.tokens):
             raise NativeError("incomplete")
         if capture(self.graph.enrollment, graph.revision) != snapshot:
             raise NativeError("conflict")
         native.release(access, "intent-query", "*", registration, started)
+        # Include current-authority verification in the caller's budget before releasing private data.
+        if (native.monotonic() - started) * 1000 > limits.elapsed_ms:
+            raise NativeError("incomplete")
         return result
 
     def publish(self, access: Access, operation: str, expected: str | None, state: State) -> Receipt:
@@ -362,6 +369,7 @@ class IntentGraph:
         Returns:
             Result: Read-only qualified evidence; no durable plaintext cache is created.
         """
+        validate_limits(limits)
         native = self.graph.native
         started = native.monotonic()
         registration, frontier = self.graph.admit(access, "intent-query")
@@ -378,9 +386,9 @@ class IntentGraph:
             result = bounded(evolve(result, generation=target.revision), limits)
         if capture(self.graph.enrollment, graph.revision) != snapshot:
             raise NativeError("conflict")
+        native.release(access, "intent-query", "*", registration, started)
         if (native.monotonic() - started) * 1000 > limits.elapsed_ms:
             return bounded(Result("incomplete", None), limits)
-        native.release(access, "intent-query", "*", registration, started)
         return result
 
     def source(self, access: Access, anchor_id: str, expected: str, start: int, end: int, limits: Limits) -> SourceResult:
@@ -398,6 +406,7 @@ class IntentGraph:
         Returns:
             SourceResult: Exact UTF-8 content bound to the declared range and digest.
         """
+        validate_limits(limits)
         native = self.graph.native
         started = native.monotonic()
         registration, frontier = self.graph.admit(access, "intent-query")
@@ -427,4 +436,6 @@ class IntentGraph:
         if capture(self.graph.enrollment, graph.revision) != snapshot:
             raise NativeError("conflict")
         native.release(access, "intent-query", "*", registration, started)
+        if (native.monotonic() - started) * 1000 > limits.elapsed_ms:
+            raise NativeError("incomplete")
         return result

@@ -11,7 +11,7 @@ import re
 import subprocess
 from urllib.parse import quote
 
-from witful.awareness.models import BRANCH, BUNDLE_PATH, EVENT, MAX_BUNDLE_BYTES
+from witful.representation.models import BRANCH, BUNDLE_PATH, EVENT, MAX_BUNDLE_BYTES
 
 
 def _api(repository: str, route: str, payload: dict[str, object] | None = None, *, missing: bool = False) -> dict[str, object]:

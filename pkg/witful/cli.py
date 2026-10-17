@@ -8,7 +8,6 @@ import argparse
 from typing import TYPE_CHECKING
 
 from witful.commands import (
-    awareness,
     checkpoints,
     codegraph,
     collection,
@@ -24,6 +23,7 @@ from witful.commands import (
     reflection,
     registry,
     repertoire,
+    representation,
     sleeves,
     storage,
 )
@@ -55,7 +55,7 @@ def build_parser() -> argparse.ArgumentParser:
         Command("repertoire", "Curate observed tools and problems", repertoire.configure, "witful.repertoire.cli"),
         Command("checkpoints", "Track project chapters", checkpoints.configure, "witful.checkpoints.cli"),
         Command("reflection", "Review decisions against current evidence", reflection.configure, "witful.reflection.cli"),
-        Command("awareness", "Publish selected figures", awareness.configure, "witful.awareness.cli"),
+        Command("awareness", "Publish professional representation figures", representation.configure, "witful.representation.cli"),
         Command("collection", "Manage protected collections", collection.configure, "witful.collection.cli"),
         Command("privacy", "Scan publication inputs", privacy.configure, "witful.privacy.cli"),
         Command("registry", "Inspect Python package names", registry.configure, "witful.registry.names"),

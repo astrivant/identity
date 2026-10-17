@@ -156,6 +156,35 @@ Generate machine-readable contracts directly from the public Python models with
 [`Query`][code:intent.query] or [`Result`][code:intent.result].
 Unknown fields and coercible wrong types are rejected at the API boundary.
 
+## Agent setup and session loop
+
+Configure the agent to read this project's Skill and the owning collection's
+Skill. Verify `witful intent --help` in its installed release, then select the
+existing protected client configuration, enrolled repository and scoped grants
+described above. Installation alone does not enroll a repository. A missing command
+or grant is an explicit prerequisite to resolve through the normal release or
+administration workflow.
+
+1. At startup, use `find` for the current task and `explain` for relevant claims.
+   Check the returned source revision, graph generation, evidence and coverage.
+   An unavailable result remains a gap; parsing or retrieval is not a reading receipt.
+2. While working, retain the engineer's stated intent and source-supported
+   invariants as explicit assertions. Record exactly what was inspected. Keep
+   alternatives, contradictory evidence and uncertainty visible.
+3. After committing source changes, rebuild CodeGraph for that clean commit and
+   prepare a newly bound intent candidate. Publish with the expected previous
+   intent revision, then append an authorized review of the new inputs. Do not
+   reuse a supported review merely because a symbol kept the same name.
+4. Before handoff, check for decisions still present only in prose, missing reading
+   receipts and unresolved dependencies. Report what was durably published and
+   which source it covers. Keep general [Life decisions](CLI.md#life-overview) in
+   the collection's decision audit; repository assertions describe code contracts.
+
+The current file-backed collection and the encrypted native graph are separate
+storage paths. Intent uses the native graph scope. These commands neither migrate
+collection journals nor replace their source of truth. The native authority owns
+current grants and write fencing, not an agent's judgments.
+
 ## Witnesses, freshness and missing checks
 
 A [`Requirement`][code:intent.requirement] contains alternative [`Bundle`][code:intent.bundle] records. Every bundle is a complete
@@ -233,6 +262,10 @@ Source retrieval uses `witful intent source ANCHOR_ID --digest SHA256 --start N
 --end N --client PATH --pipe`. Both offsets are byte offsets inside the named
 anchor. The service verifies exact current source, expected digest and bounds,
 then rechecks authority before release. Instructions inside source are inert data.
+Drafts enforce their node, edge and serialized-output bounds. All three read paths
+include the final authority check in `--elapsed-ms`; a late result is withheld.
+This deadline bounds result acceptance and does not interrupt an in-flight database
+or filesystem call. The native runtime retains its independent operation limits.
 
 ## Validation and operational limits
 

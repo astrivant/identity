@@ -57,6 +57,16 @@ not explanatory prose. A valid link does not establish that the explanation is c
 
 ## Regenerate and check
 
+The source-link linter is followed immediately by the same focused boundary suite
+in commit hooks, push hooks and CI:
+
+```bash
+python scripts/documentation/check-source-link-contracts.py
+```
+
+It covers LF/CRLF offsets, Markdown extension case, removed declarations and Git
+fixture isolation. The check uses the locked project environment and one worker.
+
 Use the locked project environment from an existing checkout:
 
 ```bash

@@ -1,6 +1,6 @@
 ---
 name: witful
-description: Curate a user-owned knowledge collection with typed lessons, observed applications, decision replay, and privacy checks. Use for creating or maintaining a Witful collection, searching sourced lessons, recording actual applications, inspecting publication inputs, or explicitly publishing selected awareness figures.
+description: Curate a user-owned knowledge collection with typed lessons, observed applications, decision replay, and privacy checks. Use for creating or maintaining a Witful collection, searching sourced lessons, recording actual applications, inspecting publication inputs, or explicitly publishing selected professional representation figures.
 ---
 
 # Identity with Witful
@@ -185,17 +185,17 @@ for assistance. Record the complete reviewed batch with `reflection record`; run
 merely because a review is due. Keep personal plans and reviews inside encrypted
 collection transport; public upstream figures use synthetic examples only.
 
-## Publish awareness figures
+## Publish professional representation
 
-For a requested figure export or resume rebuild, read [awareness publication](docs/awareness.md)
+For a requested figure export or resume rebuild, read [professional representation](docs/awareness.md)
 and preserve the user's selection in `knowledge/awareness.json`. Check the installed
 CLI's `awareness --help`; configuration, output paths, and schemas are described in
-[CLI contracts](docs/CLI.md#awareness-publication).
+[CLI contracts](docs/CLI.md#professional-representation).
 
 Use `witful awareness --repo COLLECTION build` to regenerate a local bundle from
 current evidence. Inspect selected plot labels before sharing: PNGs can expose
 project names and relationships even though the bundle omits source journals.
-Awareness generation omits outer titles and subtitles so the receiving document
+Figure generation omits outer titles and subtitles so the receiving document
 owns its headings; retain axis labels and legends. Check the [working-emphasis map](docs/knowledge-map.md)
 for the distinction between a bounded current view and the full retained hierarchy.
 An empty selection publishes nothing. The receiver separately controls its allowed
@@ -341,11 +341,19 @@ source, coverage, counterevidence and missing requirements before changing code 
 using a capability. Retain purpose, invariants, design decisions and dependency
 contracts as source-bound assertions; ordinary code needs no repertoire Tool ID.
 The model is language-neutral, within the enrolled CodeGraph's coverage. The draft
-command seeds repertoire candidates only, so it does not automatically capture a
+command seeds repertoire candidates and declared documentation dependencies, so it does not automatically capture a
 working session's understanding. Publish explicit candidates and reading receipts;
 verified intent requires an authorized semantic review. Discovery never records
 a use or supplies permission to execute.
 Respect the admitted output pipe and keep responses out of logs and ordinary files.
+
+For a new agent, follow the [setup and session loop](docs/intent-graphs.md#agent-setup-and-session-loop).
+Check installed CLI support, the existing enrollment and scoped grants before using
+the commands. Record supported intent as engineers make or revise decisions, with
+exact source anchors and explicit reading coverage. After a source change, rebuild
+the graph and publish a newly bound candidate; a review of the old generation does
+not transfer automatically. Check for unrecorded decisions and unresolved evidence
+at handoff. Keep general Life decisions separate from repository assertions.
 
 Recheck graph/source generation and current authority on consumption. A changed
 input invalidates dependent review bindings; do not carry them forward based on
@@ -367,6 +375,8 @@ single-line source comments, never strings or docstrings. Move the comment with
 its declaration, refresh explicit consumers with the source-link compiler and
 review explanatory prose when a contract changes. Generated links and inferred
 Intent Graph dependencies do not constitute semantic approval.
+Run the focused source-link boundary guard immediately after its linter in local
+hooks and CI; it checks line endings, Markdown suffixes and isolated Git fixtures.
 
 ## Repair generated conflicts
 

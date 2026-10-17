@@ -79,10 +79,10 @@ def command() -> Command:
     """
     return Command(
         "intent",
-        "Discover evidence-backed capabilities without executing them",
+        "Retain and discover source-bound code intent",
         children=(
             Command("draft", "Prepare unpublished candidates from a repertoire snapshot on stdin", query, "witful.intent.cli"),
-            Command("find", "Find scoped capability assertions", query, "witful.intent.cli"),
+            Command("find", "Find scoped purpose, invariant and dependency assertions", query, "witful.intent.cli"),
             Command("explain", "Resolve exact evidence and counterevidence", query, "witful.intent.cli"),
             Command("coverage", "Inspect exact reading receipts", query, "witful.intent.cli"),
             Command("preflight", "Describe requirements without executing checks", query, "witful.intent.cli"),

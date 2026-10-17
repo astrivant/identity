@@ -145,6 +145,22 @@ records; preserve publication authority and inspect receipts before claiming suc
 
 ## Continual learning
 
+For repository-specific code intent, follow the
+[agent setup and session loop](https://github.com/astrivant/identity/blob/main/docs/intent-graphs.md#agent-setup-and-session-loop).
+First check `witful intent --help` in the installed release and locate the existing
+CodeGraph enrollment, protected client configuration and scoped grants. Missing
+support or admission is a reported prerequisite, not permission to create keys or
+install an unreleased build. Reading this Skill grants no new access.
+
+Before editing, retrieve relevant assertions and inspect their exact source,
+reading coverage, counterevidence and freshness. As engineers make choices, record
+supported purpose, invariants and dependency contracts with exact source anchors.
+Publish explicit candidates and append authorized semantic reviews; `draft` does
+not automatically capture understanding. Rebuild and rebind after source changes,
+and check for unrecorded decisions or unresolved evidence at handoff. Use an
+admitted memory consumer for private outputs. Keep repository intent separate from
+Life's general decision audit and from lesson/application counts.
+
 At session boundaries, use `witful reflection --repo COLLECTION plan --history-repo
 CHECKOUT`. Defaults are enabled, 100 first-parent commits, and 20 decisions per
 round. Read docs/continual-learning.md in CHECKOUT. Reassess original constraints

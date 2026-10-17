@@ -99,7 +99,7 @@ def provision(kind: Literal["data", "authority"], role: str) -> str:
         role (str): Existing unprivileged login; creation and credential delivery remain the database operator's responsibility.
 
     Returns:
-        str: Reviewable SQL that refuses privileged runtime roles and grants only this role's native capabilities.
+        str: Complete BEGIN/COMMIT plan for psql or an idle autocommit connection; rejects privileged runtime roles.
     """
     if kind not in {"data", "authority"} or re.fullmatch(r"[a-z][a-z0-9_]{0,62}", role) is None:
         raise NativeError("invalid")
@@ -119,7 +119,7 @@ def enrollment(value: Enrollment) -> str:
         value (Enrollment): Explicit reviewed initial identity and permission contract.
 
     Returns:
-        str: One atomic insert-only plan; duplicate enrollment fails visibly rather than expanding access.
+        str: Complete BEGIN/COMMIT plan for psql or an idle autocommit connection; duplicate enrollment fails visibly.
     """
     access = value.access
     bindings = {

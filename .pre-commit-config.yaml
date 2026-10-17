@@ -43,6 +43,14 @@ repos:
         language: system
         pass_filenames: false
         always_run: true
+        stages: [pre-commit, pre-push, manual]
+      - id: documentation-source-link-contracts
+        name: Source-link boundary regressions
+        entry: python scripts/documentation/check-source-link-contracts.py
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [pre-commit, pre-push, manual]
       - id: ruff
         name: Ruff lint
         entry: ruff check

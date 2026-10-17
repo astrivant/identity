@@ -80,6 +80,23 @@ def bounded(result: Result, limits: Limits) -> Result:
     raise NativeError("incomplete")
 
 
+def validate_limits(limits: Limits) -> None:
+    """
+    Reject invalid read budgets consistently across discovery, drafting and source retrieval.
+
+    Args:
+        limits (Limits): Explicit caller-supplied read bounds.
+
+    Returns:
+        None: Positive traversal, output and time bounds; source reads may be disabled with zero.
+
+    Raises:
+        NativeError: A bound is invalid before private state is selected.
+    """
+    if min(limits.nodes, limits.edges, limits.text_bytes, limits.tokens, limits.elapsed_ms) < 1 or limits.source_reads < 0:
+        raise NativeError("invalid")
+
+
 def resolve(state: State, query: Query, limits: Limits, now: int) -> Result:
     """
     Return evidence-qualified discovery, never permission or strict operational readiness.
@@ -94,7 +111,8 @@ def resolve(state: State, query: Query, limits: Limits, now: int) -> Result:
         Result: Complete, incomplete or opaque blocked discovery with independent authority fields.
     """
     validate(state)
-    if now < 0 or min(limits.nodes, limits.edges, limits.text_bytes, limits.tokens, limits.elapsed_ms) < 1:
+    validate_limits(limits)
+    if now < 0:
         raise NativeError("invalid")
     if len(query.value.encode()) > limits.text_bytes:
         return bounded(Result("incomplete", None), limits)

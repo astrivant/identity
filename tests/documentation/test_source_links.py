@@ -213,17 +213,27 @@ def test_explicit_comment_enrollment() -> None:
         declare({**sources, "a.py": b'"""\ntext\n"""\n'}, "a.py", 2, "model", ["doc.md"], "#")
 
 
-def test_crlf_and_markdown_suffixes() -> None:
+@pytest.mark.parametrize("suffix", ["md", "MD", "Md", "markdown", "MARKDOWN", "MarkDown"])
+@pytest.mark.parametrize("newline", ["\n", "\r\n"], ids=["lf", "crlf"])
+def test_crlf_and_markdown_suffixes(suffix: str, newline: str) -> None:
     """
-    Preserve Windows source offsets and detect removed anchors in every supported Markdown suffix.
+    Preserve native source offsets and detect removed anchors across document suffixes.
+
+    Args:
+        suffix (str): Supported Markdown extension, preserving case.
+        newline (str): Native source and document line ending.
 
     Returns:
         None: Native line endings do not corrupt IDs or conceal dangling references.
     """
-    raw = b"# docref:1 model -> docs/API.MARKDOWN\r\nclass Model: pass\r\n"
+    consumer = f"docs/API.{suffix}"
+    raw = f"# docref:1 model -> {consumer}{newline}class Model: pass{newline}".encode()
     (reference,) = references("model.py", raw)
     assert reference.line == 2 and raw[reference.start : reference.end].decode() == reference.text
-    sources = {"model.py": raw, "docs/API.MARKDOWN": b"[Model][code:model]\n"}
+    sources = {"model.py": raw, consumer: f"[Model][code:model]{newline}".encode()}
     changed = updates(sources)
+    assert b"model.py#L2" in changed[consumer]
+    assert sources["model.py"] == raw
+    assert updates({**sources, **changed}) == {}
     with pytest.raises(ValueError, match="Removed"):
         updates(changed)

@@ -143,6 +143,7 @@ jobs:
       - run: python -m scripts.ownership --check
       - run: pre-commit run codeowners --all-files
       - run: pre-commit run documentation-source-links --all-files
+      - run: pre-commit run documentation-source-link-contracts --all-files
       - run: pre-commit run documentation-syntax --all-files
       - run: pre-commit run markdown-lint --all-files
       - run: pre-commit run readme-format --all-files

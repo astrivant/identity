@@ -42,7 +42,6 @@
 /docs/storage.md @emmeowzing
 /docs/view-freshness.md @emmeowzing
 /helm/witful/ @emmeowzing
-/pkg/witful/awareness/cli.py @emmeowzing
 /pkg/witful/checkpoints/cli.py @emmeowzing
 /pkg/witful/checkpoints/storage.py @emmeowzing
 /pkg/witful/cli.py @emmeowzing
@@ -65,6 +64,7 @@
 /pkg/witful/reflection/cli.py @emmeowzing
 /pkg/witful/registry/ @emmeowzing
 /pkg/witful/repertoire/cli.py @emmeowzing
+/pkg/witful/representation/ @emmeowzing
 /pkg/witful/sleeves/ @emmeowzing
 /pkg/witful/sql/postgres/native/ @emmeowzing
 /pkg/witful/storage/ @emmeowzing
