@@ -31,7 +31,7 @@ from witful.collection.protection import require_protected
 from witful.collection.publication import publish
 from witful.collection.rotation import rotate, verify_snapshot
 from witful.commands.collection import configure
-from witful.exceptions import StorageProtectionError
+from witful.exceptions import ArtifactGateError, StorageProtectionError
 from witful.knowledge.contracts import schema
 
 if TYPE_CHECKING:
@@ -68,7 +68,11 @@ def execute(args: argparse.Namespace, parser: argparse.ArgumentParser) -> int:
     today = datetime.now(UTC).date()
 
     try:
-        if args.command in {"export", "verify-export", "restore-export"}:
+        if args.command == "check-artifacts":
+            from witful.collection.gate.cli import execute as check_artifacts
+
+            check_artifacts(args)
+        elif args.command in {"export", "verify-export", "restore-export"}:
             export_cli.dispatch(args, today)
         elif args.command == "schema":
             print(json.dumps({"config": schema(Config), "envelope": schema(Envelope), "export": schema(Manifest)}, indent=2))
@@ -152,7 +156,7 @@ def execute(args: argparse.Namespace, parser: argparse.ArgumentParser) -> int:
         else:
             refresh(args.checkout)
             print("Current collection figures regenerated and encrypted; no source values were logged.")
-    except StorageProtectionError as error:
+    except (ArtifactGateError, StorageProtectionError) as error:
         parser.exit(2, f"{error}\n")
     except (OSError, ValueError, RuntimeError, KeyError, TypeError, InvalidTag, UnsupportedAlgorithm, ValidationError):
         parser.exit(

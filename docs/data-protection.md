@@ -2,9 +2,10 @@
 
 Identity's private-collection workflow encrypts underlying records before Git or
 artifact publication and authenticates the ciphertext with a separate signing key.
-Readable figures are an explicit disclosure, even in a private repository. Keep
-`publish_figures: false` unless the labels, counts, and relationships are reviewed
-for that audience. Encryption is not a promise that data cannot leak while in use.
+Personal figures and derived data must also be encrypted before publication. Keep
+`publish_figures: false`; the local publication gate rejects readable personal
+figures even when a legacy configuration enables that option. An end-user can
+explicitly decrypt and send a selected figure to a separate destination. Encryption is not a promise that data cannot leak while in use.
 
 ## Protection by storage location
 
@@ -13,7 +14,7 @@ for that audience. Encryption is not a promise that data cannot leak while in us
 | Private Git snapshots and CI artifacts | AES-256-GCM; RSA-OAEP-wrapped content key; Cosign signature | Independent signing fingerprint checked before decryption; only ciphertext and verification material are uploaded |
 | Local managed collection, SQLite indexes, exports, and key backup | Required encrypted filesystem | FileVault on macOS or encrypted block-device ancestry on Linux; unavailable evidence blocks the managed operation |
 | CI decrypted sources, render output, caches, and raw Trivy report | Memory filesystem with swap disabled | Host metadata is checked before collection decryption; memory is released after the job |
-| Reviewed README graphs and selected resume figures | Readable, intentionally published | Labels and relationships remain visible to their audience and in history |
+| Personal graphs in the collection | Encrypted with the collection | Explicit decryption and export is a separate disclosure decision, for example to a resume |
 | Remote PostgreSQL storage | Requires separate server-side protection | Managed collections block these operations because the client cannot verify disks, replicas, logs, or backups |
 | Existing standalone collections and old Git history | Existing storage policy | Updating the library does not encrypt or erase historical records; migration is required |
 
@@ -72,6 +73,70 @@ CI compares it with the independently stored Actions secret before decryption an
 verifies outputs again before artifact upload. Neither a checksum alone nor a
 public key shipped beside an artifact establishes ownership. Signing authenticates
 the configured key holder; it does not attest that every source statement is true.
+
+## Gate local publication
+
+Install both hooks from the project environment:
+
+```bash
+pre-commit install --hook-type pre-commit --hook-type pre-push
+```
+
+`witful-encrypted-artifacts` checks the complete Git index before committing.
+`witful-encrypted-artifacts-push` checks the selected outgoing commit range before
+pushing, including intermediate commits and merge parents. Deleting a plaintext
+record in a later commit does not make the earlier record safe to publish.
+Configuration, envelopes and verification sidecars all come from the same Git
+snapshot. Unstaged replacements cannot disguise the bytes being checked.
+
+For a configured encrypted collection, supply its existing independently retained
+key backup through each hook's `args`, for example
+`args: [--key-dir, /protected/collection-keys]`. This is a location, never key
+contents. Repeat `--key-dir` for historical generations in an outgoing range.
+The backup must satisfy the existing protected-storage and private-permission
+checks. Restore missing keys from the original backup; this command never
+creates keys, rotates them, encrypts files, stages changes or modifies history.
+Cosign must be installed when encrypted artifacts are present.
+
+```bash
+witful collection check-artifacts --staged --key-dir /protected/collection-keys
+witful collection check-artifacts --from-ref origin/main --to-ref HEAD \
+  --key-dir /protected/collection-keys
+witful collection check-artifacts --revision HEAD --key-dir /protected/collection-keys
+```
+
+The gate verifies the source bundle, optional encrypted figures, registered opaque
+files and their required verification metadata. It checks independent key identity,
+signatures, checksums and authenticated decryption. Decrypted payloads remain in
+memory; only ciphertext and public verification metadata enter temporary files.
+A matching filename, envelope shape or signature alone is insufficient evidence
+that a payload is encrypted correctly. Missing keys or invalid artifacts fail the
+command with status 2 and redacted diagnostics.
+
+Known collection source records, derived knowledge and runtime state cannot be
+published in plaintext through this gate. Readable figures under `docs/collection/`
+and configurations enabling `publish_figures: true` are rejected; retain the encrypted figure bundle
+and decrypt or export a selected figure only when its owner chooses to share it.
+Ordinary public source,
+documentation and nested synthetic fixtures require no collection keys. The gate
+covers the managed collection namespace, not arbitrary renamed secrets elsewhere
+in a repository; keep the PII scanner and existing publication review enabled.
+
+The [pre-commit pre-push integration](https://pre-commit.com/#pre-push) supplies one
+selected ref update. Use single-ref pushes with that integration. A native Git hook
+can pass its complete stdin to `witful collection check-artifacts --git-pre-push`
+plus the same key-directory arguments to check every update, including tags and
+new branches. Preserve existing hooks when integrating this command. Native
+[pre-push input](https://git-scm.com/docs/githooks#_pre_push) contains all proposed
+ref updates; deletion-only updates transfer no new history.
+
+Explicit ranges exclude ancestry already reachable from `--from-ref`. A new ref
+without that baseline checks its entire ancestry. History checks require a full
+clone and default to at most 1,000 commits; exceeding `--max-commits` refuses the
+operation rather than accepting partial coverage. Review the history before
+raising that explicit budget. CI runs `--revision HEAD` on the checked-out candidate,
+which is a snapshot check, not a claim that existing remote history was migrated.
+Local hooks are installable and bypassable, so retain CI and protected-branch gates.
 
 ## Migration and retained history
 

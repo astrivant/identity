@@ -52,6 +52,19 @@ def configure(parser: argparse.ArgumentParser) -> None:
     verification.add_argument("--checkout", type=Path, default=Path.cwd())
     verification.add_argument("--signing-fingerprint", required=True, help="Trusted fingerprint retained separately from the artifact")
     verification.add_argument("--figures", action="store_true")
+    gate = commands.add_parser("check-artifacts", help="Authenticate staged or committed collection artifacts before publication")
+    gate.add_argument("--checkout", type=Path, default=Path.cwd())
+    gate.add_argument(
+        "--key-dir", type=Path, action="append", default=[], help="Existing independent key backup; repeat for retained generations"
+    )
+    gate.add_argument("--max-commits", type=int, default=1000, help="History budget; exceeding it fails without partial acceptance")
+    gate.add_argument("--from-ref", help="Exclusive previously published commit")
+    selection = gate.add_mutually_exclusive_group(required=True)
+    selection.add_argument("--staged", action="store_true", help="Read the complete Git index")
+    selection.add_argument("--revision", help="Read one exact committed tree")
+    selection.add_argument("--to-ref", help="Check every new commit through this inclusive tip")
+    selection.add_argument("--pre-push", action="store_true", help="Use the pre-commit framework's selected push-ref context")
+    selection.add_argument("--git-pre-push", action="store_true", help="Read every native Git pre-push ref update from stdin")
     inventory = commands.add_parser(
         "inventory", help="List current managed ciphertext digests; retained history and external storage are separate"
     )

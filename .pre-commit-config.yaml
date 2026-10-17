@@ -9,6 +9,20 @@ repos:
         language: system
         pass_filenames: false
         always_run: true
+      - id: witful-encrypted-artifacts
+        name: Authenticate staged encrypted artifacts
+        entry: witful collection check-artifacts --staged
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [pre-commit, manual]
+      - id: witful-encrypted-artifacts-push
+        name: Authenticate outgoing encrypted artifact history
+        entry: witful collection check-artifacts --pre-push
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [pre-push]
       - id: generated-artifact-inventory
         name: Generated artifact repair inventory
         entry: python scripts/ci/repair/plan.py --check

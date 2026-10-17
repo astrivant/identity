@@ -441,3 +441,14 @@ Keep test assignment source-bound and validate complete fan-in before combining
 coverage or updating feedback. Treat the timing cache as disposable; only accepted
 main runs publish independent aggregate records and CI-generated convergence plots
 through the existing reviewed-update path. PRs and tags do not train the controller.
+
+## Verify encrypted publication artifacts
+
+Install the commit and push hooks and follow [the local publication gate](docs/data-protection.md#gate-local-publication).
+Use `witful collection check-artifacts` on the index or exact outgoing revisions,
+with the original key backup locations for managed collections. Missing keys block
+publication: explain the missing backup and recovery command rather than generating
+replacement keys or bypassing encryption. Personal figures and derived records
+must remain encrypted; sharing a decrypted export requires the owner's explicit
+choice. Run the PII scan alongside encryption verification; neither check
+establishes that historical copies elsewhere have been migrated.

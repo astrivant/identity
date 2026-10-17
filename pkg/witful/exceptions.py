@@ -6,7 +6,21 @@ from __future__ import annotations
 
 from typing import Literal
 
-__all__ = ["CollectionConfigurationError", "NativeError", "SetupError", "SleeveError", "StorageError", "StorageProtectionError"]
+__all__ = [
+    "ArtifactGateError",
+    "CollectionConfigurationError",
+    "NativeError",
+    "SetupError",
+    "SleeveError",
+    "StorageError",
+    "StorageProtectionError",
+]
+
+
+class ArtifactGateError(ValueError):
+    """
+    Reject a Git publication snapshot with fixed diagnostics that never echo artifact contents.
+    """
 
 
 class SetupError(ValueError):
