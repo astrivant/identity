@@ -28,7 +28,14 @@ class ChartContracts(unittest.TestCase):
             None: The chart preserves the non-root, read-only worker contract.
         """
         result = subprocess.run(
-            ["helm", "template", "witful", str(_CHART), "--set", "workers=3,database.caSecret=ca,imagePullSecrets[0]=registry"],
+            [
+                "helm",
+                "template",
+                "witful",
+                str(_CHART),
+                "--set",
+                "sync.workers=3,sync.database.caSecret=ca,sync.imagePullSecrets[0]=registry",
+            ],
             check=True,
             capture_output=True,
             text=True,
@@ -83,7 +90,7 @@ class ChartContracts(unittest.TestCase):
         for value in ("0", "-1", "1.5", "true", "many"):
             with self.subTest(workers=value):
                 result = subprocess.run(
-                    ["helm", "template", "witful", str(_CHART), "--set", f"workers={value}"],
+                    ["helm", "template", "witful", str(_CHART), "--set", f"sync.workers={value}"],
                     check=False,
                     capture_output=True,
                     text=True,
@@ -101,7 +108,7 @@ class ChartContracts(unittest.TestCase):
         for workers in (1, 17, 256, 10000):
             with self.subTest(workers=workers):
                 result = subprocess.run(
-                    ["helm", "template", "witful", str(_CHART), "--set", f"workers={workers}"],
+                    ["helm", "template", "witful", str(_CHART), "--set", f"sync.workers={workers}"],
                     check=True,
                     capture_output=True,
                     text=True,

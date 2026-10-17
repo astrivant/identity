@@ -1,5 +1,5 @@
 {{- if not .Values.controller.enabled }}
-{{- include "witful.validatePlacement" . }}
+{{- include "witful.validatePlacement" (dict "settings" .Values.sync "root" . "path" "sync") }}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -8,48 +8,48 @@ metadata:
     app.kubernetes.io/name: witful
     app.kubernetes.io/instance: {{ .Release.Name }}
 spec:
-  suspend: {{ .Values.job.suspend }}
-  parallelism: {{ .Values.workers }}
-  completions: {{ .Values.workers }}
-  backoffLimit: {{ .Values.job.backoffLimit }}
-  activeDeadlineSeconds: {{ .Values.job.activeDeadlineSeconds }}
-  ttlSecondsAfterFinished: {{ .Values.job.ttlSecondsAfterFinished }}
+  suspend: {{ .Values.sync.job.suspend }}
+  parallelism: {{ .Values.sync.workers }}
+  completions: {{ .Values.sync.workers }}
+  backoffLimit: {{ .Values.sync.job.backoffLimit }}
+  activeDeadlineSeconds: {{ .Values.sync.job.activeDeadlineSeconds }}
+  ttlSecondsAfterFinished: {{ .Values.sync.job.ttlSecondsAfterFinished }}
   template:
     metadata:
       labels:
         {{- include "witful.workerSelector" . | nindent 8 }}
-        {{- with .Values.podLabels }}
+        {{- with .Values.sync.podLabels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
-      {{- with .Values.podAnnotations }}
+      {{- with .Values.sync.podAnnotations }}
       annotations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
     spec:
-      terminationGracePeriodSeconds: {{ .Values.job.terminationGracePeriodSeconds }}
-      {{- with .Values.scheduling.nodeSelector }}
+      terminationGracePeriodSeconds: {{ .Values.sync.job.terminationGracePeriodSeconds }}
+      {{- with .Values.sync.scheduling.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.scheduling.tolerations }}
+      {{- with .Values.sync.scheduling.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.scheduling.priorityClassName }}
+      {{- with .Values.sync.scheduling.priorityClassName }}
       priorityClassName: {{ . | quote }}
       {{- end }}
-      {{- with .Values.scheduling.schedulerName }}
+      {{- with .Values.sync.scheduling.schedulerName }}
       schedulerName: {{ . | quote }}
       {{- end }}
-      {{- if .Values.scheduling.affinity }}
+      {{- if .Values.sync.scheduling.affinity }}
       affinity:
-        {{- toYaml .Values.scheduling.affinity | nindent 8 }}
-      {{- else if .Values.scheduling.podAntiAffinityPreset }}
+        {{- toYaml .Values.sync.scheduling.affinity | nindent 8 }}
+      {{- else if .Values.sync.scheduling.podAntiAffinityPreset }}
       affinity:
         podAntiAffinity:
-          {{- if eq .Values.scheduling.podAntiAffinityPreset "hard" }}
+          {{- if eq .Values.sync.scheduling.podAntiAffinityPreset "hard" }}
           requiredDuringSchedulingIgnoredDuringExecution:
-            - topologyKey: {{ .Values.scheduling.topologyKey | quote }}
+            - topologyKey: {{ .Values.sync.scheduling.topologyKey | quote }}
               labelSelector:
                 matchLabels:
                   {{- include "witful.workerSelector" . | nindent 18 }}
@@ -57,13 +57,13 @@ spec:
           preferredDuringSchedulingIgnoredDuringExecution:
             - weight: 100
               podAffinityTerm:
-                topologyKey: {{ .Values.scheduling.topologyKey | quote }}
+                topologyKey: {{ .Values.sync.scheduling.topologyKey | quote }}
                 labelSelector:
                   matchLabels:
                     {{- include "witful.workerSelector" . | nindent 20 }}
           {{- end }}
       {{- end }}
-      {{- with .Values.scheduling.topologySpreadConstraints }}
+      {{- with .Values.sync.scheduling.topologySpreadConstraints }}
       topologySpreadConstraints:
         {{- range . }}
         {{/* Preserve caller selectors; default only missing selectors to this exact Job. */}}
@@ -76,41 +76,41 @@ spec:
       {{- end }}
       restartPolicy: Never
       automountServiceAccountToken: false
-      {{- with .Values.imagePullSecrets }}
+      {{- with .Values.sync.imagePullSecrets }}
       imagePullSecrets:
         {{- range . }}
         - name: {{ . | quote }}
         {{- end }}
       {{- end }}
       securityContext:
-        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+        {{- toYaml .Values.sync.podSecurityContext | nindent 8 }}
       containers:
         - name: witful
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          image: "{{ .Values.sync.image.repository }}:{{ .Values.sync.image.tag }}"
+          imagePullPolicy: {{ .Values.sync.image.pullPolicy }}
           command: [/usr/bin/tini, -g, --, witful]
           args: [lessons, --repo, /source, sync]
           env:
             - name: WITFUL_DATABASE_URL
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.database.existingSecret | quote }}
-                  key: {{ .Values.database.urlKey | quote }}
+                  name: {{ .Values.sync.database.existingSecret | quote }}
+                  key: {{ .Values.sync.database.urlKey | quote }}
             - name: WITFUL_DATABASE_NAMESPACE
-              value: {{ .Values.database.namespace | quote }}
-            {{- if .Values.database.caSecret }}
+              value: {{ .Values.sync.database.namespace | quote }}
+            {{- if .Values.sync.database.caSecret }}
             - name: PGSSLROOTCERT
               value: /etc/postgres/root.crt
             {{- end }}
           securityContext:
-            {{- toYaml .Values.containerSecurityContext | nindent 12 }}
+            {{- toYaml .Values.sync.containerSecurityContext | nindent 12 }}
           resources:
-            {{- toYaml .Values.resources | nindent 12 }}
+            {{- toYaml .Values.sync.resources | nindent 12 }}
           volumeMounts:
             - name: source
               mountPath: /source
               readOnly: true
-            {{- if .Values.database.caSecret }}
+            {{- if .Values.sync.database.caSecret }}
             - name: ca
               mountPath: /etc/postgres
               readOnly: true
@@ -118,17 +118,17 @@ spec:
       volumes:
         - name: source
           secret:
-            secretName: {{ .Values.source.existingSecret | quote }}
+            secretName: {{ .Values.sync.source.existingSecret | quote }}
             items:
-              - key: {{ .Values.source.journalKey | quote }}
+              - key: {{ .Values.sync.source.journalKey | quote }}
                 path: lessons.jsonl
             defaultMode: 0440
-        {{- if .Values.database.caSecret }}
+        {{- if .Values.sync.database.caSecret }}
         - name: ca
           secret:
-            secretName: {{ .Values.database.caSecret | quote }}
+            secretName: {{ .Values.sync.database.caSecret | quote }}
             items:
-              - key: {{ .Values.database.caKey | quote }}
+              - key: {{ .Values.sync.database.caKey | quote }}
                 path: root.crt
             defaultMode: 0440
         {{- end }}

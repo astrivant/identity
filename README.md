@@ -119,6 +119,7 @@ Choose the integrations you need; the basic collection runs locally.
 | Integration                                                                                       | What it adds to your workflow                                                                                                                                                                                                                                                                       |
 | ------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **[CodeGraph](https://github.com/colbymchenry/codegraph)**                                        | Investigate symbols, callers and change impact through the upstream SDK. Identity adds separately encrypted repository graphs, commit-bound citations and bounded queries, giving your agent focused code evidence alongside your reviewed practices. [Enrollment and queries](docs/codegraphs.md). |
+| [Intent graphs](docs/intent-graphs.md)                                                            | Carry reviewed code intent, invariants and dependency context between working sessions, with exact source evidence and visible uncertainty.                                                                                                                                                         |
 | **Codex and CLI-capable agents**                                                                  | Bring your accepted lessons and completion checks into agent sessions. The supplied Codex setup installs the collection skill; other agents can use the documented Witful CLI. [Agent workflow](SKILL.md).                                                                                          |
 | **GitHub and GitLab**                                                                             | Keep your existing PR/MR workflow. Order reviews by dependencies and prepare signed rebases with explicit review and publication steps. [Delivery helpers](docs/delivery.md).                                                                                                                       |
 | **1Password through the [1Password broker](https://github.com/astrivant/1password-agent-broker)** | Keep provider credentials and key operations in a separately deployed service. Witful uses its lightweight client SDK and scoped access for protected native storage and CodeGraph. [Custody setup](docs/codegraph-setup.md).                                                                       |
@@ -191,7 +192,7 @@ claim. Reading a lesson or installing the package does not grant action authorit
 Use Identity to carry engineering practices between projects, explain decisions
 to reviewers, and coordinate agents using a versioned body of knowledge. Keep
 records in a collection you control, with explicit sharing and publication choices.
-[Optional awareness figures](docs/awareness.md) make selected experience visible
+[Professional representation](docs/awareness.md) makes selected experience visible
 in reports and resumes. See [Witful's responsibilities](docs/WITFUL.md#responsibilities)
 for the concrete tooling and [Git and GitOps](#git-and-gitops) for the operating model.
 
@@ -290,7 +291,7 @@ termination; abrupt process or node loss still requires recovery from saved work
 
 ### Optional resume figures
 
-Awareness figures show the problems you solve, tools and skills you apply, and
+Professional representation figures show the problems you solve, tools and skills you apply, and
 recorded decisions that explain your approach. Publish selected figures to
 [resumeme](https://github.com/astrivant/resumeme) as an optional resume appendix,
 or use them to reflect on your work.

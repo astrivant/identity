@@ -47,6 +47,7 @@ class Problem:
     parent: str | None = None
 
 
+# docref:1 repertoire.inventory -> docs/intent-graphs.md
 @frozen
 class Inventory:
     """

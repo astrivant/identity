@@ -37,17 +37,16 @@ Set `WITFUL_DATABASE_URL` and `WITFUL_POSTGRES_PASSWORD` at runtime. Build the
 image from this checkout before using the generated local Compose services.
 Do not commit credentials or private journal mounts.
 
-Both Dockerfile targets run as UID/GID 10001 with Tini as PID 1 and a writable
-working directory. Build the development CLI with
-`docker build --target development -t witful:development .` and verify it with
-`docker run --rm witful:development --help`. Use `--target production` for the
-minimal runtime. Python tests verify both SQLite and PostgreSQL contracts in
-CI. SQLFluff checks the independently stored SQL for each configured dialect.
+Both application image targets run as UID/GID 10001 with Tini as PID 1 and a
+writable working directory. Follow [container development and verification](containers.md)
+to build the production wheel or an editable development CLI. Python tests verify
+SQLite and PostgreSQL contracts in CI; SQLFluff checks the stored SQL dialects.
 
-Charts live under `helm/`; service configuration and generated Compose files live
-under `services/`. The single multi-stage Dockerfile remains at the repository root.
-Projects with multiple service images place each Dockerfile under
-`services/<service>/Dockerfile`.
+Charts live under `helm/`; service Dockerfiles, configuration and generated Compose
+files live under `services/`. The application Dockerfile is
+[`services/witful/Dockerfile`](../services/witful/Dockerfile), with the repository
+root as its build context. Replace old `docker build --target TARGET .` commands
+with `docker build --file services/witful/Dockerfile --target TARGET .`.
 
 ## Private working storage
 

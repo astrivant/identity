@@ -45,7 +45,7 @@ record and review steps through these capabilities:
 - Preserve concise decisions and source snapshots for reproducible replay.
 - Record observed applications, tool use, and project checkpoints.
 - Track explicit runtime provenance, reconcile pending tasks, and compare native evidence across instances.
-- Render plots from recorded evidence and explicitly export selected awareness figures.
+- Render plots from recorded evidence and explicitly export selected professional representation figures.
 - Check publication inputs with the PII scanner and configurable deny terms.
 - Install and synchronize encrypted, signed private collections.
 - Isolate concurrent sleeves, sign backups, and reconcile their histories before closure.
@@ -63,7 +63,7 @@ using those outputs.
 
 [Architecture and collection conventions](https://github.com/astrivant/identity#readme),
 [CLI](https://github.com/astrivant/identity/blob/main/docs/CLI.md),
-[awareness figures](https://github.com/astrivant/identity/blob/main/docs/awareness.md),
+[professional representation](https://github.com/astrivant/identity/blob/main/docs/awareness.md),
 [private collection setup](https://github.com/astrivant/identity/blob/main/docs/private-collections.md),
 [multisleeving](https://github.com/astrivant/identity/blob/main/docs/multisleeving.md),
 [observed instances](https://github.com/astrivant/identity/blob/main/docs/instances.md),

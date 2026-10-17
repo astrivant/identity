@@ -11,11 +11,11 @@ from subprocess import CompletedProcess
 from typing import TYPE_CHECKING
 
 import pytest
-from witful.awareness.github import _api, push
-from witful.awareness.models import FIGURES
-from witful.awareness.rendering import render
-from witful.privacy.scanner import scan_text
+from witful.privacy.scanner import scan_svg
 from witful.project import main as initialize
+from witful.representation.github import _api, push
+from witful.representation.models import FIGURES
+from witful.representation.rendering import render
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -50,9 +50,9 @@ def test_render_exports_only_selected_figures(tmp_path: Path, monkeypatch: Monke
             tuple[tuple[int, str], ...]: The real scanner's detected personal-data patterns.
         """
         labels.append(text)
-        return scan_text(text)
+        return scan_svg(text)
 
-    monkeypatch.setattr("witful.awareness.rendering.scan_text", inspect_labels)
+    monkeypatch.setattr("witful.representation.rendering.scan_svg", inspect_labels)
     content = render(root, selected)
     data = json.loads(content)
     assert set(data) == {"figures", "version"}
@@ -120,7 +120,7 @@ def test_push_reuses_blob_and_dispatches_immutable_commit(monkeypatch: MonkeyPat
             return {}
         pytest.fail(f"Unexpected route {route}")
 
-    monkeypatch.setattr("witful.awareness.github._api", api)
+    monkeypatch.setattr("witful.representation.github._api", api)
     assert push("example/resume", content) == "b" * 40
     assert push("example/resume", content) == "b" * 40
     assert writes == 1
@@ -211,7 +211,7 @@ def test_first_push_initializes_only_the_reserved_branch(monkeypatch: MonkeyPatc
         assert missing or route == "dispatches"
         return {}
 
-    monkeypatch.setattr("witful.awareness.github._api", api)
+    monkeypatch.setattr("witful.representation.github._api", api)
     assert push("example/resume", b"{}") == "b" * 40
     assert routes[-1] == "dispatches"
     assert routes.index("git/refs") < routes.index("contents/awareness.json")
@@ -243,5 +243,5 @@ def test_repository_metadata_endpoint_has_no_trailing_slash(monkeypatch: MonkeyP
         assert kwargs["input"] is None
         return CompletedProcess(command, 0, '{"default_branch":"main"}', "")
 
-    monkeypatch.setattr("witful.awareness.github.subprocess.run", run)
+    monkeypatch.setattr("witful.representation.github.subprocess.run", run)
     assert _api("example/resume", "") == {"default_branch": "main"}

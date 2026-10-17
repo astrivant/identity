@@ -156,12 +156,23 @@ records first. Exporting is separate from publishing or changing active keys.
 Preserve those pins when editing `publish_figures`:
 
 - `false` (default): source records **and full figures stay encrypted**. README
-  displays the repository's CI badge, the source ciphertext digest, and restore
+  displays the source ciphertext digest, a refresh link, and restore
   instructions. GitHub cannot render encrypted image bytes inline.
 - `true`: CI also commits the generated readable SVG figures under `docs/collection/`
   and embeds them in README. This exposes labels, concepts, counts, and relationships
   to repository readers and Git history. A privacy scan checks known text patterns;
-  it is not an anonymization guarantee. Review your labels before opting in.
+  it is not an anonymization guarantee. SVG checks inspect decoded labels, comments,
+  metadata and references, while excluding numeric path geometry from pattern detection.
+  This does not recognize text drawn only as outlines. Review your labels before opting in.
+
+The generated landing page replaces inherited library onboarding with the collection's
+knowledge, Life, decision-review, tool-use, project and instance views. Each figure
+has a caption explaining its evidence. Life shows recent decision subjects and their
+explicit revisions, with counts for history outside the view. Main publishes the
+README and all approved figures in the same verified commit. The public upstream,
+PRs and tags keep their existing README. Detailed commands and attribution remain
+in the linked guides and license. Manual edits to the generated README are replaced
+on the next refresh; change the renderer for layout changes.
 
 Turning the setting off removes current readable plots on the next successful
 refresh. It cannot erase older commits or previously downloaded files. Encrypted

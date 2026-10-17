@@ -1,0 +1,4 @@
+# The SDK comes from its pinned archive; only the reviewed adapter enters from this checkout.
+**
+!Dockerfile
+!worker.mjs
