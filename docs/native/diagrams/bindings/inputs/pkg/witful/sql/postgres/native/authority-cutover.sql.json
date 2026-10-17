@@ -1,0 +1,6 @@
+{
+  "path": "pkg/witful/sql/postgres/native/authority-cutover.sql",
+  "sha256": "ddd9e3b128b1c34c71df3e3dc681cbdba35830d0ee8856eefef877128f0b0cae",
+  "source_commit": "37d8a8e1ab0884c04c9d070dd617c32cda7bb95b",
+  "verification_date": "2026-10-17"
+}

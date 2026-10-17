@@ -1,10 +1,24 @@
 import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
+import { isDeepStrictEqual } from 'node:util';
 
 const DIRECTORY = 'scripts/ci/provider_contracts/data';
 const NAMES = ['github.json', 'gitlab.json', 'manifest.json'];
 const sha256 = (bytes) => createHash('sha256').update(bytes).digest('hex');
+
+/** Compare selected contracts, retaining newer full-source observations in the run artifact. */
+export function sameContracts(before, after) {
+  const selected = (assets) => {
+    const manifest = JSON.parse(assets['manifest.json']);
+    // Only these observation fields may drift without changing the committed contract.
+    return Object.fromEntries(Object.entries(manifest).map(([name, entry]) => [name,
+      Object.fromEntries(Object.entries(entry).filter(([key]) => !['revision', 'source_sha256', 'latest_observed_at'].includes(key))),
+    ]));
+  };
+  return ['github.json', 'gitlab.json'].every((name) => Buffer.from(before[name]).equals(Buffer.from(after[name])))
+    && isDeepStrictEqual(selected(before), selected(after));
+}
 
 /** Validate the complete, source-bound renewal before granting it any repository write. */
 export function validateBundle({ assets, provenance, observation, source, lock }) {
@@ -37,9 +51,11 @@ export async function publishContracts({ github, context, assets }) {
   const repository = context.repo;
   const current = await github.rest.git.getRef({ ...repository, ref: 'heads/main' });
   if (current.data.object.sha !== context.sha) return { status: 'superseded' };
+  const baseline = Object.fromEntries(await Promise.all(NAMES.map(async (name) => [name, await content(github, repository, context.sha, name)])));
+  if (sameContracts(baseline, assets)) return { status: 'unchanged' };
   const changed = [];
   for (const name of NAMES) {
-    if (!(await content(github, repository, context.sha, name)).equals(Buffer.from(assets[name]))) changed.push(name);
+    if (!baseline[name].equals(Buffer.from(assets[name]))) changed.push(name);
   }
   if (!changed.length) return { status: 'unchanged' };
 
