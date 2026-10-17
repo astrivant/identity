@@ -1,0 +1,18 @@
+{
+  "overhead_seconds": 85.37878206095624,
+  "plan_sha256": "c2f435786c6592f352e48832943d5af3118b6bc334ea55f5fc8e51a1581a6452",
+  "predicted_seconds": 117.05881914731161,
+  "predicted_tests": 1042,
+  "prediction_error_seconds": 191.41798566164442,
+  "repository": "astrivant/identity",
+  "run": "39078784967-1",
+  "scope": "241fa5eecf97362f64303759270fc6cff9ab5dcce29fb65c68cb147af03ad8b0",
+  "shards": 7,
+  "skipped": 10,
+  "source": "3ee98c304445dcd9cc7b9e995f709f58bdf4e7eb",
+  "test_seconds": 658.0784108150006,
+  "tests": 1052,
+  "version": 1,
+  "wall_seconds": 116.16230130195618,
+  "workers": 4
+}
