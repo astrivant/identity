@@ -406,9 +406,14 @@ def test_svg_text_is_scanned_separately_from_glyph_geometry(element: str) -> Non
         f"<!-- {phone} -->",
         f'<path data-note="{phone}" d="M 0 0"/>',
         f'<path d="label {phone}"/>',
+        f'<g xmlns:note="{phone}"/>',
         f"<text>{phone.replace('5', '&#53;')}</text>",
     ):
         assert "phone" in {rule for _, rule in scan_svg(prefix + geometry + payload + "</svg>")}
+
+    government_id = "123" + "-45-6789"
+    for payload in (f"<id{government_id}/>", f'<g note{government_id}="value"/>'):
+        assert "government-id" in {rule for _, rule in scan_svg(prefix + payload + "</svg>")}
 
 
 @pytest.mark.parametrize("document", ["<svg", "<not-svg/>", '<!DOCTYPE svg [<!ENTITY secret "value">]><svg/>'])

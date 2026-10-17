@@ -197,7 +197,9 @@ def scan_svg(text: str, terms: Sequence[str] = ()) -> tuple[tuple[int, str], ...
             if name != "http://www.w3.org/2000/svg}svg":
                 raise ValueError("Figure must have an SVG document root")
             root_seen = True
+        inspect(name)
         for attribute, value in attributes.items():
+            inspect(attribute)
             geometry = (
                 name == "http://www.w3.org/2000/svg}path"
                 and attribute == "d"
@@ -224,6 +226,9 @@ def scan_svg(text: str, terms: Sequence[str] = ()) -> tuple[tuple[int, str], ...
     parser.CharacterDataHandler = inspect
     parser.CommentHandler = inspect
     parser.ProcessingInstructionHandler = lambda target, value: inspect(target + " " + value)
+    # Namespace declarations and DTD markup are not ordinary element attributes.
+    parser.StartNamespaceDeclHandler = lambda prefix, uri: inspect((prefix or "") + " " + (uri or ""))
+    parser.DefaultHandler = inspect
     parser.EntityDeclHandler = reject_entity
     parser.StartDoctypeDeclHandler = lambda name, system, public, internal: inspect(" ".join((name, system or "", public or "")))
     try:
