@@ -27,8 +27,9 @@ def test_repair_uses_trusted_code_with_narrow_permissions() -> None:
     assert caller["uses"] == "./.github/workflows/stage-repair.yml"
     assert "needs" not in caller
     assert "pull_request_target" in caller["if"] and "schedule" in caller["if"]
-    assert "github.event.pull_request.base.ref == github.event.repository.default_branch" in caller["if"]
-    assert workflow["on"]["pull_request_target"]["branches"] == ["main"]
+    assert "github.event.pull_request.base.ref" not in caller["if"]
+    assert "branches" not in workflow["on"]["pull_request_target"]
+    assert "branches-ignore" not in workflow["on"]["pull_request_target"]
     assert caller["permissions"] == job["permissions"] == {"contents": "write", "pull-requests": "read"}
     assert "secrets" not in caller and "environment" not in job
     assert job["concurrency"] == {"group": "generated-conflict-repair", "cancel-in-progress": "false"}
@@ -37,7 +38,14 @@ def test_repair_uses_trusted_code_with_narrow_permissions() -> None:
     assert steps[0]["with"] == {"ref": "${{ github.sha }}", "persist-credentials": "false", "fetch-depth": "0"}
     assert steps[-1]["uses"].startswith("actions/github-script@")
     assert "scripts/ci/repair/repair.mjs" in steps[-1]["with"]["script"]
-    assert set(workflow["on"]["pull_request_target"]["types"]) == {"opened", "synchronize", "reopened", "ready_for_review"}
+    assert set(workflow["on"]["pull_request_target"]["types"]) == {
+        "opened",
+        "synchronize",
+        "reopened",
+        "ready_for_review",
+        "edited",
+        "closed",
+    }
 
 
 def test_repair_events_cannot_run_other_jobs() -> None:

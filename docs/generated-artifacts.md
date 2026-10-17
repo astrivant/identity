@@ -10,12 +10,20 @@ repair boundary; declaring an output does not grant permission to execute its ge
 The existing [CI pipeline](../.github/workflows/ci.yml) calls a separate
 [repair stage](../.github/workflows/stage-repair.yml) on PR target activity,
 default-branch pushes and a six-hour schedule. It becomes active only after the
-workflow reaches the trusted default branch. GitHub calculates mergeability
-asynchronously; unknown results wait for the next scan.
+workflow reaches the trusted default branch. Every scan considers all open target
+branches in dependency order, with parent PRs before their children. Retargeting or
+closing a parent also triggers a scan. GitHub calculates mergeability asynchronously;
+unknown results wait for the next scan.
 
 The stage reads trusted default-branch code and inert Git objects. It never checks
 out, imports, installs or runs PR source. Same-repository, open, non-draft PRs
-against the default branch are eligible. Forks and changed inventories are excluded.
+against any branch are eligible, including chains of PRs. Each declared target
+branch supplies the actual merge base; it does not supply privileged tooling.
+GitHub runs
+[`pull_request_target` from the default branch](https://docs.github.com/en/actions/reference/security/securely-using-pull_request_target),
+independently of the PR target. Both candidate branches must retain that trusted
+revision's inventory. Matching policy edits in two stack branches cannot authorize
+repair. Forks and changed inventories are excluded.
 The planner builds an isolated merge tree and stops if any conflict lacks a supported
 repair. It preserves clean changes from both parents and refuses ambiguous inputs,
 mode changes, symlinks, submodules and oversized proposals.
@@ -37,7 +45,8 @@ a timestamp or specification pin from one side of a conflict.
 
 ## Publication and review
 
-The publisher rechecks exact head/base bindings, creates a GitHub-signed commit
+The publisher refreshes each PR after its prerequisites, rechecks exact head/base
+branch names and commit bindings, and creates a GitHub-signed commit
 with both parents, verifies its signature, then advances only the PR branch without
 force. It cannot merge a PR or update the default branch. Concurrent changes stop
 publication. The Actions summary records the PR, repaired paths and new revision.
