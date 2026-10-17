@@ -81,11 +81,16 @@
 /tests/ @emmeowzing
 /docs/assets/knowledge-collections-example.* @emmeowzing
 /.github/generated-artifacts.json @emmeowzing
+/docs/assets/life-example.png @emmeowzing
+/docs/continual-learning.md @emmeowzing
 /docs/generated-artifacts.md @emmeowzing
 /docs/intent-graphs.md @emmeowzing
 /docs/knowledge-map.md @emmeowzing
+/docs/life.md @emmeowzing
 /docs/source-links.md @emmeowzing
 /pkg/witful/commands/intent.py @emmeowzing
 /pkg/witful/intent/ @emmeowzing
+/pkg/witful/life/ @emmeowzing
+/pkg/witful/reflection/planning.py @emmeowzing
 /pkg/witful/repertoire/models.py @emmeowzing
 /scripts/ownership/ @emmeowzing

@@ -23,8 +23,8 @@ CAPTIONS = {
     "knowledge-usage": "Counts describe observed applications, not proficiency or the importance of an idea.",
     "knowledge-hierarchy": "The complete discipline, skill, lesson and insight hierarchy retains the surrounding context.",
     "life": (
-        "The left panel shows change per entry: +1 for an accepted choice, 0 for an unchanged-status revision, "
-        "and -1 for retirement. Repeated +1 values can be current; totals grow below the plot."
+        "Recent decision subjects retain their explicit revision paths. Dotted branches count documented alternatives, "
+        "not outcomes; omitted history remains in the protected data export."
     ),
     "decision-influences": "These concepts are linked to recorded decisions, independently of skill-use counts.",
     "decision-outcomes": "Reviewed outcomes retain evidence and uncertainty rather than inferring success from activity.",

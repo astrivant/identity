@@ -200,7 +200,7 @@ def test_rotating_batches_and_foreign_history_fail_closed(collection: tuple[Path
     assert plan(root, root)["decision_ids"] == [other.id]
     git(root, "checkout", "--orphan", "unrelated")
     git(root, "commit", "-qm", "Different history")
-    with pytest.raises(ValueError, match="first-parent"):
+    with pytest.raises(ValueError, match="missing or divergent"):
         plan(root, root)
 
 

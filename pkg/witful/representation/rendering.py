@@ -21,7 +21,7 @@ from witful.knowledge.plotting import write_plots as knowledge_plots
 from witful.lessons import read_journal
 from witful.life.journal import read_archive
 from witful.life.plotting import write_influences
-from witful.privacy.scanner import scan_text
+from witful.privacy.scanner import scan_svg
 from witful.repertoire.journal import validate
 from witful.repertoire.models import Inventory, Use
 from witful.repertoire.plotting import write_plots as repertoire_plots
@@ -78,7 +78,7 @@ def render(root: Path, selected: tuple[str, ...]) -> bytes:
 
         for key in selected:
             # Scan searchable vector labels before rasterization hides them from ordinary text scanners.
-            if scan_text((destination / f"{key}.svg").read_text()):
+            if scan_svg((destination / f"{key}.svg").read_text()):
                 raise ValueError(f"Personal-data pattern detected in {key}; review plot labels before publishing")
 
             content = (destination / f"{key}.png").read_bytes()

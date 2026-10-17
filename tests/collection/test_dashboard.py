@@ -62,7 +62,7 @@ def test_publication_accepts_complete_dashboard(tmp_path: Path, monkeypatch: Mon
     directory = tmp_path / "docs/collection"
     directory.mkdir(parents=True)
     for name in FIGURES:
-        (directory / f"{name}.svg").write_text("<svg></svg>")
+        (directory / f"{name}.svg").write_text('<svg xmlns="http://www.w3.org/2000/svg"/>')
     assert set(publication.publication_files(tmp_path)) == {"README.md", *(f"docs/collection/{name}.svg" for name in FIGURES)}
     (directory / "unreviewed.json").write_text("{}")
     with pytest.raises(ValueError, match="unexpected"):

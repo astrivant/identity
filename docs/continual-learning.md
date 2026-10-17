@@ -19,7 +19,11 @@ collections:
 ```
 
 Cadence counts all commits on the selected checkout's first-parent history,
-including generated commits. The first review becomes due at 100 commits. After a
+including generated commits. If a review was recorded on a subsequently merged
+branch, counting starts at the first commit on this path that integrated its
+anchor. The plan reports that `cadence_revision` separately from the unchanged
+`previous_review_revision`. Unmerged, missing or divergent anchors still fail.
+The first review becomes due at 100 commits. After a
 completed round, it becomes due after another 100 commits. Building a plan or a
 figure never acknowledges a review. A due review remains due until recorded.
 No recorded decisions means no review is due. Manual earlier reviews are allowed.
