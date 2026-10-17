@@ -92,7 +92,8 @@ def execute(args: argparse.Namespace, parser: argparse.ArgumentParser) -> int:
                 identifiers: set[str] = set()
 
                 for requested in args.concept:
-                    matches = [key for key in nodes if key == requested or key.startswith(requested)]
+                    # Stable full IDs remain usable when a later concept extends the same prefix.
+                    matches = [requested] if requested in nodes else [key for key in nodes if key.startswith(requested)]
 
                     if len(matches) != 1:
                         raise ValueError(f"Concept prefix must resolve uniquely: {requested}")

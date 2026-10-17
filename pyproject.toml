@@ -62,6 +62,7 @@ include = [
 exclude = ["pkg/witful/**/tests"]
 
 [tool.poetry.group.dev.dependencies]
+ownerloom = "0.0.1"
 markdown-it-py = ">=4.2,<4.3"
 sqlfluff = "4.4.0"
 PyYAML = "6.0.3"

@@ -11,8 +11,8 @@ if TYPE_CHECKING:
     from pathlib import Path
 
 import pytest
-from ownership.cli import main
-from ownership.compiler import compile_owners
+from ownerloom import compile_owners
+from ownerloom.cli import main
 
 from tests.ci.ownership_support import git
 

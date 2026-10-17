@@ -17,14 +17,14 @@ repos:
         always_run: true
       - id: codeowners-tree
         name: Normalize CODEOWNERS in directory order
-        entry: python -m scripts.ownership --write
+        entry: python -m ownerloom --write
         language: system
         pass_filenames: false
         always_run: true
         stages: [pre-commit, manual]
       - id: codeowners-tree-push
         name: Verify committed CODEOWNERS tree
-        entry: python -m scripts.ownership --check --revision HEAD
+        entry: python -m ownerloom --check --revision HEAD
         language: system
         pass_filenames: false
         always_run: true

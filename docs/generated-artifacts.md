@@ -77,6 +77,6 @@ Real temporary Git repositories cover deterministic merges and refusal boundarie
 Synthetic SDK responses cover signature refusal, current-ref checks and non-force
 publication; they do not establish live bot signing or branch-protection behavior.
 
-To format ownership, run `python -m scripts.ownership --write`, review and stage the
+To format ownership, run `python -m ownerloom --write`, review and stage the
 result, then run pre-commit. The pre-push check reads committed HEAD. Neither hook
 stages files, creates commits or grants new directory ownership.

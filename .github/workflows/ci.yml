@@ -102,7 +102,7 @@ jobs:
       - run: npm ci --prefix scripts/documentation --ignore-scripts --no-fund
       - run: npm --prefix scripts/documentation test
       - run: python scripts/ci/repair/plan.py --check
-      - run: python -m scripts.ownership --check
+      - run: python -m ownerloom --check
       - run: pre-commit run codeowners-tree-push --hook-stage pre-push --all-files
       - run: pre-commit run codeowners --all-files
       - run: pre-commit run documentation-source-links --all-files
