@@ -1,0 +1,91 @@
+{
+  "measurement": {
+    "base": "5b69670d282def31b450067bf2dcb1eb38ab3f8e",
+    "merge_base": "5b69670d282def31b450067bf2dcb1eb38ab3f8e",
+    "head": "6bece1c54547180bcea1470c5931422bfca7aebd",
+    "classifier": "Pygments 2.21.0",
+    "deltas": [
+      {
+        "before": "scripts/ci/publish-tests.mjs",
+        "after": "scripts/ci/publish-tests.mjs",
+        "added": 11,
+        "deleted": 2
+      },
+      {
+        "before": "scripts/ci/test-publication.test.mjs",
+        "after": "scripts/ci/test-publication.test.mjs",
+        "added": 65,
+        "deleted": 1
+      }
+    ],
+    "shares": [
+      {
+        "language": "JavaScript",
+        "added": 76,
+        "deleted": 3
+      }
+    ]
+  },
+  "rows": [
+    {
+      "delta": {
+        "before": "scripts/ci/test-publication.test.mjs",
+        "after": "scripts/ci/test-publication.test.mjs",
+        "added": 65,
+        "deleted": 1
+      },
+      "description": "+65 added / -1 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "scripts/ci/publish-tests.mjs",
+        "after": "scripts/ci/publish-tests.mjs",
+        "added": 11,
+        "deleted": 2
+      },
+      "description": "+11 added / -2 removed",
+      "kind": "diff"
+    }
+  ],
+  "pages": [
+    {
+      "file": "files-001.png",
+      "paths": [
+        "scripts/ci/test-publication.test.mjs",
+        "scripts/ci/publish-tests.mjs"
+      ],
+      "sha256": "32be9da071b254a3841d4299e6d83449fb4e64ec9d69c4fdfdf3aff5f661d4d0"
+    }
+  ],
+  "projection": {
+    "version": "directory-partition/1",
+    "max_rows": 10,
+    "height_inches": 4.8,
+    "groups": [
+      {
+        "label": "scripts/ci/test-publication.test.mjs",
+        "paths": [
+          "scripts/ci/test-publication.test.mjs"
+        ],
+        "added": 65,
+        "deleted": 1,
+        "binary": 0
+      },
+      {
+        "label": "scripts/ci/publish-tests.mjs",
+        "paths": [
+          "scripts/ci/publish-tests.mjs"
+        ],
+        "added": 11,
+        "deleted": 2,
+        "binary": 0
+      }
+    ]
+  },
+  "palette_sha256": "df3607dacd40a0c4dbfb4b0053752953f4b40d060401fe4e42a3d842f6a8a15c",
+  "matplotlib": "3.11.2",
+  "description_inputs": {},
+  "intent_checked_at": null,
+  "model_calls": 0
+}

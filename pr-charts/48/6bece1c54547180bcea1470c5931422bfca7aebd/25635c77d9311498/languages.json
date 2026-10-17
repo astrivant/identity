@@ -1,0 +1,31 @@
+{
+  "measurement": {
+    "base": "5b69670d282def31b450067bf2dcb1eb38ab3f8e",
+    "merge_base": "5b69670d282def31b450067bf2dcb1eb38ab3f8e",
+    "head": "6bece1c54547180bcea1470c5931422bfca7aebd",
+    "classifier": "Pygments 2.21.0",
+    "deltas": [
+      {
+        "before": "scripts/ci/publish-tests.mjs",
+        "after": "scripts/ci/publish-tests.mjs",
+        "added": 11,
+        "deleted": 2
+      },
+      {
+        "before": "scripts/ci/test-publication.test.mjs",
+        "after": "scripts/ci/test-publication.test.mjs",
+        "added": 65,
+        "deleted": 1
+      }
+    ],
+    "shares": [
+      {
+        "language": "JavaScript",
+        "added": 76,
+        "deleted": 3
+      }
+    ]
+  },
+  "palette_sha256": "df3607dacd40a0c4dbfb4b0053752953f4b40d060401fe4e42a3d842f6a8a15c",
+  "matplotlib": "3.11.2"
+}
