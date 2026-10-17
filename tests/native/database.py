@@ -72,11 +72,13 @@ def isolated(url: str, cleanup: bool = True) -> Iterator[Databases]:
         for name, role in zip((data, authority), roles, strict=True):
             admin.execute(query.SQL("CREATE ROLE {} LOGIN PASSWORD 'fixture'").format(query.Identifier(role)))
             admin.execute(query.SQL("CREATE DATABASE {}").format(query.Identifier(name)))
-    data_admin, authority_admin = make_conninfo(url, dbname=data), make_conninfo(url, dbname=authority)
+    data_admin = make_conninfo(url, dbname=data, application_name="witful-native-contract")
+    authority_admin = make_conninfo(url, dbname=authority, application_name="witful-native-contract")
     try:
-        with psycopg.connect(data_admin) as admin:
+        # Complete operator plans own BEGIN/COMMIT; prevent the driver from issuing a second BEGIN.
+        with psycopg.connect(data_admin, autocommit=True) as admin:
             admin.execute(provision("data", roles[0]))
-        with psycopg.connect(authority_admin) as admin:
+        with psycopg.connect(authority_admin, autocommit=True) as admin:
             admin.execute(provision("authority", roles[1]))
         yield Databases(
             make_conninfo(data_admin, user=roles[0], password="fixture"),

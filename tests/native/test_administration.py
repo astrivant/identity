@@ -41,13 +41,17 @@ def test_enrollment_is_insert_only_and_runtime_cannot_administer(runtime: Runtim
     access = evolve(runtime.access, scope=Scope(str(uuid4()), str(uuid4())), grant=str(uuid4()), task=str(uuid4()), policy=str(uuid4()))
     value = Enrollment(access, runtime.service.authority.backend, ("read",), ("*",), 0, 4102444800)
     plan = enrollment(value)
-    with psycopg.connect(databases.authority_admin, autocommit=True) as admin:
+    with psycopg.connect(
+        databases.authority_admin, autocommit=True, application_name="witful-native-test:reject-duplicate-enrollment"
+    ) as admin:
         admin.execute(plan)
-        with pytest.raises(psycopg.errors.UniqueViolation):
+        # This deliberate server ERROR proves duplicate enrollment cannot overwrite retained authority.
+        with pytest.raises(psycopg.errors.UniqueViolation) as rejection:
             admin.execute(plan)
-        admin.execute("ROLLBACK")
+        assert rejection.value.diag.constraint_name == "witful_native_registry_pkey"
+        admin.rollback()
     assert runtime.service.authority.check(access, "read", "*", 1).head.generation == 0
-    with psycopg.connect(databases.authority) as connection, pytest.raises(psycopg.errors.InsufficientPrivilege):
+    with psycopg.connect(databases.authority, autocommit=True) as connection, pytest.raises(psycopg.errors.InsufficientPrivilege):
         connection.execute(enrollment(evolve(value, access=evolve(access, grant=str(uuid4())))))
     with psycopg.connect(databases.authority) as connection, pytest.raises(psycopg.errors.InsufficientPrivilege):
         connection.execute("UPDATE witful_native_grants SET enabled=false")
@@ -57,7 +61,7 @@ def test_enrollment_is_insert_only_and_runtime_cannot_administer(runtime: Runtim
             connection.execute("UPDATE witful_native_objects SET payload=''::bytea")
     owner = conninfo_to_dict(databases.data_admin).get("user", "postgres")
     assert isinstance(owner, str)
-    with psycopg.connect(databases.data_admin) as admin, pytest.raises(psycopg.errors.DivisionByZero):
+    with psycopg.connect(databases.data_admin, autocommit=True) as admin, pytest.raises(psycopg.errors.DivisionByZero):
         admin.execute(provision("data", owner))
 
 
