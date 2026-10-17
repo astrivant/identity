@@ -554,3 +554,21 @@ def test_explicit_temporary_index_remains_supported(repository: Path, monkeypatc
         Checker([]).check(snapshot(repository))
     monkeypatch.setenv("GIT_INDEX_FILE", str(temporary))
     assert Checker([]).check(snapshot(repository)) == 0
+
+
+def test_symlinked_key_backup_keeps_existing_protection_contract(encrypted: Path, keys: Path, tmp_path: Path) -> None:
+    """
+    Preserve the retained-key reader's symlink refusal when checking independent locations.
+
+    Args:
+        encrypted (Path): Complete staged encrypted generation.
+        keys (Path): Original private backup directory.
+        tmp_path (Path): Test-owned alternate backup locator.
+
+    Returns:
+        None: Canonical containment checks cannot erase the key reader's original path evidence.
+    """
+    alias = tmp_path / "key-alias"
+    alias.symlink_to(keys, target_is_directory=True)
+    with pytest.raises(ValueError, match="existing private key directory"):
+        Checker([alias]).check(snapshot(encrypted))

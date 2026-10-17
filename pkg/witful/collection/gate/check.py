@@ -96,8 +96,8 @@ class Checker:
         identity = (config.repository, config.encryption_fingerprint, config.signing_fingerprint)
         if identity not in self.keys:
             for directory in self.directories:
-                location = directory.expanduser().resolve()
-                if location.is_relative_to(tree.root.resolve()):
+                location = directory.expanduser()
+                if location.resolve().is_relative_to(tree.root.resolve()):
                     raise ArtifactGateError("Keep the independently trusted key backup outside the publication checkout")
                 keys = read_keys(location)
                 trusted = keys.validate(config.repository)
