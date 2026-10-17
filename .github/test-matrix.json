@@ -1,0 +1,7 @@
+{
+  "threshold": 300,
+  "maximum": 8,
+  "workers": 4,
+  "tolerance": 0.05,
+  "default_seconds": 1.0
+}

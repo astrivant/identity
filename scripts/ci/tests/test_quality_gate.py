@@ -181,7 +181,7 @@ def test_pr_and_tag_gate_tests_renewed_latest_contracts() -> None:
     assert "if" not in test and "continue-on-error" not in refresh and "continue-on-error" not in test
     assert "provider-contracts" in workflow["jobs"]["publish"]["needs"]
     publication = workflow["jobs"]["generated-updates"]
-    assert publication["needs"] == ["quality-gate", "provider-contracts"]
+    assert publication["needs"] == ["quality-gate", "provider-contracts", "tests"]
     assert "needs.quality-gate.result == 'success'" in publication["if"]
     assert "needs.provider-contracts.result == 'success'" in publication["if"]
     assert "github.event_name == 'push'" in publication["if"]
@@ -225,3 +225,26 @@ def test_python_setup_selects_project_interpreter(tmp_path: Path) -> None:
     runner_path = os.pathsep.join([*reversed(path_file.read_text().splitlines()), os.environ["PATH"]])
     assert shutil.which("python", path=runner_path) == str(project / "python")
     assert f"VIRTUAL_ENV={tmp_path}/.venv" in env_file.read_text().splitlines()
+
+
+def test_adaptive_matrix_preserves_required_gates_and_main_only_feedback() -> None:
+    """
+    Keep independent source checks parallel while complete test fan-in gates feedback publication.
+
+    Returns:
+        None: Failed shards cannot be masked; forks, PRs and tags cannot train shared state.
+    """
+    workflow = yaml.load((ROOT / ".github/workflows/ci.yml").read_text(), Loader=yaml.BaseLoader)
+    stage = yaml.load((ROOT / ".github/workflows/stage-tests.yml").read_text(), Loader=yaml.BaseLoader)
+    assert workflow["jobs"]["tests"]["uses"] == "./.github/workflows/stage-tests.yml"
+    assert "needs" not in workflow["jobs"]["lint"]
+    assert stage["jobs"]["worker"]["strategy"]["fail-fast"] == "false"
+    assert stage["jobs"]["aggregate"]["needs"] == ["plan", "worker"]
+    assert "if" not in stage["jobs"]["aggregate"]
+    assert stage["permissions"] == {"contents": "read"}
+    publisher = workflow["jobs"]["generated-updates"]
+    assert "github.event_name == 'push'" in publisher["if"] and "refs/heads/main" in publisher["if"]
+    for step in publisher["steps"]:
+        if "actions/cache/save@" in step.get("uses", "") or "publish-tests.mjs" in step.get("with", {}).get("script", ""):
+            assert step["if"] == "needs.tests.outputs.capture == 'true'"
+    assert not any("actions/cache/save@" in step.get("uses", "") for job in stage["jobs"].values() for step in job["steps"])

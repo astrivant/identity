@@ -427,3 +427,17 @@ merge cleanly. Never run candidate code with write credentials or choose changed
 ownership policy. Keep ordinary PR checks and review required on every repaired
 head. Run the ownership compiler together with ownership edits, then review and
 stage its output; the pre-push check validates committed HEAD.
+
+## Verify cross-feature contracts
+
+Use [feature contracts and adaptive tests](docs/feature-contracts.md) when changing
+client/provider wire behavior or composing independently changed features. Run
+consumer tests and provider verification against actual implementations; retain
+in-process integration checks for boundaries Pact does not model. Update the
+consumer expectation deliberately when its contract changes. A clean textual
+merge is not compatibility evidence.
+
+Keep test assignment source-bound and validate complete fan-in before combining
+coverage or updating feedback. Treat the timing cache as disposable; only accepted
+main runs publish independent aggregate records and CI-generated convergence plots
+through the existing reviewed-update path. PRs and tags do not train the controller.

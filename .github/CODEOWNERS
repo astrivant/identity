@@ -86,3 +86,6 @@
 /scripts/ @emmeowzing
 /services/ @emmeowzing
 /tests/ @emmeowzing
+
+/docs/assets/test-convergence.svg @emmeowzing
+/docs/feature-contracts.md @emmeowzing

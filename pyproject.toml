@@ -83,6 +83,7 @@ types-protobuf = "7.35.1.20260906"
 pytest-cov = "7.1.0"
 openapi-schema-validator = "0.9.0"
 1password-agent-broker = "0.4.1"
+pact-python = "4.1.0"
 
 [build-system]
 requires = ["poetry-core==2.5.0"]
@@ -100,6 +101,7 @@ extend-select = ["D213"]
 # Pydocstyle 6.3 cannot parse PEP 695 generic signatures. Retain TypeVar here
 # so typed docstrings remain checked rather than suppressing documentation rules.
 [tool.ruff.per-file-target-version]
+"scripts/ci/test_matrix/models.py" = "py311"
 "pkg/witful/knowledge/contracts.py" = "py311"
 "pkg/witful/native/models.py" = "py311"
 "pkg/witful/delivery/providers/base.py" = "py311"

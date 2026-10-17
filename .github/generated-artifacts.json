@@ -10,6 +10,16 @@
       "reason": "Merge independent literal rules only when all owners and commentary remain unchanged; opaque rules require review."
     },
     {
+      "output": ".github/metrics/tests/*.json",
+      "inputs": [
+        "scripts/ci/test_matrix",
+        ".github/test-matrix.json",
+        "poetry.lock"
+      ],
+      "renderer": "manual",
+      "reason": "Independent accepted main-run measurements require complete shard evidence; never synthesize observations during conflict repair."
+    },
+    {
       "output": "scripts/ci/provider_contracts/data/*.json",
       "inputs": [
         "scripts/ci/provider_contracts/refresh.py",
