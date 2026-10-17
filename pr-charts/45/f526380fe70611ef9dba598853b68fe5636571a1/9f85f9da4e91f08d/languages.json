@@ -1,0 +1,236 @@
+{
+  "measurement": {
+    "base": "8b4d57ed02678ca4ad22afde39a115e65ff4154f",
+    "merge_base": "8b4d57ed02678ca4ad22afde39a115e65ff4154f",
+    "head": "f526380fe70611ef9dba598853b68fe5636571a1",
+    "classifier": "Pygments 2.21.0",
+    "deltas": [
+      {
+        "before": ".github/CODEOWNERS",
+        "after": ".github/CODEOWNERS",
+        "added": 5,
+        "deleted": 0
+      },
+      {
+        "before": "SKILL.md",
+        "after": "SKILL.md",
+        "added": 22,
+        "deleted": 0
+      },
+      {
+        "before": "docs/CLI.md",
+        "after": "docs/CLI.md",
+        "added": 11,
+        "deleted": 12
+      },
+      {
+        "before": "docs/assets/life-example.png",
+        "after": "docs/assets/life-example.png",
+        "added": null,
+        "deleted": null
+      },
+      {
+        "before": "docs/continual-learning.md",
+        "after": "docs/continual-learning.md",
+        "added": 5,
+        "deleted": 1
+      },
+      {
+        "before": "docs/life.md",
+        "after": "docs/life.md",
+        "added": 131,
+        "deleted": 0
+      },
+      {
+        "before": "docs/private-collections.md",
+        "after": "docs/private-collections.md",
+        "added": 5,
+        "deleted": 3
+      },
+      {
+        "before": "pkg/witful/collection/dashboard.py",
+        "after": "pkg/witful/collection/dashboard.py",
+        "added": 2,
+        "deleted": 2
+      },
+      {
+        "before": "pkg/witful/collection/operations.py",
+        "after": "pkg/witful/collection/operations.py",
+        "added": 2,
+        "deleted": 2
+      },
+      {
+        "before": "pkg/witful/collection/publication.py",
+        "after": "pkg/witful/collection/publication.py",
+        "added": 5,
+        "deleted": 2
+      },
+      {
+        "before": "pkg/witful/collection/resources/SKILL.md",
+        "after": "pkg/witful/collection/resources/SKILL.md",
+        "added": 21,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/commands/life.py",
+        "after": "pkg/witful/commands/life.py",
+        "added": 3,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/life/cli.py",
+        "after": "pkg/witful/life/cli.py",
+        "added": 3,
+        "deleted": 3
+      },
+      {
+        "before": "pkg/witful/life/journal.py",
+        "after": "pkg/witful/life/journal.py",
+        "added": 5,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/life/path_plot.py",
+        "after": "pkg/witful/life/path_plot.py",
+        "added": 111,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/life/paths.py",
+        "after": "pkg/witful/life/paths.py",
+        "added": 123,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/life/replay.py",
+        "after": "pkg/witful/life/replay.py",
+        "added": 6,
+        "deleted": 30
+      },
+      {
+        "before": "pkg/witful/life/resources/EBGaramond-Regular.otf",
+        "after": "pkg/witful/life/resources/EBGaramond-Regular.otf",
+        "added": null,
+        "deleted": null
+      },
+      {
+        "before": "pkg/witful/life/resources/OFL.txt",
+        "after": "pkg/witful/life/resources/OFL.txt",
+        "added": 93,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/life/resources/README.md",
+        "after": "pkg/witful/life/resources/README.md",
+        "added": 22,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/life/resources/palette.json",
+        "after": "pkg/witful/life/resources/palette.json",
+        "added": 18,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/privacy/scanner.py",
+        "after": "pkg/witful/privacy/scanner.py",
+        "added": 104,
+        "deleted": 2
+      },
+      {
+        "before": "pkg/witful/reflection/planning.py",
+        "after": "pkg/witful/reflection/planning.py",
+        "added": 32,
+        "deleted": 4
+      },
+      {
+        "before": "pkg/witful/reflection/tests/test_reflection.py",
+        "after": "pkg/witful/reflection/tests/test_reflection.py",
+        "added": 1,
+        "deleted": 1
+      },
+      {
+        "before": "pkg/witful/representation/rendering.py",
+        "after": "pkg/witful/representation/rendering.py",
+        "added": 2,
+        "deleted": 2
+      },
+      {
+        "before": "pyproject.toml",
+        "after": "pyproject.toml",
+        "added": 1,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/documentation/life_example.py",
+        "after": "scripts/documentation/life_example.py",
+        "added": 108,
+        "deleted": 0
+      },
+      {
+        "before": "tests/collection/test_dashboard.py",
+        "after": "tests/collection/test_dashboard.py",
+        "added": 1,
+        "deleted": 1
+      },
+      {
+        "before": "tests/life/test_cadence.py",
+        "after": "tests/life/test_cadence.py",
+        "added": 89,
+        "deleted": 0
+      },
+      {
+        "before": "tests/life/test_paths.py",
+        "after": "tests/life/test_paths.py",
+        "added": 159,
+        "deleted": 0
+      },
+      {
+        "before": "tests/privacy/test_scanner.py",
+        "after": "tests/privacy/test_scanner.py",
+        "added": 76,
+        "deleted": 1
+      },
+      {
+        "before": "tests/representation/test_representation.py",
+        "after": "tests/representation/test_representation.py",
+        "added": 3,
+        "deleted": 3
+      }
+    ],
+    "shares": [
+      {
+        "language": "Python",
+        "added": 835,
+        "deleted": 53
+      },
+      {
+        "language": "Markdown",
+        "added": 217,
+        "deleted": 16
+      },
+      {
+        "language": "Text only",
+        "added": 93,
+        "deleted": 0
+      },
+      {
+        "language": "JSON",
+        "added": 18,
+        "deleted": 0
+      },
+      {
+        "language": "Unknown",
+        "added": 5,
+        "deleted": 0
+      },
+      {
+        "language": "TOML",
+        "added": 1,
+        "deleted": 0
+      }
+    ]
+  },
+  "palette_sha256": "df3607dacd40a0c4dbfb4b0053752953f4b40d060401fe4e42a3d842f6a8a15c",
+  "matplotlib": "3.11.2"
+}
