@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "source_commit": "54426c98d11a881789b45ce8838c07faacd47f75",
-  "verification_date": "2026-10-16",
+  "source_commit": "fe38fbfe2cf6eac32a8c2c180330dbe1db048dca",
+  "verification_date": "2026-10-17",
   "scope": "Implemented synthetic/reference profiles; no production deployment or storage attestation asserted",
   "versions": {
     "native_codec": 1,
@@ -15,13 +15,13 @@
   },
   "inputs": {
     "docs/native/diagrams/views.json": "66686fb97ea14d229cc5c8dd5f12e60361fc8f40e0c3601d00773496fbeae3b3",
-    "docs/native-operations.md": "0b10f10d02a43e7318cdc33b0e30433d76a85f17f2b9b5e9f2ba8abc9fcaa714",
+    "docs/native-operations.md": "72036ef985b71a51f2293579d00310da50ee45866dbb4e2993167c694803d719",
     "helm/witful/references/native/values.yaml": "b29bea80d3b50ff6e472810404381636eb21c709a66c0b1a956984ffd16b6395",
     "helm/witful/references/projection/values.yaml": "df45feee415b27bb317af28e108c5bedfcdf969927dfa61c5e0688ab67d1ba48",
     "helm/witful/templates/projection-scheduler.yaml": "668783238e72a1f8f79f118bbdd2ab479e7661327bc4d8f1e90855dcd70840f5",
     "helm/witful/values.schema.json": "8fbfa4b00d046ed64cb43e00e2522190120c17cb6d202d56b0889873bb6be834",
     "pkg/witful/native/__init__.py": "52e475efa3ef82ee46d6e7e2af3ccfeee7a48556c3567ae9e20f6f65390dc5e1",
-    "pkg/witful/native/administration.py": "6353d79be9d1434f22e2787b46f20c946fb7c9cfe5843c258786f2c45cf63cf5",
+    "pkg/witful/native/administration.py": "6d7f1bc5430b54dc616f94617ec464b5730d2c0c188dcddc922098cd5b9b52c0",
     "pkg/witful/native/api/__init__.py": "feb4b8855de1de8cf8eb3d6714307b16a273d4e07eed84df0791fdfb4c4591b9",
     "pkg/witful/native/api/admission.py": "173f3f459c88119637a410bb84b7cbe7197c5917f4127deef19981948763815b",
     "pkg/witful/native/api/archives.py": "c7da954714fe25e213d7cc42d35933f98b246f4421e3730cf53d2246e3e7ca5b",
@@ -108,7 +108,7 @@
     "tests/native/test_derivation.py": "af5491648bbe79f5aa80e21fb111d5b5b53352cac6290e34e40f01b020e87bea",
     "tests/native/test_migration.py": "569dd4d62c9c843afe83cbb6794ade72fc33bd65e093b1858ecd326454d5b26f",
     "tests/native/test_original_git.py": "68e3b9a5d035ff4bc1804c4b3ffa391eaed389c5888da52f382a6c9982dae147",
-    "tests/native/test_physical.py": "e55a74394f78ac1d59e4f420ee6a38f6a507ac53406abf708ce1e84ee8906a9a"
+    "tests/native/test_physical.py": "3292f4c14b8c1d04c46a2d8260c1da41012e887bd2d0feeb1d7fe22f23467d47"
   },
   "outputs": {
     "state-trust.svg": "0dad5403eaa035b6f0a0a5e26da359f0bb7c1a94c8073cf8dd0ee475870aa6e1",
