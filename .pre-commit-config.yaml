@@ -1,3 +1,5 @@
+default_install_hook_types: [pre-commit, pre-push]
+default_stages: [pre-commit]
 repos:
   - repo: local
     hooks:
@@ -7,6 +9,25 @@ repos:
         language: system
         pass_filenames: false
         always_run: true
+      - id: generated-artifact-inventory
+        name: Generated artifact repair inventory
+        entry: python scripts/ci/repair/plan.py --check
+        language: system
+        pass_filenames: false
+        always_run: true
+      - id: codeowners-tree
+        name: Normalize CODEOWNERS in directory order
+        entry: python -m scripts.ownership --write
+        language: system
+        pass_filenames: false
+        always_run: true
+      - id: codeowners-tree-push
+        name: Verify committed CODEOWNERS tree
+        entry: python -m scripts.ownership --check --revision HEAD
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [pre-push]
       - id: codeowners
         name: CODEOWNERS syntax and paths
         entry: env REPOSITORY_PATH=. CHECKS=files,duppatterns,syntax EXPERIMENTAL_CHECKS= CHECK_FAILURE_LEVEL=warning codeowners-validator

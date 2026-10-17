@@ -367,3 +367,13 @@ single-line source comments, never strings or docstrings. Move the comment with
 its declaration, refresh explicit consumers with the source-link compiler and
 review explanatory prose when a contract changes. Generated links and inferred
 Intent Graph dependencies do not constitute semantic approval.
+
+## Repair generated conflicts
+
+Maintain the [generated-artifact inventory](.github/generated-artifacts.json) when
+adding or changing generators. Follow [the repair contract](docs/generated-artifacts.md):
+trusted CI can reconcile declared, bounded outputs only after canonical inputs
+merge cleanly. Never run candidate code with write credentials or choose changed
+ownership policy. Keep ordinary PR checks and review required on every repaired
+head. Run the ownership compiler together with ownership edits, then review and
+stage its output; the pre-push check validates committed HEAD.
