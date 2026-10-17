@@ -1,0 +1,748 @@
+{
+  "measurement": {
+    "base": "81a116443288ea31d0abe56a32ba4e8eeeb079cd",
+    "merge_base": "81a116443288ea31d0abe56a32ba4e8eeeb079cd",
+    "head": "6ffae3857d881cb42d066e1eb87049f19848b7c7",
+    "classifier": "Pygments 2.21.0",
+    "deltas": [
+      {
+        "before": ".github/CODEOWNERS",
+        "after": ".github/CODEOWNERS",
+        "added": 3,
+        "deleted": 0
+      },
+      {
+        "before": ".github/generated-artifacts.json",
+        "after": ".github/generated-artifacts.json",
+        "added": 10,
+        "deleted": 0
+      },
+      {
+        "before": ".github/test-matrix.json",
+        "after": ".github/test-matrix.json",
+        "added": 7,
+        "deleted": 0
+      },
+      {
+        "before": ".github/workflows/ci.yml",
+        "after": ".github/workflows/ci.yml",
+        "added": 21,
+        "deleted": 42
+      },
+      {
+        "before": ".github/workflows/stage-tests.yml",
+        "after": ".github/workflows/stage-tests.yml",
+        "added": 158,
+        "deleted": 0
+      },
+      {
+        "before": "README.md",
+        "after": "README.md",
+        "added": 3,
+        "deleted": 0
+      },
+      {
+        "before": "SKILL.md",
+        "after": "SKILL.md",
+        "added": 14,
+        "deleted": 0
+      },
+      {
+        "before": "docs/assets/test-convergence.svg",
+        "after": "docs/assets/test-convergence.svg",
+        "added": 1663,
+        "deleted": 0
+      },
+      {
+        "before": "docs/feature-contracts.md",
+        "after": "docs/feature-contracts.md",
+        "added": 117,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/poetry.lock.json",
+        "after": "docs/native/diagrams/bindings/inputs/poetry.lock.json",
+        "added": 2,
+        "deleted": 2
+      },
+      {
+        "before": "poetry.lock",
+        "after": "poetry.lock",
+        "added": 41,
+        "deleted": 3
+      },
+      {
+        "before": "pyproject.toml",
+        "after": "pyproject.toml",
+        "added": 2,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/ci/publish-tests.mjs",
+        "after": "scripts/ci/publish-tests.mjs",
+        "added": 99,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/ci/test-matrix.py",
+        "after": "scripts/ci/test-matrix.py",
+        "added": 10,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/ci/test-publication.test.mjs",
+        "after": "scripts/ci/test-publication.test.mjs",
+        "added": 81,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/ci/test_matrix/__init__.py",
+        "after": "scripts/ci/test_matrix/__init__.py",
+        "added": 5,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/ci/test_matrix/cli.py",
+        "after": "scripts/ci/test_matrix/cli.py",
+        "added": 163,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/ci/test_matrix/core.py",
+        "after": "scripts/ci/test_matrix/core.py",
+        "added": 213,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/ci/test_matrix/models.py",
+        "after": "scripts/ci/test_matrix/models.py",
+        "added": 208,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/ci/test_matrix/plugin.py",
+        "after": "scripts/ci/test_matrix/plugin.py",
+        "added": 133,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/ci/test_matrix/render.py",
+        "after": "scripts/ci/test_matrix/render.py",
+        "added": 99,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/ci/tests/test_quality_gate.py",
+        "after": "scripts/ci/tests/test_quality_gate.py",
+        "added": 24,
+        "deleted": 1
+      },
+      {
+        "before": "scripts/documentation/package.json",
+        "after": "scripts/documentation/package.json",
+        "added": 1,
+        "deleted": 1
+      },
+      {
+        "before": "tests/contracts/__init__.py",
+        "after": "tests/contracts/__init__.py",
+        "added": 5,
+        "deleted": 0
+      },
+      {
+        "before": "tests/contracts/conftest.py",
+        "after": "tests/contracts/conftest.py",
+        "added": 9,
+        "deleted": 0
+      },
+      {
+        "before": "tests/contracts/test_native.py",
+        "after": "tests/contracts/test_native.py",
+        "added": 191,
+        "deleted": 0
+      },
+      {
+        "before": "tests/native/physical.py",
+        "after": "tests/native/physical.py",
+        "added": 2,
+        "deleted": 2
+      },
+      {
+        "before": "tests/test_matrix/__init__.py",
+        "after": "tests/test_matrix/__init__.py",
+        "added": 5,
+        "deleted": 0
+      },
+      {
+        "before": "tests/test_matrix/fixtures/cases.py",
+        "after": "tests/test_matrix/fixtures/cases.py",
+        "added": 23,
+        "deleted": 0
+      },
+      {
+        "before": "tests/test_matrix/test_cli.py",
+        "after": "tests/test_matrix/test_cli.py",
+        "added": 56,
+        "deleted": 0
+      },
+      {
+        "before": "tests/test_matrix/test_core.py",
+        "after": "tests/test_matrix/test_core.py",
+        "added": 216,
+        "deleted": 0
+      },
+      {
+        "before": "tests/test_matrix/test_plugin.py",
+        "after": "tests/test_matrix/test_plugin.py",
+        "added": 62,
+        "deleted": 0
+      },
+      {
+        "before": "tests/test_matrix/test_render.py",
+        "after": "tests/test_matrix/test_render.py",
+        "added": 36,
+        "deleted": 0
+      }
+    ],
+    "shares": [
+      {
+        "language": "XML",
+        "added": 1663,
+        "deleted": 0
+      },
+      {
+        "language": "Python",
+        "added": 1460,
+        "deleted": 3
+      },
+      {
+        "language": "YAML",
+        "added": 179,
+        "deleted": 42
+      },
+      {
+        "language": "JavaScript",
+        "added": 180,
+        "deleted": 0
+      },
+      {
+        "language": "Markdown",
+        "added": 134,
+        "deleted": 0
+      },
+      {
+        "language": "TOML",
+        "added": 43,
+        "deleted": 3
+      },
+      {
+        "language": "JSON",
+        "added": 20,
+        "deleted": 3
+      },
+      {
+        "language": "Unknown",
+        "added": 3,
+        "deleted": 0
+      }
+    ]
+  },
+  "rows": [
+    {
+      "delta": {
+        "before": "docs/assets/test-convergence.svg",
+        "after": "docs/assets/test-convergence.svg",
+        "added": 1663,
+        "deleted": 0
+      },
+      "description": "+1,663 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "tests/test_matrix/test_core.py",
+        "after": "tests/test_matrix/test_core.py",
+        "added": 216,
+        "deleted": 0
+      },
+      "description": "+216 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "scripts/ci/test_matrix/core.py",
+        "after": "scripts/ci/test_matrix/core.py",
+        "added": 213,
+        "deleted": 0
+      },
+      "description": "+213 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "scripts/ci/test_matrix/models.py",
+        "after": "scripts/ci/test_matrix/models.py",
+        "added": 208,
+        "deleted": 0
+      },
+      "description": "+208 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "tests/contracts/test_native.py",
+        "after": "tests/contracts/test_native.py",
+        "added": 191,
+        "deleted": 0
+      },
+      "description": "+191 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "scripts/ci/test_matrix/cli.py",
+        "after": "scripts/ci/test_matrix/cli.py",
+        "added": 163,
+        "deleted": 0
+      },
+      "description": "+163 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": ".github/workflows/stage-tests.yml",
+        "after": ".github/workflows/stage-tests.yml",
+        "added": 158,
+        "deleted": 0
+      },
+      "description": "+158 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "scripts/ci/test_matrix/plugin.py",
+        "after": "scripts/ci/test_matrix/plugin.py",
+        "added": 133,
+        "deleted": 0
+      },
+      "description": "+133 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "docs/feature-contracts.md",
+        "after": "docs/feature-contracts.md",
+        "added": 117,
+        "deleted": 0
+      },
+      "description": "+117 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "scripts/ci/publish-tests.mjs",
+        "after": "scripts/ci/publish-tests.mjs",
+        "added": 99,
+        "deleted": 0
+      },
+      "description": "+99 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "scripts/ci/test_matrix/render.py",
+        "after": "scripts/ci/test_matrix/render.py",
+        "added": 99,
+        "deleted": 0
+      },
+      "description": "+99 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "scripts/ci/test-publication.test.mjs",
+        "after": "scripts/ci/test-publication.test.mjs",
+        "added": 81,
+        "deleted": 0
+      },
+      "description": "+81 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": ".github/workflows/ci.yml",
+        "after": ".github/workflows/ci.yml",
+        "added": 21,
+        "deleted": 42
+      },
+      "description": "+21 added / -42 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "tests/test_matrix/test_plugin.py",
+        "after": "tests/test_matrix/test_plugin.py",
+        "added": 62,
+        "deleted": 0
+      },
+      "description": "+62 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "tests/test_matrix/test_cli.py",
+        "after": "tests/test_matrix/test_cli.py",
+        "added": 56,
+        "deleted": 0
+      },
+      "description": "+56 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "poetry.lock",
+        "after": "poetry.lock",
+        "added": 41,
+        "deleted": 3
+      },
+      "description": "+41 added / -3 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "tests/test_matrix/test_render.py",
+        "after": "tests/test_matrix/test_render.py",
+        "added": 36,
+        "deleted": 0
+      },
+      "description": "+36 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "scripts/ci/tests/test_quality_gate.py",
+        "after": "scripts/ci/tests/test_quality_gate.py",
+        "added": 24,
+        "deleted": 1
+      },
+      "description": "+24 added / -1 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "tests/test_matrix/fixtures/cases.py",
+        "after": "tests/test_matrix/fixtures/cases.py",
+        "added": 23,
+        "deleted": 0
+      },
+      "description": "+23 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "SKILL.md",
+        "after": "SKILL.md",
+        "added": 14,
+        "deleted": 0
+      },
+      "description": "+14 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": ".github/generated-artifacts.json",
+        "after": ".github/generated-artifacts.json",
+        "added": 10,
+        "deleted": 0
+      },
+      "description": "+10 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "scripts/ci/test-matrix.py",
+        "after": "scripts/ci/test-matrix.py",
+        "added": 10,
+        "deleted": 0
+      },
+      "description": "+10 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "tests/contracts/conftest.py",
+        "after": "tests/contracts/conftest.py",
+        "added": 9,
+        "deleted": 0
+      },
+      "description": "+9 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": ".github/test-matrix.json",
+        "after": ".github/test-matrix.json",
+        "added": 7,
+        "deleted": 0
+      },
+      "description": "+7 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "scripts/ci/test_matrix/__init__.py",
+        "after": "scripts/ci/test_matrix/__init__.py",
+        "added": 5,
+        "deleted": 0
+      },
+      "description": "+5 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "tests/contracts/__init__.py",
+        "after": "tests/contracts/__init__.py",
+        "added": 5,
+        "deleted": 0
+      },
+      "description": "+5 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "tests/test_matrix/__init__.py",
+        "after": "tests/test_matrix/__init__.py",
+        "added": 5,
+        "deleted": 0
+      },
+      "description": "+5 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "docs/native/diagrams/bindings/inputs/poetry.lock.json",
+        "after": "docs/native/diagrams/bindings/inputs/poetry.lock.json",
+        "added": 2,
+        "deleted": 2
+      },
+      "description": "+2 added / -2 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "tests/native/physical.py",
+        "after": "tests/native/physical.py",
+        "added": 2,
+        "deleted": 2
+      },
+      "description": "+2 added / -2 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": ".github/CODEOWNERS",
+        "after": ".github/CODEOWNERS",
+        "added": 3,
+        "deleted": 0
+      },
+      "description": "+3 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "README.md",
+        "after": "README.md",
+        "added": 3,
+        "deleted": 0
+      },
+      "description": "+3 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "pyproject.toml",
+        "after": "pyproject.toml",
+        "added": 2,
+        "deleted": 0
+      },
+      "description": "+2 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "scripts/documentation/package.json",
+        "after": "scripts/documentation/package.json",
+        "added": 1,
+        "deleted": 1
+      },
+      "description": "+1 added / -1 removed",
+      "kind": "diff"
+    }
+  ],
+  "pages": [
+    {
+      "file": "files-001.png",
+      "paths": [
+        "docs/assets/test-convergence.svg",
+        "scripts/ci/test_matrix/core.py",
+        "scripts/ci/test_matrix/models.py",
+        "scripts/ci/test_matrix/cli.py",
+        "scripts/ci/test_matrix/plugin.py",
+        "scripts/ci/publish-tests.mjs",
+        "scripts/ci/test_matrix/render.py",
+        "scripts/ci/test-publication.test.mjs",
+        "scripts/ci/tests/test_quality_gate.py",
+        "scripts/ci/test-matrix.py",
+        "scripts/ci/test_matrix/__init__.py",
+        "scripts/documentation/package.json",
+        "tests/test_matrix/test_core.py",
+        "tests/contracts/test_native.py",
+        "tests/test_matrix/test_plugin.py",
+        "tests/test_matrix/test_cli.py",
+        "tests/test_matrix/test_render.py",
+        "tests/test_matrix/fixtures/cases.py",
+        "tests/contracts/conftest.py",
+        "tests/contracts/__init__.py",
+        "tests/test_matrix/__init__.py",
+        "tests/native/physical.py",
+        ".github/workflows/stage-tests.yml",
+        ".github/workflows/ci.yml",
+        ".github/generated-artifacts.json",
+        ".github/test-matrix.json",
+        ".github/CODEOWNERS",
+        "docs/feature-contracts.md",
+        "poetry.lock",
+        "SKILL.md",
+        "docs/native/diagrams/bindings/inputs/poetry.lock.json",
+        "README.md",
+        "pyproject.toml"
+      ],
+      "sha256": "f8c0133bddcd136fd2c38905aced6b0fc56e09ddb639bcabfcfb8637d882e948"
+    }
+  ],
+  "projection": {
+    "version": "directory-partition/1",
+    "max_rows": 10,
+    "height_inches": 4.8,
+    "groups": [
+      {
+        "label": "docs/assets/",
+        "paths": [
+          "docs/assets/test-convergence.svg"
+        ],
+        "added": 1663,
+        "deleted": 0,
+        "binary": 0
+      },
+      {
+        "label": "scripts/",
+        "paths": [
+          "scripts/ci/test_matrix/core.py",
+          "scripts/ci/test_matrix/models.py",
+          "scripts/ci/test_matrix/cli.py",
+          "scripts/ci/test_matrix/plugin.py",
+          "scripts/ci/publish-tests.mjs",
+          "scripts/ci/test_matrix/render.py",
+          "scripts/ci/test-publication.test.mjs",
+          "scripts/ci/tests/test_quality_gate.py",
+          "scripts/ci/test-matrix.py",
+          "scripts/ci/test_matrix/__init__.py",
+          "scripts/documentation/package.json"
+        ],
+        "added": 1036,
+        "deleted": 2,
+        "binary": 0
+      },
+      {
+        "label": "tests/",
+        "paths": [
+          "tests/test_matrix/test_core.py",
+          "tests/contracts/test_native.py",
+          "tests/test_matrix/test_plugin.py",
+          "tests/test_matrix/test_cli.py",
+          "tests/test_matrix/test_render.py",
+          "tests/test_matrix/fixtures/cases.py",
+          "tests/contracts/conftest.py",
+          "tests/contracts/__init__.py",
+          "tests/test_matrix/__init__.py",
+          "tests/native/physical.py"
+        ],
+        "added": 605,
+        "deleted": 2,
+        "binary": 0
+      },
+      {
+        "label": ".github/",
+        "paths": [
+          ".github/workflows/stage-tests.yml",
+          ".github/workflows/ci.yml",
+          ".github/generated-artifacts.json",
+          ".github/test-matrix.json",
+          ".github/CODEOWNERS"
+        ],
+        "added": 199,
+        "deleted": 42,
+        "binary": 0
+      },
+      {
+        "label": "docs/feature-contracts.md",
+        "paths": [
+          "docs/feature-contracts.md"
+        ],
+        "added": 117,
+        "deleted": 0,
+        "binary": 0
+      },
+      {
+        "label": "poetry.lock",
+        "paths": [
+          "poetry.lock"
+        ],
+        "added": 41,
+        "deleted": 3,
+        "binary": 0
+      },
+      {
+        "label": "SKILL.md",
+        "paths": [
+          "SKILL.md"
+        ],
+        "added": 14,
+        "deleted": 0,
+        "binary": 0
+      },
+      {
+        "label": "docs/native/",
+        "paths": [
+          "docs/native/diagrams/bindings/inputs/poetry.lock.json"
+        ],
+        "added": 2,
+        "deleted": 2,
+        "binary": 0
+      },
+      {
+        "label": "README.md",
+        "paths": [
+          "README.md"
+        ],
+        "added": 3,
+        "deleted": 0,
+        "binary": 0
+      },
+      {
+        "label": "pyproject.toml",
+        "paths": [
+          "pyproject.toml"
+        ],
+        "added": 2,
+        "deleted": 0,
+        "binary": 0
+      }
+    ]
+  },
+  "palette_sha256": "df3607dacd40a0c4dbfb4b0053752953f4b40d060401fe4e42a3d842f6a8a15c",
+  "matplotlib": "3.11.2",
+  "description_inputs": {},
+  "intent_checked_at": null,
+  "model_calls": 0
+}

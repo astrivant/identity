@@ -1,0 +1,252 @@
+{
+  "measurement": {
+    "base": "81a116443288ea31d0abe56a32ba4e8eeeb079cd",
+    "merge_base": "81a116443288ea31d0abe56a32ba4e8eeeb079cd",
+    "head": "6ffae3857d881cb42d066e1eb87049f19848b7c7",
+    "classifier": "Pygments 2.21.0",
+    "deltas": [
+      {
+        "before": ".github/CODEOWNERS",
+        "after": ".github/CODEOWNERS",
+        "added": 3,
+        "deleted": 0
+      },
+      {
+        "before": ".github/generated-artifacts.json",
+        "after": ".github/generated-artifacts.json",
+        "added": 10,
+        "deleted": 0
+      },
+      {
+        "before": ".github/test-matrix.json",
+        "after": ".github/test-matrix.json",
+        "added": 7,
+        "deleted": 0
+      },
+      {
+        "before": ".github/workflows/ci.yml",
+        "after": ".github/workflows/ci.yml",
+        "added": 21,
+        "deleted": 42
+      },
+      {
+        "before": ".github/workflows/stage-tests.yml",
+        "after": ".github/workflows/stage-tests.yml",
+        "added": 158,
+        "deleted": 0
+      },
+      {
+        "before": "README.md",
+        "after": "README.md",
+        "added": 3,
+        "deleted": 0
+      },
+      {
+        "before": "SKILL.md",
+        "after": "SKILL.md",
+        "added": 14,
+        "deleted": 0
+      },
+      {
+        "before": "docs/assets/test-convergence.svg",
+        "after": "docs/assets/test-convergence.svg",
+        "added": 1663,
+        "deleted": 0
+      },
+      {
+        "before": "docs/feature-contracts.md",
+        "after": "docs/feature-contracts.md",
+        "added": 117,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/poetry.lock.json",
+        "after": "docs/native/diagrams/bindings/inputs/poetry.lock.json",
+        "added": 2,
+        "deleted": 2
+      },
+      {
+        "before": "poetry.lock",
+        "after": "poetry.lock",
+        "added": 41,
+        "deleted": 3
+      },
+      {
+        "before": "pyproject.toml",
+        "after": "pyproject.toml",
+        "added": 2,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/ci/publish-tests.mjs",
+        "after": "scripts/ci/publish-tests.mjs",
+        "added": 99,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/ci/test-matrix.py",
+        "after": "scripts/ci/test-matrix.py",
+        "added": 10,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/ci/test-publication.test.mjs",
+        "after": "scripts/ci/test-publication.test.mjs",
+        "added": 81,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/ci/test_matrix/__init__.py",
+        "after": "scripts/ci/test_matrix/__init__.py",
+        "added": 5,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/ci/test_matrix/cli.py",
+        "after": "scripts/ci/test_matrix/cli.py",
+        "added": 163,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/ci/test_matrix/core.py",
+        "after": "scripts/ci/test_matrix/core.py",
+        "added": 213,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/ci/test_matrix/models.py",
+        "after": "scripts/ci/test_matrix/models.py",
+        "added": 208,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/ci/test_matrix/plugin.py",
+        "after": "scripts/ci/test_matrix/plugin.py",
+        "added": 133,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/ci/test_matrix/render.py",
+        "after": "scripts/ci/test_matrix/render.py",
+        "added": 99,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/ci/tests/test_quality_gate.py",
+        "after": "scripts/ci/tests/test_quality_gate.py",
+        "added": 24,
+        "deleted": 1
+      },
+      {
+        "before": "scripts/documentation/package.json",
+        "after": "scripts/documentation/package.json",
+        "added": 1,
+        "deleted": 1
+      },
+      {
+        "before": "tests/contracts/__init__.py",
+        "after": "tests/contracts/__init__.py",
+        "added": 5,
+        "deleted": 0
+      },
+      {
+        "before": "tests/contracts/conftest.py",
+        "after": "tests/contracts/conftest.py",
+        "added": 9,
+        "deleted": 0
+      },
+      {
+        "before": "tests/contracts/test_native.py",
+        "after": "tests/contracts/test_native.py",
+        "added": 191,
+        "deleted": 0
+      },
+      {
+        "before": "tests/native/physical.py",
+        "after": "tests/native/physical.py",
+        "added": 2,
+        "deleted": 2
+      },
+      {
+        "before": "tests/test_matrix/__init__.py",
+        "after": "tests/test_matrix/__init__.py",
+        "added": 5,
+        "deleted": 0
+      },
+      {
+        "before": "tests/test_matrix/fixtures/cases.py",
+        "after": "tests/test_matrix/fixtures/cases.py",
+        "added": 23,
+        "deleted": 0
+      },
+      {
+        "before": "tests/test_matrix/test_cli.py",
+        "after": "tests/test_matrix/test_cli.py",
+        "added": 56,
+        "deleted": 0
+      },
+      {
+        "before": "tests/test_matrix/test_core.py",
+        "after": "tests/test_matrix/test_core.py",
+        "added": 216,
+        "deleted": 0
+      },
+      {
+        "before": "tests/test_matrix/test_plugin.py",
+        "after": "tests/test_matrix/test_plugin.py",
+        "added": 62,
+        "deleted": 0
+      },
+      {
+        "before": "tests/test_matrix/test_render.py",
+        "after": "tests/test_matrix/test_render.py",
+        "added": 36,
+        "deleted": 0
+      }
+    ],
+    "shares": [
+      {
+        "language": "XML",
+        "added": 1663,
+        "deleted": 0
+      },
+      {
+        "language": "Python",
+        "added": 1460,
+        "deleted": 3
+      },
+      {
+        "language": "YAML",
+        "added": 179,
+        "deleted": 42
+      },
+      {
+        "language": "JavaScript",
+        "added": 180,
+        "deleted": 0
+      },
+      {
+        "language": "Markdown",
+        "added": 134,
+        "deleted": 0
+      },
+      {
+        "language": "TOML",
+        "added": 43,
+        "deleted": 3
+      },
+      {
+        "language": "JSON",
+        "added": 20,
+        "deleted": 3
+      },
+      {
+        "language": "Unknown",
+        "added": 3,
+        "deleted": 0
+      }
+    ]
+  },
+  "palette_sha256": "df3607dacd40a0c4dbfb4b0053752953f4b40d060401fe4e42a3d842f6a8a15c",
+  "matplotlib": "3.11.2"
+}

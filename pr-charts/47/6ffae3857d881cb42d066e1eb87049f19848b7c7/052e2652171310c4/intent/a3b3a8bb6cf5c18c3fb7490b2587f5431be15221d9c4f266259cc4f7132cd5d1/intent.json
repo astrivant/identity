@@ -1,0 +1,585 @@
+{
+  "inputs": {
+    "renderer/image_provenance/__init__.py": "4f6fbee00f2aaec7b9603b4501711ecad6481df8dea44c2061e59c80aef7fdd6",
+    "renderer/image_provenance/cli.py": "8bf7fd1726fc851d2b1c2f52b262886a7065b39cbe2934a77cc813119a447fc6",
+    "renderer/image_provenance/core.py": "19d15d127c0b30fff8d3c3ff19763375a0acbad3c3145b535d42af742e4e5e3f",
+    "renderer/pr_files/__init__.py": "8ba23c3c18fb2390baa4b588062636cc4c347be53500b388084edc94b81df1e0",
+    "renderer/pr_files/cli.py": "082d92c3c6ae5276fe035cb8de4fa28c993d33ee0e741993b361796d8bfa0525",
+    "renderer/pr_files/descriptions.py": "38f75acbd8a930cc9bdb82a6ba1537dc1bb77550a998924216262dec8dc8636d",
+    "renderer/pr_files/grouping.py": "f32cc09ecbca42a26a978c7e2dfa8aa36353cc2c0ae4c43a03faaaf51f9fc750",
+    "renderer/pr_files/models.py": "1543595d1fac65d569f225d02714c5ab13231753181ade47622a3fb515c97b5d",
+    "renderer/pr_files/plotting.py": "b76c9be9f537b3265d16288526bda395141bf4417687894769e9df08013443de",
+    "renderer/pr_intent/__init__.py": "0cc1ccc65f5e7f158bb61bbb067e64990a4e45763ce03e4747fe04200a09adfc",
+    "renderer/pr_intent/cli.py": "7588b63eb966df5f2507f8bc52bafbe7547b2d143b292dfc0fe95331c2be0d87",
+    "renderer/pr_intent/graph.py": "487f8897e19e1cfc4b6ed9c0041746fc3c7170573bc732c296b03572270dd586",
+    "renderer/pr_intent/plotting.py": "fa1311bca351175a50ee36f850bc6573132812975d8d8b9c24eb8732e5fd4b75",
+    "renderer/pr_intent/source.py": "a2043d3d78a91cd08e3f0c3c4b8398da680c15ca670ea393f417b90441ccf1cd",
+    "renderer/pr_language.py": "f837eab96ca93df61d4973d74a764e2fa59e6d08f76391c697d923c0e6792884",
+    "renderer/pr_presentation.py": "e1502b1ceea631fe8f631e65b55655a4d14613fd8eb2a885b1df44edc0f8982f",
+    "renderer/resources/fonts/EBGaramond-Regular.otf": "d3e1471a4a0f836716bad35326d3c0ab5caddb74ae5c1917f99f8225abf43a7d",
+    "renderer/resources/intent-result.schema.json": "19e00a10d5a159220f5035bd378da53110017ece9e6286aeb2438b858f01f9a4",
+    "renderer/review_paths/core.py": "dae80a01a58b368925ca69bfc9498ba27f68678d1c95d41e366517fd6937df04",
+    "environment/poetry.lock": "175acd055864309923b5f2469f5444e1f1956c98fa26d759163e3feae19fddeb",
+    "data/palette": "df3607dacd40a0c4dbfb4b0053752953f4b40d060401fe4e42a3d842f6a8a15c"
+  },
+  "source": {
+    "target": "81a116443288ea31d0abe56a32ba4e8eeeb079cd",
+    "base": "81a116443288ea31d0abe56a32ba4e8eeeb079cd",
+    "head": "6ffae3857d881cb42d066e1eb87049f19848b7c7",
+    "tree": "fe3faa0942c142a025296a98db4b2ba667a77d18",
+    "staged": false,
+    "deltas": [
+      {
+        "before": ".github/CODEOWNERS",
+        "after": ".github/CODEOWNERS",
+        "added": 3,
+        "deleted": 0
+      },
+      {
+        "before": ".github/generated-artifacts.json",
+        "after": ".github/generated-artifacts.json",
+        "added": 10,
+        "deleted": 0
+      },
+      {
+        "before": ".github/test-matrix.json",
+        "after": ".github/test-matrix.json",
+        "added": 7,
+        "deleted": 0
+      },
+      {
+        "before": ".github/workflows/ci.yml",
+        "after": ".github/workflows/ci.yml",
+        "added": 21,
+        "deleted": 42
+      },
+      {
+        "before": ".github/workflows/stage-tests.yml",
+        "after": ".github/workflows/stage-tests.yml",
+        "added": 158,
+        "deleted": 0
+      },
+      {
+        "before": "README.md",
+        "after": "README.md",
+        "added": 3,
+        "deleted": 0
+      },
+      {
+        "before": "SKILL.md",
+        "after": "SKILL.md",
+        "added": 14,
+        "deleted": 0
+      },
+      {
+        "before": "docs/assets/test-convergence.svg",
+        "after": "docs/assets/test-convergence.svg",
+        "added": 1663,
+        "deleted": 0
+      },
+      {
+        "before": "docs/feature-contracts.md",
+        "after": "docs/feature-contracts.md",
+        "added": 117,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/poetry.lock.json",
+        "after": "docs/native/diagrams/bindings/inputs/poetry.lock.json",
+        "added": 2,
+        "deleted": 2
+      },
+      {
+        "before": "poetry.lock",
+        "after": "poetry.lock",
+        "added": 41,
+        "deleted": 3
+      },
+      {
+        "before": "pyproject.toml",
+        "after": "pyproject.toml",
+        "added": 2,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/ci/publish-tests.mjs",
+        "after": "scripts/ci/publish-tests.mjs",
+        "added": 99,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/ci/test-matrix.py",
+        "after": "scripts/ci/test-matrix.py",
+        "added": 10,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/ci/test-publication.test.mjs",
+        "after": "scripts/ci/test-publication.test.mjs",
+        "added": 81,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/ci/test_matrix/__init__.py",
+        "after": "scripts/ci/test_matrix/__init__.py",
+        "added": 5,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/ci/test_matrix/cli.py",
+        "after": "scripts/ci/test_matrix/cli.py",
+        "added": 163,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/ci/test_matrix/core.py",
+        "after": "scripts/ci/test_matrix/core.py",
+        "added": 213,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/ci/test_matrix/models.py",
+        "after": "scripts/ci/test_matrix/models.py",
+        "added": 208,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/ci/test_matrix/plugin.py",
+        "after": "scripts/ci/test_matrix/plugin.py",
+        "added": 133,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/ci/test_matrix/render.py",
+        "after": "scripts/ci/test_matrix/render.py",
+        "added": 99,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/ci/tests/test_quality_gate.py",
+        "after": "scripts/ci/tests/test_quality_gate.py",
+        "added": 24,
+        "deleted": 1
+      },
+      {
+        "before": "scripts/documentation/package.json",
+        "after": "scripts/documentation/package.json",
+        "added": 1,
+        "deleted": 1
+      },
+      {
+        "before": "tests/contracts/__init__.py",
+        "after": "tests/contracts/__init__.py",
+        "added": 5,
+        "deleted": 0
+      },
+      {
+        "before": "tests/contracts/conftest.py",
+        "after": "tests/contracts/conftest.py",
+        "added": 9,
+        "deleted": 0
+      },
+      {
+        "before": "tests/contracts/test_native.py",
+        "after": "tests/contracts/test_native.py",
+        "added": 191,
+        "deleted": 0
+      },
+      {
+        "before": "tests/native/physical.py",
+        "after": "tests/native/physical.py",
+        "added": 2,
+        "deleted": 2
+      },
+      {
+        "before": "tests/test_matrix/__init__.py",
+        "after": "tests/test_matrix/__init__.py",
+        "added": 5,
+        "deleted": 0
+      },
+      {
+        "before": "tests/test_matrix/fixtures/cases.py",
+        "after": "tests/test_matrix/fixtures/cases.py",
+        "added": 23,
+        "deleted": 0
+      },
+      {
+        "before": "tests/test_matrix/test_cli.py",
+        "after": "tests/test_matrix/test_cli.py",
+        "added": 56,
+        "deleted": 0
+      },
+      {
+        "before": "tests/test_matrix/test_core.py",
+        "after": "tests/test_matrix/test_core.py",
+        "added": 216,
+        "deleted": 0
+      },
+      {
+        "before": "tests/test_matrix/test_plugin.py",
+        "after": "tests/test_matrix/test_plugin.py",
+        "added": 62,
+        "deleted": 0
+      },
+      {
+        "before": "tests/test_matrix/test_render.py",
+        "after": "tests/test_matrix/test_render.py",
+        "added": 36,
+        "deleted": 0
+      }
+    ]
+  },
+  "view": {
+    "nodes": [
+      {
+        "id": "F1",
+        "label": ".github/CODEOWNERS",
+        "kind": "file",
+        "status": "changed",
+        "weight": 3.0,
+        "group": ".github",
+        "context": false
+      },
+      {
+        "id": "F2",
+        "label": ".github/generated-artifacts.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 10.0,
+        "group": ".github",
+        "context": false
+      },
+      {
+        "id": "F3",
+        "label": ".github/test-matrix.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 7.0,
+        "group": ".github",
+        "context": false
+      },
+      {
+        "id": "F4",
+        "label": ".github/workflows/ci.yml",
+        "kind": "file",
+        "status": "changed",
+        "weight": 63.0,
+        "group": ".github/workflows",
+        "context": false
+      },
+      {
+        "id": "F5",
+        "label": ".github/workflows/stage-tests.yml",
+        "kind": "file",
+        "status": "changed",
+        "weight": 158.0,
+        "group": ".github/workflows",
+        "context": false
+      },
+      {
+        "id": "F6",
+        "label": "README.md",
+        "kind": "file",
+        "status": "changed",
+        "weight": 3.0,
+        "group": ".",
+        "context": false
+      },
+      {
+        "id": "F7",
+        "label": "SKILL.md",
+        "kind": "file",
+        "status": "changed",
+        "weight": 14.0,
+        "group": ".",
+        "context": false
+      },
+      {
+        "id": "F8",
+        "label": "docs/assets/test-convergence.svg",
+        "kind": "file",
+        "status": "changed",
+        "weight": 1663.0,
+        "group": "docs/assets",
+        "context": false
+      },
+      {
+        "id": "F9",
+        "label": "docs/feature-contracts.md",
+        "kind": "file",
+        "status": "changed",
+        "weight": 117.0,
+        "group": "docs",
+        "context": false
+      },
+      {
+        "id": "F10",
+        "label": "docs/native/diagrams/bindings/inputs/poetry.lock.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 4.0,
+        "group": "docs/native/diagrams/bindings/inputs",
+        "context": false
+      },
+      {
+        "id": "F11",
+        "label": "poetry.lock",
+        "kind": "file",
+        "status": "changed",
+        "weight": 44.0,
+        "group": ".",
+        "context": false
+      },
+      {
+        "id": "F12",
+        "label": "pyproject.toml",
+        "kind": "file",
+        "status": "changed",
+        "weight": 2.0,
+        "group": ".",
+        "context": false
+      },
+      {
+        "id": "F13",
+        "label": "scripts/ci/publish-tests.mjs",
+        "kind": "file",
+        "status": "changed",
+        "weight": 99.0,
+        "group": "scripts/ci",
+        "context": false
+      },
+      {
+        "id": "F14",
+        "label": "scripts/ci/test-matrix.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 10.0,
+        "group": "scripts/ci",
+        "context": false
+      },
+      {
+        "id": "F15",
+        "label": "scripts/ci/test-publication.test.mjs",
+        "kind": "file",
+        "status": "changed",
+        "weight": 81.0,
+        "group": "scripts/ci",
+        "context": false
+      },
+      {
+        "id": "F16",
+        "label": "scripts/ci/test_matrix/__init__.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 5.0,
+        "group": "scripts/ci/test_matrix",
+        "context": false
+      },
+      {
+        "id": "F17",
+        "label": "scripts/ci/test_matrix/cli.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 163.0,
+        "group": "scripts/ci/test_matrix",
+        "context": false
+      },
+      {
+        "id": "F18",
+        "label": "scripts/ci/test_matrix/core.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 213.0,
+        "group": "scripts/ci/test_matrix",
+        "context": false
+      },
+      {
+        "id": "F19",
+        "label": "scripts/ci/test_matrix/models.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 208.0,
+        "group": "scripts/ci/test_matrix",
+        "context": false
+      },
+      {
+        "id": "F20",
+        "label": "scripts/ci/test_matrix/plugin.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 133.0,
+        "group": "scripts/ci/test_matrix",
+        "context": false
+      },
+      {
+        "id": "F21",
+        "label": "scripts/ci/test_matrix/render.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 99.0,
+        "group": "scripts/ci/test_matrix",
+        "context": false
+      },
+      {
+        "id": "F22",
+        "label": "scripts/ci/tests/test_quality_gate.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 25.0,
+        "group": "scripts/ci/tests",
+        "context": false
+      },
+      {
+        "id": "F23",
+        "label": "scripts/documentation/package.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 2.0,
+        "group": "scripts/documentation",
+        "context": false
+      },
+      {
+        "id": "F24",
+        "label": "tests/contracts/__init__.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 5.0,
+        "group": "tests/contracts",
+        "context": false
+      },
+      {
+        "id": "F25",
+        "label": "tests/contracts/conftest.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 9.0,
+        "group": "tests/contracts",
+        "context": false
+      },
+      {
+        "id": "F26",
+        "label": "tests/contracts/test_native.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 191.0,
+        "group": "tests/contracts",
+        "context": false
+      },
+      {
+        "id": "F27",
+        "label": "tests/native/physical.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 4.0,
+        "group": "tests/native",
+        "context": false
+      },
+      {
+        "id": "F28",
+        "label": "tests/test_matrix/__init__.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 5.0,
+        "group": "tests/test_matrix",
+        "context": false
+      },
+      {
+        "id": "F29",
+        "label": "tests/test_matrix/fixtures/cases.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 23.0,
+        "group": "tests/test_matrix/fixtures",
+        "context": false
+      },
+      {
+        "id": "F30",
+        "label": "tests/test_matrix/test_cli.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 56.0,
+        "group": "tests/test_matrix",
+        "context": false
+      },
+      {
+        "id": "F31",
+        "label": "tests/test_matrix/test_core.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 216.0,
+        "group": "tests/test_matrix",
+        "context": false
+      },
+      {
+        "id": "F32",
+        "label": "tests/test_matrix/test_plugin.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 62.0,
+        "group": "tests/test_matrix",
+        "context": false
+      },
+      {
+        "id": "F33",
+        "label": "tests/test_matrix/test_render.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 36.0,
+        "group": "tests/test_matrix",
+        "context": false
+      }
+    ],
+    "links": [],
+    "missing": [
+      ".github/CODEOWNERS",
+      ".github/generated-artifacts.json",
+      ".github/test-matrix.json",
+      ".github/workflows/ci.yml",
+      ".github/workflows/stage-tests.yml",
+      "README.md",
+      "SKILL.md",
+      "docs/assets/test-convergence.svg",
+      "docs/feature-contracts.md",
+      "docs/native/diagrams/bindings/inputs/poetry.lock.json",
+      "poetry.lock",
+      "pyproject.toml",
+      "scripts/ci/publish-tests.mjs",
+      "scripts/ci/test-matrix.py",
+      "scripts/ci/test-publication.test.mjs",
+      "scripts/ci/test_matrix/__init__.py",
+      "scripts/ci/test_matrix/cli.py",
+      "scripts/ci/test_matrix/core.py",
+      "scripts/ci/test_matrix/models.py",
+      "scripts/ci/test_matrix/plugin.py",
+      "scripts/ci/test_matrix/render.py",
+      "scripts/ci/tests/test_quality_gate.py",
+      "scripts/documentation/package.json",
+      "tests/contracts/__init__.py",
+      "tests/contracts/conftest.py",
+      "tests/contracts/test_native.py",
+      "tests/native/physical.py",
+      "tests/test_matrix/__init__.py",
+      "tests/test_matrix/fixtures/cases.py",
+      "tests/test_matrix/test_cli.py",
+      "tests/test_matrix/test_core.py",
+      "tests/test_matrix/test_plugin.py",
+      "tests/test_matrix/test_render.py"
+    ],
+    "state": "unavailable: no local intent export",
+    "graph_revision": "",
+    "input_sha256": "",
+    "omitted_dependencies": 0,
+    "omitted_evidence": 0
+  },
+  "palette_sha256": "df3607dacd40a0c4dbfb4b0053752953f4b40d060401fe4e42a3d842f6a8a15c",
+  "seed": 1729,
+  "renderer": 1,
+  "implementation_sha256": "5cee8556c16a1cc35790bcf8a95cf0f0d059669da2eb7bd210dd10a9241ba9d4",
+  "matplotlib": "3.11.2",
+  "networkx": "3.7",
+  "numpy": "2.5.3",
+  "witful": "0.6.0",
+  "model_calls": 0,
+  "evaluated_at": null,
+  "image_sha256": "d5e96829289102c9ecb1e5f856c2ceb7e2ae5b0eeb7a7149b5257a22c6eb69a0"
+}
