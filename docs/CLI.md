@@ -182,18 +182,17 @@ decision journal used by `life show`; `life.json` retains raw events and current
 choices. README headings such as "Life: choices and revisions" refer to this
 "Life: recorded choices" figure, not a separate dataset.
 
-The left panel shows **net change per journal entry**, the discrete first
-difference of the former cumulative counts. Each observation contributes +1,
-so that series is horizontal. Accepted choices contribute +1 when added or
-reinstated, 0 when revised without changing accepted status, and -1 when retired.
-Retirement requires an existing choice; source validation rejects an orphan
-retirement. Totals remain beneath the panel. Coincident series use different widths and line styles so neither
-hides the other. Empty journals show no invented observations.
+The compact overview shows the eight most recently updated decision subjects,
+with up to five explicit revisions per row. Dotted branches count recorded
+alternatives, not observed outcomes. Current and retired choices remain distinct;
+omission counts and the full JSON history preserve context outside the view.
+See [Life's workflow and synthetic example](life.md) for the encodings.
 
-This is a rate per recorded entry, not per day, and neither growth nor revision
-counts measure decision quality. The right panel still counts concept references
-in currently accepted choices. Historical replay retains original snapshots;
-the renderer change follows the existing explicit drift-acknowledgement contract.
+Use `show --concept ID`, `--task ID` or `--key KEY` to consult exact related
+records before deciding. Filters combine; `--history` includes earlier revisions
+and `--limit N` selects the latest matches in journal order. Retired current
+heads remain visible. Historical replay retains original snapshots and requires
+explicit acknowledgement of renderer drift.
 
 ## Completion audits
 

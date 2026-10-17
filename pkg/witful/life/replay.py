@@ -9,7 +9,6 @@ import json
 from typing import TYPE_CHECKING
 
 import matplotlib as mpl
-from matplotlib.figure import Figure
 
 from witful.files import replace_file
 from witful.knowledge.contracts import as_data
@@ -18,7 +17,8 @@ from witful.knowledge.rendering import graph_data
 from witful.life.contracts import canonical, current_decisions, snapshot_identity, validate_archive
 from witful.life.journal import renderer_fingerprint
 from witful.life.models import Archive
-from witful.life.plotting import draw_changes, draw_influences
+from witful.life.path_plot import figure
+from witful.life.paths import select
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -53,32 +53,6 @@ def prefix(archive: Archive, through: str | None = None) -> Archive:
 
     selected = {event.snapshot_id for event in events}
     return Archive(events, tuple(item for item in archive.snapshots if item.id in selected))
-
-
-def _figure(archive: Archive) -> Figure:
-    """
-    Separate recorded decisions and revisions from observed applications of teachings.
-
-    Args:
-        archive (Archive): Validated historical prefix.
-
-    Returns:
-        Figure: Per-entry choice changes and direct concept references in currently accepted choices.
-    """
-    figure = Figure(figsize=(14, 8), facecolor="white")
-    left, right = figure.subplots(1, 2)
-    figure.subplots_adjust(left=0.07, right=0.97, top=0.79, bottom=0.21, wspace=0.85)
-    figure.suptitle("Life: recorded choices", x=0.04, ha="left", fontsize=22, color="#263748")
-    figure.text(0.04, 0.90, "How do accepted choices change with each recorded observation?", fontsize=12, color="#697783")
-    draw_changes(left, archive)
-    draw_influences(right, archive)
-    right.set_title("What informs my decisions", fontsize=11)
-
-    for axis in (left, right):
-        axis.spines[["top", "right"]].set_visible(False)
-
-    figure.text(0.04, 0.05, "Per-entry changes, not a time-based rate or quality score. Revisions retain earlier choices.", color="#697783")
-    return figure
 
 
 def render(archive: Archive, root: Path, output: Path, *, historical: bool = False, allow_drift: bool = False) -> list[Path]:
@@ -117,16 +91,18 @@ def render(archive: Archive, root: Path, output: Path, *, historical: bool = Fal
         "renderer_matches": matches,
         "recorded_renderer": list(latest.renderer) if latest else [],
         "actual_renderer": list(fingerprint),
+        "paths": as_data(select(archive)),
     }
     destination = output / "life.json"
     replace_file(destination, canonical(report) + b"\n", expected=destination.read_bytes() if destination.exists() else None)
     paths = [destination]
 
     with mpl.rc_context(mpl.rcParamsDefault):
+        # Embed glyph paths so hosted SVGs retain the bundled font without viewer installation.
         mpl.rcParams.update(
-            {"font.family": "DejaVu Sans", "svg.fonttype": "none", "svg.hashsalt": hashlib.sha256(canonical(report)).hexdigest()}
+            {"font.family": "DejaVu Sans", "svg.fonttype": "path", "svg.hashsalt": hashlib.sha256(canonical(report)).hexdigest()}
         )
-        paths.extend(save_figure(_figure(archive), output, "life"))
+        paths.extend(save_figure(figure(archive), output, "life"))
 
     if historical and latest is not None:
         identity = snapshot_identity(latest)

@@ -94,3 +94,9 @@
 /docs/assets/knowledge-map-research.svg @emmeowzing
 /docs/assets/knowledge-collections-example.* @emmeowzing
 /docs/knowledge-map.md @emmeowzing
+
+/docs/assets/life-example.png @emmeowzing
+/docs/continual-learning.md @emmeowzing
+/docs/life.md @emmeowzing
+/pkg/witful/life/ @emmeowzing
+/pkg/witful/reflection/planning.py @emmeowzing

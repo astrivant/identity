@@ -191,3 +191,24 @@ shared orchestration owns Git, checks and recovery. Refer to the
 For CLI maintenance, compose lightweight argparse builders and typed handlers.
 Reuse those builders for standalone entrypoints and parse once; preserve existing
 syntax, help and input validation through the public command tests.
+
+## Consult decisions before acting
+
+Set this up for each agent using the existing collection's instructions and
+verified keys. Run `witful life --repo COLLECTION check`, inspect `life --help`,
+and follow the [first-decision setup](https://github.com/astrivant/identity/blob/main/docs/life.md#set-up-an-agents-decision-workflow).
+The journal and replay snapshots travel through the collection's protected
+publication workflow; main CI refreshes the figure. No separate agent service or
+database is required. Do not invent prior decisions for an empty journal.
+
+Before a consequential choice, retrieve relevant Life records with `witful life
+--repo COLLECTION show --concept CONCEPT_ID --limit 10` or an exact `--task` or
+`--key`. Read task, rationale and evidence; use `--history` when revisiting a
+subject. A shared concept is a retrieval hint, not proof that contexts match.
+Current instructions govern. Record choices as engineers make or revise them,
+including explicit user direction. Record the actual choice and documented alternatives;
+reuse the subject key and explicit `supersedes` when changing it. At handoff,
+verify that consequential decisions were recorded or remain explicitly unresolved.
+Consulting, recording and periodic reflection are separate actions. Do not claim
+use merely because records exist, and never invent hidden reasoning or outcomes.
+See [the Life workflow](https://github.com/astrivant/identity/blob/main/docs/life.md).

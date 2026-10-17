@@ -54,6 +54,7 @@ packages = [{include = "witful", from = "pkg"}]
 include = [
     {path = "pkg/witful/sql/**/*.sql", format = ["sdist", "wheel"]},
     {path = "pkg/witful/collection/resources/*", format = ["sdist", "wheel"]},
+    {path = "pkg/witful/life/resources/*", format = ["sdist", "wheel"]},
     {path = "pkg/witful/reflection/resources/*", format = ["sdist", "wheel"]},
     {path = "pkg/witful/native/resources/*", format = ["sdist", "wheel"]},
 ]

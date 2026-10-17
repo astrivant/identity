@@ -58,6 +58,35 @@ def revision(root: Path) -> str:
     return _git(root, "rev-parse", "--verify", "HEAD^{commit}")
 
 
+def _cadence(history: Path, current: str, anchor: str | None, commits: list[str]) -> tuple[int, str | None]:
+    """
+    Resolve a retained review through its earliest integration on the current first-parent path.
+
+    Args:
+        history (Path): Complete Git checkout.
+        current (str): Resolved current commit.
+        anchor (str | None): Original immutable review revision, if any.
+        commits (list[str]): Current first-parent history, newest first.
+
+    Returns:
+        tuple[int, str | None]: Commits after the effective boundary and that boundary's revision.
+
+    Raises:
+        ValueError: A retained review is missing or not reachable from current history.
+    """
+    if anchor is None:
+        return len(commits), None
+    if anchor in commits:
+        return commits.index(anchor), anchor
+    if _git(history, "merge-base", anchor, current) != anchor:
+        raise ValueError("The previous review anchor is not reachable from current history; reconcile before reviewing")
+
+    # Reachable side-branch reviews become effective when first integrated. Never rewrite the stored review.
+    descendants = set(_git(history, "rev-list", "--ancestry-path", f"{anchor}..{current}").splitlines())
+    boundary = next(commit for commit in reversed(commits) if commit in descendants)
+    return commits.index(boundary), boundary
+
+
 def plan(root: Path, history: Path) -> dict[str, object]:
     """
     Prepare evidence for a human or agent review without generating or scoring any outcome.
@@ -70,7 +99,7 @@ def plan(root: Path, history: Path) -> dict[str, object]:
         dict[str, object]: Due status and bounded oldest-reviewed-first batch, including original context and revision peers.
 
     Raises:
-        ValueError: The review anchor is not on the current first-parent history.
+        ValueError: The review anchor is missing or not reachable from current history.
     """
     settings = config(root)
     if not settings.enabled:
@@ -79,9 +108,7 @@ def plan(root: Path, history: Path) -> dict[str, object]:
     rounds = read(root)
     anchor = rounds[-1].revision if rounds else None
     commits = _git(history, "rev-list", "--first-parent", current).splitlines()
-    if anchor is not None and anchor not in commits:
-        raise ValueError("The previous review anchor is not on this first-parent history; reconcile before reviewing")
-    elapsed = commits.index(anchor) if anchor else len(commits)
+    elapsed, boundary = _cadence(history, current, anchor, commits)
     archive = read_archive(root)
     positions = {event.id: number for number, event in enumerate(archive.events)}
     last_review = {item.decision_id: number for number, event in enumerate(rounds) for item in event.assessments}
@@ -93,6 +120,7 @@ def plan(root: Path, history: Path) -> dict[str, object]:
         "due": bool(selected) and elapsed >= settings.interval_commits,
         "revision": current,
         "previous_review_revision": anchor,
+        "cadence_revision": boundary,
         "commits_since_review": elapsed,
         "interval_commits": settings.interval_commits,
         "decision_ids": sorted(event.id for event in selected),
