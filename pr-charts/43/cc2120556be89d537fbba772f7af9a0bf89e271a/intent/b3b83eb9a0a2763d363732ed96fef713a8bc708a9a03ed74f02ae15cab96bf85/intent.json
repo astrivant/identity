@@ -1,0 +1,159 @@
+{
+  "inputs": {
+    "renderer/image_provenance/__init__.py": "4f6fbee00f2aaec7b9603b4501711ecad6481df8dea44c2061e59c80aef7fdd6",
+    "renderer/image_provenance/cli.py": "8bf7fd1726fc851d2b1c2f52b262886a7065b39cbe2934a77cc813119a447fc6",
+    "renderer/image_provenance/core.py": "02bb90e803a7399d09e7f00e87b858e9178ee147b18ee773b9b899796febd4ee",
+    "renderer/pr_files/__init__.py": "8ba23c3c18fb2390baa4b588062636cc4c347be53500b388084edc94b81df1e0",
+    "renderer/pr_files/cli.py": "05e5b7daca573cd60a90e85e3f5fc1a3460ebe9d88951b4be3bf1ed02ef3842c",
+    "renderer/pr_files/descriptions.py": "38f75acbd8a930cc9bdb82a6ba1537dc1bb77550a998924216262dec8dc8636d",
+    "renderer/pr_files/grouping.py": "f32cc09ecbca42a26a978c7e2dfa8aa36353cc2c0ae4c43a03faaaf51f9fc750",
+    "renderer/pr_files/models.py": "1543595d1fac65d569f225d02714c5ab13231753181ade47622a3fb515c97b5d",
+    "renderer/pr_files/plotting.py": "6f13d3c5fb8af16739bde3ea1b58b91106a5dd85f2b771831b29b3ce680f3151",
+    "renderer/pr_intent/__init__.py": "0cc1ccc65f5e7f158bb61bbb067e64990a4e45763ce03e4747fe04200a09adfc",
+    "renderer/pr_intent/cli.py": "b57752f70a14cd76f83cfe9996b70a305323fec6e0146a85920f99222d878c72",
+    "renderer/pr_intent/graph.py": "b3647791e2653dd5d39859325a5451e0ee7205b63e215a613e966e8acc8a4de6",
+    "renderer/pr_intent/plotting.py": "83c86d11d3fc20a6fd5924b763c20551d373bf8dffcde3cb506da7a553b598fd",
+    "renderer/pr_intent/source.py": "a2043d3d78a91cd08e3f0c3c4b8398da680c15ca670ea393f417b90441ccf1cd",
+    "renderer/pr_language.py": "48f1e002bba7367020c1834eb885bb6fc356af1bd4ad84b966344fe98f7e2d77",
+    "renderer/resources/intent-result.schema.json": "19e00a10d5a159220f5035bd378da53110017ece9e6286aeb2438b858f01f9a4",
+    "renderer/review_paths/core.py": "dae80a01a58b368925ca69bfc9498ba27f68678d1c95d41e366517fd6937df04",
+    "environment/poetry.lock": "ae360edfa6b3408b72cba6b0951e2fe197f602f67ea8a731b3d5d8b029775a8a",
+    "data/palette": "df3607dacd40a0c4dbfb4b0053752953f4b40d060401fe4e42a3d842f6a8a15c"
+  },
+  "source": {
+    "target": "fe38fbfe2cf6eac32a8c2c180330dbe1db048dca",
+    "base": "fe38fbfe2cf6eac32a8c2c180330dbe1db048dca",
+    "head": "cc2120556be89d537fbba772f7af9a0bf89e271a",
+    "tree": "928231feb4805a66954e2daf19e93397995a34c7",
+    "staged": false,
+    "deltas": [
+      {
+        "before": "docs/native-operations.md",
+        "after": "docs/native-operations.md",
+        "added": 28,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/manifest.json",
+        "after": "docs/native/diagrams/manifest.json",
+        "added": 5,
+        "deleted": 5
+      },
+      {
+        "before": "pkg/witful/native/administration.py",
+        "after": "pkg/witful/native/administration.py",
+        "added": 2,
+        "deleted": 2
+      },
+      {
+        "before": "tests/native/database.py",
+        "after": "tests/native/database.py",
+        "added": 5,
+        "deleted": 3
+      },
+      {
+        "before": "tests/native/test_administration.py",
+        "after": "tests/native/test_administration.py",
+        "added": 9,
+        "deleted": 5
+      },
+      {
+        "before": "tests/native/test_administration_transactions.py",
+        "after": "tests/native/test_administration_transactions.py",
+        "added": 166,
+        "deleted": 0
+      },
+      {
+        "before": "tests/native/test_physical.py",
+        "after": "tests/native/test_physical.py",
+        "added": 2,
+        "deleted": 1
+      }
+    ]
+  },
+  "view": {
+    "nodes": [
+      {
+        "id": "F1",
+        "label": "docs/native-operations.md",
+        "kind": "file",
+        "status": "changed",
+        "weight": 28.0,
+        "group": "docs"
+      },
+      {
+        "id": "F2",
+        "label": "docs/native/diagrams/manifest.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 10.0,
+        "group": "docs/native/diagrams"
+      },
+      {
+        "id": "F3",
+        "label": "pkg/witful/native/administration.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 4.0,
+        "group": "pkg/witful/native"
+      },
+      {
+        "id": "F4",
+        "label": "tests/native/database.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 8.0,
+        "group": "tests/native"
+      },
+      {
+        "id": "F5",
+        "label": "tests/native/test_administration.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 14.0,
+        "group": "tests/native"
+      },
+      {
+        "id": "F6",
+        "label": "tests/native/test_administration_transactions.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 166.0,
+        "group": "tests/native"
+      },
+      {
+        "id": "F7",
+        "label": "tests/native/test_physical.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 3.0,
+        "group": "tests/native"
+      }
+    ],
+    "links": [],
+    "missing": [
+      "docs/native-operations.md",
+      "docs/native/diagrams/manifest.json",
+      "pkg/witful/native/administration.py",
+      "tests/native/database.py",
+      "tests/native/test_administration.py",
+      "tests/native/test_administration_transactions.py",
+      "tests/native/test_physical.py"
+    ],
+    "state": "unavailable: no local intent export",
+    "graph_revision": "",
+    "input_sha256": "",
+    "omitted_dependencies": 0
+  },
+  "palette_sha256": "df3607dacd40a0c4dbfb4b0053752953f4b40d060401fe4e42a3d842f6a8a15c",
+  "seed": 1729,
+  "renderer": 1,
+  "implementation_sha256": "3624400cc286ee1e6b2cd9f9fe56a783a13a2cd9b0d37d96097d02fc9f57bbce",
+  "matplotlib": "3.11.2",
+  "networkx": "3.7",
+  "numpy": "2.5.3",
+  "witful": "0.6.0",
+  "model_calls": 0,
+  "evaluated_at": null,
+  "image_sha256": "ebbbee41476cb2af474846b97017edf9fb0ec8ffe3a3d18b7889032132619688"
+}

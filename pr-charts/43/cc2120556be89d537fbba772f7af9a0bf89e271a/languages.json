@@ -1,0 +1,71 @@
+{
+  "measurement": {
+    "base": "fe38fbfe2cf6eac32a8c2c180330dbe1db048dca",
+    "merge_base": "fe38fbfe2cf6eac32a8c2c180330dbe1db048dca",
+    "head": "cc2120556be89d537fbba772f7af9a0bf89e271a",
+    "classifier": "Pygments 2.21.0",
+    "deltas": [
+      {
+        "before": "docs/native-operations.md",
+        "after": "docs/native-operations.md",
+        "added": 28,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/manifest.json",
+        "after": "docs/native/diagrams/manifest.json",
+        "added": 5,
+        "deleted": 5
+      },
+      {
+        "before": "pkg/witful/native/administration.py",
+        "after": "pkg/witful/native/administration.py",
+        "added": 2,
+        "deleted": 2
+      },
+      {
+        "before": "tests/native/database.py",
+        "after": "tests/native/database.py",
+        "added": 5,
+        "deleted": 3
+      },
+      {
+        "before": "tests/native/test_administration.py",
+        "after": "tests/native/test_administration.py",
+        "added": 9,
+        "deleted": 5
+      },
+      {
+        "before": "tests/native/test_administration_transactions.py",
+        "after": "tests/native/test_administration_transactions.py",
+        "added": 166,
+        "deleted": 0
+      },
+      {
+        "before": "tests/native/test_physical.py",
+        "after": "tests/native/test_physical.py",
+        "added": 2,
+        "deleted": 1
+      }
+    ],
+    "shares": [
+      {
+        "language": "Python",
+        "added": 184,
+        "deleted": 11
+      },
+      {
+        "language": "Markdown",
+        "added": 28,
+        "deleted": 0
+      },
+      {
+        "language": "JSON",
+        "added": 5,
+        "deleted": 5
+      }
+    ]
+  },
+  "palette_sha256": "df3607dacd40a0c4dbfb4b0053752953f4b40d060401fe4e42a3d842f6a8a15c",
+  "matplotlib": "3.11.2"
+}
