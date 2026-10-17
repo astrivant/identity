@@ -1,0 +1,939 @@
+{
+  "inputs": {
+    "renderer/image_provenance/__init__.py": "4f6fbee00f2aaec7b9603b4501711ecad6481df8dea44c2061e59c80aef7fdd6",
+    "renderer/image_provenance/cli.py": "8bf7fd1726fc851d2b1c2f52b262886a7065b39cbe2934a77cc813119a447fc6",
+    "renderer/image_provenance/core.py": "02bb90e803a7399d09e7f00e87b858e9178ee147b18ee773b9b899796febd4ee",
+    "renderer/pr_files/__init__.py": "8ba23c3c18fb2390baa4b588062636cc4c347be53500b388084edc94b81df1e0",
+    "renderer/pr_files/cli.py": "05e5b7daca573cd60a90e85e3f5fc1a3460ebe9d88951b4be3bf1ed02ef3842c",
+    "renderer/pr_files/descriptions.py": "38f75acbd8a930cc9bdb82a6ba1537dc1bb77550a998924216262dec8dc8636d",
+    "renderer/pr_files/grouping.py": "f32cc09ecbca42a26a978c7e2dfa8aa36353cc2c0ae4c43a03faaaf51f9fc750",
+    "renderer/pr_files/models.py": "1543595d1fac65d569f225d02714c5ab13231753181ade47622a3fb515c97b5d",
+    "renderer/pr_files/plotting.py": "6f13d3c5fb8af16739bde3ea1b58b91106a5dd85f2b771831b29b3ce680f3151",
+    "renderer/pr_intent/__init__.py": "0cc1ccc65f5e7f158bb61bbb067e64990a4e45763ce03e4747fe04200a09adfc",
+    "renderer/pr_intent/cli.py": "b57752f70a14cd76f83cfe9996b70a305323fec6e0146a85920f99222d878c72",
+    "renderer/pr_intent/graph.py": "b3647791e2653dd5d39859325a5451e0ee7205b63e215a613e966e8acc8a4de6",
+    "renderer/pr_intent/plotting.py": "83c86d11d3fc20a6fd5924b763c20551d373bf8dffcde3cb506da7a553b598fd",
+    "renderer/pr_intent/source.py": "a2043d3d78a91cd08e3f0c3c4b8398da680c15ca670ea393f417b90441ccf1cd",
+    "renderer/pr_language.py": "48f1e002bba7367020c1834eb885bb6fc356af1bd4ad84b966344fe98f7e2d77",
+    "renderer/resources/intent-result.schema.json": "19e00a10d5a159220f5035bd378da53110017ece9e6286aeb2438b858f01f9a4",
+    "renderer/review_paths/core.py": "67d052aa57fdf4c05cfe469af72185174e1211becef5e49f5fe1cdc57bd05471",
+    "environment/poetry.lock": "ae360edfa6b3408b72cba6b0951e2fe197f602f67ea8a731b3d5d8b029775a8a",
+    "data/palette": "df3607dacd40a0c4dbfb4b0053752953f4b40d060401fe4e42a3d842f6a8a15c"
+  },
+  "source": {
+    "target": "fe38fbfe2cf6eac32a8c2c180330dbe1db048dca",
+    "base": "fe38fbfe2cf6eac32a8c2c180330dbe1db048dca",
+    "head": "b67007f81b959109d0c762e82d64b46c35ab7a21",
+    "tree": "88cddf44fddecd4189f9ba9c27dfc0440c2d7205",
+    "staged": false,
+    "deltas": [
+      {
+        "before": ".github/CODEOWNERS",
+        "after": ".github/CODEOWNERS",
+        "added": 41,
+        "deleted": 45
+      },
+      {
+        "before": ".github/generated-artifacts.json",
+        "after": ".github/generated-artifacts.json",
+        "added": 102,
+        "deleted": 0
+      },
+      {
+        "before": ".github/workflows/ci.yml",
+        "after": ".github/workflows/ci.yml",
+        "added": 32,
+        "deleted": 1
+      },
+      {
+        "before": ".github/workflows/stage-repair.yml",
+        "after": ".github/workflows/stage-repair.yml",
+        "added": 34,
+        "deleted": 0
+      },
+      {
+        "before": ".pre-commit-config.yaml",
+        "after": ".pre-commit-config.yaml",
+        "added": 27,
+        "deleted": 0
+      },
+      {
+        "before": "README.md",
+        "after": "README.md",
+        "added": 1,
+        "deleted": 0
+      },
+      {
+        "before": "SKILL.md",
+        "after": "SKILL.md",
+        "added": 44,
+        "deleted": 0
+      },
+      {
+        "before": "docs/codegraphs.md",
+        "after": "docs/codegraphs.md",
+        "added": 9,
+        "deleted": 0
+      },
+      {
+        "before": "docs/generated-artifacts.md",
+        "after": "docs/generated-artifacts.md",
+        "added": 61,
+        "deleted": 0
+      },
+      {
+        "before": "docs/intent-graphs.md",
+        "after": "docs/intent-graphs.md",
+        "added": 266,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/manifest.json",
+        "after": "docs/native/diagrams/manifest.json",
+        "added": 7,
+        "deleted": 7
+      },
+      {
+        "before": "docs/source-links.md",
+        "after": "docs/source-links.md",
+        "added": 88,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/cli.py",
+        "after": "pkg/witful/cli.py",
+        "added": 2,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/codegraph/service.py",
+        "after": "pkg/witful/codegraph/service.py",
+        "added": 7,
+        "deleted": 4
+      },
+      {
+        "before": "pkg/witful/commands/intent.py",
+        "after": "pkg/witful/commands/intent.py",
+        "added": 94,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/documentation.py",
+        "after": "pkg/witful/documentation.py",
+        "added": 366,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/intent/__init__.py",
+        "after": "pkg/witful/intent/__init__.py",
+        "added": 5,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/intent/api.py",
+        "after": "pkg/witful/intent/api.py",
+        "added": 91,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/intent/breadcrumbs.py",
+        "after": "pkg/witful/intent/breadcrumbs.py",
+        "added": 87,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/intent/cli.py",
+        "after": "pkg/witful/intent/cli.py",
+        "added": 86,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/intent/contracts.py",
+        "after": "pkg/witful/intent/contracts.py",
+        "added": 303,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/intent/core.py",
+        "after": "pkg/witful/intent/core.py",
+        "added": 230,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/intent/draft.py",
+        "after": "pkg/witful/intent/draft.py",
+        "added": 90,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/intent/models.py",
+        "after": "pkg/witful/intent/models.py",
+        "added": 454,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/intent/service.py",
+        "after": "pkg/witful/intent/service.py",
+        "added": 430,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/native/administration.py",
+        "after": "pkg/witful/native/administration.py",
+        "added": 3,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/native/api/builder.py",
+        "after": "pkg/witful/native/api/builder.py",
+        "added": 2,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/native/authority.py",
+        "after": "pkg/witful/native/authority.py",
+        "added": 13,
+        "deleted": 2
+      },
+      {
+        "before": "pkg/witful/native/client.py",
+        "after": "pkg/witful/native/client.py",
+        "added": 5,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/native/domains.py",
+        "after": "pkg/witful/native/domains.py",
+        "added": 5,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/repertoire/models.py",
+        "after": "pkg/witful/repertoire/models.py",
+        "added": 1,
+        "deleted": 0
+      },
+      {
+        "before": "poetry.lock",
+        "after": "poetry.lock",
+        "added": 54,
+        "deleted": 2
+      },
+      {
+        "before": "pyproject.toml",
+        "after": "pyproject.toml",
+        "added": 4,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/ci/provider_contracts/data/manifest.json",
+        "after": "scripts/ci/provider_contracts/data/manifest.json",
+        "added": 2,
+        "deleted": 2
+      },
+      {
+        "before": "scripts/ci/repair/NOTICE.md",
+        "after": "scripts/ci/repair/NOTICE.md",
+        "added": 7,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/ci/repair/__init__.py",
+        "after": "scripts/ci/repair/__init__.py",
+        "added": 3,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/ci/repair/plan.py",
+        "after": "scripts/ci/repair/plan.py",
+        "added": 361,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/ci/repair/repair.mjs",
+        "after": "scripts/ci/repair/repair.mjs",
+        "added": 77,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/ci/repair/repair.test.mjs",
+        "after": "scripts/ci/repair/repair.test.mjs",
+        "added": 45,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/ci/tests/test_quality_gate.py",
+        "after": "scripts/ci/tests/test_quality_gate.py",
+        "added": 3,
+        "deleted": 2
+      },
+      {
+        "before": "scripts/documentation/check-markdown.mjs",
+        "after": "scripts/documentation/check-markdown.mjs",
+        "added": 3,
+        "deleted": 3
+      },
+      {
+        "before": "scripts/documentation/check-markdown.test.mjs",
+        "after": "scripts/documentation/check-markdown.test.mjs",
+        "added": 5,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/documentation/package.json",
+        "after": "scripts/documentation/package.json",
+        "added": 1,
+        "deleted": 1
+      },
+      {
+        "before": "scripts/documentation/source-links.py",
+        "after": "scripts/documentation/source-links.py",
+        "added": 10,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/ownership/__init__.py",
+        "after": "scripts/ownership/__init__.py",
+        "added": 5,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/ownership/__main__.py",
+        "after": "scripts/ownership/__main__.py",
+        "added": 9,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/ownership/cli.py",
+        "after": "scripts/ownership/cli.py",
+        "added": 137,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/ownership/compiler.py",
+        "after": "scripts/ownership/compiler.py",
+        "added": 242,
+        "deleted": 0
+      },
+      {
+        "before": "tests/ci/test_generated_repair.py",
+        "after": "tests/ci/test_generated_repair.py",
+        "added": 270,
+        "deleted": 0
+      },
+      {
+        "before": "tests/ci/test_generated_repair_workflow.py",
+        "after": "tests/ci/test_generated_repair_workflow.py",
+        "added": 86,
+        "deleted": 0
+      },
+      {
+        "before": "tests/ci/test_ownership_compiler.py",
+        "after": "tests/ci/test_ownership_compiler.py",
+        "added": 197,
+        "deleted": 0
+      },
+      {
+        "before": "tests/documentation/test_source_links.py",
+        "after": "tests/documentation/test_source_links.py",
+        "added": 229,
+        "deleted": 0
+      },
+      {
+        "before": "tests/intent/__init__.py",
+        "after": "tests/intent/__init__.py",
+        "added": 5,
+        "deleted": 0
+      },
+      {
+        "before": "tests/intent/conftest.py",
+        "after": "tests/intent/conftest.py",
+        "added": 9,
+        "deleted": 0
+      },
+      {
+        "before": "tests/intent/support.py",
+        "after": "tests/intent/support.py",
+        "added": 93,
+        "deleted": 0
+      },
+      {
+        "before": "tests/intent/test_breadcrumbs.py",
+        "after": "tests/intent/test_breadcrumbs.py",
+        "added": 56,
+        "deleted": 0
+      },
+      {
+        "before": "tests/intent/test_cli.py",
+        "after": "tests/intent/test_cli.py",
+        "added": 58,
+        "deleted": 0
+      },
+      {
+        "before": "tests/intent/test_core.py",
+        "after": "tests/intent/test_core.py",
+        "added": 491,
+        "deleted": 0
+      },
+      {
+        "before": "tests/intent/test_service.py",
+        "after": "tests/intent/test_service.py",
+        "added": 376,
+        "deleted": 0
+      }
+    ]
+  },
+  "view": {
+    "nodes": [
+      {
+        "id": "F1",
+        "label": ".github/CODEOWNERS",
+        "kind": "file",
+        "status": "changed",
+        "weight": 86.0,
+        "group": ".github"
+      },
+      {
+        "id": "F2",
+        "label": ".github/generated-artifacts.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 102.0,
+        "group": ".github"
+      },
+      {
+        "id": "F3",
+        "label": ".github/workflows/ci.yml",
+        "kind": "file",
+        "status": "changed",
+        "weight": 33.0,
+        "group": ".github/workflows"
+      },
+      {
+        "id": "F4",
+        "label": ".github/workflows/stage-repair.yml",
+        "kind": "file",
+        "status": "changed",
+        "weight": 34.0,
+        "group": ".github/workflows"
+      },
+      {
+        "id": "F5",
+        "label": ".pre-commit-config.yaml",
+        "kind": "file",
+        "status": "changed",
+        "weight": 27.0,
+        "group": "."
+      },
+      {
+        "id": "F6",
+        "label": "README.md",
+        "kind": "file",
+        "status": "changed",
+        "weight": 1.0,
+        "group": "."
+      },
+      {
+        "id": "F7",
+        "label": "SKILL.md",
+        "kind": "file",
+        "status": "changed",
+        "weight": 44.0,
+        "group": "."
+      },
+      {
+        "id": "F8",
+        "label": "docs/codegraphs.md",
+        "kind": "file",
+        "status": "changed",
+        "weight": 9.0,
+        "group": "docs"
+      },
+      {
+        "id": "F9",
+        "label": "docs/generated-artifacts.md",
+        "kind": "file",
+        "status": "changed",
+        "weight": 61.0,
+        "group": "docs"
+      },
+      {
+        "id": "F10",
+        "label": "docs/intent-graphs.md",
+        "kind": "file",
+        "status": "changed",
+        "weight": 266.0,
+        "group": "docs"
+      },
+      {
+        "id": "F11",
+        "label": "docs/native/diagrams/manifest.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 14.0,
+        "group": "docs/native/diagrams"
+      },
+      {
+        "id": "F12",
+        "label": "docs/source-links.md",
+        "kind": "file",
+        "status": "changed",
+        "weight": 88.0,
+        "group": "docs"
+      },
+      {
+        "id": "F13",
+        "label": "pkg/witful/cli.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 2.0,
+        "group": "pkg/witful"
+      },
+      {
+        "id": "F14",
+        "label": "pkg/witful/codegraph/service.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 11.0,
+        "group": "pkg/witful/codegraph"
+      },
+      {
+        "id": "F15",
+        "label": "pkg/witful/commands/intent.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 94.0,
+        "group": "pkg/witful/commands"
+      },
+      {
+        "id": "F16",
+        "label": "pkg/witful/documentation.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 366.0,
+        "group": "pkg/witful"
+      },
+      {
+        "id": "F17",
+        "label": "pkg/witful/intent/__init__.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 5.0,
+        "group": "pkg/witful/intent"
+      },
+      {
+        "id": "F18",
+        "label": "pkg/witful/intent/api.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 91.0,
+        "group": "pkg/witful/intent"
+      },
+      {
+        "id": "F19",
+        "label": "pkg/witful/intent/breadcrumbs.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 87.0,
+        "group": "pkg/witful/intent"
+      },
+      {
+        "id": "F20",
+        "label": "pkg/witful/intent/cli.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 86.0,
+        "group": "pkg/witful/intent"
+      },
+      {
+        "id": "F21",
+        "label": "pkg/witful/intent/contracts.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 303.0,
+        "group": "pkg/witful/intent"
+      },
+      {
+        "id": "F22",
+        "label": "pkg/witful/intent/core.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 230.0,
+        "group": "pkg/witful/intent"
+      },
+      {
+        "id": "F23",
+        "label": "pkg/witful/intent/draft.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 90.0,
+        "group": "pkg/witful/intent"
+      },
+      {
+        "id": "F24",
+        "label": "pkg/witful/intent/models.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 454.0,
+        "group": "pkg/witful/intent"
+      },
+      {
+        "id": "F25",
+        "label": "pkg/witful/intent/service.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 430.0,
+        "group": "pkg/witful/intent"
+      },
+      {
+        "id": "F26",
+        "label": "pkg/witful/native/administration.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 3.0,
+        "group": "pkg/witful/native"
+      },
+      {
+        "id": "F27",
+        "label": "pkg/witful/native/api/builder.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 2.0,
+        "group": "pkg/witful/native/api"
+      },
+      {
+        "id": "F28",
+        "label": "pkg/witful/native/authority.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 15.0,
+        "group": "pkg/witful/native"
+      },
+      {
+        "id": "F29",
+        "label": "pkg/witful/native/client.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 5.0,
+        "group": "pkg/witful/native"
+      },
+      {
+        "id": "F30",
+        "label": "pkg/witful/native/domains.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 5.0,
+        "group": "pkg/witful/native"
+      },
+      {
+        "id": "F31",
+        "label": "pkg/witful/repertoire/models.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 1.0,
+        "group": "pkg/witful/repertoire"
+      },
+      {
+        "id": "F32",
+        "label": "poetry.lock",
+        "kind": "file",
+        "status": "changed",
+        "weight": 56.0,
+        "group": "."
+      },
+      {
+        "id": "F33",
+        "label": "pyproject.toml",
+        "kind": "file",
+        "status": "changed",
+        "weight": 4.0,
+        "group": "."
+      },
+      {
+        "id": "F34",
+        "label": "scripts/ci/provider_contracts/data/manifest.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 4.0,
+        "group": "scripts/ci/provider_contracts/data"
+      },
+      {
+        "id": "F35",
+        "label": "scripts/ci/repair/NOTICE.md",
+        "kind": "file",
+        "status": "changed",
+        "weight": 7.0,
+        "group": "scripts/ci/repair"
+      },
+      {
+        "id": "F36",
+        "label": "scripts/ci/repair/__init__.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 3.0,
+        "group": "scripts/ci/repair"
+      },
+      {
+        "id": "F37",
+        "label": "scripts/ci/repair/plan.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 361.0,
+        "group": "scripts/ci/repair"
+      },
+      {
+        "id": "F38",
+        "label": "scripts/ci/repair/repair.mjs",
+        "kind": "file",
+        "status": "changed",
+        "weight": 77.0,
+        "group": "scripts/ci/repair"
+      },
+      {
+        "id": "F39",
+        "label": "scripts/ci/repair/repair.test.mjs",
+        "kind": "file",
+        "status": "changed",
+        "weight": 45.0,
+        "group": "scripts/ci/repair"
+      },
+      {
+        "id": "F40",
+        "label": "scripts/ci/tests/test_quality_gate.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 5.0,
+        "group": "scripts/ci/tests"
+      },
+      {
+        "id": "F41",
+        "label": "scripts/documentation/check-markdown.mjs",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "scripts/documentation"
+      },
+      {
+        "id": "F42",
+        "label": "scripts/documentation/check-markdown.test.mjs",
+        "kind": "file",
+        "status": "changed",
+        "weight": 5.0,
+        "group": "scripts/documentation"
+      },
+      {
+        "id": "F43",
+        "label": "scripts/documentation/package.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 2.0,
+        "group": "scripts/documentation"
+      },
+      {
+        "id": "F44",
+        "label": "scripts/documentation/source-links.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 10.0,
+        "group": "scripts/documentation"
+      },
+      {
+        "id": "F45",
+        "label": "scripts/ownership/__init__.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 5.0,
+        "group": "scripts/ownership"
+      },
+      {
+        "id": "F46",
+        "label": "scripts/ownership/__main__.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 9.0,
+        "group": "scripts/ownership"
+      },
+      {
+        "id": "F47",
+        "label": "scripts/ownership/cli.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 137.0,
+        "group": "scripts/ownership"
+      },
+      {
+        "id": "F48",
+        "label": "scripts/ownership/compiler.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 242.0,
+        "group": "scripts/ownership"
+      },
+      {
+        "id": "F49",
+        "label": "tests/ci/test_generated_repair.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 270.0,
+        "group": "tests/ci"
+      },
+      {
+        "id": "F50",
+        "label": "tests/ci/test_generated_repair_workflow.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 86.0,
+        "group": "tests/ci"
+      },
+      {
+        "id": "F51",
+        "label": "tests/ci/test_ownership_compiler.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 197.0,
+        "group": "tests/ci"
+      },
+      {
+        "id": "F52",
+        "label": "tests/documentation/test_source_links.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 229.0,
+        "group": "tests/documentation"
+      },
+      {
+        "id": "F53",
+        "label": "tests/intent/__init__.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 5.0,
+        "group": "tests/intent"
+      },
+      {
+        "id": "F54",
+        "label": "tests/intent/conftest.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 9.0,
+        "group": "tests/intent"
+      },
+      {
+        "id": "F55",
+        "label": "tests/intent/support.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 93.0,
+        "group": "tests/intent"
+      },
+      {
+        "id": "F56",
+        "label": "tests/intent/test_breadcrumbs.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 56.0,
+        "group": "tests/intent"
+      },
+      {
+        "id": "F57",
+        "label": "tests/intent/test_cli.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 58.0,
+        "group": "tests/intent"
+      },
+      {
+        "id": "F58",
+        "label": "tests/intent/test_core.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 491.0,
+        "group": "tests/intent"
+      },
+      {
+        "id": "F59",
+        "label": "tests/intent/test_service.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 376.0,
+        "group": "tests/intent"
+      }
+    ],
+    "links": [],
+    "missing": [
+      ".github/CODEOWNERS",
+      ".github/generated-artifacts.json",
+      ".github/workflows/ci.yml",
+      ".github/workflows/stage-repair.yml",
+      ".pre-commit-config.yaml",
+      "README.md",
+      "SKILL.md",
+      "docs/codegraphs.md",
+      "docs/generated-artifacts.md",
+      "docs/intent-graphs.md",
+      "docs/native/diagrams/manifest.json",
+      "docs/source-links.md",
+      "pkg/witful/cli.py",
+      "pkg/witful/codegraph/service.py",
+      "pkg/witful/commands/intent.py",
+      "pkg/witful/documentation.py",
+      "pkg/witful/intent/__init__.py",
+      "pkg/witful/intent/api.py",
+      "pkg/witful/intent/breadcrumbs.py",
+      "pkg/witful/intent/cli.py",
+      "pkg/witful/intent/contracts.py",
+      "pkg/witful/intent/core.py",
+      "pkg/witful/intent/draft.py",
+      "pkg/witful/intent/models.py",
+      "pkg/witful/intent/service.py",
+      "pkg/witful/native/administration.py",
+      "pkg/witful/native/api/builder.py",
+      "pkg/witful/native/authority.py",
+      "pkg/witful/native/client.py",
+      "pkg/witful/native/domains.py",
+      "pkg/witful/repertoire/models.py",
+      "poetry.lock",
+      "pyproject.toml",
+      "scripts/ci/provider_contracts/data/manifest.json",
+      "scripts/ci/repair/NOTICE.md",
+      "scripts/ci/repair/__init__.py",
+      "scripts/ci/repair/plan.py",
+      "scripts/ci/repair/repair.mjs",
+      "scripts/ci/repair/repair.test.mjs",
+      "scripts/ci/tests/test_quality_gate.py",
+      "scripts/documentation/check-markdown.mjs",
+      "scripts/documentation/check-markdown.test.mjs",
+      "scripts/documentation/package.json",
+      "scripts/documentation/source-links.py",
+      "scripts/ownership/__init__.py",
+      "scripts/ownership/__main__.py",
+      "scripts/ownership/cli.py",
+      "scripts/ownership/compiler.py",
+      "tests/ci/test_generated_repair.py",
+      "tests/ci/test_generated_repair_workflow.py",
+      "tests/ci/test_ownership_compiler.py",
+      "tests/documentation/test_source_links.py",
+      "tests/intent/__init__.py",
+      "tests/intent/conftest.py",
+      "tests/intent/support.py",
+      "tests/intent/test_breadcrumbs.py",
+      "tests/intent/test_cli.py",
+      "tests/intent/test_core.py",
+      "tests/intent/test_service.py"
+    ],
+    "state": "unavailable: no local intent export",
+    "graph_revision": "",
+    "input_sha256": "",
+    "omitted_dependencies": 0
+  },
+  "palette_sha256": "df3607dacd40a0c4dbfb4b0053752953f4b40d060401fe4e42a3d842f6a8a15c",
+  "seed": 1729,
+  "renderer": 1,
+  "implementation_sha256": "8a0c97784461acd694705b6ace318b77b266aa8bd93cee1748c1660358fb8ca4",
+  "matplotlib": "3.11.2",
+  "networkx": "3.7",
+  "numpy": "2.5.3",
+  "witful": "0.6.0",
+  "model_calls": 0,
+  "evaluated_at": null,
+  "image_sha256": "2730df2c318362ed6fbf0768ddc29c4de587171138c6756003beda5798a2c321"
+}

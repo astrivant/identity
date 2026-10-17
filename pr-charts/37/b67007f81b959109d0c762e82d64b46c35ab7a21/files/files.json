@@ -1,0 +1,1211 @@
+{
+  "measurement": {
+    "base": "fe38fbfe2cf6eac32a8c2c180330dbe1db048dca",
+    "merge_base": "fe38fbfe2cf6eac32a8c2c180330dbe1db048dca",
+    "head": "b67007f81b959109d0c762e82d64b46c35ab7a21",
+    "classifier": "Pygments 2.21.0",
+    "deltas": [
+      {
+        "before": ".github/CODEOWNERS",
+        "after": ".github/CODEOWNERS",
+        "added": 41,
+        "deleted": 45
+      },
+      {
+        "before": ".github/generated-artifacts.json",
+        "after": ".github/generated-artifacts.json",
+        "added": 102,
+        "deleted": 0
+      },
+      {
+        "before": ".github/workflows/ci.yml",
+        "after": ".github/workflows/ci.yml",
+        "added": 32,
+        "deleted": 1
+      },
+      {
+        "before": ".github/workflows/stage-repair.yml",
+        "after": ".github/workflows/stage-repair.yml",
+        "added": 34,
+        "deleted": 0
+      },
+      {
+        "before": ".pre-commit-config.yaml",
+        "after": ".pre-commit-config.yaml",
+        "added": 27,
+        "deleted": 0
+      },
+      {
+        "before": "README.md",
+        "after": "README.md",
+        "added": 1,
+        "deleted": 0
+      },
+      {
+        "before": "SKILL.md",
+        "after": "SKILL.md",
+        "added": 44,
+        "deleted": 0
+      },
+      {
+        "before": "docs/codegraphs.md",
+        "after": "docs/codegraphs.md",
+        "added": 9,
+        "deleted": 0
+      },
+      {
+        "before": "docs/generated-artifacts.md",
+        "after": "docs/generated-artifacts.md",
+        "added": 61,
+        "deleted": 0
+      },
+      {
+        "before": "docs/intent-graphs.md",
+        "after": "docs/intent-graphs.md",
+        "added": 266,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/manifest.json",
+        "after": "docs/native/diagrams/manifest.json",
+        "added": 7,
+        "deleted": 7
+      },
+      {
+        "before": "docs/source-links.md",
+        "after": "docs/source-links.md",
+        "added": 88,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/cli.py",
+        "after": "pkg/witful/cli.py",
+        "added": 2,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/codegraph/service.py",
+        "after": "pkg/witful/codegraph/service.py",
+        "added": 7,
+        "deleted": 4
+      },
+      {
+        "before": "pkg/witful/commands/intent.py",
+        "after": "pkg/witful/commands/intent.py",
+        "added": 94,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/documentation.py",
+        "after": "pkg/witful/documentation.py",
+        "added": 366,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/intent/__init__.py",
+        "after": "pkg/witful/intent/__init__.py",
+        "added": 5,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/intent/api.py",
+        "after": "pkg/witful/intent/api.py",
+        "added": 91,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/intent/breadcrumbs.py",
+        "after": "pkg/witful/intent/breadcrumbs.py",
+        "added": 87,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/intent/cli.py",
+        "after": "pkg/witful/intent/cli.py",
+        "added": 86,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/intent/contracts.py",
+        "after": "pkg/witful/intent/contracts.py",
+        "added": 303,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/intent/core.py",
+        "after": "pkg/witful/intent/core.py",
+        "added": 230,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/intent/draft.py",
+        "after": "pkg/witful/intent/draft.py",
+        "added": 90,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/intent/models.py",
+        "after": "pkg/witful/intent/models.py",
+        "added": 454,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/intent/service.py",
+        "after": "pkg/witful/intent/service.py",
+        "added": 430,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/native/administration.py",
+        "after": "pkg/witful/native/administration.py",
+        "added": 3,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/native/api/builder.py",
+        "after": "pkg/witful/native/api/builder.py",
+        "added": 2,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/native/authority.py",
+        "after": "pkg/witful/native/authority.py",
+        "added": 13,
+        "deleted": 2
+      },
+      {
+        "before": "pkg/witful/native/client.py",
+        "after": "pkg/witful/native/client.py",
+        "added": 5,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/native/domains.py",
+        "after": "pkg/witful/native/domains.py",
+        "added": 5,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/repertoire/models.py",
+        "after": "pkg/witful/repertoire/models.py",
+        "added": 1,
+        "deleted": 0
+      },
+      {
+        "before": "poetry.lock",
+        "after": "poetry.lock",
+        "added": 54,
+        "deleted": 2
+      },
+      {
+        "before": "pyproject.toml",
+        "after": "pyproject.toml",
+        "added": 4,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/ci/provider_contracts/data/manifest.json",
+        "after": "scripts/ci/provider_contracts/data/manifest.json",
+        "added": 2,
+        "deleted": 2
+      },
+      {
+        "before": "scripts/ci/repair/NOTICE.md",
+        "after": "scripts/ci/repair/NOTICE.md",
+        "added": 7,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/ci/repair/__init__.py",
+        "after": "scripts/ci/repair/__init__.py",
+        "added": 3,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/ci/repair/plan.py",
+        "after": "scripts/ci/repair/plan.py",
+        "added": 361,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/ci/repair/repair.mjs",
+        "after": "scripts/ci/repair/repair.mjs",
+        "added": 77,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/ci/repair/repair.test.mjs",
+        "after": "scripts/ci/repair/repair.test.mjs",
+        "added": 45,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/ci/tests/test_quality_gate.py",
+        "after": "scripts/ci/tests/test_quality_gate.py",
+        "added": 3,
+        "deleted": 2
+      },
+      {
+        "before": "scripts/documentation/check-markdown.mjs",
+        "after": "scripts/documentation/check-markdown.mjs",
+        "added": 3,
+        "deleted": 3
+      },
+      {
+        "before": "scripts/documentation/check-markdown.test.mjs",
+        "after": "scripts/documentation/check-markdown.test.mjs",
+        "added": 5,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/documentation/package.json",
+        "after": "scripts/documentation/package.json",
+        "added": 1,
+        "deleted": 1
+      },
+      {
+        "before": "scripts/documentation/source-links.py",
+        "after": "scripts/documentation/source-links.py",
+        "added": 10,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/ownership/__init__.py",
+        "after": "scripts/ownership/__init__.py",
+        "added": 5,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/ownership/__main__.py",
+        "after": "scripts/ownership/__main__.py",
+        "added": 9,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/ownership/cli.py",
+        "after": "scripts/ownership/cli.py",
+        "added": 137,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/ownership/compiler.py",
+        "after": "scripts/ownership/compiler.py",
+        "added": 242,
+        "deleted": 0
+      },
+      {
+        "before": "tests/ci/test_generated_repair.py",
+        "after": "tests/ci/test_generated_repair.py",
+        "added": 270,
+        "deleted": 0
+      },
+      {
+        "before": "tests/ci/test_generated_repair_workflow.py",
+        "after": "tests/ci/test_generated_repair_workflow.py",
+        "added": 86,
+        "deleted": 0
+      },
+      {
+        "before": "tests/ci/test_ownership_compiler.py",
+        "after": "tests/ci/test_ownership_compiler.py",
+        "added": 197,
+        "deleted": 0
+      },
+      {
+        "before": "tests/documentation/test_source_links.py",
+        "after": "tests/documentation/test_source_links.py",
+        "added": 229,
+        "deleted": 0
+      },
+      {
+        "before": "tests/intent/__init__.py",
+        "after": "tests/intent/__init__.py",
+        "added": 5,
+        "deleted": 0
+      },
+      {
+        "before": "tests/intent/conftest.py",
+        "after": "tests/intent/conftest.py",
+        "added": 9,
+        "deleted": 0
+      },
+      {
+        "before": "tests/intent/support.py",
+        "after": "tests/intent/support.py",
+        "added": 93,
+        "deleted": 0
+      },
+      {
+        "before": "tests/intent/test_breadcrumbs.py",
+        "after": "tests/intent/test_breadcrumbs.py",
+        "added": 56,
+        "deleted": 0
+      },
+      {
+        "before": "tests/intent/test_cli.py",
+        "after": "tests/intent/test_cli.py",
+        "added": 58,
+        "deleted": 0
+      },
+      {
+        "before": "tests/intent/test_core.py",
+        "after": "tests/intent/test_core.py",
+        "added": 491,
+        "deleted": 0
+      },
+      {
+        "before": "tests/intent/test_service.py",
+        "after": "tests/intent/test_service.py",
+        "added": 376,
+        "deleted": 0
+      }
+    ],
+    "shares": [
+      {
+        "language": "Python",
+        "added": 4914,
+        "deleted": 8
+      },
+      {
+        "language": "Markdown",
+        "added": 476,
+        "deleted": 0
+      },
+      {
+        "language": "JavaScript",
+        "added": 130,
+        "deleted": 3
+      },
+      {
+        "language": "JSON",
+        "added": 112,
+        "deleted": 10
+      },
+      {
+        "language": "YAML",
+        "added": 93,
+        "deleted": 1
+      },
+      {
+        "language": "Unknown",
+        "added": 41,
+        "deleted": 45
+      },
+      {
+        "language": "TOML",
+        "added": 58,
+        "deleted": 2
+      }
+    ]
+  },
+  "rows": [
+    {
+      "delta": {
+        "before": "tests/intent/test_core.py",
+        "after": "tests/intent/test_core.py",
+        "added": 491,
+        "deleted": 0
+      },
+      "description": "+491 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "pkg/witful/intent/models.py",
+        "after": "pkg/witful/intent/models.py",
+        "added": 454,
+        "deleted": 0
+      },
+      "description": "+454 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "pkg/witful/intent/service.py",
+        "after": "pkg/witful/intent/service.py",
+        "added": 430,
+        "deleted": 0
+      },
+      "description": "+430 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "tests/intent/test_service.py",
+        "after": "tests/intent/test_service.py",
+        "added": 376,
+        "deleted": 0
+      },
+      "description": "+376 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "pkg/witful/documentation.py",
+        "after": "pkg/witful/documentation.py",
+        "added": 366,
+        "deleted": 0
+      },
+      "description": "+366 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "scripts/ci/repair/plan.py",
+        "after": "scripts/ci/repair/plan.py",
+        "added": 361,
+        "deleted": 0
+      },
+      "description": "+361 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "pkg/witful/intent/contracts.py",
+        "after": "pkg/witful/intent/contracts.py",
+        "added": 303,
+        "deleted": 0
+      },
+      "description": "+303 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "tests/ci/test_generated_repair.py",
+        "after": "tests/ci/test_generated_repair.py",
+        "added": 270,
+        "deleted": 0
+      },
+      "description": "+270 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "docs/intent-graphs.md",
+        "after": "docs/intent-graphs.md",
+        "added": 266,
+        "deleted": 0
+      },
+      "description": "+266 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "scripts/ownership/compiler.py",
+        "after": "scripts/ownership/compiler.py",
+        "added": 242,
+        "deleted": 0
+      },
+      "description": "+242 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "pkg/witful/intent/core.py",
+        "after": "pkg/witful/intent/core.py",
+        "added": 230,
+        "deleted": 0
+      },
+      "description": "+230 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "tests/documentation/test_source_links.py",
+        "after": "tests/documentation/test_source_links.py",
+        "added": 229,
+        "deleted": 0
+      },
+      "description": "+229 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "tests/ci/test_ownership_compiler.py",
+        "after": "tests/ci/test_ownership_compiler.py",
+        "added": 197,
+        "deleted": 0
+      },
+      "description": "+197 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "scripts/ownership/cli.py",
+        "after": "scripts/ownership/cli.py",
+        "added": 137,
+        "deleted": 0
+      },
+      "description": "+137 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": ".github/generated-artifacts.json",
+        "after": ".github/generated-artifacts.json",
+        "added": 102,
+        "deleted": 0
+      },
+      "description": "+102 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "pkg/witful/commands/intent.py",
+        "after": "pkg/witful/commands/intent.py",
+        "added": 94,
+        "deleted": 0
+      },
+      "description": "+94 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "tests/intent/support.py",
+        "after": "tests/intent/support.py",
+        "added": 93,
+        "deleted": 0
+      },
+      "description": "+93 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "pkg/witful/intent/api.py",
+        "after": "pkg/witful/intent/api.py",
+        "added": 91,
+        "deleted": 0
+      },
+      "description": "+91 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "pkg/witful/intent/draft.py",
+        "after": "pkg/witful/intent/draft.py",
+        "added": 90,
+        "deleted": 0
+      },
+      "description": "+90 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "docs/source-links.md",
+        "after": "docs/source-links.md",
+        "added": 88,
+        "deleted": 0
+      },
+      "description": "+88 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "pkg/witful/intent/breadcrumbs.py",
+        "after": "pkg/witful/intent/breadcrumbs.py",
+        "added": 87,
+        "deleted": 0
+      },
+      "description": "+87 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": ".github/CODEOWNERS",
+        "after": ".github/CODEOWNERS",
+        "added": 41,
+        "deleted": 45
+      },
+      "description": "+41 added / -45 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "pkg/witful/intent/cli.py",
+        "after": "pkg/witful/intent/cli.py",
+        "added": 86,
+        "deleted": 0
+      },
+      "description": "+86 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "tests/ci/test_generated_repair_workflow.py",
+        "after": "tests/ci/test_generated_repair_workflow.py",
+        "added": 86,
+        "deleted": 0
+      },
+      "description": "+86 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "scripts/ci/repair/repair.mjs",
+        "after": "scripts/ci/repair/repair.mjs",
+        "added": 77,
+        "deleted": 0
+      },
+      "description": "+77 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "docs/generated-artifacts.md",
+        "after": "docs/generated-artifacts.md",
+        "added": 61,
+        "deleted": 0
+      },
+      "description": "+61 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "tests/intent/test_cli.py",
+        "after": "tests/intent/test_cli.py",
+        "added": 58,
+        "deleted": 0
+      },
+      "description": "+58 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "poetry.lock",
+        "after": "poetry.lock",
+        "added": 54,
+        "deleted": 2
+      },
+      "description": "+54 added / -2 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "tests/intent/test_breadcrumbs.py",
+        "after": "tests/intent/test_breadcrumbs.py",
+        "added": 56,
+        "deleted": 0
+      },
+      "description": "+56 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "scripts/ci/repair/repair.test.mjs",
+        "after": "scripts/ci/repair/repair.test.mjs",
+        "added": 45,
+        "deleted": 0
+      },
+      "description": "+45 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "SKILL.md",
+        "after": "SKILL.md",
+        "added": 44,
+        "deleted": 0
+      },
+      "description": "+44 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": ".github/workflows/stage-repair.yml",
+        "after": ".github/workflows/stage-repair.yml",
+        "added": 34,
+        "deleted": 0
+      },
+      "description": "+34 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": ".github/workflows/ci.yml",
+        "after": ".github/workflows/ci.yml",
+        "added": 32,
+        "deleted": 1
+      },
+      "description": "+32 added / -1 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": ".pre-commit-config.yaml",
+        "after": ".pre-commit-config.yaml",
+        "added": 27,
+        "deleted": 0
+      },
+      "description": "+27 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "pkg/witful/native/authority.py",
+        "after": "pkg/witful/native/authority.py",
+        "added": 13,
+        "deleted": 2
+      },
+      "description": "+13 added / -2 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "docs/native/diagrams/manifest.json",
+        "after": "docs/native/diagrams/manifest.json",
+        "added": 7,
+        "deleted": 7
+      },
+      "description": "+7 added / -7 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "pkg/witful/codegraph/service.py",
+        "after": "pkg/witful/codegraph/service.py",
+        "added": 7,
+        "deleted": 4
+      },
+      "description": "+7 added / -4 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "scripts/documentation/source-links.py",
+        "after": "scripts/documentation/source-links.py",
+        "added": 10,
+        "deleted": 0
+      },
+      "description": "+10 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "docs/codegraphs.md",
+        "after": "docs/codegraphs.md",
+        "added": 9,
+        "deleted": 0
+      },
+      "description": "+9 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "scripts/ownership/__main__.py",
+        "after": "scripts/ownership/__main__.py",
+        "added": 9,
+        "deleted": 0
+      },
+      "description": "+9 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "tests/intent/conftest.py",
+        "after": "tests/intent/conftest.py",
+        "added": 9,
+        "deleted": 0
+      },
+      "description": "+9 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "scripts/ci/repair/NOTICE.md",
+        "after": "scripts/ci/repair/NOTICE.md",
+        "added": 7,
+        "deleted": 0
+      },
+      "description": "+7 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "scripts/documentation/check-markdown.mjs",
+        "after": "scripts/documentation/check-markdown.mjs",
+        "added": 3,
+        "deleted": 3
+      },
+      "description": "+3 added / -3 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "pkg/witful/intent/__init__.py",
+        "after": "pkg/witful/intent/__init__.py",
+        "added": 5,
+        "deleted": 0
+      },
+      "description": "+5 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "pkg/witful/native/client.py",
+        "after": "pkg/witful/native/client.py",
+        "added": 5,
+        "deleted": 0
+      },
+      "description": "+5 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "pkg/witful/native/domains.py",
+        "after": "pkg/witful/native/domains.py",
+        "added": 5,
+        "deleted": 0
+      },
+      "description": "+5 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "scripts/ci/tests/test_quality_gate.py",
+        "after": "scripts/ci/tests/test_quality_gate.py",
+        "added": 3,
+        "deleted": 2
+      },
+      "description": "+3 added / -2 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "scripts/documentation/check-markdown.test.mjs",
+        "after": "scripts/documentation/check-markdown.test.mjs",
+        "added": 5,
+        "deleted": 0
+      },
+      "description": "+5 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "scripts/ownership/__init__.py",
+        "after": "scripts/ownership/__init__.py",
+        "added": 5,
+        "deleted": 0
+      },
+      "description": "+5 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "tests/intent/__init__.py",
+        "after": "tests/intent/__init__.py",
+        "added": 5,
+        "deleted": 0
+      },
+      "description": "+5 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "pyproject.toml",
+        "after": "pyproject.toml",
+        "added": 4,
+        "deleted": 0
+      },
+      "description": "+4 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "scripts/ci/provider_contracts/data/manifest.json",
+        "after": "scripts/ci/provider_contracts/data/manifest.json",
+        "added": 2,
+        "deleted": 2
+      },
+      "description": "+2 added / -2 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "pkg/witful/native/administration.py",
+        "after": "pkg/witful/native/administration.py",
+        "added": 3,
+        "deleted": 0
+      },
+      "description": "+3 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "scripts/ci/repair/__init__.py",
+        "after": "scripts/ci/repair/__init__.py",
+        "added": 3,
+        "deleted": 0
+      },
+      "description": "+3 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "pkg/witful/cli.py",
+        "after": "pkg/witful/cli.py",
+        "added": 2,
+        "deleted": 0
+      },
+      "description": "+2 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "pkg/witful/native/api/builder.py",
+        "after": "pkg/witful/native/api/builder.py",
+        "added": 2,
+        "deleted": 0
+      },
+      "description": "+2 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "scripts/documentation/package.json",
+        "after": "scripts/documentation/package.json",
+        "added": 1,
+        "deleted": 1
+      },
+      "description": "+1 added / -1 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "README.md",
+        "after": "README.md",
+        "added": 1,
+        "deleted": 0
+      },
+      "description": "+1 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "pkg/witful/repertoire/models.py",
+        "after": "pkg/witful/repertoire/models.py",
+        "added": 1,
+        "deleted": 0
+      },
+      "description": "+1 added / -0 removed",
+      "kind": "diff"
+    }
+  ],
+  "pages": [
+    {
+      "file": "files-001.png",
+      "paths": [
+        "pkg/witful/intent/models.py",
+        "pkg/witful/intent/service.py",
+        "pkg/witful/documentation.py",
+        "pkg/witful/intent/contracts.py",
+        "pkg/witful/intent/core.py",
+        "pkg/witful/commands/intent.py",
+        "pkg/witful/intent/api.py",
+        "pkg/witful/intent/draft.py",
+        "pkg/witful/intent/breadcrumbs.py",
+        "pkg/witful/intent/cli.py",
+        "pkg/witful/native/authority.py",
+        "pkg/witful/codegraph/service.py",
+        "pkg/witful/intent/__init__.py",
+        "pkg/witful/native/client.py",
+        "pkg/witful/native/domains.py",
+        "pkg/witful/native/administration.py",
+        "pkg/witful/cli.py",
+        "pkg/witful/native/api/builder.py",
+        "pkg/witful/repertoire/models.py",
+        "tests/intent/test_core.py",
+        "tests/intent/test_service.py",
+        "tests/ci/test_generated_repair.py",
+        "tests/documentation/test_source_links.py",
+        "tests/ci/test_ownership_compiler.py",
+        "tests/intent/support.py",
+        "tests/ci/test_generated_repair_workflow.py",
+        "tests/intent/test_cli.py",
+        "tests/intent/test_breadcrumbs.py",
+        "tests/intent/conftest.py",
+        "tests/intent/__init__.py",
+        "scripts/ci/repair/plan.py",
+        "scripts/ownership/compiler.py",
+        "scripts/ownership/cli.py",
+        "scripts/ci/repair/repair.mjs",
+        "scripts/ci/repair/repair.test.mjs",
+        "scripts/documentation/source-links.py",
+        "scripts/ownership/__main__.py",
+        "scripts/ci/repair/NOTICE.md",
+        "scripts/documentation/check-markdown.mjs",
+        "scripts/ci/tests/test_quality_gate.py",
+        "scripts/documentation/check-markdown.test.mjs",
+        "scripts/ownership/__init__.py",
+        "scripts/ci/provider_contracts/data/manifest.json",
+        "scripts/ci/repair/__init__.py",
+        "scripts/documentation/package.json",
+        "docs/intent-graphs.md",
+        "docs/source-links.md",
+        "docs/generated-artifacts.md",
+        "docs/native/diagrams/manifest.json",
+        "docs/codegraphs.md",
+        ".github/generated-artifacts.json",
+        ".github/CODEOWNERS",
+        ".github/workflows/stage-repair.yml",
+        ".github/workflows/ci.yml",
+        "poetry.lock",
+        "SKILL.md",
+        ".pre-commit-config.yaml",
+        "pyproject.toml",
+        "README.md"
+      ],
+      "sha256": "582694041e1fecec16f6d79a9288df33ef4bc9c08080d6b29a2d48585809376a"
+    }
+  ],
+  "projection": {
+    "version": "directory-partition/1",
+    "max_rows": 10,
+    "height_inches": 6.5,
+    "groups": [
+      {
+        "label": "pkg/",
+        "paths": [
+          "pkg/witful/intent/models.py",
+          "pkg/witful/intent/service.py",
+          "pkg/witful/documentation.py",
+          "pkg/witful/intent/contracts.py",
+          "pkg/witful/intent/core.py",
+          "pkg/witful/commands/intent.py",
+          "pkg/witful/intent/api.py",
+          "pkg/witful/intent/draft.py",
+          "pkg/witful/intent/breadcrumbs.py",
+          "pkg/witful/intent/cli.py",
+          "pkg/witful/native/authority.py",
+          "pkg/witful/codegraph/service.py",
+          "pkg/witful/intent/__init__.py",
+          "pkg/witful/native/client.py",
+          "pkg/witful/native/domains.py",
+          "pkg/witful/native/administration.py",
+          "pkg/witful/cli.py",
+          "pkg/witful/native/api/builder.py",
+          "pkg/witful/repertoire/models.py"
+        ],
+        "added": 2274,
+        "deleted": 6,
+        "binary": 0
+      },
+      {
+        "label": "tests/",
+        "paths": [
+          "tests/intent/test_core.py",
+          "tests/intent/test_service.py",
+          "tests/ci/test_generated_repair.py",
+          "tests/documentation/test_source_links.py",
+          "tests/ci/test_ownership_compiler.py",
+          "tests/intent/support.py",
+          "tests/ci/test_generated_repair_workflow.py",
+          "tests/intent/test_cli.py",
+          "tests/intent/test_breadcrumbs.py",
+          "tests/intent/conftest.py",
+          "tests/intent/__init__.py"
+        ],
+        "added": 1870,
+        "deleted": 0,
+        "binary": 0
+      },
+      {
+        "label": "scripts/",
+        "paths": [
+          "scripts/ci/repair/plan.py",
+          "scripts/ownership/compiler.py",
+          "scripts/ownership/cli.py",
+          "scripts/ci/repair/repair.mjs",
+          "scripts/ci/repair/repair.test.mjs",
+          "scripts/documentation/source-links.py",
+          "scripts/ownership/__main__.py",
+          "scripts/ci/repair/NOTICE.md",
+          "scripts/documentation/check-markdown.mjs",
+          "scripts/ci/tests/test_quality_gate.py",
+          "scripts/documentation/check-markdown.test.mjs",
+          "scripts/ownership/__init__.py",
+          "scripts/ci/provider_contracts/data/manifest.json",
+          "scripts/ci/repair/__init__.py",
+          "scripts/documentation/package.json"
+        ],
+        "added": 910,
+        "deleted": 8,
+        "binary": 0
+      },
+      {
+        "label": "docs/",
+        "paths": [
+          "docs/intent-graphs.md",
+          "docs/source-links.md",
+          "docs/generated-artifacts.md",
+          "docs/native/diagrams/manifest.json",
+          "docs/codegraphs.md"
+        ],
+        "added": 431,
+        "deleted": 7,
+        "binary": 0
+      },
+      {
+        "label": ".github/",
+        "paths": [
+          ".github/generated-artifacts.json",
+          ".github/CODEOWNERS",
+          ".github/workflows/stage-repair.yml",
+          ".github/workflows/ci.yml"
+        ],
+        "added": 209,
+        "deleted": 46,
+        "binary": 0
+      },
+      {
+        "label": "poetry.lock",
+        "paths": [
+          "poetry.lock"
+        ],
+        "added": 54,
+        "deleted": 2,
+        "binary": 0
+      },
+      {
+        "label": "SKILL.md",
+        "paths": [
+          "SKILL.md"
+        ],
+        "added": 44,
+        "deleted": 0,
+        "binary": 0
+      },
+      {
+        "label": ".pre-commit-config.yaml",
+        "paths": [
+          ".pre-commit-config.yaml"
+        ],
+        "added": 27,
+        "deleted": 0,
+        "binary": 0
+      },
+      {
+        "label": "pyproject.toml",
+        "paths": [
+          "pyproject.toml"
+        ],
+        "added": 4,
+        "deleted": 0,
+        "binary": 0
+      },
+      {
+        "label": "README.md",
+        "paths": [
+          "README.md"
+        ],
+        "added": 1,
+        "deleted": 0,
+        "binary": 0
+      }
+    ]
+  },
+  "palette_sha256": "df3607dacd40a0c4dbfb4b0053752953f4b40d060401fe4e42a3d842f6a8a15c",
+  "matplotlib": "3.11.2",
+  "description_inputs": {},
+  "intent_checked_at": null,
+  "model_calls": 0
+}
