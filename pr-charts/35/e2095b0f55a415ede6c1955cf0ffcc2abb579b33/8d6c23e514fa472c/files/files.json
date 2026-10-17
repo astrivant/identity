@@ -1,0 +1,540 @@
+{
+  "measurement": {
+    "base": "94aeed3b0a6958f650d05df2fb7dcea9417dc009",
+    "merge_base": "94aeed3b0a6958f650d05df2fb7dcea9417dc009",
+    "head": "e2095b0f55a415ede6c1955cf0ffcc2abb579b33",
+    "classifier": "Pygments 2.21.0",
+    "deltas": [
+      {
+        "before": ".dockerignore",
+        "after": ".dockerignore",
+        "added": 5,
+        "deleted": 5
+      },
+      {
+        "before": ".github/CODEOWNERS",
+        "after": ".github/CODEOWNERS",
+        "added": 20,
+        "deleted": 28
+      },
+      {
+        "before": ".github/workflows/ci.yml",
+        "after": ".github/workflows/ci.yml",
+        "added": 9,
+        "deleted": 13
+      },
+      {
+        "before": ".pre-commit-config.yaml",
+        "after": ".pre-commit-config.yaml",
+        "added": 7,
+        "deleted": 0
+      },
+      {
+        "before": "CONTRIBUTING.md",
+        "after": "CONTRIBUTING.md",
+        "added": 9,
+        "deleted": 5
+      },
+      {
+        "before": "Dockerfile",
+        "after": "Dockerfile",
+        "added": 0,
+        "deleted": 39
+      },
+      {
+        "before": "SKILL.md",
+        "after": "SKILL.md",
+        "added": 18,
+        "deleted": 0
+      },
+      {
+        "before": "docs/codeowners.md",
+        "after": "docs/codeowners.md",
+        "added": 84,
+        "deleted": 0
+      },
+      {
+        "before": "docs/containers.md",
+        "after": "docs/containers.md",
+        "added": 80,
+        "deleted": 0
+      },
+      {
+        "before": "docs/storage.md",
+        "after": "docs/storage.md",
+        "added": 10,
+        "deleted": 11
+      },
+      {
+        "before": "helm/witful/references/native/README.md",
+        "after": "helm/witful/references/native/README.md",
+        "added": 1,
+        "deleted": 1
+      },
+      {
+        "before": "scripts/ci/checks/dockerfile.sh",
+        "after": "scripts/ci/checks/dockerfile.sh",
+        "added": 10,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/ci/checks/images.sh",
+        "after": "scripts/ci/checks/images.sh",
+        "added": 38,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/ci/containers/runtime.py",
+        "after": "scripts/ci/containers/runtime.py",
+        "added": 75,
+        "deleted": 0
+      },
+      {
+        "before": "services/codegraph/.dockerignore",
+        "after": "services/codegraph/.dockerignore",
+        "added": 4,
+        "deleted": 0
+      },
+      {
+        "before": "services/compose.development.yaml",
+        "after": "services/compose.development.yaml",
+        "added": 15,
+        "deleted": 0
+      },
+      {
+        "before": "services/compose.profile.yaml",
+        "after": "services/compose.profile.yaml",
+        "added": 1,
+        "deleted": 0
+      },
+      {
+        "before": "services/compose.yaml",
+        "after": "services/compose.yaml",
+        "added": 1,
+        "deleted": 0
+      },
+      {
+        "before": "services/witful/Dockerfile",
+        "after": "services/witful/Dockerfile",
+        "added": 88,
+        "deleted": 0
+      },
+      {
+        "before": "tests/ci/ownership_support.py",
+        "after": "tests/ci/ownership_support.py",
+        "added": 30,
+        "deleted": 0
+      },
+      {
+        "before": "tests/ci/test_ownership_compiler.py",
+        "after": "tests/ci/test_ownership_compiler.py",
+        "added": 2,
+        "deleted": 20
+      },
+      {
+        "before": "tests/ci/test_ownership_hooks.py",
+        "after": "tests/ci/test_ownership_hooks.py",
+        "added": 104,
+        "deleted": 0
+      }
+    ],
+    "shares": [
+      {
+        "language": "Python",
+        "added": 211,
+        "deleted": 20
+      },
+      {
+        "language": "Markdown",
+        "added": 202,
+        "deleted": 17
+      },
+      {
+        "language": "Docker",
+        "added": 88,
+        "deleted": 39
+      },
+      {
+        "language": "Unknown",
+        "added": 29,
+        "deleted": 33
+      },
+      {
+        "language": "Bash",
+        "added": 48,
+        "deleted": 0
+      },
+      {
+        "language": "YAML",
+        "added": 33,
+        "deleted": 13
+      }
+    ]
+  },
+  "rows": [
+    {
+      "delta": {
+        "before": "tests/ci/test_ownership_hooks.py",
+        "after": "tests/ci/test_ownership_hooks.py",
+        "added": 104,
+        "deleted": 0
+      },
+      "description": "+104 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "services/witful/Dockerfile",
+        "after": "services/witful/Dockerfile",
+        "added": 88,
+        "deleted": 0
+      },
+      "description": "+88 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "docs/codeowners.md",
+        "after": "docs/codeowners.md",
+        "added": 84,
+        "deleted": 0
+      },
+      "description": "+84 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "docs/containers.md",
+        "after": "docs/containers.md",
+        "added": 80,
+        "deleted": 0
+      },
+      "description": "+80 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "scripts/ci/containers/runtime.py",
+        "after": "scripts/ci/containers/runtime.py",
+        "added": 75,
+        "deleted": 0
+      },
+      "description": "+75 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": ".github/CODEOWNERS",
+        "after": ".github/CODEOWNERS",
+        "added": 20,
+        "deleted": 28
+      },
+      "description": "+20 added / -28 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "Dockerfile",
+        "after": "Dockerfile",
+        "added": 0,
+        "deleted": 39
+      },
+      "description": "+0 added / -39 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "scripts/ci/checks/images.sh",
+        "after": "scripts/ci/checks/images.sh",
+        "added": 38,
+        "deleted": 0
+      },
+      "description": "+38 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "tests/ci/ownership_support.py",
+        "after": "tests/ci/ownership_support.py",
+        "added": 30,
+        "deleted": 0
+      },
+      "description": "+30 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": ".github/workflows/ci.yml",
+        "after": ".github/workflows/ci.yml",
+        "added": 9,
+        "deleted": 13
+      },
+      "description": "+9 added / -13 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "tests/ci/test_ownership_compiler.py",
+        "after": "tests/ci/test_ownership_compiler.py",
+        "added": 2,
+        "deleted": 20
+      },
+      "description": "+2 added / -20 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "docs/storage.md",
+        "after": "docs/storage.md",
+        "added": 10,
+        "deleted": 11
+      },
+      "description": "+10 added / -11 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "SKILL.md",
+        "after": "SKILL.md",
+        "added": 18,
+        "deleted": 0
+      },
+      "description": "+18 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "services/compose.development.yaml",
+        "after": "services/compose.development.yaml",
+        "added": 15,
+        "deleted": 0
+      },
+      "description": "+15 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "CONTRIBUTING.md",
+        "after": "CONTRIBUTING.md",
+        "added": 9,
+        "deleted": 5
+      },
+      "description": "+9 added / -5 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": ".dockerignore",
+        "after": ".dockerignore",
+        "added": 5,
+        "deleted": 5
+      },
+      "description": "+5 added / -5 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "scripts/ci/checks/dockerfile.sh",
+        "after": "scripts/ci/checks/dockerfile.sh",
+        "added": 10,
+        "deleted": 0
+      },
+      "description": "+10 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": ".pre-commit-config.yaml",
+        "after": ".pre-commit-config.yaml",
+        "added": 7,
+        "deleted": 0
+      },
+      "description": "+7 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "services/codegraph/.dockerignore",
+        "after": "services/codegraph/.dockerignore",
+        "added": 4,
+        "deleted": 0
+      },
+      "description": "+4 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "helm/witful/references/native/README.md",
+        "after": "helm/witful/references/native/README.md",
+        "added": 1,
+        "deleted": 1
+      },
+      "description": "+1 added / -1 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "services/compose.profile.yaml",
+        "after": "services/compose.profile.yaml",
+        "added": 1,
+        "deleted": 0
+      },
+      "description": "+1 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "services/compose.yaml",
+        "after": "services/compose.yaml",
+        "added": 1,
+        "deleted": 0
+      },
+      "description": "+1 added / -0 removed",
+      "kind": "diff"
+    }
+  ],
+  "pages": [
+    {
+      "file": "files-001.png",
+      "paths": [
+        "docs/codeowners.md",
+        "docs/containers.md",
+        "docs/storage.md",
+        "tests/ci/test_ownership_hooks.py",
+        "tests/ci/ownership_support.py",
+        "tests/ci/test_ownership_compiler.py",
+        "scripts/ci/containers/runtime.py",
+        "scripts/ci/checks/images.sh",
+        "scripts/ci/checks/dockerfile.sh",
+        "services/witful/Dockerfile",
+        "services/compose.development.yaml",
+        "services/codegraph/.dockerignore",
+        "services/compose.profile.yaml",
+        "services/compose.yaml",
+        ".github/CODEOWNERS",
+        ".github/workflows/ci.yml",
+        "Dockerfile",
+        "SKILL.md",
+        "CONTRIBUTING.md",
+        ".dockerignore",
+        ".pre-commit-config.yaml",
+        "helm/witful/references/native/README.md"
+      ],
+      "sha256": "2a3f20b24bdddd5c5d3408fa925aba194efc0c06c5927e0565116d1775a03e15"
+    }
+  ],
+  "projection": {
+    "version": "directory-partition/1",
+    "max_rows": 10,
+    "height_inches": 4.8,
+    "groups": [
+      {
+        "label": "docs/",
+        "paths": [
+          "docs/codeowners.md",
+          "docs/containers.md",
+          "docs/storage.md"
+        ],
+        "added": 174,
+        "deleted": 11,
+        "binary": 0
+      },
+      {
+        "label": "tests/",
+        "paths": [
+          "tests/ci/test_ownership_hooks.py",
+          "tests/ci/ownership_support.py",
+          "tests/ci/test_ownership_compiler.py"
+        ],
+        "added": 136,
+        "deleted": 20,
+        "binary": 0
+      },
+      {
+        "label": "scripts/",
+        "paths": [
+          "scripts/ci/containers/runtime.py",
+          "scripts/ci/checks/images.sh",
+          "scripts/ci/checks/dockerfile.sh"
+        ],
+        "added": 123,
+        "deleted": 0,
+        "binary": 0
+      },
+      {
+        "label": "services/",
+        "paths": [
+          "services/witful/Dockerfile",
+          "services/compose.development.yaml",
+          "services/codegraph/.dockerignore",
+          "services/compose.profile.yaml",
+          "services/compose.yaml"
+        ],
+        "added": 109,
+        "deleted": 0,
+        "binary": 0
+      },
+      {
+        "label": ".github/",
+        "paths": [
+          ".github/CODEOWNERS",
+          ".github/workflows/ci.yml"
+        ],
+        "added": 29,
+        "deleted": 41,
+        "binary": 0
+      },
+      {
+        "label": "Dockerfile",
+        "paths": [
+          "Dockerfile"
+        ],
+        "added": 0,
+        "deleted": 39,
+        "binary": 0
+      },
+      {
+        "label": "SKILL.md",
+        "paths": [
+          "SKILL.md"
+        ],
+        "added": 18,
+        "deleted": 0,
+        "binary": 0
+      },
+      {
+        "label": "CONTRIBUTING.md",
+        "paths": [
+          "CONTRIBUTING.md"
+        ],
+        "added": 9,
+        "deleted": 5,
+        "binary": 0
+      },
+      {
+        "label": ".dockerignore",
+        "paths": [
+          ".dockerignore"
+        ],
+        "added": 5,
+        "deleted": 5,
+        "binary": 0
+      },
+      {
+        "label": "./ (other)",
+        "paths": [
+          ".pre-commit-config.yaml",
+          "helm/witful/references/native/README.md"
+        ],
+        "added": 8,
+        "deleted": 1,
+        "binary": 0
+      }
+    ]
+  },
+  "palette_sha256": "df3607dacd40a0c4dbfb4b0053752953f4b40d060401fe4e42a3d842f6a8a15c",
+  "matplotlib": "3.11.2",
+  "description_inputs": {},
+  "intent_checked_at": null,
+  "model_calls": 0
+}
