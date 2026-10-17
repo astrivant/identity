@@ -26,7 +26,7 @@
         "poetry.lock"
       ],
       "renderer": "manual",
-      "reason": "Refresh official contracts in a normal review environment; external sources and timestamps are not privileged conflict repair inputs."
+      "reason": "Keep provenance-only renewals in run artifacts; changed selected contracts require a tested proposal, never privileged pin selection."
     },
     {
       "output": "helm/witful/values.schema.json",
@@ -96,7 +96,7 @@
         "scripts/native"
       ],
       "renderer": "manual",
-      "reason": "Diagrams bind reviewed sources and receipt hashes."
+      "reason": "Independent path bindings combine without shared review stamps; competing evidence still requires explicit review and regeneration."
     },
     {
       "output": "dist/*",

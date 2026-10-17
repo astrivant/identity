@@ -1,13 +1,14 @@
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import test from 'node:test';
-import { publishContracts, validateBundle } from './publish-contracts.mjs';
+import { publishContracts, sameContracts, validateBundle } from './publish-contracts.mjs';
 
 const SOURCE = 'a'.repeat(40);
 const OUTPUT = 'b'.repeat(40);
 const DIRECTORY = 'scripts/ci/provider_contracts/data/';
 const context = { eventName: 'push', ref: 'refs/heads/main', sha: SOURCE, runId: 123, repo: { owner: 'example', repo: 'fixture' } };
-const assets = { 'github.json': Buffer.from('{}'), 'gitlab.json': Buffer.from('{}'), 'manifest.json': Buffer.from('new') };
+const manifest = (endpoints = {}) => JSON.stringify({ github: { revision: SOURCE, source_sha256: 'c'.repeat(64), endpoints }, gitlab: {} });
+const assets = { 'github.json': Buffer.from('{}'), 'gitlab.json': Buffer.from('{}'), 'manifest.json': Buffer.from(manifest({ project: '/repos/{owner}/{repo}' })) };
 const hash = (bytes) => createHash('sha256').update(bytes).digest('hex');
 
 /** Model signed proposal retries and partial failures at the maintained SDK boundary. */
@@ -27,7 +28,7 @@ function fixture({ current = SOURCE, unchanged = false, existing = false, verifi
         async getContent({ ref, path }) {
           const name = path.slice(DIRECTORY.length);
           const changed = name === 'manifest.json' && (corrupt || (ref === SOURCE && !unchanged));
-          return { data: { type: 'file', encoding: 'base64', content: Buffer.from(changed ? 'old' : assets[name]).toString('base64') } };
+          return { data: { type: 'file', encoding: 'base64', content: Buffer.from(changed ? manifest() : assets[name]).toString('base64') } };
         },
         async getCommit() {
           return { data: { commit: { verification: { verified } }, parents: [{ sha: SOURCE }], files: [{ filename: `${DIRECTORY}${edited ? 'unrelated' : 'manifest.json'}` }] } };
@@ -124,6 +125,29 @@ test('a newer renewal at the same application source gets a distinct recoverable
   const second = fixture({ denied: true });
   await publishContracts({ github: first.github, context, assets });
   // Stop after capturing branch selection, before readback of this deliberately different bundle.
-  await assert.rejects(publishContracts({ github: second.github, context, assets: { ...assets, 'manifest.json': Buffer.from('next') } }));
+  await assert.rejects(publishContracts({ github: second.github, context, assets: { ...assets, 'manifest.json': Buffer.from(manifest({ different: '/other' })) } }));
   assert.notEqual(first.writes[0][1].ref, second.writes[0][1].ref);
+});
+
+test('upstream provenance-only drift cannot create another baseline PR', async () => {
+  const renewed = JSON.parse(assets['manifest.json']);
+  renewed.github.revision = OUTPUT;
+  renewed.github.source_sha256 = 'd'.repeat(64);
+  renewed.github.latest_observed_at = '2026-10-17T00:00:00Z';
+  const payload = { ...assets, 'manifest.json': JSON.stringify(renewed) };
+  assert.equal(sameContracts(assets, payload), true);
+  const { github, writes } = fixture({ unchanged: true });
+  assert.equal((await publishContracts({ github, context, assets: payload })).status, 'unchanged');
+  assert.equal(writes.length, 0);
+  assert.equal(JSON.parse(assets['manifest.json']).github.revision, SOURCE);
+});
+
+test('snapshot, endpoint, source-location and unknown contract changes remain reviewable', () => {
+  assert.equal(sameContracts(assets, { ...assets, 'github.json': '{"changed": true}' }), false);
+  for (const [key, value] of [['endpoints', { changed: '/other' }], ['url', 'https://example.invalid/spec'], ['new_constraint', true]]) {
+    const changed = JSON.parse(assets['manifest.json']);
+    changed.github[key] = value;
+    assert.equal(sameContracts(assets, { ...assets, 'manifest.json': JSON.stringify(changed) }), false);
+  }
+  assert.throws(() => sameContracts(assets, { ...assets, 'manifest.json': '{broken' }));
 });

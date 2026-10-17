@@ -1,0 +1,6 @@
+{
+  "path": "pkg/witful/sql/postgres/native/lock.sql",
+  "sha256": "435f7d8598421d72958f05885a1032c242dab1878159d8a447c420593f364120",
+  "source_commit": "37d8a8e1ab0884c04c9d070dd617c32cda7bb95b",
+  "verification_date": "2026-10-17"
+}

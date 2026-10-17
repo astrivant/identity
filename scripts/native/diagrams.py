@@ -19,6 +19,8 @@ from matplotlib import pyplot as plt
 from matplotlib.patches import FancyArrowPatch, FancyBboxPatch
 from witful.knowledge.contracts import structure
 
+from . import bindings
+
 ROOT = Path(__file__).resolve().parents[2]
 DIRECTORY = ROOT / "docs/native/diagrams"
 # Echo the README logo without making color the only indication of a state class.
@@ -124,7 +126,9 @@ def inputs(package: Package) -> dict[str, str]:
     """
     paths = {path for pattern in ("pkg/witful/native/**/*.py", "pkg/witful/sql/postgres/native/**/*.sql") for path in ROOT.glob(pattern)}
     paths.update(ROOT / source for view in package.views for source in view.sources)
-    paths.update((DIRECTORY / "views.json", Path(__file__), ROOT / "poetry.lock", ROOT / "helm/witful/values.schema.json"))
+    paths.update(
+        (DIRECTORY / "views.json", Path(__file__), Path(bindings.__file__), ROOT / "poetry.lock", ROOT / "helm/witful/values.schema.json")
+    )
     return {str(path.relative_to(ROOT)): digest(path) for path in sorted(paths)}
 
 
@@ -243,13 +247,14 @@ def main() -> int:
     args = parser.parse_args()
     package = structure(json.loads((DIRECTORY / "views.json").read_text()), Package)
     assert {view.id for view in package.views} == {"state-trust", "write-ack", "branches-review", "projection", "recovery", "migration"}
-    manifest = DIRECTORY / "manifest.json"
+    manifest = json.loads((DIRECTORY / "manifest.json").read_text())
+    assert manifest["schema"] == 2 and manifest["bindings"] == "bindings", "Unsupported diagram binding layout"
+    directory = DIRECTORY / "bindings"
     current = inputs(package)
     outputs = {view.id + ".svg": DIRECTORY / (view.id + ".svg") for view in package.views}
     if args.check:
-        retained = json.loads(manifest.read_text())
-        assert retained["inputs"] == current, "Native diagram sources or configuration changed; review and regenerate the views"
-        assert retained["outputs"] == {name: digest(path) for name, path in outputs.items()}, "Rendered diagram bytes changed"
+        bindings.check(directory / "inputs", current)
+        bindings.check(directory / "outputs", {name: digest(path) for name, path in outputs.items()})
         return 0
     assert args.date, "Supply --date after reviewing the current contracts"
     matplotlib.use("Agg")
@@ -265,18 +270,10 @@ def main() -> int:
         for view in package.views:
             render(view, args.preview)
     revision = subprocess.run(["git", "rev-parse", "HEAD"], cwd=ROOT, capture_output=True, text=True, check=True).stdout.strip()
-    record = {
-        "schema": 1,
-        "source_commit": revision,
-        "verification_date": args.date,
-        "scope": "Implemented synthetic/reference profiles; no production deployment or storage attestation asserted",
-        "versions": {"native_codec": 1, "envelope": 1, "projection_bundle": 1},
-        "source_binding": "Exact input digests bind the reviewed working source; compare them with source_commit before deployment",
-        "configurations": {path: value for path, value in current.items() if path.endswith("values.yaml")},
-        "inputs": current,
-        "outputs": {name: digest(path) for name, path in outputs.items()},
-    }
-    manifest.write_text(json.dumps(record, indent=2) + "\n")
+    # Independent source changes must not rewrite one shared commit/date field or unchanged evidence.
+    for kind, hashes in (("inputs", current), ("outputs", {name: digest(path) for name, path in outputs.items()})):
+        retained = bindings.read(directory / kind)
+        bindings.write(directory / kind, bindings.reconcile(hashes, retained, revision, args.date))
     return 0
 
 

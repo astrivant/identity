@@ -34,9 +34,13 @@ upstream again. This durable handoff is required; an evictable dependency cache 
 not a substitute for the tested inputs. Independent source checks remain parallel.
 
 After successful main verification, `generated-updates` checks the artifact's
-source, lock and file digests, then proposes the three renewed JSON files in a
-GitHub-signed update branch. Observation time stays in the run artifact, so unchanged inputs produce no
-timestamp-only commit. Each source and renewed bundle gets an idempotent proposal, and an older run cannot replace newer main state. No release
+source, lock and file digests, then compares the selected contracts with the baseline.
+New upstream commits that leave the selected snapshots and endpoint configuration
+unchanged stay in the run artifact; they do not create a provenance-only baseline PR.
+The committed pins still reproduce the last reviewed baseline, while the artifact
+records the latest inputs actually tested in this run. When selected contracts change,
+the job proposes the three renewed JSON files in a GitHub-signed update branch.
+Each source and changed bundle gets an idempotent proposal, and an older run cannot replace newer main state. No release
 tag or distribution is rewritten. Tag runs test current contracts but never write
 back; main owns baseline maintenance.
 
@@ -110,7 +114,9 @@ real SDK retry transport with deterministic clocks and sleep capture; they do no
 claim live quota-exhaustion coverage.
 
 Review endpoint/schema changes, explicit fixture adjustments, license changes and
-SDK behavior together. Commit the manifest and generated snapshots in the same PR.
+SDK behavior together. Commit the manifest and generated snapshots in the same PR
+when the selected contracts change. Unrelated feature PRs do not need baseline
+refresh commits: CI already records and tests their latest upstream observations.
 Refresh when updating either SDK or a supported server version, and review upstream
 changes monthly. Pins make old results reproducible; the refresh procedure is what
 keeps the reviewed baseline current. PR, main and tag checks all test the latest observed specification-file revisions;

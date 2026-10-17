@@ -1,0 +1,6 @@
+{
+  "path": "pkg/witful/sql/postgres/native/locked-head.sql",
+  "sha256": "3c18905166f010a24f3d4db2f5db790239039ebe7d4ed2ac8acb9f08b16ca1fd",
+  "source_commit": "37d8a8e1ab0884c04c9d070dd617c32cda7bb95b",
+  "verification_date": "2026-10-17"
+}

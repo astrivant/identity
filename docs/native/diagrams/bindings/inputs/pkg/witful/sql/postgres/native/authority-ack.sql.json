@@ -1,0 +1,6 @@
+{
+  "path": "pkg/witful/sql/postgres/native/authority-ack.sql",
+  "sha256": "501af25be2c95d66a98a53a03ca0e6b8c57f3e5148a5569308351606a526e65a",
+  "source_commit": "37d8a8e1ab0884c04c9d070dd617c32cda7bb95b",
+  "verification_date": "2026-10-17"
+}
