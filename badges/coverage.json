@@ -1,10 +1,10 @@
 {
-  "source": "35176fbf69acc478428fb7dd0c9d2a6ec1baf4cd",
-  "report_sha256": "9176caf48fd116e39c0dea2cba3b4336e49b54738ad96f01a0480e87317f5b85",
+  "source": "81a116443288ea31d0abe56a32ba4e8eeeb079cd",
+  "report_sha256": "31ecf16d5eed4d5929c3a8d4beec5c04a8ad964fa6841b1d247486c0180f72aa",
   "scope": "witful package, tests omitted; line and branch coverage",
-  "covered_lines": 11978,
+  "covered_lines": 11977,
   "num_statements": 13731,
-  "covered_branches": 3006,
+  "covered_branches": 3005,
   "num_branches": 4148,
-  "percent_covered": 83.80781922926339
+  "percent_covered": 83.79663292130432
 }
