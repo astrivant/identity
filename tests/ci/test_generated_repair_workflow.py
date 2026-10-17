@@ -59,6 +59,7 @@ def test_repair_events_cannot_run_other_jobs() -> None:
     jobs = workflow["jobs"]
     explicit_events = {
         "coverage-badge": "github.event_name == 'push'",
+        "generated-updates": "github.event_name == 'push'",
         "publish": "github.event_name == 'push'",
         "release-feedback": "github.event_name == 'push'",
         "collection": "(github.event_name == 'push' || github.event_name == 'workflow_dispatch')",

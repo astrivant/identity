@@ -7,7 +7,7 @@
   },
   "scripts": {
     "check": "node check-markdown.mjs",
-    "test": "node --test check-markdown.test.mjs ../ci/coverage.test.mjs native-codec.test.mjs lint-markdown.test.mjs ../ci/repair/repair.test.mjs",
+    "test": "node --test check-markdown.test.mjs ../ci/coverage.test.mjs ../ci/provider-contracts.test.mjs native-codec.test.mjs lint-markdown.test.mjs ../ci/repair/repair.test.mjs",
     "lint": "cd ../.. && node scripts/documentation/node_modules/eslint/bin/eslint.js --config scripts/documentation/eslint.config.mjs scripts/documentation scripts/ci services/codegraph",
     "markdown:lint": "node lint-markdown.mjs",
     "format:check": "prettier --config prettier.json --check ../../README.md",
