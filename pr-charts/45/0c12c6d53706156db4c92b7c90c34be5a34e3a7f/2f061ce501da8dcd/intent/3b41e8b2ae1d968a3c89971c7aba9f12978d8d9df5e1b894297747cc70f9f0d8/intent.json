@@ -1,0 +1,553 @@
+{
+  "inputs": {
+    "renderer/image_provenance/__init__.py": "4f6fbee00f2aaec7b9603b4501711ecad6481df8dea44c2061e59c80aef7fdd6",
+    "renderer/image_provenance/cli.py": "8bf7fd1726fc851d2b1c2f52b262886a7065b39cbe2934a77cc813119a447fc6",
+    "renderer/image_provenance/core.py": "19d15d127c0b30fff8d3c3ff19763375a0acbad3c3145b535d42af742e4e5e3f",
+    "renderer/pr_files/__init__.py": "8ba23c3c18fb2390baa4b588062636cc4c347be53500b388084edc94b81df1e0",
+    "renderer/pr_files/cli.py": "082d92c3c6ae5276fe035cb8de4fa28c993d33ee0e741993b361796d8bfa0525",
+    "renderer/pr_files/descriptions.py": "38f75acbd8a930cc9bdb82a6ba1537dc1bb77550a998924216262dec8dc8636d",
+    "renderer/pr_files/grouping.py": "f32cc09ecbca42a26a978c7e2dfa8aa36353cc2c0ae4c43a03faaaf51f9fc750",
+    "renderer/pr_files/models.py": "1543595d1fac65d569f225d02714c5ab13231753181ade47622a3fb515c97b5d",
+    "renderer/pr_files/plotting.py": "b76c9be9f537b3265d16288526bda395141bf4417687894769e9df08013443de",
+    "renderer/pr_intent/__init__.py": "0cc1ccc65f5e7f158bb61bbb067e64990a4e45763ce03e4747fe04200a09adfc",
+    "renderer/pr_intent/cli.py": "7588b63eb966df5f2507f8bc52bafbe7547b2d143b292dfc0fe95331c2be0d87",
+    "renderer/pr_intent/graph.py": "487f8897e19e1cfc4b6ed9c0041746fc3c7170573bc732c296b03572270dd586",
+    "renderer/pr_intent/plotting.py": "fa1311bca351175a50ee36f850bc6573132812975d8d8b9c24eb8732e5fd4b75",
+    "renderer/pr_intent/source.py": "a2043d3d78a91cd08e3f0c3c4b8398da680c15ca670ea393f417b90441ccf1cd",
+    "renderer/pr_language.py": "f837eab96ca93df61d4973d74a764e2fa59e6d08f76391c697d923c0e6792884",
+    "renderer/pr_presentation.py": "e1502b1ceea631fe8f631e65b55655a4d14613fd8eb2a885b1df44edc0f8982f",
+    "renderer/resources/fonts/EBGaramond-Regular.otf": "d3e1471a4a0f836716bad35326d3c0ab5caddb74ae5c1917f99f8225abf43a7d",
+    "renderer/resources/intent-result.schema.json": "19e00a10d5a159220f5035bd378da53110017ece9e6286aeb2438b858f01f9a4",
+    "renderer/review_paths/core.py": "dae80a01a58b368925ca69bfc9498ba27f68678d1c95d41e366517fd6937df04",
+    "environment/poetry.lock": "c57611be7dedca7bd90c5f58db8b983a3463949168d9be6c2b5d0f0d9be7b39d",
+    "data/palette": "df3607dacd40a0c4dbfb4b0053752953f4b40d060401fe4e42a3d842f6a8a15c"
+  },
+  "source": {
+    "target": "8b4d57ed02678ca4ad22afde39a115e65ff4154f",
+    "base": "8b4d57ed02678ca4ad22afde39a115e65ff4154f",
+    "head": "0c12c6d53706156db4c92b7c90c34be5a34e3a7f",
+    "tree": "429b5e1c4577e7f4b15637952f396508d07fb891",
+    "staged": false,
+    "deltas": [
+      {
+        "before": ".github/CODEOWNERS",
+        "after": ".github/CODEOWNERS",
+        "added": 5,
+        "deleted": 0
+      },
+      {
+        "before": "SKILL.md",
+        "after": "SKILL.md",
+        "added": 22,
+        "deleted": 0
+      },
+      {
+        "before": "docs/CLI.md",
+        "after": "docs/CLI.md",
+        "added": 11,
+        "deleted": 12
+      },
+      {
+        "before": "docs/assets/life-example.png",
+        "after": "docs/assets/life-example.png",
+        "added": null,
+        "deleted": null
+      },
+      {
+        "before": "docs/continual-learning.md",
+        "after": "docs/continual-learning.md",
+        "added": 5,
+        "deleted": 1
+      },
+      {
+        "before": "docs/life.md",
+        "after": "docs/life.md",
+        "added": 131,
+        "deleted": 0
+      },
+      {
+        "before": "docs/private-collections.md",
+        "after": "docs/private-collections.md",
+        "added": 5,
+        "deleted": 3
+      },
+      {
+        "before": "pkg/witful/collection/dashboard.py",
+        "after": "pkg/witful/collection/dashboard.py",
+        "added": 2,
+        "deleted": 2
+      },
+      {
+        "before": "pkg/witful/collection/operations.py",
+        "after": "pkg/witful/collection/operations.py",
+        "added": 2,
+        "deleted": 2
+      },
+      {
+        "before": "pkg/witful/collection/publication.py",
+        "after": "pkg/witful/collection/publication.py",
+        "added": 5,
+        "deleted": 2
+      },
+      {
+        "before": "pkg/witful/collection/resources/SKILL.md",
+        "after": "pkg/witful/collection/resources/SKILL.md",
+        "added": 21,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/commands/life.py",
+        "after": "pkg/witful/commands/life.py",
+        "added": 3,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/life/cli.py",
+        "after": "pkg/witful/life/cli.py",
+        "added": 3,
+        "deleted": 3
+      },
+      {
+        "before": "pkg/witful/life/journal.py",
+        "after": "pkg/witful/life/journal.py",
+        "added": 5,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/life/path_plot.py",
+        "after": "pkg/witful/life/path_plot.py",
+        "added": 111,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/life/paths.py",
+        "after": "pkg/witful/life/paths.py",
+        "added": 123,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/life/replay.py",
+        "after": "pkg/witful/life/replay.py",
+        "added": 6,
+        "deleted": 30
+      },
+      {
+        "before": "pkg/witful/life/resources/EBGaramond-Regular.otf",
+        "after": "pkg/witful/life/resources/EBGaramond-Regular.otf",
+        "added": null,
+        "deleted": null
+      },
+      {
+        "before": "pkg/witful/life/resources/OFL.txt",
+        "after": "pkg/witful/life/resources/OFL.txt",
+        "added": 93,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/life/resources/README.md",
+        "after": "pkg/witful/life/resources/README.md",
+        "added": 22,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/life/resources/palette.json",
+        "after": "pkg/witful/life/resources/palette.json",
+        "added": 18,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/privacy/scanner.py",
+        "after": "pkg/witful/privacy/scanner.py",
+        "added": 99,
+        "deleted": 2
+      },
+      {
+        "before": "pkg/witful/reflection/planning.py",
+        "after": "pkg/witful/reflection/planning.py",
+        "added": 32,
+        "deleted": 4
+      },
+      {
+        "before": "pkg/witful/reflection/tests/test_reflection.py",
+        "after": "pkg/witful/reflection/tests/test_reflection.py",
+        "added": 1,
+        "deleted": 1
+      },
+      {
+        "before": "pkg/witful/representation/rendering.py",
+        "after": "pkg/witful/representation/rendering.py",
+        "added": 2,
+        "deleted": 2
+      },
+      {
+        "before": "pyproject.toml",
+        "after": "pyproject.toml",
+        "added": 1,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/documentation/life_example.py",
+        "after": "scripts/documentation/life_example.py",
+        "added": 108,
+        "deleted": 0
+      },
+      {
+        "before": "tests/life/test_cadence.py",
+        "after": "tests/life/test_cadence.py",
+        "added": 89,
+        "deleted": 0
+      },
+      {
+        "before": "tests/life/test_paths.py",
+        "after": "tests/life/test_paths.py",
+        "added": 159,
+        "deleted": 0
+      },
+      {
+        "before": "tests/privacy/test_scanner.py",
+        "after": "tests/privacy/test_scanner.py",
+        "added": 71,
+        "deleted": 1
+      },
+      {
+        "before": "tests/representation/test_representation.py",
+        "after": "tests/representation/test_representation.py",
+        "added": 3,
+        "deleted": 3
+      }
+    ]
+  },
+  "view": {
+    "nodes": [
+      {
+        "id": "F1",
+        "label": ".github/CODEOWNERS",
+        "kind": "file",
+        "status": "changed",
+        "weight": 5.0,
+        "group": ".github",
+        "context": false
+      },
+      {
+        "id": "F2",
+        "label": "SKILL.md",
+        "kind": "file",
+        "status": "changed",
+        "weight": 22.0,
+        "group": ".",
+        "context": false
+      },
+      {
+        "id": "F3",
+        "label": "docs/CLI.md",
+        "kind": "file",
+        "status": "changed",
+        "weight": 23.0,
+        "group": "docs",
+        "context": false
+      },
+      {
+        "id": "F4",
+        "label": "docs/assets/life-example.png",
+        "kind": "file",
+        "status": "changed",
+        "weight": 1.0,
+        "group": "docs/assets",
+        "context": false
+      },
+      {
+        "id": "F5",
+        "label": "docs/continual-learning.md",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs",
+        "context": false
+      },
+      {
+        "id": "F6",
+        "label": "docs/life.md",
+        "kind": "file",
+        "status": "changed",
+        "weight": 131.0,
+        "group": "docs",
+        "context": false
+      },
+      {
+        "id": "F7",
+        "label": "docs/private-collections.md",
+        "kind": "file",
+        "status": "changed",
+        "weight": 8.0,
+        "group": "docs",
+        "context": false
+      },
+      {
+        "id": "F8",
+        "label": "pkg/witful/collection/dashboard.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 4.0,
+        "group": "pkg/witful/collection",
+        "context": false
+      },
+      {
+        "id": "F9",
+        "label": "pkg/witful/collection/operations.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 4.0,
+        "group": "pkg/witful/collection",
+        "context": false
+      },
+      {
+        "id": "F10",
+        "label": "pkg/witful/collection/publication.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 7.0,
+        "group": "pkg/witful/collection",
+        "context": false
+      },
+      {
+        "id": "F11",
+        "label": "pkg/witful/collection/resources/SKILL.md",
+        "kind": "file",
+        "status": "changed",
+        "weight": 21.0,
+        "group": "pkg/witful/collection/resources",
+        "context": false
+      },
+      {
+        "id": "F12",
+        "label": "pkg/witful/commands/life.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 3.0,
+        "group": "pkg/witful/commands",
+        "context": false
+      },
+      {
+        "id": "F13",
+        "label": "pkg/witful/life/cli.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "pkg/witful/life",
+        "context": false
+      },
+      {
+        "id": "F14",
+        "label": "pkg/witful/life/journal.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 5.0,
+        "group": "pkg/witful/life",
+        "context": false
+      },
+      {
+        "id": "F15",
+        "label": "pkg/witful/life/path_plot.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 111.0,
+        "group": "pkg/witful/life",
+        "context": false
+      },
+      {
+        "id": "F16",
+        "label": "pkg/witful/life/paths.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 123.0,
+        "group": "pkg/witful/life",
+        "context": false
+      },
+      {
+        "id": "F17",
+        "label": "pkg/witful/life/replay.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 36.0,
+        "group": "pkg/witful/life",
+        "context": false
+      },
+      {
+        "id": "F18",
+        "label": "pkg/witful/life/resources/EBGaramond-Regular.otf",
+        "kind": "file",
+        "status": "changed",
+        "weight": 1.0,
+        "group": "pkg/witful/life/resources",
+        "context": false
+      },
+      {
+        "id": "F19",
+        "label": "pkg/witful/life/resources/OFL.txt",
+        "kind": "file",
+        "status": "changed",
+        "weight": 93.0,
+        "group": "pkg/witful/life/resources",
+        "context": false
+      },
+      {
+        "id": "F20",
+        "label": "pkg/witful/life/resources/README.md",
+        "kind": "file",
+        "status": "changed",
+        "weight": 22.0,
+        "group": "pkg/witful/life/resources",
+        "context": false
+      },
+      {
+        "id": "F21",
+        "label": "pkg/witful/life/resources/palette.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 18.0,
+        "group": "pkg/witful/life/resources",
+        "context": false
+      },
+      {
+        "id": "F22",
+        "label": "pkg/witful/privacy/scanner.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 101.0,
+        "group": "pkg/witful/privacy",
+        "context": false
+      },
+      {
+        "id": "F23",
+        "label": "pkg/witful/reflection/planning.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 36.0,
+        "group": "pkg/witful/reflection",
+        "context": false
+      },
+      {
+        "id": "F24",
+        "label": "pkg/witful/reflection/tests/test_reflection.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 2.0,
+        "group": "pkg/witful/reflection/tests",
+        "context": false
+      },
+      {
+        "id": "F25",
+        "label": "pkg/witful/representation/rendering.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 4.0,
+        "group": "pkg/witful/representation",
+        "context": false
+      },
+      {
+        "id": "F26",
+        "label": "pyproject.toml",
+        "kind": "file",
+        "status": "changed",
+        "weight": 1.0,
+        "group": ".",
+        "context": false
+      },
+      {
+        "id": "F27",
+        "label": "scripts/documentation/life_example.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 108.0,
+        "group": "scripts/documentation",
+        "context": false
+      },
+      {
+        "id": "F28",
+        "label": "tests/life/test_cadence.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 89.0,
+        "group": "tests/life",
+        "context": false
+      },
+      {
+        "id": "F29",
+        "label": "tests/life/test_paths.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 159.0,
+        "group": "tests/life",
+        "context": false
+      },
+      {
+        "id": "F30",
+        "label": "tests/privacy/test_scanner.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 72.0,
+        "group": "tests/privacy",
+        "context": false
+      },
+      {
+        "id": "F31",
+        "label": "tests/representation/test_representation.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "tests/representation",
+        "context": false
+      }
+    ],
+    "links": [],
+    "missing": [
+      ".github/CODEOWNERS",
+      "SKILL.md",
+      "docs/CLI.md",
+      "docs/assets/life-example.png",
+      "docs/continual-learning.md",
+      "docs/life.md",
+      "docs/private-collections.md",
+      "pkg/witful/collection/dashboard.py",
+      "pkg/witful/collection/operations.py",
+      "pkg/witful/collection/publication.py",
+      "pkg/witful/collection/resources/SKILL.md",
+      "pkg/witful/commands/life.py",
+      "pkg/witful/life/cli.py",
+      "pkg/witful/life/journal.py",
+      "pkg/witful/life/path_plot.py",
+      "pkg/witful/life/paths.py",
+      "pkg/witful/life/replay.py",
+      "pkg/witful/life/resources/EBGaramond-Regular.otf",
+      "pkg/witful/life/resources/OFL.txt",
+      "pkg/witful/life/resources/README.md",
+      "pkg/witful/life/resources/palette.json",
+      "pkg/witful/privacy/scanner.py",
+      "pkg/witful/reflection/planning.py",
+      "pkg/witful/reflection/tests/test_reflection.py",
+      "pkg/witful/representation/rendering.py",
+      "pyproject.toml",
+      "scripts/documentation/life_example.py",
+      "tests/life/test_cadence.py",
+      "tests/life/test_paths.py",
+      "tests/privacy/test_scanner.py",
+      "tests/representation/test_representation.py"
+    ],
+    "state": "unavailable: no local intent export",
+    "graph_revision": "",
+    "input_sha256": "",
+    "omitted_dependencies": 0,
+    "omitted_evidence": 0
+  },
+  "palette_sha256": "df3607dacd40a0c4dbfb4b0053752953f4b40d060401fe4e42a3d842f6a8a15c",
+  "seed": 1729,
+  "renderer": 1,
+  "implementation_sha256": "83a3c3e8ec0bd9a36d993bea73f3b037dc9c229e836b8069ef5855866622a534",
+  "matplotlib": "3.11.2",
+  "networkx": "3.7",
+  "numpy": "2.5.3",
+  "witful": "0.6.0",
+  "model_calls": 0,
+  "evaluated_at": null,
+  "image_sha256": "81203ebbf53c1397501365683ef429a677af6d98f9f55501a04df244278a529e"
+}
