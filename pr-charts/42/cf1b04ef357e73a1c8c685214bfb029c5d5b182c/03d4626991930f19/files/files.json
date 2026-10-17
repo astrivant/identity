@@ -1,0 +1,355 @@
+{
+  "measurement": {
+    "base": "6cbabfff72e4a3c9423d39ffe43a7dc58b17b123",
+    "merge_base": "6cbabfff72e4a3c9423d39ffe43a7dc58b17b123",
+    "head": "cf1b04ef357e73a1c8c685214bfb029c5d5b182c",
+    "classifier": "Pygments 2.21.0",
+    "deltas": [
+      {
+        "before": ".github/workflows/ci.yml",
+        "after": ".github/workflows/ci.yml",
+        "added": 34,
+        "deleted": 0
+      },
+      {
+        "before": ".github/workflows/stage-provider-contracts.yml",
+        "after": ".github/workflows/stage-provider-contracts.yml",
+        "added": 2,
+        "deleted": 2
+      },
+      {
+        "before": "docs/provider-contracts.md",
+        "after": "docs/provider-contracts.md",
+        "added": 35,
+        "deleted": 16
+      },
+      {
+        "before": "scripts/ci/provider-contracts.test.mjs",
+        "after": "scripts/ci/provider-contracts.test.mjs",
+        "added": 129,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/ci/provider_contracts/data/manifest.json",
+        "after": "scripts/ci/provider_contracts/data/manifest.json",
+        "added": 0,
+        "deleted": 2
+      },
+      {
+        "before": "scripts/ci/provider_contracts/refresh.py",
+        "after": "scripts/ci/provider_contracts/refresh.py",
+        "added": 19,
+        "deleted": 24
+      },
+      {
+        "before": "scripts/ci/provider_contracts/report.py",
+        "after": "scripts/ci/provider_contracts/report.py",
+        "added": 1,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/ci/publish-contracts.mjs",
+        "after": "scripts/ci/publish-contracts.mjs",
+        "added": 116,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/ci/tests/test_quality_gate.py",
+        "after": "scripts/ci/tests/test_quality_gate.py",
+        "added": 16,
+        "deleted": 4
+      },
+      {
+        "before": "scripts/documentation/package.json",
+        "after": "scripts/documentation/package.json",
+        "added": 1,
+        "deleted": 1
+      },
+      {
+        "before": "tests/ci/test_generated_repair_workflow.py",
+        "after": "tests/ci/test_generated_repair_workflow.py",
+        "added": 1,
+        "deleted": 0
+      },
+      {
+        "before": "tests/provider_contracts/test_refresh.py",
+        "after": "tests/provider_contracts/test_refresh.py",
+        "added": 61,
+        "deleted": 0
+      }
+    ],
+    "shares": [
+      {
+        "language": "JavaScript",
+        "added": 245,
+        "deleted": 0
+      },
+      {
+        "language": "Python",
+        "added": 98,
+        "deleted": 28
+      },
+      {
+        "language": "Markdown",
+        "added": 35,
+        "deleted": 16
+      },
+      {
+        "language": "YAML",
+        "added": 36,
+        "deleted": 2
+      },
+      {
+        "language": "JSON",
+        "added": 1,
+        "deleted": 3
+      }
+    ]
+  },
+  "rows": [
+    {
+      "delta": {
+        "before": "scripts/ci/provider-contracts.test.mjs",
+        "after": "scripts/ci/provider-contracts.test.mjs",
+        "added": 129,
+        "deleted": 0
+      },
+      "description": "+129 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "scripts/ci/publish-contracts.mjs",
+        "after": "scripts/ci/publish-contracts.mjs",
+        "added": 116,
+        "deleted": 0
+      },
+      "description": "+116 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "tests/provider_contracts/test_refresh.py",
+        "after": "tests/provider_contracts/test_refresh.py",
+        "added": 61,
+        "deleted": 0
+      },
+      "description": "+61 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "docs/provider-contracts.md",
+        "after": "docs/provider-contracts.md",
+        "added": 35,
+        "deleted": 16
+      },
+      "description": "+35 added / -16 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "scripts/ci/provider_contracts/refresh.py",
+        "after": "scripts/ci/provider_contracts/refresh.py",
+        "added": 19,
+        "deleted": 24
+      },
+      "description": "+19 added / -24 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": ".github/workflows/ci.yml",
+        "after": ".github/workflows/ci.yml",
+        "added": 34,
+        "deleted": 0
+      },
+      "description": "+34 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "scripts/ci/tests/test_quality_gate.py",
+        "after": "scripts/ci/tests/test_quality_gate.py",
+        "added": 16,
+        "deleted": 4
+      },
+      "description": "+16 added / -4 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": ".github/workflows/stage-provider-contracts.yml",
+        "after": ".github/workflows/stage-provider-contracts.yml",
+        "added": 2,
+        "deleted": 2
+      },
+      "description": "+2 added / -2 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "scripts/ci/provider_contracts/data/manifest.json",
+        "after": "scripts/ci/provider_contracts/data/manifest.json",
+        "added": 0,
+        "deleted": 2
+      },
+      "description": "+0 added / -2 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "scripts/documentation/package.json",
+        "after": "scripts/documentation/package.json",
+        "added": 1,
+        "deleted": 1
+      },
+      "description": "+1 added / -1 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "scripts/ci/provider_contracts/report.py",
+        "after": "scripts/ci/provider_contracts/report.py",
+        "added": 1,
+        "deleted": 0
+      },
+      "description": "+1 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "tests/ci/test_generated_repair_workflow.py",
+        "after": "tests/ci/test_generated_repair_workflow.py",
+        "added": 1,
+        "deleted": 0
+      },
+      "description": "+1 added / -0 removed",
+      "kind": "diff"
+    }
+  ],
+  "pages": [
+    {
+      "file": "files-001.png",
+      "paths": [
+        "scripts/ci/provider-contracts.test.mjs",
+        "scripts/ci/publish-contracts.mjs",
+        "tests/provider_contracts/test_refresh.py",
+        "docs/provider-contracts.md",
+        "scripts/ci/provider_contracts/refresh.py",
+        ".github/workflows/ci.yml",
+        ".github/workflows/stage-provider-contracts.yml",
+        "scripts/ci/tests/test_quality_gate.py",
+        "scripts/ci/provider_contracts/data/manifest.json",
+        "scripts/ci/provider_contracts/report.py",
+        "scripts/documentation/package.json",
+        "tests/ci/test_generated_repair_workflow.py"
+      ],
+      "sha256": "ad1dc0833e3c92dcddbb737ade200d4073e8893e51d86e2f13f3d16fbb760b7b"
+    }
+  ],
+  "projection": {
+    "version": "directory-partition/1",
+    "max_rows": 10,
+    "height_inches": 4.8,
+    "groups": [
+      {
+        "label": "scripts/ci/provider-contracts.test.mjs",
+        "paths": [
+          "scripts/ci/provider-contracts.test.mjs"
+        ],
+        "added": 129,
+        "deleted": 0,
+        "binary": 0
+      },
+      {
+        "label": "scripts/ci/publish-contracts.mjs",
+        "paths": [
+          "scripts/ci/publish-contracts.mjs"
+        ],
+        "added": 116,
+        "deleted": 0,
+        "binary": 0
+      },
+      {
+        "label": "tests/provider_contracts/test_refresh.py",
+        "paths": [
+          "tests/provider_contracts/test_refresh.py"
+        ],
+        "added": 61,
+        "deleted": 0,
+        "binary": 0
+      },
+      {
+        "label": "docs/provider-contracts.md",
+        "paths": [
+          "docs/provider-contracts.md"
+        ],
+        "added": 35,
+        "deleted": 16,
+        "binary": 0
+      },
+      {
+        "label": "scripts/ci/provider_contracts/refresh.py",
+        "paths": [
+          "scripts/ci/provider_contracts/refresh.py"
+        ],
+        "added": 19,
+        "deleted": 24,
+        "binary": 0
+      },
+      {
+        "label": ".github/",
+        "paths": [
+          ".github/workflows/ci.yml",
+          ".github/workflows/stage-provider-contracts.yml"
+        ],
+        "added": 36,
+        "deleted": 2,
+        "binary": 0
+      },
+      {
+        "label": "scripts/ci/tests/",
+        "paths": [
+          "scripts/ci/tests/test_quality_gate.py"
+        ],
+        "added": 16,
+        "deleted": 4,
+        "binary": 0
+      },
+      {
+        "label": "scripts/ci/provider_contracts/ (other)",
+        "paths": [
+          "scripts/ci/provider_contracts/data/manifest.json",
+          "scripts/ci/provider_contracts/report.py"
+        ],
+        "added": 1,
+        "deleted": 2,
+        "binary": 0
+      },
+      {
+        "label": "scripts/documentation/",
+        "paths": [
+          "scripts/documentation/package.json"
+        ],
+        "added": 1,
+        "deleted": 1,
+        "binary": 0
+      },
+      {
+        "label": "tests/ci/",
+        "paths": [
+          "tests/ci/test_generated_repair_workflow.py"
+        ],
+        "added": 1,
+        "deleted": 0,
+        "binary": 0
+      }
+    ]
+  },
+  "palette_sha256": "df3607dacd40a0c4dbfb4b0053752953f4b40d060401fe4e42a3d842f6a8a15c",
+  "matplotlib": "3.11.2",
+  "description_inputs": {},
+  "intent_checked_at": null,
+  "model_calls": 0
+}
