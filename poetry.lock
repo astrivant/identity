@@ -2172,7 +2172,7 @@ version = "3.7"
 description = "Python package for creating and manipulating graphs and networks"
 optional = false
 python-versions = "!=3.14.1,>=3.12"
-groups = ["main"]
+groups = ["main", "dev"]
 files = [
     {file = "networkx-3.7-py3-none-any.whl", hash = "sha256:e3fd2c13a7814cee3746340d8d7f8598a67f16a58bf47fb7f8793fab6efca1b0"},
     {file = "networkx-3.7.tar.gz", hash = "sha256:fd77a511bd90f39f3d016351345b52cf5319b813bdca01de3f755d3cca62e96a"},
@@ -2371,6 +2371,21 @@ files = [
 
 [package.dependencies]
 protobuf = ">=5.0,<8.0"
+
+[[package]]
+name = "ownerloom"
+version = "0.0.1"
+description = "Compile readable CODEOWNERS policies without changing ownership precedence"
+optional = false
+python-versions = "!=3.14.1,<4,>=3.12"
+groups = ["dev"]
+files = [
+    {file = "ownerloom-0.0.1-py3-none-any.whl", hash = "sha256:b41a0d077983980ebed23cf757e310b8bf12857811611925577491f1a03efd07"},
+    {file = "ownerloom-0.0.1.tar.gz", hash = "sha256:5fbe68bf11f07cb76c79cba1c62499ed84f4830b5a2312150c223452e7f7ad09"},
+]
+
+[package.dependencies]
+networkx = ">=3.7,<4"
 
 [[package]]
 name = "packaging"
@@ -4148,4 +4163,4 @@ postgres = ["psycopg"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.12,!=3.14.1,<4"
-content-hash = "c44df8cc4ae5a5e04ab75409cf2285ad114e43a2c24478a13db55e4df51eb8cd"
+content-hash = "bb6f76fb213e57f47029e24c946d54309fc88eaf7a34c9a2f789f3fba3f7286b"

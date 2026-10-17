@@ -87,9 +87,9 @@ def test_inventory_and_ownership_are_checked_locally_and_in_ci() -> None:
     hooks = yaml.safe_load((ROOT / ".pre-commit-config.yaml").read_text())
     local = {hook["id"]: hook for hook in hooks["repos"][0]["hooks"]}
     assert local["generated-artifact-inventory"]["entry"] == "python scripts/ci/repair/plan.py --check"
-    assert local["codeowners-tree"]["entry"] == "python -m scripts.ownership --write"
+    assert local["codeowners-tree"]["entry"] == "python -m ownerloom --write"
     assert local["codeowners-tree-push"]["stages"] == ["pre-push"]
-    assert local["codeowners-tree-push"]["entry"] == "python -m scripts.ownership --check --revision HEAD"
+    assert local["codeowners-tree-push"]["entry"] == "python -m ownerloom --check --revision HEAD"
     workflow = (ROOT / ".github/workflows/ci.yml").read_text()
     assert "python scripts/ci/repair/plan.py --check" in workflow
-    assert "python -m scripts.ownership --check" in workflow
+    assert "python -m ownerloom --check" in workflow
