@@ -88,11 +88,20 @@ export async function publishTests({ github, context, receipt, assets }) {
 /** Load only this run's allowlisted bundle inside the existing serialized publication job. */
 export async function main({ github, context, core }) {
   const root = '.cache/ci/tests';
+  // Actions Context keeps repo on its prototype; explicitly read the publication contract.
+  const publication = {
+    repo: context.repo,
+    eventName: context.eventName,
+    ref: context.ref,
+    sha: context.sha,
+    runId: context.runId,
+    runAttempt: process.env.GITHUB_RUN_ATTEMPT,
+  };
   const receipt = JSON.parse(await readFile(`${root}/publication.json`, 'utf8'));
   // Never use artifact-provided paths as filesystem input before closing the destination set.
-  const names = [`.github/metrics/tests/${context.runId}-${process.env.GITHUB_RUN_ATTEMPT}.json`, 'docs/assets/test-convergence.svg'];
+  const names = [`.github/metrics/tests/${publication.runId}-${publication.runAttempt}.json`, 'docs/assets/test-convergence.svg'];
   const assets = Object.fromEntries(await Promise.all(names.map(async (name) => [name, await readFile(path.join(root, 'publication', name))])));
-  const result = await publishTests({ github, context: { ...context, runAttempt: process.env.GITHUB_RUN_ATTEMPT }, receipt, assets });
+  const result = await publishTests({ github, context: publication, receipt, assets });
   core.info(JSON.stringify(result));
   if (result.status === 'review-required') core.warning('Open the signed feedback proposal from the compare link; required review remains intact.');
   await core.summary.addHeading('Test matrix evidence').addRaw(`${result.status}${result.url ? `: ${result.url}` : ''}`).write();
