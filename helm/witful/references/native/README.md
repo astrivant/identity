@@ -19,7 +19,7 @@ reference, not evidence that a cluster satisfies the security profile.
 
 ## Prepare and deploy
 
-Build the production image with `docker build --target production -t REGISTRY/witful:REVIEWED_TAG .`.
+Build the production image with `docker build --file services/witful/Dockerfile --target production -t REGISTRY/witful:REVIEWED_TAG .`.
 Provision data and authority schemas/roles, grants, broker policy, TLS certificates
 and independently trusted signing pins before installation. Connection Secrets
 must require `sslmode=verify-full`, use non-superuser roles and name different

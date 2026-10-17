@@ -21,6 +21,7 @@ repos:
         language: system
         pass_filenames: false
         always_run: true
+        stages: [pre-commit, manual]
       - id: codeowners-tree-push
         name: Verify committed CODEOWNERS tree
         entry: python -m scripts.ownership --check --revision HEAD
@@ -92,6 +93,12 @@ repos:
         entry: shfmt -d -i 4 -ci
         language: system
         types: [shell]
+      - id: dockerfile-check
+        name: Docker build checks
+        entry: bash scripts/ci/checks/dockerfile.sh
+        language: system
+        pass_filenames: false
+        files: '(^|/)(Dockerfile|\.dockerignore)$|^scripts/ci/checks/dockerfile\.sh$'
       - id: chart-dependencies
         name: Restore locked Helm dependencies
         entry: bash scripts/chart/dependencies.sh

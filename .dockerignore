@@ -1,15 +1,15 @@
-# An allowlist excludes credentials, journals, runtime state, and the surrounding client home.
+# Admit only package build inputs, never credentials, journals, caches or runtime state.
 **
-!Dockerfile
 !pyproject.toml
 !poetry.lock
-!README.md
+!LICENSE
 !docs/
 !docs/WITFUL.md
+!services/
+!services/witful/
+!services/witful/Dockerfile
 !pkg/
 !pkg/**
 pkg/**/tests/
 pkg/**/__pycache__/
 pkg/**/*.pyc
-
-!LICENSE

@@ -5,7 +5,6 @@ Check ownership invariants, opaque boundaries and committed-tree enforcement.
 from __future__ import annotations
 
 import itertools
-import subprocess
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -14,6 +13,8 @@ if TYPE_CHECKING:
 import pytest
 from ownership.cli import main
 from ownership.compiler import compile_owners
+
+from tests.ci.ownership_support import git
 
 
 def owners(source: str, path: str) -> tuple[str, ...]:
@@ -139,25 +140,6 @@ def test_consolidation_cannot_cross_comment_or_override() -> None:
     assert compile_owners(source, paths, consolidate=True).text == source
     source = "/pkg/ @other\n/pkg/a @one\n/pkg/b @one\n"
     assert compile_owners(source, paths, consolidate=True).text == source
-
-
-def git(root: Path, *args: str) -> str:
-    """
-    Run Git only within a synthetic repository without user hooks or signatures.
-
-    Args:
-        root (Path): Temporary test worktree.
-        *args (str): Fixture commands.
-
-    Returns:
-        str: Captured Git output.
-    """
-    return subprocess.run(
-        ["git", "-c", "commit.gpgsign=false", "-c", "core.hooksPath=/dev/null", "-C", str(root), *args],
-        check=True,
-        capture_output=True,
-        text=True,
-    ).stdout
 
 
 def test_cli_checks_committed_bytes_and_never_stages(tmp_path: Path) -> None:
