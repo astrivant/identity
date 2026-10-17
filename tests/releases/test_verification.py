@@ -70,6 +70,7 @@ def publication(host: Host, root: Path) -> tuple[Path, str, dict[str, bytes]]:
             "url": url + "/releases/7",
             "tag_name": "v1.1.0",
             "draft": False,
+            "immutable": True,
             "prerelease": False,
             "assets_url": url + "/releases/7/assets",
             "html_url": "https://github.com/example/project/releases/tag/v1.1.0",
@@ -84,7 +85,7 @@ def publication(host: Host, root: Path) -> tuple[Path, str, dict[str, bytes]]:
     return built, fingerprint, payloads
 
 
-@pytest.mark.parametrize("defect", ["none", "key", "bytes", "missing", "signature", "source", "draft"])
+@pytest.mark.parametrize("defect", ["none", "key", "bytes", "missing", "signature", "source", "draft", "mutable", "unknown-immutability"])
 def test_published_verification_rejects_each_independent_boundary(
     host: Host, tmp_path: Path, monkeypatch: pytest.MonkeyPatch, defect: str
 ) -> None:
@@ -146,13 +147,18 @@ def test_published_verification_rejects_each_independent_boundary(
         host.responses[PREFIX + "/releases/7/assets"] = rows[:-1]
     elif defect == "source":
         (built / "SOURCE.json").write_text("{}")
-    elif defect == "draft":
+    elif defect in {"draft", "mutable", "unknown-immutability"}:
         row = host.responses[PREFIX + "/releases/tags/v1.1.0"]
         assert isinstance(row, dict)
-        row["draft"] = True
+        if defect == "draft":
+            row["draft"] = True
+        elif defect == "mutable":
+            row["immutable"] = False
+        else:
+            row.pop("immutable")
     if defect == "none":
         release, value = verification.verify_release(host.repository, "v1.1.0", SOURCE, built, tmp_path / "download", fingerprint)
-        assert not release.draft and value.source == SOURCE
+        assert not release.draft and release.immutable and value.source == SOURCE
         assert registry_calls == ["v1.1.0"] and len(signatures) == 3
     else:
         with pytest.raises(ValueError):

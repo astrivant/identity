@@ -123,6 +123,30 @@ def test_notes_preserve_unmanaged_content_and_escape_titles() -> None:
             notes(value, malformed)
 
 
+@pytest.mark.parametrize("classified", [False, True])
+def test_uncategorized_notes_have_no_catchall_heading(classified: bool) -> None:
+    """
+    Keep unclassified contributions directly under What changed, including mixed inventories.
+
+    Args:
+        classified (bool): Include a separately classified fix in the same release.
+
+    Returns:
+        None: Entries are retained once and never inherit an unrelated category heading.
+    """
+    contributions: tuple[Contribution, ...] = (Contribution(5, "contributor", "Update deployment", "Other changes"),)
+    if classified:
+        contributions += (Contribution(6, "contributor", "Repair startup", "Fixed"),)
+    value = Inventory("example/project", "v1.1.0", SOURCE, "v1.0.0", BASE, contributions)
+    rendered = notes(value, "Install instructions.")
+    assert "## What changed\n\n- Update deployment" in rendered
+    assert "Other changes" not in rendered
+    assert rendered.count("Update deployment") == 1
+    if classified:
+        assert rendered.index("Update deployment") < rendered.index("### Fixed") < rendered.index("Repair startup")
+    assert notes(value, rendered) == rendered
+
+
 @pytest.mark.parametrize("lost", [False, True])
 def test_notifications_are_per_release_and_resume_uncertain_writes(host: Host, tmp_path: Path, lost: bool) -> None:
     """

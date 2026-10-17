@@ -203,10 +203,12 @@ def notes(value: Inventory, existing: str) -> str:
         ValueError: Managed section markers are incomplete or duplicated.
     """
     lines = [START, "## What changed", ""]
-    for category in (*[name for _, name in CATEGORIES], "Other changes"):
+    # Unclassified entries belong directly to the summary, not beneath the last named category.
+    for category in ("Other changes", *[name for _, name in CATEGORIES]):
         changes = [pull for pull in value.contributions if pull.category == category]
         if changes:
-            lines.extend([f"### {category}", ""])
+            if category != "Other changes":
+                lines.extend([f"### {category}", ""])
             lines.extend(
                 f"- {markdown_text(pull.title)} ([#{pull.number}](https://github.com/{value.repository}/pull/{pull.number}))"
                 for pull in changes
@@ -275,7 +277,7 @@ def execute(args: argparse.Namespace, parser: argparse.ArgumentParser) -> int:
                 raise
         else:
             if not release.draft:
-                raise ValueError("Published release notes are immutable")
+                raise ValueError("Automatic preparation cannot rewrite published release notes")
             existing = release.body or existing
         args.output.mkdir(parents=True, exist_ok=True)
         (args.output / "RELEASE.json").write_text(json.dumps(as_data(value), indent=2) + "\n")
