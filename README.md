@@ -191,7 +191,7 @@ claim. Reading a lesson or installing the package does not grant action authorit
 Use Identity to carry engineering practices between projects, explain decisions
 to reviewers, and coordinate agents using a versioned body of knowledge. Keep
 records in a collection you control, with explicit sharing and publication choices.
-[Optional awareness figures](docs/awareness.md) make selected experience visible
+[Professional representation](docs/awareness.md) makes selected experience visible
 in reports and resumes. See [Witful's responsibilities](docs/WITFUL.md#responsibilities)
 for the concrete tooling and [Git and GitOps](#git-and-gitops) for the operating model.
 
@@ -290,7 +290,7 @@ termination; abrupt process or node loss still requires recovery from saved work
 
 ### Optional resume figures
 
-Awareness figures show the problems you solve, tools and skills you apply, and
+Professional representation figures show the problems you solve, tools and skills you apply, and
 recorded decisions that explain your approach. Publish selected figures to
 [resumeme](https://github.com/astrivant/resumeme) as an optional resume appendix,
 or use them to reflect on your work.

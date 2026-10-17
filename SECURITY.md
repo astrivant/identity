@@ -105,9 +105,9 @@ caches. The additive checkpoint table uses the same database trust boundary and
 TLS policy as other stores; namespaces are not tenant authorization. The hash
 chain checks integrity but is not a signature. See [retention and recovery](docs/checkpoints.md).
 
-## Awareness publication
+## Professional representation
 
-Awareness is an explicit figure projection, disabled until figure IDs are selected
+Professional representation uses an explicit figure projection, disabled until figure IDs are selected
 and `witful awareness push` is invoked. It regenerates plots from current sources,
 scans selected SVG text for supported personal-data patterns, and exports only
 PNGs, captions, catalog keys, and hashes. Pattern scanning is not OCR or proof of

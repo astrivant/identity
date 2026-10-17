@@ -116,7 +116,7 @@ saved lesson/knowledge inputs and does not implicitly archive this separate cata
 See [project checkpoints](checkpoints.md) for visit ordering, evidence semantics,
 database mirroring, and main-branch rendering.
 
-## Awareness publication
+## Professional representation
 
 `witful awareness --repo COLLECTION build` regenerates selected figures locally.
 `witful awareness --repo COLLECTION push` publishes them and requests an authenticated
