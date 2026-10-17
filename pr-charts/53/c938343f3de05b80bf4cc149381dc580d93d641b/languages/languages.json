@@ -1,0 +1,25 @@
+{
+  "measurement": {
+    "base": "f685f49a9eaf8e07d13f7e3dfea51edcfc86c0bc",
+    "merge_base": "f685f49a9eaf8e07d13f7e3dfea51edcfc86c0bc",
+    "head": "c938343f3de05b80bf4cc149381dc580d93d641b",
+    "classifier": "Pygments 2.21.0",
+    "deltas": [
+      {
+        "before": ".gitignore",
+        "after": ".gitignore",
+        "added": 359,
+        "deleted": 0
+      }
+    ],
+    "shares": [
+      {
+        "language": "Unknown",
+        "added": 359,
+        "deleted": 0
+      }
+    ]
+  },
+  "palette_sha256": "df3607dacd40a0c4dbfb4b0053752953f4b40d060401fe4e42a3d842f6a8a15c",
+  "matplotlib": "3.11.2"
+}

@@ -1,0 +1,65 @@
+{
+  "measurement": {
+    "base": "f685f49a9eaf8e07d13f7e3dfea51edcfc86c0bc",
+    "merge_base": "f685f49a9eaf8e07d13f7e3dfea51edcfc86c0bc",
+    "head": "c938343f3de05b80bf4cc149381dc580d93d641b",
+    "classifier": "Pygments 2.21.0",
+    "deltas": [
+      {
+        "before": ".gitignore",
+        "after": ".gitignore",
+        "added": 359,
+        "deleted": 0
+      }
+    ],
+    "shares": [
+      {
+        "language": "Unknown",
+        "added": 359,
+        "deleted": 0
+      }
+    ]
+  },
+  "rows": [
+    {
+      "delta": {
+        "before": ".gitignore",
+        "after": ".gitignore",
+        "added": 359,
+        "deleted": 0
+      },
+      "description": "+359 added / -0 removed",
+      "kind": "diff"
+    }
+  ],
+  "pages": [
+    {
+      "file": "files-001.png",
+      "paths": [
+        ".gitignore"
+      ],
+      "sha256": "09a3a44911e568a8e8ebf5c2946ff4560cf3183d95b56f146195694be7500f08"
+    }
+  ],
+  "projection": {
+    "version": "directory-partition/1",
+    "max_rows": 10,
+    "height_inches": 4.8,
+    "groups": [
+      {
+        "label": ".gitignore",
+        "paths": [
+          ".gitignore"
+        ],
+        "added": 359,
+        "deleted": 0,
+        "binary": 0
+      }
+    ]
+  },
+  "palette_sha256": "df3607dacd40a0c4dbfb4b0053752953f4b40d060401fe4e42a3d842f6a8a15c",
+  "matplotlib": "3.11.2",
+  "description_inputs": {},
+  "intent_checked_at": null,
+  "model_calls": 0
+}
