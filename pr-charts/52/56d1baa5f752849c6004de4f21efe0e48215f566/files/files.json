@@ -1,0 +1,363 @@
+{
+  "measurement": {
+    "base": "f121fe8a313dd6a70354d9bd4ba3e4821fc19378",
+    "merge_base": "f121fe8a313dd6a70354d9bd4ba3e4821fc19378",
+    "head": "56d1baa5f752849c6004de4f21efe0e48215f566",
+    "classifier": "Pygments 2.21.0",
+    "deltas": [
+      {
+        "before": ".github/workflows/ci.yml",
+        "after": ".github/workflows/ci.yml",
+        "added": 1,
+        "deleted": 0
+      },
+      {
+        "before": ".pre-commit-config.yaml",
+        "after": ".pre-commit-config.yaml",
+        "added": 14,
+        "deleted": 0
+      },
+      {
+        "before": ".pre-commit-hooks.yaml",
+        "after": ".pre-commit-hooks.yaml",
+        "added": 18,
+        "deleted": 0
+      },
+      {
+        "before": "SKILL.md",
+        "after": "SKILL.md",
+        "added": 11,
+        "deleted": 0
+      },
+      {
+        "before": "docs/data-protection.md",
+        "after": "docs/data-protection.md",
+        "added": 69,
+        "deleted": 4
+      },
+      {
+        "before": "pkg/witful/collection/cli.py",
+        "after": "pkg/witful/collection/cli.py",
+        "added": 7,
+        "deleted": 3
+      },
+      {
+        "before": "pkg/witful/collection/gate/__init__.py",
+        "after": "pkg/witful/collection/gate/__init__.py",
+        "added": 5,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/collection/gate/check.py",
+        "after": "pkg/witful/collection/gate/check.py",
+        "added": 131,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/collection/gate/cli.py",
+        "after": "pkg/witful/collection/gate/cli.py",
+        "added": 83,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/collection/gate/git.py",
+        "after": "pkg/witful/collection/gate/git.py",
+        "added": 156,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/commands/collection.py",
+        "after": "pkg/witful/commands/collection.py",
+        "added": 13,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/exceptions.py",
+        "after": "pkg/witful/exceptions.py",
+        "added": 15,
+        "deleted": 1
+      },
+      {
+        "before": "tests/collection/test_artifact_gate.py",
+        "after": "tests/collection/test_artifact_gate.py",
+        "added": 556,
+        "deleted": 0
+      }
+    ],
+    "shares": [
+      {
+        "language": "Python",
+        "added": 966,
+        "deleted": 4
+      },
+      {
+        "language": "Markdown",
+        "added": 80,
+        "deleted": 4
+      },
+      {
+        "language": "YAML",
+        "added": 33,
+        "deleted": 0
+      }
+    ]
+  },
+  "rows": [
+    {
+      "delta": {
+        "before": "tests/collection/test_artifact_gate.py",
+        "after": "tests/collection/test_artifact_gate.py",
+        "added": 556,
+        "deleted": 0
+      },
+      "description": "+556 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "pkg/witful/collection/gate/git.py",
+        "after": "pkg/witful/collection/gate/git.py",
+        "added": 156,
+        "deleted": 0
+      },
+      "description": "+156 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "pkg/witful/collection/gate/check.py",
+        "after": "pkg/witful/collection/gate/check.py",
+        "added": 131,
+        "deleted": 0
+      },
+      "description": "+131 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "pkg/witful/collection/gate/cli.py",
+        "after": "pkg/witful/collection/gate/cli.py",
+        "added": 83,
+        "deleted": 0
+      },
+      "description": "+83 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "docs/data-protection.md",
+        "after": "docs/data-protection.md",
+        "added": 69,
+        "deleted": 4
+      },
+      "description": "+69 added / -4 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": ".pre-commit-hooks.yaml",
+        "after": ".pre-commit-hooks.yaml",
+        "added": 18,
+        "deleted": 0
+      },
+      "description": "+18 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "pkg/witful/exceptions.py",
+        "after": "pkg/witful/exceptions.py",
+        "added": 15,
+        "deleted": 1
+      },
+      "description": "+15 added / -1 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": ".pre-commit-config.yaml",
+        "after": ".pre-commit-config.yaml",
+        "added": 14,
+        "deleted": 0
+      },
+      "description": "+14 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "pkg/witful/commands/collection.py",
+        "after": "pkg/witful/commands/collection.py",
+        "added": 13,
+        "deleted": 0
+      },
+      "description": "+13 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "SKILL.md",
+        "after": "SKILL.md",
+        "added": 11,
+        "deleted": 0
+      },
+      "description": "+11 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "pkg/witful/collection/cli.py",
+        "after": "pkg/witful/collection/cli.py",
+        "added": 7,
+        "deleted": 3
+      },
+      "description": "+7 added / -3 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "pkg/witful/collection/gate/__init__.py",
+        "after": "pkg/witful/collection/gate/__init__.py",
+        "added": 5,
+        "deleted": 0
+      },
+      "description": "+5 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": ".github/workflows/ci.yml",
+        "after": ".github/workflows/ci.yml",
+        "added": 1,
+        "deleted": 0
+      },
+      "description": "+1 added / -0 removed",
+      "kind": "diff"
+    }
+  ],
+  "pages": [
+    {
+      "file": "files-001.png",
+      "paths": [
+        "tests/collection/test_artifact_gate.py",
+        "pkg/witful/collection/gate/git.py",
+        "pkg/witful/collection/gate/check.py",
+        "pkg/witful/collection/gate/cli.py",
+        "pkg/witful/collection/gate/__init__.py",
+        "docs/data-protection.md",
+        ".pre-commit-hooks.yaml",
+        "pkg/witful/exceptions.py",
+        ".pre-commit-config.yaml",
+        "pkg/witful/commands/collection.py",
+        "SKILL.md",
+        "pkg/witful/collection/cli.py",
+        ".github/workflows/ci.yml"
+      ],
+      "sha256": "4c8adb10db362721f0322182a2d8a3547a940d19434d7fcab5d4e2ae5b0a8699"
+    }
+  ],
+  "projection": {
+    "version": "directory-partition/1",
+    "max_rows": 10,
+    "height_inches": 4.8,
+    "groups": [
+      {
+        "label": "tests/collection/test_artifact_gate.py",
+        "paths": [
+          "tests/collection/test_artifact_gate.py"
+        ],
+        "added": 556,
+        "deleted": 0,
+        "binary": 0
+      },
+      {
+        "label": "pkg/witful/collection/gate/",
+        "paths": [
+          "pkg/witful/collection/gate/git.py",
+          "pkg/witful/collection/gate/check.py",
+          "pkg/witful/collection/gate/cli.py",
+          "pkg/witful/collection/gate/__init__.py"
+        ],
+        "added": 375,
+        "deleted": 0,
+        "binary": 0
+      },
+      {
+        "label": "docs/",
+        "paths": [
+          "docs/data-protection.md"
+        ],
+        "added": 69,
+        "deleted": 4,
+        "binary": 0
+      },
+      {
+        "label": ".pre-commit-hooks.yaml",
+        "paths": [
+          ".pre-commit-hooks.yaml"
+        ],
+        "added": 18,
+        "deleted": 0,
+        "binary": 0
+      },
+      {
+        "label": "pkg/witful/exceptions.py",
+        "paths": [
+          "pkg/witful/exceptions.py"
+        ],
+        "added": 15,
+        "deleted": 1,
+        "binary": 0
+      },
+      {
+        "label": ".pre-commit-config.yaml",
+        "paths": [
+          ".pre-commit-config.yaml"
+        ],
+        "added": 14,
+        "deleted": 0,
+        "binary": 0
+      },
+      {
+        "label": "pkg/witful/commands/",
+        "paths": [
+          "pkg/witful/commands/collection.py"
+        ],
+        "added": 13,
+        "deleted": 0,
+        "binary": 0
+      },
+      {
+        "label": "SKILL.md",
+        "paths": [
+          "SKILL.md"
+        ],
+        "added": 11,
+        "deleted": 0,
+        "binary": 0
+      },
+      {
+        "label": "pkg/witful/collection/cli.py",
+        "paths": [
+          "pkg/witful/collection/cli.py"
+        ],
+        "added": 7,
+        "deleted": 3,
+        "binary": 0
+      },
+      {
+        "label": ".github/",
+        "paths": [
+          ".github/workflows/ci.yml"
+        ],
+        "added": 1,
+        "deleted": 0,
+        "binary": 0
+      }
+    ]
+  },
+  "palette_sha256": "149d8efaef55c657d889c6507a76ecd624947bca2f37b3fa359841a21f2b5147",
+  "matplotlib": "3.11.2",
+  "description_inputs": {},
+  "intent_checked_at": null,
+  "model_calls": 0
+}
