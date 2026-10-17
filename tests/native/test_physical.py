@@ -85,7 +85,8 @@ def test_physical_restore_and_acknowledged_synchronous_failover(fixture: Fixture
     with cluster(tmp_path) as drill, isolated(drill.connection("primary"), cleanup=False) as databases:
         access = Access(Scope(str(uuid4()), str(uuid4())), "a" * 64, str(uuid4()), str(uuid4()), 1, str(uuid4()))
         backend = str(uuid4())
-        with psycopg.connect(databases.authority_admin) as connection:
+        # Enrollment contains its own transaction; ordinary runtime writes still use driver-owned transactions.
+        with psycopg.connect(databases.authority_admin, autocommit=True) as connection:
             connection.execute(enrollment(Enrollment(access, backend, ("read", "traverse", "write", "export"), ("*",), 0, 4102444800)))
         service = Service(Postgres(databases.data), Authority(databases.authority, backend), lambda _: fixture.service, lambda: None)
         canary = "synthetic-physical-canary-" + uuid4().hex
