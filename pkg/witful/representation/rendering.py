@@ -10,7 +10,6 @@ import json
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from witful.awareness.models import FIGURES, MAX_BUNDLE_BYTES, MAX_IMAGE_BYTES, Bundle, Figure
 from witful.checkpoints.journal import read as read_checkpoints
 from witful.checkpoints.plotting import build as checkpoint_plots
 from witful.instances.reporting import build as instance_plots
@@ -26,6 +25,7 @@ from witful.privacy.scanner import scan_text
 from witful.repertoire.journal import validate
 from witful.repertoire.models import Inventory, Use
 from witful.repertoire.plotting import write_plots as repertoire_plots
+from witful.representation.models import FIGURES, MAX_BUNDLE_BYTES, MAX_IMAGE_BYTES, Bundle, Figure
 
 
 def render(root: Path, selected: tuple[str, ...]) -> bytes:

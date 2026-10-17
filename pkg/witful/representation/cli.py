@@ -1,5 +1,5 @@
 """
-Render, inspect, and explicitly push selected awareness figures to a resume repository.
+Render, inspect, and explicitly push selected professional representation figures to a resume repository.
 """
 
 from __future__ import annotations
@@ -10,13 +10,13 @@ from typing import TYPE_CHECKING
 
 from jsonschema import ValidationError
 
-from witful.awareness.github import push
-from witful.awareness.models import Bundle, PushConfig
-from witful.awareness.rendering import render
 from witful.collection.protection import check_collection
-from witful.commands.awareness import configure
+from witful.commands.representation import configure
 from witful.files import replace_file
 from witful.knowledge.contracts import schema, structure
+from witful.representation.github import push
+from witful.representation.models import Bundle, PushConfig
+from witful.representation.rendering import render
 
 if TYPE_CHECKING:
     from collections.abc import Sequence

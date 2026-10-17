@@ -6,15 +6,15 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from witful.awareness.models import FIGURES as AWARENESS_FIGURES
 from witful.reflection.plotting import FIGURES as REVIEW_FIGURES
+from witful.representation.models import FIGURES as REPRESENTATION_FIGURES
 
 if TYPE_CHECKING:
     from witful.collection.models import Config
 
 # Export sharing remains separately opted in; collection publication also owns the Life overview.
 FIGURES = {
-    **AWARENESS_FIGURES,
+    **REPRESENTATION_FIGURES,
     "life": ("life", "Life: choices and revisions"),
     **{name: ("reflection", title) for name, title in REVIEW_FIGURES.items()},
 }

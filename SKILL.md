@@ -1,6 +1,6 @@
 ---
 name: witful
-description: Curate a user-owned knowledge collection with typed lessons, observed applications, decision replay, and privacy checks. Use for creating or maintaining a Witful collection, searching sourced lessons, recording actual applications, inspecting publication inputs, or explicitly publishing selected awareness figures.
+description: Curate a user-owned knowledge collection with typed lessons, observed applications, decision replay, and privacy checks. Use for creating or maintaining a Witful collection, searching sourced lessons, recording actual applications, inspecting publication inputs, or explicitly publishing selected professional representation figures.
 ---
 
 # Identity with Witful
@@ -185,17 +185,17 @@ for assistance. Record the complete reviewed batch with `reflection record`; run
 merely because a review is due. Keep personal plans and reviews inside encrypted
 collection transport; public upstream figures use synthetic examples only.
 
-## Publish awareness figures
+## Publish professional representation
 
-For a requested figure export or resume rebuild, read [awareness publication](docs/awareness.md)
+For a requested figure export or resume rebuild, read [professional representation](docs/awareness.md)
 and preserve the user's selection in `knowledge/awareness.json`. Check the installed
 CLI's `awareness --help`; configuration, output paths, and schemas are described in
-[CLI contracts](docs/CLI.md#awareness-publication).
+[CLI contracts](docs/CLI.md#professional-representation).
 
 Use `witful awareness --repo COLLECTION build` to regenerate a local bundle from
 current evidence. Inspect selected plot labels before sharing: PNGs can expose
 project names and relationships even though the bundle omits source journals.
-Awareness generation omits outer titles and subtitles so the receiving document
+Figure generation omits outer titles and subtitles so the receiving document
 owns its headings; retain axis labels and legends. Check the [working-emphasis map](docs/knowledge-map.md)
 for the distinction between a bounded current view and the full retained hierarchy.
 An empty selection publishes nothing. The receiver separately controls its allowed

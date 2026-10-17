@@ -1,5 +1,5 @@
 """
-Declare reusable awareness command arguments without loading runtime services.
+Declare professional representation command arguments without loading runtime services.
 """
 
 from __future__ import annotations
