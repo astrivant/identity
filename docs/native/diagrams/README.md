@@ -24,9 +24,11 @@ the precise contract; color alone never establishes authorization or durability.
 
 ## Source and configuration binding
 
-[manifest.json](manifest.json) records the source commit, verification date, format
-versions, reference configuration digests, exact implementation/schema inputs and
-rendered output hashes. [views.json](views.json) is the editable source for all views;
+[manifest.json](manifest.json) declares the format and scope. The [bindings](bindings/)
+retain one JSON record per input or rendered output, mirroring its path. Each record
+holds its digest, review date and source HEAD at its last byte change. Unchanged
+records keep their original evidence, so independent PRs can change different
+inputs without rewriting a shared commit/date field. [views.json](views.json) is the editable source for all views;
 the [renderer](../../../scripts/native/diagrams.py) uses the project's locked plotting
 stack. Configuration placeholders remain placeholders. A production pilot must replace
 them with its reviewed configuration and verify every trust/storage boundary.
@@ -38,9 +40,15 @@ python -m scripts.native.diagrams --date YYYY-MM-DD --preview .cache/native-diag
 python -m scripts.native.diagrams --check
 ```
 
-Inspect each PNG preview before staging its SVG and manifest. The shared check runs
-in pre-commit and CI and refuses changed inputs or output bytes. It proves freshness,
-not the truth of labels or a deployed host's protection controls. The manifest binds
+Inspect changed PNG previews before staging their SVGs and changed bindings. The shared check runs
+in pre-commit and CI and independently discovers the complete current input set,
+then verifies every input and output digest. Missing, obsolete or changed records
+fail; competing changes to the same record remain ordinary reviewable Git conflicts.
+Recombining independent records does not manufacture a joint approval or assert
+that unchanged labels explain new behavior. Review the resulting views with the code.
+The source commit is context: reviewed working bytes can differ from that HEAD.
+The bindings prove freshness,
+not the truth of labels or a deployed host's protection controls. They bind
 exact source bytes; font/rendering differences across toolchains need another visual
 review rather than a claim of universal byte-identical output.
 

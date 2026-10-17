@@ -1,0 +1,6 @@
+{
+  "path": "helm/witful/templates/projection-scheduler.yaml",
+  "sha256": "668783238e72a1f8f79f118bbdd2ab479e7661327bc4d8f1e90855dcd70840f5",
+  "source_commit": "37d8a8e1ab0884c04c9d070dd617c32cda7bb95b",
+  "verification_date": "2026-10-17"
+}

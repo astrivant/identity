@@ -1,0 +1,6 @@
+{
+  "path": "pkg/witful/sql/postgres/native/authority-lock.sql",
+  "sha256": "a0f5b20065f4360f117335253a3b068fcde83e00c8fb0b7c862a7f9dbd2ff3f4",
+  "source_commit": "37d8a8e1ab0884c04c9d070dd617c32cda7bb95b",
+  "verification_date": "2026-10-17"
+}

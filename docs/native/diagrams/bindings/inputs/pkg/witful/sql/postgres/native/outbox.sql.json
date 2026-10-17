@@ -1,0 +1,6 @@
+{
+  "path": "pkg/witful/sql/postgres/native/outbox.sql",
+  "sha256": "0c5794a8f3db637f4f24ec85243fc2cd03e4c771ac44339b2e85754bbca8955f",
+  "source_commit": "37d8a8e1ab0884c04c9d070dd617c32cda7bb95b",
+  "verification_date": "2026-10-17"
+}

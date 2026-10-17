@@ -7,6 +7,18 @@ repair boundary; declaring an output does not grant permission to execute its ge
 
 ## Automatic repair
 
+Prevent generated conflicts before adding repair privileges. Native diagram evidence
+uses [independent path records](native/diagrams/README.md#source-and-configuration-binding),
+so each PR changes only the evidence it affects. The combined inventory is checked
+against actual source and output hashes after merging. A shared format declaration
+has no changing revision or date. No custom Git merge driver or CI write permission
+is needed; genuine competing changes remain visible for review.
+
+[Provider observations](provider-contracts.md#versioned-inputs-and-results) stay in
+run artifacts when selected contracts have not changed. Only changes to the consumed
+contracts produce baseline update proposals. This avoids unrelated source commits
+and freshness timestamps becoming shared conflict points.
+
 The existing [CI pipeline](../.github/workflows/ci.yml) calls a separate
 [repair stage](../.github/workflows/stage-repair.yml) on PR target activity,
 default-branch pushes and a six-hour schedule. It becomes active only after the
