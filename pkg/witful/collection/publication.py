@@ -9,11 +9,11 @@ import hashlib
 import json
 from typing import TYPE_CHECKING
 
-from witful.awareness.models import FIGURES as FIGURE_CATALOG
+from witful.collection.dashboard import FIGURES as FIGURE_CATALOG
 from witful.collection.managed import snapshot
 from witful.collection.models import load_config
 from witful.collection.process import run
-from witful.privacy.scanner import scan_text
+from witful.privacy.scanner import scan_svg, scan_text
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -50,7 +50,10 @@ def publication_files(current: Path) -> dict[str, bytes]:
     if actual != set(contents) or any(path.is_symlink() for path in current.rglob("*")):
         raise ValueError("Candidate contains unexpected paths")
     for name, data in contents.items():
-        if (name == "README.md" or name.endswith(".svg")) and scan_text(data.decode()):
+        if name != "README.md" and not name.endswith(".svg"):
+            continue
+        inspect = scan_svg if name.endswith(".svg") else scan_text
+        if inspect(data.decode()):
             raise ValueError("Review readable publication content before disclosure")
     return contents
 
@@ -79,9 +82,12 @@ def publish(checkout: Path, output: Path, env: dict[str, str]) -> str:
     if manifest != {"source_commit": env["GITHUB_SHA"], "files": expected}:
         raise ValueError("Candidate changed after verification or belongs to another run")
     repository = env["GITHUB_REPOSITORY"]
-    deletions = []
-    if not load_config(output / "current").publish_figures:
-        deletions = [f"docs/collection/{name}.svg" for name in FIGURE_CATALOG if (checkout / f"docs/collection/{name}.svg").is_file()]
+    # The verified candidate owns the full figure set, including disabled periodic-review outputs.
+    deletions = [
+        f"docs/collection/{name}.svg"
+        for name in FIGURE_CATALOG
+        if f"docs/collection/{name}.svg" not in contents and (checkout / f"docs/collection/{name}.svg").is_file()
+    ]
     request = json.dumps(
         {
             "query": QUERY,

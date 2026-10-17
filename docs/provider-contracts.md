@@ -22,18 +22,37 @@ schemas validate the deliberately minimal scenarios already used in unit tests.
 The independent [CI stage](../.github/workflows/stage-provider-contracts.yml)
 checks out the caller's exact revision and installs the committed lockfile. Every
 PR, main and tag run resolves the latest commit affecting each specification file
-on its official branch, fetches those immutable bytes, and requires the committed
-manifest and snapshots to match. Unrelated repository commits do not change the
-API revision. Stale inputs, lookup failure or incompatible contracts block the gate;
-CI never silently refreshes unreviewed files and proceeds to publication.
+on its official branch and refreshes the selected snapshots at those immutable
+revisions before running the compatibility suite. A newer revision or metadata-only
+change does not fail CI. Lookup, download, integrity, unsupported dialect and
+compatibility failures still block acceptance. SDK packages remain locked.
 
-Refresh locally with `--latest`, review and test the diff, then commit the manifest
-and snapshots in the PR. Other PRs can rebase on that reviewed update after it
-merges. A branch or tag can become stale again when the specification changes;
-latest is an observation boundary, not a guarantee about future upstream activity.
-The `provider-contracts` artifact binds current observation time/revisions, source
-revision, installed SDK/validator versions, lockfile digest, snapshots and JUnit
-results. Provenance alone does not establish that tests passed.
+The `provider-contracts` artifact retains the exact renewed snapshots, current
+observation, source revision, installed SDK/validator versions, lock digest and
+JUnit results. Downstream jobs download that same-run artifact instead of resolving
+upstream again. This durable handoff is required; an evictable dependency cache is
+not a substitute for the tested inputs. Independent source checks remain parallel.
+
+After successful main verification, `generated-updates` checks the artifact's
+source, lock and file digests, then proposes the three renewed JSON files in a
+GitHub-signed update branch. Observation time stays in the run artifact, so unchanged inputs produce no
+timestamp-only commit. Each source and renewed bundle gets an idempotent proposal, and an older run cannot replace newer main state. No release
+tag or distribution is rewritten. Tag runs test current contracts but never write
+back; main owns baseline maintenance.
+
+The update joins main through its normal required review and CI. When repository
+settings permit Actions to create PRs, the job opens a PR and explicitly dispatches
+CI for its branch, since built-in-token writes do not trigger ordinary PR/push
+workflows. If that policy is disabled, the job preserves the verified branch and
+provides a compare link for a maintainer to open it. It never approves, merges,
+force-pushes or changes repository permissions. Superseded proposals can be closed
+by their reviewer. Fork PRs and tags never receive publication credentials.
+
+Refresh locally with `--latest` and run the same tests when reviewing a provider or
+SDK change. The optional `--check --latest` command diagnoses drift without writing;
+CI uses refresh-and-test so metadata drift alone cannot prevent those tests.
+Provenance records inputs, not proof of test success. Latest is the observed
+boundary for that run, not a guarantee about future upstream activity.
 
 The servers bind ephemeral loopback ports. Test clients reject external destinations
 and authentication headers. The test owns server shutdown, thread joining and SDK
@@ -57,9 +76,9 @@ poetry run pre-commit run --all-files
 ```
 
 To prepare the current inputs, use `--latest` instead of explicit revision overrides,
-then run the same tests and `refresh.py --check --latest`. It resolves the latest
+then run the same tests and `refresh.py --check` to verify the selected pins. It resolves the latest
 specification-file commits on GitHub `main` and GitLab `master`, records those
-full commits and observation time,
+full commits, retaining observation time separately when `--observation` is supplied,
 and refreshes the local snapshots for review. It does not select or upgrade SDK
 package versions; those remain governed by the committed lockfile.
 
@@ -94,8 +113,8 @@ Review endpoint/schema changes, explicit fixture adjustments, license changes an
 SDK behavior together. Commit the manifest and generated snapshots in the same PR.
 Refresh when updating either SDK or a supported server version, and review upstream
 changes monthly. Pins make old results reproducible; the refresh procedure is what
-keeps the reviewed baseline current. PR and tag checks both require committed snapshots at the latest observed
-specification-file revisions; they never silently accept older inputs.
+keeps the reviewed baseline current. PR, main and tag checks all test the latest observed specification-file revisions;
+main retains successful renewals for subsequent reviews.
 
 ## Coverage boundaries
 

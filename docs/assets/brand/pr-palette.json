@@ -1,0 +1,18 @@
+{
+  "name": "Astrivant muted review palette",
+  "source": "https://avatars.githubusercontent.com/u/327280927?v=4",
+  "source_sha256": "a33169e157531453d328f9f0bc61560fc35bc446c420b3a47511e69f4ae656e2",
+  "reviewed_on": "2026-10-16",
+  "selection": "Muted slate and sage reflect the navy/green logo. Brick red, ochre yellow and clay orange are reviewed categorical accents, not exact logo colors. Dark labels and a warm paper background preserve readability.",
+  "foreground": "#243746",
+  "background": "#F8F9F4",
+  "series": [
+    "#647D8B",
+    "#829B85",
+    "#B77E79",
+    "#C4AC70",
+    "#C18F6C",
+    "#759C99",
+    "#929BA5"
+  ]
+}

@@ -10,13 +10,14 @@ import os
 from datetime import UTC, datetime
 from pathlib import Path
 from tempfile import TemporaryDirectory
-from typing import TYPE_CHECKING, Literal
+from typing import Literal
 
-from witful.awareness.models import FIGURES as FIGURE_CATALOG
 from witful.checkpoints.journal import read as read_checkpoints
 from witful.checkpoints.plotting import build as checkpoint_plots
 from witful.collection import archive
 from witful.collection.crypto import decrypt, encrypt, fingerprint, save, verify
+from witful.collection.dashboard import FIGURES as FIGURE_CATALOG
+from witful.collection.dashboard import readme as readme
 from witful.collection.keys import signing_environment
 from witful.collection.managed import deadline_check
 from witful.collection.models import FIGURES, SOURCE, load_config
@@ -32,7 +33,8 @@ from witful.knowledge.plotting import write_plots as knowledge_plots
 from witful.lessons import read_journal
 from witful.life.journal import read_archive
 from witful.life.plotting import write_influences
-from witful.privacy.scanner import scan_text
+from witful.life.replay import render as life_plots
+from witful.privacy.scanner import scan_svg
 from witful.reflection.journal import config as reflection_config
 from witful.reflection.journal import read as read_reviews
 from witful.reflection.planning import plan as reflection_plan
@@ -40,9 +42,6 @@ from witful.reflection.plotting import FIGURES as REVIEW_FIGURES
 from witful.reflection.plotting import build as reflection_plots
 from witful.repertoire.models import Inventory, Use
 from witful.repertoire.plotting import write_plots as repertoire_plots
-
-if TYPE_CHECKING:
-    from witful.collection.models import Config
 
 
 def seal(checkout: Path, source: Path, keys: Path) -> None:
@@ -123,55 +122,12 @@ def render(root: Path, destination: Path) -> None:
     checkpoint_plots(read_checkpoints(root / "knowledge/checkpoints.jsonl"), destination)
     instance_plots(root, destination)
 
-    write_influences(read_archive(root), destination)
+    decisions = read_archive(root)
+    life_plots(decisions, root, destination)
+    write_influences(decisions, destination)
     if reflection_config(root).enabled:
         latest = {item.decision_id: item for event in read_reviews(root) for item in event.assessments}
         reflection_plots(tuple(latest[key] for key in sorted(latest)), destination)
-
-
-def readme(config: Config, source_digest: str, *, reflection_enabled: bool = True) -> str:
-    """
-    Replace library onboarding with the owner's private collection dashboard.
-
-    Args:
-        config (Config): Reviewed publication choices.
-        source_digest (str): SHA-256 of ciphertext, never plaintext or private labels.
-        reflection_enabled (bool): Whether the collection enables periodic reviews and their figures.
-
-    Returns:
-        str: Repository-specific README with no source records or inferred personal metadata.
-    """
-    repository = config.repository
-    text = (
-        "# My knowledge collection\n\n"
-        f"[![CI](https://github.com/{repository}/actions/workflows/ci.yml/badge.svg)]"
-        f"(https://github.com/{repository}/actions/workflows/ci.yml)\n\n"
-        "Sourced lessons, observed applications, and project checkpoints managed with "
-        "[Witful](https://github.com/astrivant/identity).\n\n"
-        "<!-- toc:start -->\n**Table of contents**\n\n- [Current figures](#current-figures)\n"
-        "- [Update](#update)\n<!-- toc:end -->\n\n## Current figures\n\n"
-        f"Rebuilt from encrypted source SHA-256 `{source_digest}`.\n\n"
-    )
-
-    if config.publish_figures:
-        for identifier, (_, title) in FIGURE_CATALOG.items():
-            text += f"![{title}](docs/collection/{identifier}.svg)\n\n"
-        if reflection_enabled:
-            for identifier, title in REVIEW_FIGURES.items():
-                text += f"![{title}](docs/collection/{identifier}.svg)\n\n"
-    else:
-        text += (
-            "Full figures are encrypted in `collection/figures.enc.json`. "
-            "GitHub cannot display encrypted images inline. Restore them locally with "
-            "`witful collection restore --checkout CHECKOUT --key-dir KEYS --output NEW_DIRECTORY --figures`.\n\n"
-        )
-
-    return text + (
-        "## Update\n\nUse `witful collection seal --checkout CHECKOUT --source COLLECTION --key-dir KEYS`, "
-        "then commit the named encrypted outputs and push. Main CI refreshes this README and the figures.\n\n"
-        "See [private collection setup](docs/private-collections.md) for installation, recovery, "
-        "verification, and the optional readable-figure setting.\n"
-    )
 
 
 def refresh(checkout: Path, environment: dict[str, str] | None = None, *, history: Path | None = None) -> None:
@@ -249,12 +205,12 @@ def refresh(checkout: Path, environment: dict[str, str] | None = None, *, histor
         # Readable plots are a separate explicit disclosure. Scan vector labels before placing them in Git.
         readable = checkout / "docs/collection"
 
-        figure_ids = (*FIGURE_CATALOG, *(REVIEW_FIGURES if review_settings.enabled else {}))
+        figure_ids = tuple(name for name in FIGURE_CATALOG if review_settings.enabled or name not in REVIEW_FIGURES)
         if config.publish_figures:
             for identifier in figure_ids:
                 content = (figures / f"{identifier}.svg").read_text()
 
-                if scan_text(content):
+                if scan_svg(content):
                     raise ValueError("Readable figure contains a detected personal-data pattern; keep figures encrypted or revise labels")
 
             readable.mkdir(parents=True, exist_ok=True)
@@ -265,7 +221,7 @@ def refresh(checkout: Path, environment: dict[str, str] | None = None, *, histor
                 for identifier in REVIEW_FIGURES:
                     (readable / f"{identifier}.svg").unlink(missing_ok=True)
         elif readable.exists():
-            for identifier in (*FIGURE_CATALOG, *REVIEW_FIGURES):
+            for identifier in FIGURE_CATALOG:
                 (readable / f"{identifier}.svg").unlink(missing_ok=True)
 
     dashboard = readme(config, hashlib.sha256(path.read_bytes()).hexdigest(), reflection_enabled=review_settings.enabled).encode()

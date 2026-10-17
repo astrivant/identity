@@ -15,9 +15,9 @@ from witful.collection.protection import check_collection
 from witful.commands.life import configure
 from witful.files import replace_file
 from witful.knowledge.contracts import as_data, schema, structure
-from witful.life.contracts import current_decisions
 from witful.life.journal import read_archive, record_decision
 from witful.life.models import Decision, Event, Snapshot
+from witful.life.paths import lookup
 from witful.life.replay import prefix, render
 
 if TYPE_CHECKING:
@@ -124,8 +124,8 @@ def execute(args: argparse.Namespace, parser: argparse.ArgumentParser) -> int:
             print(f"Validated {len(archive.events)} decisions and {len(archive.snapshots)} replay snapshots")
             return 0
         if args.command == "show":
-            events = archive.events if args.history else current_decisions(archive)
-            selected = [as_data(event) for event in events if args.key is None or event.decision.key == args.key]
+            events = lookup(archive, key=args.key, concept=args.concept, task=args.task, history=args.history, limit=args.limit)
+            selected = [as_data(event) for event in events]
             print(json.dumps(selected, indent=2, ensure_ascii=False))
             return 0
 

@@ -44,7 +44,7 @@ mismatched evidence. See [native storage](../../../../docs/native-storage.md).
 bash scripts/chart/dependencies.sh
 helm template witful helm/witful -f reviewed-native-values.yaml
 helm upgrade --install witful helm/witful -f reviewed-native-values.yaml \
-  --set image.repository=REGISTRY/witful --set-string image.tag=REVIEWED_TAG
+  --set controller.image.repository=REGISTRY/witful --set-string controller.image.tag=REVIEWED_TAG
 ```
 
 The network policy is restrictive by default. Use deployment-owned namespace/pod
@@ -134,4 +134,4 @@ controller is installed by this chart.
 | `controller.secretMounts`                                         | Reviewed reference input; replace placeholders to match the independently signed deployment configuration | `[]`                                         |
 | `controller.networkPolicy.ingress`                                | Reviewed reference input; replace placeholders to match the independently signed deployment configuration | `[]`                                         |
 | `controller.networkPolicy.egress`                                 | Reviewed reference input; replace placeholders to match the independently signed deployment configuration | `[]`                                         |
-| `scheduling.podAntiAffinityPreset`                                | Place controllers on separate nodes                                                                       | `hard`                                       |
+| `controller.scheduling.podAntiAffinityPreset`                     | Place controllers on separate nodes                                                                       | `hard`                                       |

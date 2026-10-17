@@ -2,370 +2,1885 @@
     "title": "Chart Values",
     "type": "object",
     "properties": {
-        "workers": {
-            "type": "integer",
-            "description": "Number of concurrent one-shot sync workers; positive integer with no chart-imposed maximum",
-            "default": 1,
-            "minimum": 1
-        },
-        "image": {
+        "sync": {
             "type": "object",
             "properties": {
-                "repository": {
-                    "type": "string",
-                    "description": "Image built from this checkout; publish to a private registry before cluster use",
-                    "default": "witful",
-                    "minLength": 1
+                "workers": {
+                    "type": "integer",
+                    "description": "Number of concurrent one-shot sync workers; positive integer with no chart-imposed maximum",
+                    "default": 1,
+                    "minimum": 1
                 },
-                "tag": {
-                    "type": "string",
-                    "description": "Immutable application release or source tag",
-                    "default": "0.1.0",
-                    "minLength": 1
-                },
-                "pullPolicy": {
-                    "type": "string",
-                    "description": "Kubernetes image pull policy",
-                    "default": "IfNotPresent",
-                    "enum": [
-                        "Always",
-                        "IfNotPresent",
-                        "Never"
+                "image": {
+                    "type": "object",
+                    "properties": {
+                        "repository": {
+                            "type": "string",
+                            "description": "Image built from this checkout; publish to a private registry before cluster use",
+                            "default": "witful",
+                            "minLength": 1
+                        },
+                        "tag": {
+                            "type": "string",
+                            "description": "Immutable application release or source tag",
+                            "default": "0.1.0",
+                            "minLength": 1
+                        },
+                        "pullPolicy": {
+                            "type": "string",
+                            "description": "Kubernetes image pull policy",
+                            "default": "IfNotPresent",
+                            "enum": [
+                                "Always",
+                                "IfNotPresent",
+                                "Never"
+                            ]
+                        }
+                    },
+                    "additionalProperties": false,
+                    "required": [
+                        "repository",
+                        "tag",
+                        "pullPolicy"
                     ]
-                }
-            },
-            "additionalProperties": false,
-            "required": [
-                "repository",
-                "tag",
-                "pullPolicy"
-            ]
-        },
-        "imagePullSecrets": {
-            "type": "array",
-            "description": "Existing registry credential Secret names",
-            "default": [],
-            "items": {
-                "type": "string",
-                "minLength": 1
-            }
-        },
-        "source": {
-            "type": "object",
-            "properties": {
-                "existingSecret": {
-                    "type": "string",
-                    "description": "Secret containing the reviewed journal, mounted read-only",
-                    "default": "witful-source",
-                    "minLength": 1
                 },
-                "journalKey": {
-                    "type": "string",
-                    "description": "Secret key projected as lessons.jsonl",
-                    "default": "lessons.jsonl",
-                    "minLength": 1
-                }
-            },
-            "additionalProperties": false,
-            "required": [
-                "existingSecret",
-                "journalKey"
-            ]
-        },
-        "database": {
-            "type": "object",
-            "properties": {
-                "existingSecret": {
-                    "type": "string",
-                    "description": "Secret containing the PostgreSQL URI; never place credentials in values",
-                    "default": "witful-database",
-                    "minLength": 1
+                "imagePullSecrets": {
+                    "type": "array",
+                    "description": "Existing registry credential Secret names",
+                    "default": [],
+                    "items": {
+                        "type": "string",
+                        "minLength": 1
+                    }
                 },
-                "urlKey": {
-                    "type": "string",
-                    "description": "Key holding the PostgreSQL URI in that Secret",
-                    "default": "url",
-                    "minLength": 1
-                },
-                "namespace": {
-                    "type": "string",
-                    "description": "Shared identity partition; all cooperating workers must use the same value",
-                    "default": "default",
-                    "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$"
-                },
-                "caSecret": {
-                    "type": "string",
-                    "description": "Optional Secret containing a private PostgreSQL CA",
-                    "default": ""
-                },
-                "caKey": {
-                    "type": "string",
-                    "description": "Secret key projected as root.crt",
-                    "default": "root.crt",
-                    "minLength": 1
-                }
-            },
-            "additionalProperties": false,
-            "required": [
-                "existingSecret",
-                "urlKey",
-                "namespace",
-                "caSecret",
-                "caKey"
-            ]
-        },
-        "job": {
-            "type": "object",
-            "properties": {
-                "suspend": {
-                    "type": "boolean",
-                    "description": "Suspend creation of worker pods",
-                    "default": false
-                },
-                "terminationGracePeriodSeconds": {
-                    "type": "integer",
-                    "description": "Time allowed before Kubernetes forcibly terminates a worker",
-                    "default": 30,
-                    "minimum": 1
-                },
-                "backoffLimit": {
-                    "type": "integer",
-                    "description": "Number of failed pod retries",
-                    "default": 2,
-                    "minimum": 0
-                },
-                "activeDeadlineSeconds": {
-                    "type": "integer",
-                    "description": "Maximum total job duration",
-                    "default": 300,
-                    "minimum": 1
-                },
-                "ttlSecondsAfterFinished": {
-                    "type": "integer",
-                    "description": "Retain completed job status for this many seconds",
-                    "default": 3600,
-                    "minimum": 0
-                }
-            },
-            "additionalProperties": false,
-            "required": [
-                "suspend",
-                "terminationGracePeriodSeconds",
-                "backoffLimit",
-                "activeDeadlineSeconds",
-                "ttlSecondsAfterFinished"
-            ]
-        },
-        "resources": {
-            "type": "object",
-            "properties": {
-                "requests": {
+                "source": {
                     "type": "object",
                     "properties": {
-                        "cpu": {
+                        "existingSecret": {
                             "type": "string",
-                            "description": "Requested worker CPU",
-                            "default": "100m"
+                            "description": "Secret containing the reviewed journal, mounted read-only",
+                            "default": "witful-source",
+                            "minLength": 1
                         },
-                        "memory": {
+                        "journalKey": {
                             "type": "string",
-                            "description": "Requested worker memory",
-                            "default": "128Mi"
+                            "description": "Secret key projected as lessons.jsonl",
+                            "default": "lessons.jsonl",
+                            "minLength": 1
+                        }
+                    },
+                    "additionalProperties": false,
+                    "required": [
+                        "existingSecret",
+                        "journalKey"
+                    ]
+                },
+                "database": {
+                    "type": "object",
+                    "properties": {
+                        "existingSecret": {
+                            "type": "string",
+                            "description": "Secret containing the PostgreSQL URI; never place credentials in values",
+                            "default": "witful-database",
+                            "minLength": 1
+                        },
+                        "urlKey": {
+                            "type": "string",
+                            "description": "Key holding the PostgreSQL URI in that Secret",
+                            "default": "url",
+                            "minLength": 1
+                        },
+                        "namespace": {
+                            "type": "string",
+                            "description": "Shared identity partition; all cooperating workers must use the same value",
+                            "default": "default",
+                            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$"
+                        },
+                        "caSecret": {
+                            "type": "string",
+                            "description": "Optional Secret containing a private PostgreSQL CA",
+                            "default": ""
+                        },
+                        "caKey": {
+                            "type": "string",
+                            "description": "Secret key projected as root.crt",
+                            "default": "root.crt",
+                            "minLength": 1
+                        }
+                    },
+                    "additionalProperties": false,
+                    "required": [
+                        "existingSecret",
+                        "urlKey",
+                        "namespace",
+                        "caSecret",
+                        "caKey"
+                    ]
+                },
+                "job": {
+                    "type": "object",
+                    "properties": {
+                        "suspend": {
+                            "type": "boolean",
+                            "description": "Suspend creation of worker pods",
+                            "default": false
+                        },
+                        "terminationGracePeriodSeconds": {
+                            "type": "integer",
+                            "description": "Time allowed before Kubernetes forcibly terminates a worker",
+                            "default": 30,
+                            "minimum": 1
+                        },
+                        "backoffLimit": {
+                            "type": "integer",
+                            "description": "Number of failed pod retries",
+                            "default": 2,
+                            "minimum": 0
+                        },
+                        "activeDeadlineSeconds": {
+                            "type": "integer",
+                            "description": "Maximum total job duration",
+                            "default": 300,
+                            "minimum": 1
+                        },
+                        "ttlSecondsAfterFinished": {
+                            "type": "integer",
+                            "description": "Retain completed job status for this many seconds",
+                            "default": 3600,
+                            "minimum": 0
+                        }
+                    },
+                    "additionalProperties": false,
+                    "required": [
+                        "suspend",
+                        "terminationGracePeriodSeconds",
+                        "backoffLimit",
+                        "activeDeadlineSeconds",
+                        "ttlSecondsAfterFinished"
+                    ]
+                },
+                "resources": {
+                    "type": "object",
+                    "properties": {
+                        "requests": {
+                            "type": "object",
+                            "properties": {
+                                "cpu": {
+                                    "type": "string",
+                                    "description": "Requested worker CPU",
+                                    "default": "100m"
+                                },
+                                "memory": {
+                                    "type": "string",
+                                    "description": "Requested worker memory",
+                                    "default": "128Mi"
+                                }
+                            }
+                        },
+                        "limits": {
+                            "type": "object",
+                            "properties": {
+                                "cpu": {
+                                    "type": "string",
+                                    "description": "Maximum worker CPU",
+                                    "default": "1"
+                                },
+                                "memory": {
+                                    "type": "string",
+                                    "description": "Maximum worker memory",
+                                    "default": "512Mi"
+                                }
+                            }
                         }
                     }
                 },
-                "limits": {
+                "scheduling": {
                     "type": "object",
                     "properties": {
-                        "cpu": {
-                            "type": "string",
-                            "description": "Maximum worker CPU",
-                            "default": "1"
+                        "nodeSelector": {
+                            "type": "object",
+                            "description": "Worker node labels required for scheduling",
+                            "default": {},
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         },
-                        "memory": {
+                        "tolerations": {
+                            "type": "array",
+                            "description": "Worker pod tolerations",
+                            "default": [],
+                            "items": {
+                                "type": "object"
+                            }
+                        },
+                        "affinity": {
+                            "type": "object",
+                            "description": "Native worker affinity; mutually exclusive with the anti-affinity preset",
+                            "default": {}
+                        },
+                        "podAntiAffinityPreset": {
                             "type": "string",
-                            "description": "Maximum worker memory",
-                            "default": "512Mi"
+                            "description": "Worker separation by topologyKey; empty, soft preference, or hard requirement",
+                            "default": "",
+                            "enum": [
+                                "",
+                                "soft",
+                                "hard"
+                            ]
+                        },
+                        "topologyKey": {
+                            "type": "string",
+                            "description": "Failure domain used by the anti-affinity preset",
+                            "default": "kubernetes.io/hostname",
+                            "minLength": 1
+                        },
+                        "topologySpreadConstraints": {
+                            "type": "array",
+                            "description": "Native spread constraints; omitted selectors default to this release and Job revision",
+                            "default": [],
+                            "items": {
+                                "type": "object",
+                                "required": [
+                                    "maxSkew",
+                                    "topologyKey",
+                                    "whenUnsatisfiable"
+                                ],
+                                "properties": {
+                                    "maxSkew": {
+                                        "type": "integer",
+                                        "minimum": 1
+                                    },
+                                    "topologyKey": {
+                                        "type": "string",
+                                        "minLength": 1
+                                    },
+                                    "whenUnsatisfiable": {
+                                        "enum": [
+                                            "DoNotSchedule",
+                                            "ScheduleAnyway"
+                                        ]
+                                    },
+                                    "labelSelector": {
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        },
+                        "priorityClassName": {
+                            "type": "string",
+                            "description": "Existing PriorityClass for worker pods",
+                            "default": ""
+                        },
+                        "schedulerName": {
+                            "type": "string",
+                            "description": "Optional scheduler override",
+                            "default": ""
                         }
-                    }
-                }
-            }
-        },
-        "scheduling": {
-            "type": "object",
-            "properties": {
-                "nodeSelector": {
+                    },
+                    "additionalProperties": false,
+                    "required": [
+                        "nodeSelector",
+                        "tolerations",
+                        "affinity",
+                        "podAntiAffinityPreset",
+                        "topologyKey",
+                        "topologySpreadConstraints",
+                        "priorityClassName",
+                        "schedulerName"
+                    ]
+                },
+                "podLabels": {
                     "type": "object",
-                    "description": "Worker node labels required for scheduling",
+                    "description": "Additional worker pod labels; chart identity labels are reserved",
                     "default": {},
                     "additionalProperties": {
                         "type": "string"
                     }
                 },
-                "tolerations": {
-                    "type": "array",
-                    "description": "Worker pod tolerations",
-                    "default": [],
-                    "items": {
-                        "type": "object"
+                "podAnnotations": {
+                    "type": "object",
+                    "description": "Additional worker pod annotations",
+                    "default": {},
+                    "additionalProperties": {
+                        "type": "string"
                     }
                 },
-                "affinity": {
+                "podSecurityContext": {
                     "type": "object",
-                    "description": "Native worker affinity; mutually exclusive with the anti-affinity preset",
-                    "default": {}
-                },
-                "podAntiAffinityPreset": {
-                    "type": "string",
-                    "description": "Worker separation by topologyKey; empty, soft preference, or hard requirement",
-                    "default": "",
-                    "enum": [
-                        "",
-                        "soft",
-                        "hard"
-                    ]
-                },
-                "topologyKey": {
-                    "type": "string",
-                    "description": "Failure domain used by the anti-affinity preset",
-                    "default": "kubernetes.io/hostname",
-                    "minLength": 1
-                },
-                "topologySpreadConstraints": {
-                    "type": "array",
-                    "description": "Native spread constraints; omitted selectors default to this release and Job revision",
-                    "default": [],
-                    "items": {
-                        "type": "object",
-                        "required": [
-                            "maxSkew",
-                            "topologyKey",
-                            "whenUnsatisfiable"
-                        ],
-                        "properties": {
-                            "maxSkew": {
-                                "type": "integer",
-                                "minimum": 1
-                            },
-                            "topologyKey": {
-                                "type": "string",
-                                "minLength": 1
-                            },
-                            "whenUnsatisfiable": {
-                                "enum": [
-                                    "DoNotSchedule",
-                                    "ScheduleAnyway"
-                                ]
-                            },
-                            "labelSelector": {
-                                "type": "object"
+                    "properties": {
+                        "runAsNonRoot": {
+                            "type": "boolean",
+                            "description": "Require non-root worker execution",
+                            "default": true
+                        },
+                        "runAsUser": {
+                            "type": "number",
+                            "description": "Worker user ID",
+                            "default": 10001
+                        },
+                        "runAsGroup": {
+                            "type": "number",
+                            "description": "Worker group ID",
+                            "default": 10001
+                        },
+                        "fsGroup": {
+                            "type": "number",
+                            "description": "Group allowed to read mounted Secrets",
+                            "default": 10001
+                        },
+                        "seccompProfile": {
+                            "type": "object",
+                            "properties": {
+                                "type": {
+                                    "type": "string",
+                                    "description": "Worker seccomp profile",
+                                    "default": "RuntimeDefault"
+                                }
                             }
                         }
                     }
                 },
-                "priorityClassName": {
-                    "type": "string",
-                    "description": "Existing PriorityClass for worker pods",
-                    "default": ""
-                },
-                "schedulerName": {
-                    "type": "string",
-                    "description": "Optional scheduler override",
-                    "default": ""
+                "containerSecurityContext": {
+                    "type": "object",
+                    "properties": {
+                        "allowPrivilegeEscalation": {
+                            "type": "boolean",
+                            "description": "Allow privilege escalation in worker containers",
+                            "default": false
+                        },
+                        "readOnlyRootFilesystem": {
+                            "type": "boolean",
+                            "description": "Require a read-only worker root filesystem",
+                            "default": true
+                        },
+                        "capabilities": {
+                            "type": "object",
+                            "properties": {
+                                "drop": {
+                                    "type": "array",
+                                    "description": "Linux capabilities removed from workers",
+                                    "default": [
+                                        "ALL"
+                                    ],
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             },
             "additionalProperties": false,
             "required": [
-                "nodeSelector",
-                "tolerations",
-                "affinity",
-                "podAntiAffinityPreset",
-                "topologyKey",
-                "topologySpreadConstraints",
-                "priorityClassName",
-                "schedulerName"
+                "workers",
+                "image",
+                "imagePullSecrets",
+                "source",
+                "database",
+                "job",
+                "resources",
+                "scheduling",
+                "podLabels",
+                "podAnnotations",
+                "podSecurityContext",
+                "containerSecurityContext"
             ]
         },
-        "podLabels": {
-            "type": "object",
-            "description": "Additional worker pod labels; chart identity labels are reserved",
-            "default": {},
-            "additionalProperties": {
-                "type": "string"
-            }
-        },
-        "podAnnotations": {
-            "type": "object",
-            "description": "Additional worker pod annotations",
-            "default": {},
-            "additionalProperties": {
-                "type": "string"
-            }
-        },
-        "podSecurityContext": {
+        "controller": {
             "type": "object",
             "properties": {
-                "runAsNonRoot": {
+                "enabled": {
                     "type": "boolean",
-                    "description": "Require non-root worker execution",
-                    "default": true
-                },
-                "runAsUser": {
-                    "type": "number",
-                    "description": "Worker user ID",
-                    "default": 10001
-                },
-                "runAsGroup": {
-                    "type": "number",
-                    "description": "Worker group ID",
-                    "default": 10001
-                },
-                "fsGroup": {
-                    "type": "number",
-                    "description": "Group allowed to read mounted Secrets",
-                    "default": 10001
-                },
-                "seccompProfile": {
-                    "type": "object",
-                    "properties": {
-                        "type": {
-                            "type": "string",
-                            "description": "Worker seccomp profile",
-                            "default": "RuntimeDefault"
-                        }
-                    }
-                }
-            }
-        },
-        "containerSecurityContext": {
-            "type": "object",
-            "properties": {
-                "allowPrivilegeEscalation": {
-                    "type": "boolean",
-                    "description": "Allow privilege escalation in worker containers",
+                    "description": "Deploy the explicit native controller profile instead of the one-shot sync Job",
                     "default": false
                 },
-                "readOnlyRootFilesystem": {
-                    "type": "boolean",
-                    "description": "Require a read-only worker root filesystem",
-                    "default": true
+                "replicas": {
+                    "type": "integer",
+                    "description": "Stateless PostgreSQL controller replicas; local Git requires exactly one",
+                    "default": 2,
+                    "minimum": 1
                 },
-                "capabilities": {
+                "image": {
                     "type": "object",
                     "properties": {
-                        "drop": {
-                            "type": "array",
-                            "description": "Linux capabilities removed from workers",
-                            "default": [
-                                "ALL"
-                            ],
-                            "items": {
-                                "type": "string"
+                        "repository": {
+                            "type": "string",
+                            "description": "Image built from this checkout; publish to a private registry before cluster use",
+                            "default": "witful",
+                            "minLength": 1
+                        },
+                        "tag": {
+                            "type": "string",
+                            "description": "Immutable application release or source tag",
+                            "default": "0.1.0",
+                            "minLength": 1
+                        },
+                        "pullPolicy": {
+                            "type": "string",
+                            "description": "Kubernetes image pull policy",
+                            "default": "IfNotPresent",
+                            "enum": [
+                                "Always",
+                                "IfNotPresent",
+                                "Never"
+                            ]
+                        }
+                    },
+                    "additionalProperties": false,
+                    "required": [
+                        "repository",
+                        "tag",
+                        "pullPolicy"
+                    ]
+                },
+                "imagePullSecrets": {
+                    "type": "array",
+                    "description": "Existing registry credential Secret names",
+                    "default": [],
+                    "items": {
+                        "type": "string",
+                        "minLength": 1
+                    }
+                },
+                "resources": {
+                    "type": "object",
+                    "properties": {
+                        "requests": {
+                            "type": "object",
+                            "properties": {
+                                "cpu": {
+                                    "type": "string",
+                                    "description": "Requested controller CPU",
+                                    "default": "100m"
+                                },
+                                "memory": {
+                                    "type": "string",
+                                    "description": "Requested controller memory",
+                                    "default": "128Mi"
+                                }
+                            }
+                        },
+                        "limits": {
+                            "type": "object",
+                            "properties": {
+                                "cpu": {
+                                    "type": "string",
+                                    "description": "Maximum controller CPU",
+                                    "default": "1"
+                                },
+                                "memory": {
+                                    "type": "string",
+                                    "description": "Maximum controller memory",
+                                    "default": "512Mi"
+                                }
                             }
                         }
                     }
+                },
+                "scheduling": {
+                    "type": "object",
+                    "properties": {
+                        "nodeSelector": {
+                            "type": "object",
+                            "description": "Controller node labels required for scheduling",
+                            "default": {},
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        },
+                        "tolerations": {
+                            "type": "array",
+                            "description": "Controller pod tolerations",
+                            "default": [],
+                            "items": {
+                                "type": "object"
+                            }
+                        },
+                        "affinity": {
+                            "type": "object",
+                            "description": "Native controller affinity; mutually exclusive with the anti-affinity preset",
+                            "default": {}
+                        },
+                        "podAntiAffinityPreset": {
+                            "type": "string",
+                            "description": "Controller separation by topologyKey; empty, soft preference, or hard requirement",
+                            "default": "",
+                            "enum": [
+                                "",
+                                "soft",
+                                "hard"
+                            ]
+                        },
+                        "topologyKey": {
+                            "type": "string",
+                            "description": "Failure domain used by the anti-affinity preset",
+                            "default": "kubernetes.io/hostname",
+                            "minLength": 1
+                        },
+                        "topologySpreadConstraints": {
+                            "type": "array",
+                            "description": "Native spread constraints; omitted selectors default to this release and controller",
+                            "default": [],
+                            "items": {
+                                "type": "object",
+                                "required": [
+                                    "maxSkew",
+                                    "topologyKey",
+                                    "whenUnsatisfiable"
+                                ],
+                                "properties": {
+                                    "maxSkew": {
+                                        "type": "integer",
+                                        "minimum": 1
+                                    },
+                                    "topologyKey": {
+                                        "type": "string",
+                                        "minLength": 1
+                                    },
+                                    "whenUnsatisfiable": {
+                                        "enum": [
+                                            "DoNotSchedule",
+                                            "ScheduleAnyway"
+                                        ]
+                                    },
+                                    "labelSelector": {
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        },
+                        "priorityClassName": {
+                            "type": "string",
+                            "description": "Existing PriorityClass for controller pods",
+                            "default": ""
+                        },
+                        "schedulerName": {
+                            "type": "string",
+                            "description": "Optional scheduler override",
+                            "default": ""
+                        }
+                    },
+                    "additionalProperties": false,
+                    "required": [
+                        "nodeSelector",
+                        "tolerations",
+                        "affinity",
+                        "podAntiAffinityPreset",
+                        "topologyKey",
+                        "topologySpreadConstraints",
+                        "priorityClassName",
+                        "schedulerName"
+                    ]
+                },
+                "podLabels": {
+                    "type": "object",
+                    "description": "Additional controller pod labels; chart identity labels are reserved",
+                    "default": {},
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "podAnnotations": {
+                    "type": "object",
+                    "description": "Additional controller pod annotations",
+                    "default": {},
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "podSecurityContext": {
+                    "type": "object",
+                    "properties": {
+                        "runAsNonRoot": {
+                            "type": "boolean",
+                            "description": "Require non-root controller execution",
+                            "default": true
+                        },
+                        "runAsUser": {
+                            "type": "number",
+                            "description": "Controller user ID",
+                            "default": 10001
+                        },
+                        "runAsGroup": {
+                            "type": "number",
+                            "description": "Controller group ID",
+                            "default": 10001
+                        },
+                        "fsGroup": {
+                            "type": "number",
+                            "description": "Group allowed to read mounted Secrets",
+                            "default": 10001
+                        },
+                        "seccompProfile": {
+                            "type": "object",
+                            "properties": {
+                                "type": {
+                                    "type": "string",
+                                    "description": "Controller seccomp profile",
+                                    "default": "RuntimeDefault"
+                                }
+                            }
+                        }
+                    }
+                },
+                "containerSecurityContext": {
+                    "type": "object",
+                    "properties": {
+                        "allowPrivilegeEscalation": {
+                            "type": "boolean",
+                            "description": "Allow privilege escalation in controller containers",
+                            "default": false
+                        },
+                        "readOnlyRootFilesystem": {
+                            "type": "boolean",
+                            "description": "Require a read-only controller root filesystem",
+                            "default": true
+                        },
+                        "capabilities": {
+                            "type": "object",
+                            "properties": {
+                                "drop": {
+                                    "type": "array",
+                                    "description": "Linux capabilities removed from controllers",
+                                    "default": [
+                                        "ALL"
+                                    ],
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "configuration": {
+                    "anyOf": [
+                        {
+                            "type": "object",
+                            "maxProperties": 0
+                        },
+                        {
+                            "type": "object",
+                            "title": "Settings",
+                            "additionalProperties": false,
+                            "properties": {
+                                "backend": {
+                                    "type": "object",
+                                    "title": "Backend",
+                                    "additionalProperties": false,
+                                    "properties": {
+                                        "id": {
+                                            "type": "string"
+                                        },
+                                        "database_environment": {
+                                            "type": "string"
+                                        },
+                                        "kind": {
+                                            "enum": [
+                                                "postgres",
+                                                "git"
+                                            ],
+                                            "type": "string"
+                                        },
+                                        "path": {
+                                            "type": "string"
+                                        },
+                                        "author": {
+                                            "type": "string"
+                                        },
+                                        "email": {
+                                            "type": "string"
+                                        },
+                                        "synchronous": {
+                                            "type": "boolean"
+                                        },
+                                        "max_objects": {
+                                            "type": "integer"
+                                        },
+                                        "max_bytes": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "required": [
+                                        "id"
+                                    ]
+                                },
+                                "tls": {
+                                    "type": "object",
+                                    "title": "TLS",
+                                    "additionalProperties": false,
+                                    "properties": {
+                                        "certificate": {
+                                            "type": "string"
+                                        },
+                                        "key": {
+                                            "type": "string"
+                                        },
+                                        "ca": {
+                                            "type": "string"
+                                        },
+                                        "server_name": {
+                                            "type": "string"
+                                        },
+                                        "client_certificate": {
+                                            "type": "string"
+                                        },
+                                        "client_key": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "certificate",
+                                        "key",
+                                        "ca",
+                                        "server_name",
+                                        "client_certificate",
+                                        "client_key"
+                                    ]
+                                },
+                                "broker": {
+                                    "type": "object",
+                                    "title": "Broker",
+                                    "additionalProperties": false,
+                                    "properties": {
+                                        "url": {
+                                            "type": "string"
+                                        },
+                                        "ca": {
+                                            "type": "string"
+                                        },
+                                        "certificate": {
+                                            "type": "string"
+                                        },
+                                        "key": {
+                                            "type": "string"
+                                        },
+                                        "wrapping": {
+                                            "type": "string"
+                                        },
+                                        "signing": {
+                                            "type": "string"
+                                        },
+                                        "authority": {
+                                            "type": "string"
+                                        },
+                                        "policy": {
+                                            "type": "string"
+                                        },
+                                        "signers": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "title": "Trust",
+                                                "additionalProperties": false,
+                                                "properties": {
+                                                    "generation": {
+                                                        "type": "string"
+                                                    },
+                                                    "public": {
+                                                        "type": "string"
+                                                    },
+                                                    "fingerprint": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "generation",
+                                                    "public",
+                                                    "fingerprint"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "url",
+                                        "ca",
+                                        "certificate",
+                                        "key",
+                                        "wrapping",
+                                        "signing",
+                                        "authority",
+                                        "policy",
+                                        "signers"
+                                    ]
+                                },
+                                "probe": {
+                                    "type": "object",
+                                    "title": "Probe",
+                                    "additionalProperties": false,
+                                    "properties": {
+                                        "tenant": {
+                                            "type": "string"
+                                        },
+                                        "identity": {
+                                            "type": "string"
+                                        },
+                                        "grant": {
+                                            "type": "string"
+                                        },
+                                        "task": {
+                                            "type": "string"
+                                        },
+                                        "epoch": {
+                                            "type": "integer"
+                                        },
+                                        "policy": {
+                                            "type": "string"
+                                        },
+                                        "envelope": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "tenant",
+                                        "identity",
+                                        "grant",
+                                        "task",
+                                        "epoch",
+                                        "policy"
+                                    ]
+                                },
+                                "protection": {
+                                    "type": "object",
+                                    "title": "Protection",
+                                    "additionalProperties": false,
+                                    "properties": {
+                                        "path": {
+                                            "type": "string"
+                                        },
+                                        "public": {
+                                            "type": "string"
+                                        },
+                                        "fingerprint": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "path",
+                                        "public",
+                                        "fingerprint"
+                                    ]
+                                },
+                                "runtime": {
+                                    "type": "object",
+                                    "title": "Runtime",
+                                    "additionalProperties": false,
+                                    "properties": {
+                                        "host": {
+                                            "type": "string"
+                                        },
+                                        "port": {
+                                            "type": "integer"
+                                        },
+                                        "workers": {
+                                            "type": "integer"
+                                        },
+                                        "threads": {
+                                            "type": "integer"
+                                        },
+                                        "worker_connections": {
+                                            "type": "integer"
+                                        },
+                                        "backlog": {
+                                            "type": "integer"
+                                        },
+                                        "admission": {
+                                            "type": "integer"
+                                        },
+                                        "recovery_admission": {
+                                            "type": "integer"
+                                        },
+                                        "timeout": {
+                                            "type": "integer"
+                                        },
+                                        "graceful_timeout": {
+                                            "type": "integer"
+                                        },
+                                        "keepalive": {
+                                            "type": "integer"
+                                        },
+                                        "working_directory": {
+                                            "type": "string"
+                                        },
+                                        "readiness_seconds": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "required": []
+                                },
+                                "budget": {
+                                    "type": "object",
+                                    "title": "Budget",
+                                    "additionalProperties": false,
+                                    "properties": {
+                                        "revisions": {
+                                            "type": "integer"
+                                        },
+                                        "refs": {
+                                            "type": "integer"
+                                        },
+                                        "seconds": {
+                                            "type": "number"
+                                        },
+                                        "bytes": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "required": []
+                                },
+                                "destinations": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "title": "Backend",
+                                        "additionalProperties": false,
+                                        "properties": {
+                                            "id": {
+                                                "type": "string"
+                                            },
+                                            "database_environment": {
+                                                "type": "string"
+                                            },
+                                            "kind": {
+                                                "enum": [
+                                                    "postgres",
+                                                    "git"
+                                                ],
+                                                "type": "string"
+                                            },
+                                            "path": {
+                                                "type": "string"
+                                            },
+                                            "author": {
+                                                "type": "string"
+                                            },
+                                            "email": {
+                                                "type": "string"
+                                            },
+                                            "synchronous": {
+                                                "type": "boolean"
+                                            },
+                                            "max_objects": {
+                                                "type": "integer"
+                                            },
+                                            "max_bytes": {
+                                                "type": "integer"
+                                            }
+                                        },
+                                        "required": [
+                                            "id"
+                                        ]
+                                    }
+                                },
+                                "archives": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "title": "ArchivePath",
+                                        "additionalProperties": false,
+                                        "properties": {
+                                            "name": {
+                                                "type": "string"
+                                            },
+                                            "tenant": {
+                                                "type": "string"
+                                            },
+                                            "identity": {
+                                                "type": "string"
+                                            },
+                                            "path": {
+                                                "type": "string"
+                                            },
+                                            "mode": {
+                                                "enum": [
+                                                    "capture",
+                                                    "restore"
+                                                ],
+                                                "type": "string"
+                                            }
+                                        },
+                                        "required": [
+                                            "name",
+                                            "tenant",
+                                            "identity",
+                                            "path",
+                                            "mode"
+                                        ]
+                                    }
+                                },
+                                "derivations": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "title": "DerivationTarget",
+                                        "additionalProperties": false,
+                                        "properties": {
+                                            "name": {
+                                                "type": "string"
+                                            },
+                                            "backend": {
+                                                "type": "string"
+                                            },
+                                            "tenant": {
+                                                "type": "string"
+                                            },
+                                            "identity": {
+                                                "type": "string"
+                                            },
+                                            "grant": {
+                                                "type": "string"
+                                            },
+                                            "task": {
+                                                "type": "string"
+                                            },
+                                            "epoch": {
+                                                "type": "integer"
+                                            },
+                                            "policy": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "required": [
+                                            "name",
+                                            "backend",
+                                            "tenant",
+                                            "identity",
+                                            "grant",
+                                            "task",
+                                            "epoch",
+                                            "policy"
+                                        ]
+                                    }
+                                },
+                                "recipients": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "title": "ExportRecipient",
+                                        "additionalProperties": false,
+                                        "properties": {
+                                            "name": {
+                                                "type": "string"
+                                            },
+                                            "tenant": {
+                                                "type": "string"
+                                            },
+                                            "identity": {
+                                                "type": "string"
+                                            },
+                                            "generation": {
+                                                "type": "string"
+                                            },
+                                            "public": {
+                                                "type": "string"
+                                            },
+                                            "fingerprint": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "required": [
+                                            "name",
+                                            "tenant",
+                                            "identity",
+                                            "generation",
+                                            "public",
+                                            "fingerprint"
+                                        ]
+                                    }
+                                },
+                                "role": {
+                                    "enum": [
+                                        "controller",
+                                        "projection"
+                                    ],
+                                    "type": "string"
+                                },
+                                "projection": {
+                                    "type": "object",
+                                    "title": "Policy",
+                                    "additionalProperties": false,
+                                    "properties": {
+                                        "mode": {
+                                            "enum": [
+                                                "disabled",
+                                                "manual",
+                                                "interval",
+                                                "batch",
+                                                "required"
+                                            ],
+                                            "type": "string"
+                                        },
+                                        "targets": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "title": "Target",
+                                                "additionalProperties": false,
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "string"
+                                                    },
+                                                    "tenant": {
+                                                        "type": "string"
+                                                    },
+                                                    "identity": {
+                                                        "type": "string"
+                                                    },
+                                                    "url": {
+                                                        "type": "string"
+                                                    },
+                                                    "ca": {
+                                                        "type": "string"
+                                                    },
+                                                    "certificate": {
+                                                        "type": "string"
+                                                    },
+                                                    "key": {
+                                                        "type": "string"
+                                                    },
+                                                    "grant": {
+                                                        "type": "string"
+                                                    },
+                                                    "task": {
+                                                        "type": "string"
+                                                    },
+                                                    "initial": {
+                                                        "anyOf": [
+                                                            {
+                                                                "type": "string"
+                                                            },
+                                                            {
+                                                                "type": "null"
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "tenant",
+                                                    "identity",
+                                                    "url",
+                                                    "ca",
+                                                    "certificate",
+                                                    "key",
+                                                    "grant",
+                                                    "task"
+                                                ]
+                                            }
+                                        },
+                                        "permit_wrapping": {
+                                            "type": "string"
+                                        },
+                                        "author": {
+                                            "type": "string"
+                                        },
+                                        "email": {
+                                            "type": "string"
+                                        },
+                                        "interval_seconds": {
+                                            "type": "integer"
+                                        },
+                                        "batch_size": {
+                                            "type": "integer"
+                                        },
+                                        "max_entries": {
+                                            "type": "integer"
+                                        },
+                                        "max_bytes": {
+                                            "type": "integer"
+                                        },
+                                        "max_lag_seconds": {
+                                            "type": "integer"
+                                        },
+                                        "attempts": {
+                                            "type": "integer"
+                                        },
+                                        "retry_seconds": {
+                                            "type": "integer"
+                                        },
+                                        "retry_max_seconds": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "required": []
+                                },
+                                "gateway": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "title": "GatewayRemote",
+                                        "additionalProperties": false,
+                                        "properties": {
+                                            "id": {
+                                                "type": "string"
+                                            },
+                                            "tenant": {
+                                                "type": "string"
+                                            },
+                                            "identity": {
+                                                "type": "string"
+                                            },
+                                            "url": {
+                                                "type": "string"
+                                            },
+                                            "ref": {
+                                                "type": "string"
+                                            },
+                                            "directory": {
+                                                "type": "string"
+                                            },
+                                            "ssh_key": {
+                                                "type": "string"
+                                            },
+                                            "known_hosts": {
+                                                "type": "string"
+                                            },
+                                            "author": {
+                                                "type": "string"
+                                            },
+                                            "email": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "required": [
+                                            "id",
+                                            "tenant",
+                                            "identity",
+                                            "url",
+                                            "ref",
+                                            "directory",
+                                            "ssh_key",
+                                            "known_hosts"
+                                        ]
+                                    }
+                                },
+                                "envelope": {
+                                    "type": "object",
+                                    "title": "Limits",
+                                    "additionalProperties": false,
+                                    "properties": {
+                                        "bytes": {
+                                            "type": "integer"
+                                        },
+                                        "items": {
+                                            "type": "integer"
+                                        },
+                                        "depth": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "required": []
+                                },
+                                "codegraphs": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "title": "Enrollment",
+                                        "additionalProperties": false,
+                                        "properties": {
+                                            "tenant": {
+                                                "type": "string"
+                                            },
+                                            "extension": {
+                                                "type": "string"
+                                            },
+                                            "owner": {
+                                                "type": "string"
+                                            },
+                                            "subject": {
+                                                "type": "string"
+                                            },
+                                            "repository": {
+                                                "type": "string"
+                                            },
+                                            "image": {
+                                                "type": "string"
+                                            },
+                                            "excluded": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "retention": {
+                                                "type": "string"
+                                            },
+                                            "source_bytes": {
+                                                "type": "integer"
+                                            },
+                                            "files": {
+                                                "type": "integer"
+                                            },
+                                            "seconds": {
+                                                "type": "integer"
+                                            },
+                                            "memory_mb": {
+                                                "type": "integer"
+                                            },
+                                            "profile": {
+                                                "enum": [
+                                                    "python",
+                                                    "sdk"
+                                                ],
+                                                "type": "string"
+                                            },
+                                            "worker_bytes": {
+                                                "type": "integer"
+                                            },
+                                            "extensions": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "object",
+                                                    "title": "Extension",
+                                                    "additionalProperties": false,
+                                                    "properties": {
+                                                        "suffix": {
+                                                            "type": "string"
+                                                        },
+                                                        "language": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "suffix",
+                                                        "language"
+                                                    ]
+                                                }
+                                            }
+                                        },
+                                        "required": [
+                                            "tenant",
+                                            "extension",
+                                            "owner",
+                                            "subject",
+                                            "repository",
+                                            "image"
+                                        ]
+                                    }
+                                },
+                                "version": {
+                                    "enum": [
+                                        1
+                                    ],
+                                    "type": "integer"
+                                }
+                            },
+                            "required": [
+                                "backend",
+                                "tls",
+                                "broker",
+                                "probe",
+                                "protection"
+                            ]
+                        }
+                    ]
+                },
+                "secretEnvironment": {
+                    "type": "object",
+                    "description": "Existing Secret key references keyed by authoritative environment variable name",
+                    "default": {},
+                    "propertyNames": {
+                        "pattern": "^[A-Z_][A-Z0-9_]*$"
+                    },
+                    "additionalProperties": {
+                        "type": "object",
+                        "required": [
+                            "name",
+                            "key"
+                        ],
+                        "additionalProperties": false,
+                        "properties": {
+                            "name": {
+                                "type": "string",
+                                "minLength": 1
+                            },
+                            "key": {
+                                "type": "string",
+                                "minLength": 1
+                            }
+                        }
+                    }
+                },
+                "secretMounts": {
+                    "type": "array",
+                    "description": "Existing Secret projections with name, secretName, mountPath and explicit items; credentials mount read-only",
+                    "default": [],
+                    "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                            "name",
+                            "secretName",
+                            "mountPath",
+                            "items"
+                        ],
+                        "properties": {
+                            "name": {
+                                "type": "string",
+                                "minLength": 1
+                            },
+                            "secretName": {
+                                "type": "string",
+                                "minLength": 1
+                            },
+                            "mountPath": {
+                                "type": "string",
+                                "pattern": "^/"
+                            },
+                            "items": {
+                                "type": "array",
+                                "minItems": 1,
+                                "items": {
+                                    "type": "object",
+                                    "required": [
+                                        "key",
+                                        "path"
+                                    ],
+                                    "additionalProperties": false,
+                                    "properties": {
+                                        "key": {
+                                            "type": "string",
+                                            "minLength": 1
+                                        },
+                                        "path": {
+                                            "type": "string",
+                                            "minLength": 1
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "archiveVolumes": {
+                    "type": "array",
+                    "description": "Existing protected original-Git claims with name, existingClaim, mountPath and readOnly; scoped aliases live in configuration.archives",
+                    "default": [],
+                    "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                            "name",
+                            "existingClaim",
+                            "mountPath",
+                            "readOnly"
+                        ],
+                        "properties": {
+                            "name": {
+                                "type": "string",
+                                "minLength": 1
+                            },
+                            "existingClaim": {
+                                "type": "string",
+                                "minLength": 1
+                            },
+                            "mountPath": {
+                                "type": "string",
+                                "pattern": "^/"
+                            },
+                            "readOnly": {
+                                "type": "boolean"
+                            }
+                        }
+                    }
+                },
+                "terminationGracePeriodSeconds": {
+                    "type": "integer",
+                    "description": "Pod termination budget; must exceed the configured runtime drain timeout",
+                    "default": 45,
+                    "minimum": 1
+                },
+                "workingSizeLimit": {
+                    "type": "string",
+                    "description": "Size limit for the memory-backed runtime working directory",
+                    "default": "256Mi"
+                },
+                "git": {
+                    "type": "object",
+                    "properties": {
+                        "existingClaim": {
+                            "type": "string",
+                            "description": "Existing retained single-writer Git PVC; never created, formatted or removed by the chart",
+                            "default": ""
+                        },
+                        "mountPath": {
+                            "type": "string",
+                            "description": "Mount path matching configuration.backend.path for local Git",
+                            "default": "/var/lib/witful/git"
+                        }
+                    },
+                    "additionalProperties": false,
+                    "required": [
+                        "existingClaim",
+                        "mountPath"
+                    ]
+                },
+                "pdb": {
+                    "type": "object",
+                    "properties": {
+                        "enabled": {
+                            "type": "boolean",
+                            "description": "Create a PodDisruptionBudget for voluntary maintenance",
+                            "default": true
+                        },
+                        "minAvailable": {
+                            "type": "integer",
+                            "description": "Minimum available controller pods; use zero for an explicitly reviewed single-writer profile",
+                            "default": 1,
+                            "minimum": 0
+                        }
+                    },
+                    "additionalProperties": false,
+                    "required": [
+                        "enabled",
+                        "minAvailable"
+                    ]
+                },
+                "networkPolicy": {
+                    "type": "object",
+                    "properties": {
+                        "enabled": {
+                            "type": "boolean",
+                            "description": "Restrict controller traffic to explicit reviewed peer rules",
+                            "default": true
+                        },
+                        "ingress": {
+                            "type": "array",
+                            "description": "Native ingress rules for authenticated clients and monitoring; empty denies traffic",
+                            "default": [],
+                            "items": {
+                                "type": "object"
+                            }
+                        },
+                        "egress": {
+                            "type": "array",
+                            "description": "Native egress rules for DNS, authority, storage and broker; empty denies traffic",
+                            "default": [],
+                            "items": {
+                                "type": "object"
+                            }
+                        }
+                    },
+                    "additionalProperties": false,
+                    "required": [
+                        "enabled",
+                        "ingress",
+                        "egress"
+                    ]
+                },
+                "probes": {
+                    "type": "object",
+                    "properties": {
+                        "startup": {
+                            "type": "object",
+                            "properties": {
+                                "failureThreshold": {
+                                    "type": "integer",
+                                    "description": "Startup attempts before restart",
+                                    "default": 30,
+                                    "minimum": 1
+                                },
+                                "periodSeconds": {
+                                    "type": "integer",
+                                    "description": "Startup probe interval",
+                                    "default": 2,
+                                    "minimum": 1
+                                }
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                                "failureThreshold",
+                                "periodSeconds"
+                            ]
+                        },
+                        "readiness": {
+                            "type": "object",
+                            "properties": {
+                                "failureThreshold": {
+                                    "type": "integer",
+                                    "description": "Failed readiness checks before endpoint withdrawal",
+                                    "default": 3,
+                                    "minimum": 1
+                                },
+                                "periodSeconds": {
+                                    "type": "integer",
+                                    "description": "Readiness probe interval",
+                                    "default": 10,
+                                    "minimum": 1
+                                },
+                                "timeoutSeconds": {
+                                    "type": "integer",
+                                    "description": "Readiness command time budget",
+                                    "default": 6,
+                                    "minimum": 1
+                                }
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                                "failureThreshold",
+                                "periodSeconds",
+                                "timeoutSeconds"
+                            ]
+                        },
+                        "liveness": {
+                            "type": "object",
+                            "properties": {
+                                "failureThreshold": {
+                                    "type": "integer",
+                                    "description": "Local listener failures before restart",
+                                    "default": 3,
+                                    "minimum": 1
+                                },
+                                "periodSeconds": {
+                                    "type": "integer",
+                                    "description": "Liveness probe interval independent of upstream health",
+                                    "default": 10,
+                                    "minimum": 1
+                                }
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                                "failureThreshold",
+                                "periodSeconds"
+                            ]
+                        }
+                    },
+                    "additionalProperties": false,
+                    "required": [
+                        "startup",
+                        "readiness",
+                        "liveness"
+                    ]
+                },
+                "scheduler": {
+                    "type": "object",
+                    "properties": {
+                        "enabled": {
+                            "type": "boolean",
+                            "description": "Deploy bounded per-identity delivery CronJobs using only independently scoped client credentials",
+                            "default": false
+                        },
+                        "schedule": {
+                            "type": "string",
+                            "description": "Kubernetes CronJob schedule; the controller also enforces interval and batch policy",
+                            "default": "* * * * *"
+                        },
+                        "seconds": {
+                            "type": "integer",
+                            "description": "Complete CLI cycle budget in seconds",
+                            "default": 300,
+                            "minimum": 1
+                        },
+                        "activeDeadlineSeconds": {
+                            "type": "integer",
+                            "description": "Pod execution deadline; must exceed the CLI cycle budget",
+                            "default": 330,
+                            "minimum": 1
+                        },
+                        "terminationGracePeriodSeconds": {
+                            "type": "integer",
+                            "description": "Shutdown budget for the bounded in-flight HTTPS request and interruptible backoff",
+                            "default": 35,
+                            "minimum": 1
+                        },
+                        "networkPolicy": {
+                            "type": "object",
+                            "properties": {
+                                "enabled": {
+                                    "type": "boolean",
+                                    "description": "Restrict scheduler ingress and explicit controller/DNS egress",
+                                    "default": true
+                                },
+                                "egress": {
+                                    "type": "array",
+                                    "description": "Approved scheduler-only network egress rules; empty denies traffic",
+                                    "default": [],
+                                    "items": {
+                                        "type": "object"
+                                    }
+                                }
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                                "enabled",
+                                "egress"
+                            ]
+                        },
+                        "startingDeadlineSeconds": {
+                            "type": "integer",
+                            "description": "Maximum late scheduled-start allowance",
+                            "default": 60,
+                            "minimum": 1
+                        },
+                        "successfulJobsHistoryLimit": {
+                            "type": "integer",
+                            "description": "Retained successful scheduling Jobs",
+                            "default": 1,
+                            "minimum": 0
+                        },
+                        "failedJobsHistoryLimit": {
+                            "type": "integer",
+                            "description": "Retained failed scheduling Jobs",
+                            "default": 3,
+                            "minimum": 0
+                        },
+                        "clients": {
+                            "type": "array",
+                            "description": "Identity client Secret references with name, secretName and key; each gets an independent CronJob",
+                            "default": [],
+                            "items": {
+                                "type": "object",
+                                "required": [
+                                    "name",
+                                    "secretName",
+                                    "key"
+                                ],
+                                "additionalProperties": false,
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "pattern": "^[a-z0-9]([-a-z0-9]*[a-z0-9])?$"
+                                    },
+                                    "secretName": {
+                                        "type": "string",
+                                        "minLength": 1
+                                    },
+                                    "key": {
+                                        "type": "string",
+                                        "minLength": 1
+                                    }
+                                }
+                            }
+                        },
+                        "secretMounts": {
+                            "type": "array",
+                            "description": "Scheduler-only TLS Secret projections; never inherit controller custody/database credentials",
+                            "default": [],
+                            "items": {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "required": [
+                                    "name",
+                                    "secretName",
+                                    "mountPath",
+                                    "items"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "minLength": 1
+                                    },
+                                    "secretName": {
+                                        "type": "string",
+                                        "minLength": 1
+                                    },
+                                    "mountPath": {
+                                        "type": "string",
+                                        "pattern": "^/"
+                                    },
+                                    "items": {
+                                        "type": "array",
+                                        "minItems": 1,
+                                        "items": {
+                                            "type": "object",
+                                            "required": [
+                                                "key",
+                                                "path"
+                                            ],
+                                            "additionalProperties": false,
+                                            "properties": {
+                                                "key": {
+                                                    "type": "string",
+                                                    "minLength": 1
+                                                },
+                                                "path": {
+                                                    "type": "string",
+                                                    "minLength": 1
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "resources": {
+                            "type": "object",
+                            "properties": {
+                                "requests": {
+                                    "type": "object",
+                                    "properties": {
+                                        "cpu": {
+                                            "type": "string",
+                                            "description": "Requested scheduler CPU",
+                                            "default": "100m"
+                                        },
+                                        "memory": {
+                                            "type": "string",
+                                            "description": "Requested scheduler memory",
+                                            "default": "128Mi"
+                                        }
+                                    }
+                                },
+                                "limits": {
+                                    "type": "object",
+                                    "properties": {
+                                        "cpu": {
+                                            "type": "string",
+                                            "description": "Maximum scheduler CPU",
+                                            "default": "1"
+                                        },
+                                        "memory": {
+                                            "type": "string",
+                                            "description": "Maximum scheduler memory",
+                                            "default": "512Mi"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "additionalProperties": false,
+                    "required": [
+                        "enabled",
+                        "schedule",
+                        "seconds",
+                        "activeDeadlineSeconds",
+                        "terminationGracePeriodSeconds",
+                        "networkPolicy",
+                        "startingDeadlineSeconds",
+                        "successfulJobsHistoryLimit",
+                        "failedJobsHistoryLimit",
+                        "clients",
+                        "secretMounts",
+                        "resources"
+                    ]
                 }
-            }
+            },
+            "additionalProperties": false,
+            "required": [
+                "enabled",
+                "replicas",
+                "image",
+                "imagePullSecrets",
+                "resources",
+                "scheduling",
+                "podLabels",
+                "podAnnotations",
+                "podSecurityContext",
+                "containerSecurityContext",
+                "configuration",
+                "secretEnvironment",
+                "secretMounts",
+                "archiveVolumes",
+                "terminationGracePeriodSeconds",
+                "workingSizeLimit",
+                "git",
+                "pdb",
+                "networkPolicy",
+                "probes",
+                "scheduler"
+            ]
         },
         "cloudnative-pg": {
             "type": "object",
@@ -6094,1240 +7609,6 @@
                 "enabled",
                 "spec"
             ]
-        },
-        "controller": {
-            "type": "object",
-            "properties": {
-                "enabled": {
-                    "type": "boolean",
-                    "description": "Deploy the explicit native controller profile instead of the one-shot sync Job",
-                    "default": false
-                },
-                "replicas": {
-                    "type": "integer",
-                    "description": "Stateless PostgreSQL controller replicas; local Git requires exactly one",
-                    "default": 2,
-                    "minimum": 1
-                },
-                "configuration": {
-                    "anyOf": [
-                        {
-                            "type": "object",
-                            "maxProperties": 0
-                        },
-                        {
-                            "type": "object",
-                            "title": "Settings",
-                            "additionalProperties": false,
-                            "properties": {
-                                "backend": {
-                                    "type": "object",
-                                    "title": "Backend",
-                                    "additionalProperties": false,
-                                    "properties": {
-                                        "id": {
-                                            "type": "string"
-                                        },
-                                        "database_environment": {
-                                            "type": "string"
-                                        },
-                                        "kind": {
-                                            "enum": [
-                                                "postgres",
-                                                "git"
-                                            ],
-                                            "type": "string"
-                                        },
-                                        "path": {
-                                            "type": "string"
-                                        },
-                                        "author": {
-                                            "type": "string"
-                                        },
-                                        "email": {
-                                            "type": "string"
-                                        },
-                                        "synchronous": {
-                                            "type": "boolean"
-                                        },
-                                        "max_objects": {
-                                            "type": "integer"
-                                        },
-                                        "max_bytes": {
-                                            "type": "integer"
-                                        }
-                                    },
-                                    "required": [
-                                        "id"
-                                    ]
-                                },
-                                "tls": {
-                                    "type": "object",
-                                    "title": "TLS",
-                                    "additionalProperties": false,
-                                    "properties": {
-                                        "certificate": {
-                                            "type": "string"
-                                        },
-                                        "key": {
-                                            "type": "string"
-                                        },
-                                        "ca": {
-                                            "type": "string"
-                                        },
-                                        "server_name": {
-                                            "type": "string"
-                                        },
-                                        "client_certificate": {
-                                            "type": "string"
-                                        },
-                                        "client_key": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "required": [
-                                        "certificate",
-                                        "key",
-                                        "ca",
-                                        "server_name",
-                                        "client_certificate",
-                                        "client_key"
-                                    ]
-                                },
-                                "broker": {
-                                    "type": "object",
-                                    "title": "Broker",
-                                    "additionalProperties": false,
-                                    "properties": {
-                                        "url": {
-                                            "type": "string"
-                                        },
-                                        "ca": {
-                                            "type": "string"
-                                        },
-                                        "certificate": {
-                                            "type": "string"
-                                        },
-                                        "key": {
-                                            "type": "string"
-                                        },
-                                        "wrapping": {
-                                            "type": "string"
-                                        },
-                                        "signing": {
-                                            "type": "string"
-                                        },
-                                        "authority": {
-                                            "type": "string"
-                                        },
-                                        "policy": {
-                                            "type": "string"
-                                        },
-                                        "signers": {
-                                            "type": "array",
-                                            "items": {
-                                                "type": "object",
-                                                "title": "Trust",
-                                                "additionalProperties": false,
-                                                "properties": {
-                                                    "generation": {
-                                                        "type": "string"
-                                                    },
-                                                    "public": {
-                                                        "type": "string"
-                                                    },
-                                                    "fingerprint": {
-                                                        "type": "string"
-                                                    }
-                                                },
-                                                "required": [
-                                                    "generation",
-                                                    "public",
-                                                    "fingerprint"
-                                                ]
-                                            }
-                                        }
-                                    },
-                                    "required": [
-                                        "url",
-                                        "ca",
-                                        "certificate",
-                                        "key",
-                                        "wrapping",
-                                        "signing",
-                                        "authority",
-                                        "policy",
-                                        "signers"
-                                    ]
-                                },
-                                "probe": {
-                                    "type": "object",
-                                    "title": "Probe",
-                                    "additionalProperties": false,
-                                    "properties": {
-                                        "tenant": {
-                                            "type": "string"
-                                        },
-                                        "identity": {
-                                            "type": "string"
-                                        },
-                                        "grant": {
-                                            "type": "string"
-                                        },
-                                        "task": {
-                                            "type": "string"
-                                        },
-                                        "epoch": {
-                                            "type": "integer"
-                                        },
-                                        "policy": {
-                                            "type": "string"
-                                        },
-                                        "envelope": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "required": [
-                                        "tenant",
-                                        "identity",
-                                        "grant",
-                                        "task",
-                                        "epoch",
-                                        "policy"
-                                    ]
-                                },
-                                "protection": {
-                                    "type": "object",
-                                    "title": "Protection",
-                                    "additionalProperties": false,
-                                    "properties": {
-                                        "path": {
-                                            "type": "string"
-                                        },
-                                        "public": {
-                                            "type": "string"
-                                        },
-                                        "fingerprint": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "required": [
-                                        "path",
-                                        "public",
-                                        "fingerprint"
-                                    ]
-                                },
-                                "runtime": {
-                                    "type": "object",
-                                    "title": "Runtime",
-                                    "additionalProperties": false,
-                                    "properties": {
-                                        "host": {
-                                            "type": "string"
-                                        },
-                                        "port": {
-                                            "type": "integer"
-                                        },
-                                        "workers": {
-                                            "type": "integer"
-                                        },
-                                        "threads": {
-                                            "type": "integer"
-                                        },
-                                        "worker_connections": {
-                                            "type": "integer"
-                                        },
-                                        "backlog": {
-                                            "type": "integer"
-                                        },
-                                        "admission": {
-                                            "type": "integer"
-                                        },
-                                        "recovery_admission": {
-                                            "type": "integer"
-                                        },
-                                        "timeout": {
-                                            "type": "integer"
-                                        },
-                                        "graceful_timeout": {
-                                            "type": "integer"
-                                        },
-                                        "keepalive": {
-                                            "type": "integer"
-                                        },
-                                        "working_directory": {
-                                            "type": "string"
-                                        },
-                                        "readiness_seconds": {
-                                            "type": "integer"
-                                        }
-                                    },
-                                    "required": []
-                                },
-                                "budget": {
-                                    "type": "object",
-                                    "title": "Budget",
-                                    "additionalProperties": false,
-                                    "properties": {
-                                        "revisions": {
-                                            "type": "integer"
-                                        },
-                                        "refs": {
-                                            "type": "integer"
-                                        },
-                                        "seconds": {
-                                            "type": "number"
-                                        },
-                                        "bytes": {
-                                            "type": "integer"
-                                        }
-                                    },
-                                    "required": []
-                                },
-                                "destinations": {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "object",
-                                        "title": "Backend",
-                                        "additionalProperties": false,
-                                        "properties": {
-                                            "id": {
-                                                "type": "string"
-                                            },
-                                            "database_environment": {
-                                                "type": "string"
-                                            },
-                                            "kind": {
-                                                "enum": [
-                                                    "postgres",
-                                                    "git"
-                                                ],
-                                                "type": "string"
-                                            },
-                                            "path": {
-                                                "type": "string"
-                                            },
-                                            "author": {
-                                                "type": "string"
-                                            },
-                                            "email": {
-                                                "type": "string"
-                                            },
-                                            "synchronous": {
-                                                "type": "boolean"
-                                            },
-                                            "max_objects": {
-                                                "type": "integer"
-                                            },
-                                            "max_bytes": {
-                                                "type": "integer"
-                                            }
-                                        },
-                                        "required": [
-                                            "id"
-                                        ]
-                                    }
-                                },
-                                "archives": {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "object",
-                                        "title": "ArchivePath",
-                                        "additionalProperties": false,
-                                        "properties": {
-                                            "name": {
-                                                "type": "string"
-                                            },
-                                            "tenant": {
-                                                "type": "string"
-                                            },
-                                            "identity": {
-                                                "type": "string"
-                                            },
-                                            "path": {
-                                                "type": "string"
-                                            },
-                                            "mode": {
-                                                "enum": [
-                                                    "capture",
-                                                    "restore"
-                                                ],
-                                                "type": "string"
-                                            }
-                                        },
-                                        "required": [
-                                            "name",
-                                            "tenant",
-                                            "identity",
-                                            "path",
-                                            "mode"
-                                        ]
-                                    }
-                                },
-                                "derivations": {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "object",
-                                        "title": "DerivationTarget",
-                                        "additionalProperties": false,
-                                        "properties": {
-                                            "name": {
-                                                "type": "string"
-                                            },
-                                            "backend": {
-                                                "type": "string"
-                                            },
-                                            "tenant": {
-                                                "type": "string"
-                                            },
-                                            "identity": {
-                                                "type": "string"
-                                            },
-                                            "grant": {
-                                                "type": "string"
-                                            },
-                                            "task": {
-                                                "type": "string"
-                                            },
-                                            "epoch": {
-                                                "type": "integer"
-                                            },
-                                            "policy": {
-                                                "type": "string"
-                                            }
-                                        },
-                                        "required": [
-                                            "name",
-                                            "backend",
-                                            "tenant",
-                                            "identity",
-                                            "grant",
-                                            "task",
-                                            "epoch",
-                                            "policy"
-                                        ]
-                                    }
-                                },
-                                "recipients": {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "object",
-                                        "title": "ExportRecipient",
-                                        "additionalProperties": false,
-                                        "properties": {
-                                            "name": {
-                                                "type": "string"
-                                            },
-                                            "tenant": {
-                                                "type": "string"
-                                            },
-                                            "identity": {
-                                                "type": "string"
-                                            },
-                                            "generation": {
-                                                "type": "string"
-                                            },
-                                            "public": {
-                                                "type": "string"
-                                            },
-                                            "fingerprint": {
-                                                "type": "string"
-                                            }
-                                        },
-                                        "required": [
-                                            "name",
-                                            "tenant",
-                                            "identity",
-                                            "generation",
-                                            "public",
-                                            "fingerprint"
-                                        ]
-                                    }
-                                },
-                                "role": {
-                                    "enum": [
-                                        "controller",
-                                        "projection"
-                                    ],
-                                    "type": "string"
-                                },
-                                "projection": {
-                                    "type": "object",
-                                    "title": "Policy",
-                                    "additionalProperties": false,
-                                    "properties": {
-                                        "mode": {
-                                            "enum": [
-                                                "disabled",
-                                                "manual",
-                                                "interval",
-                                                "batch",
-                                                "required"
-                                            ],
-                                            "type": "string"
-                                        },
-                                        "targets": {
-                                            "type": "array",
-                                            "items": {
-                                                "type": "object",
-                                                "title": "Target",
-                                                "additionalProperties": false,
-                                                "properties": {
-                                                    "id": {
-                                                        "type": "string"
-                                                    },
-                                                    "tenant": {
-                                                        "type": "string"
-                                                    },
-                                                    "identity": {
-                                                        "type": "string"
-                                                    },
-                                                    "url": {
-                                                        "type": "string"
-                                                    },
-                                                    "ca": {
-                                                        "type": "string"
-                                                    },
-                                                    "certificate": {
-                                                        "type": "string"
-                                                    },
-                                                    "key": {
-                                                        "type": "string"
-                                                    },
-                                                    "grant": {
-                                                        "type": "string"
-                                                    },
-                                                    "task": {
-                                                        "type": "string"
-                                                    },
-                                                    "initial": {
-                                                        "anyOf": [
-                                                            {
-                                                                "type": "string"
-                                                            },
-                                                            {
-                                                                "type": "null"
-                                                            }
-                                                        ]
-                                                    }
-                                                },
-                                                "required": [
-                                                    "id",
-                                                    "tenant",
-                                                    "identity",
-                                                    "url",
-                                                    "ca",
-                                                    "certificate",
-                                                    "key",
-                                                    "grant",
-                                                    "task"
-                                                ]
-                                            }
-                                        },
-                                        "permit_wrapping": {
-                                            "type": "string"
-                                        },
-                                        "author": {
-                                            "type": "string"
-                                        },
-                                        "email": {
-                                            "type": "string"
-                                        },
-                                        "interval_seconds": {
-                                            "type": "integer"
-                                        },
-                                        "batch_size": {
-                                            "type": "integer"
-                                        },
-                                        "max_entries": {
-                                            "type": "integer"
-                                        },
-                                        "max_bytes": {
-                                            "type": "integer"
-                                        },
-                                        "max_lag_seconds": {
-                                            "type": "integer"
-                                        },
-                                        "attempts": {
-                                            "type": "integer"
-                                        },
-                                        "retry_seconds": {
-                                            "type": "integer"
-                                        },
-                                        "retry_max_seconds": {
-                                            "type": "integer"
-                                        }
-                                    },
-                                    "required": []
-                                },
-                                "gateway": {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "object",
-                                        "title": "GatewayRemote",
-                                        "additionalProperties": false,
-                                        "properties": {
-                                            "id": {
-                                                "type": "string"
-                                            },
-                                            "tenant": {
-                                                "type": "string"
-                                            },
-                                            "identity": {
-                                                "type": "string"
-                                            },
-                                            "url": {
-                                                "type": "string"
-                                            },
-                                            "ref": {
-                                                "type": "string"
-                                            },
-                                            "directory": {
-                                                "type": "string"
-                                            },
-                                            "ssh_key": {
-                                                "type": "string"
-                                            },
-                                            "known_hosts": {
-                                                "type": "string"
-                                            },
-                                            "author": {
-                                                "type": "string"
-                                            },
-                                            "email": {
-                                                "type": "string"
-                                            }
-                                        },
-                                        "required": [
-                                            "id",
-                                            "tenant",
-                                            "identity",
-                                            "url",
-                                            "ref",
-                                            "directory",
-                                            "ssh_key",
-                                            "known_hosts"
-                                        ]
-                                    }
-                                },
-                                "envelope": {
-                                    "type": "object",
-                                    "title": "Limits",
-                                    "additionalProperties": false,
-                                    "properties": {
-                                        "bytes": {
-                                            "type": "integer"
-                                        },
-                                        "items": {
-                                            "type": "integer"
-                                        },
-                                        "depth": {
-                                            "type": "integer"
-                                        }
-                                    },
-                                    "required": []
-                                },
-                                "codegraphs": {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "object",
-                                        "title": "Enrollment",
-                                        "additionalProperties": false,
-                                        "properties": {
-                                            "tenant": {
-                                                "type": "string"
-                                            },
-                                            "extension": {
-                                                "type": "string"
-                                            },
-                                            "owner": {
-                                                "type": "string"
-                                            },
-                                            "subject": {
-                                                "type": "string"
-                                            },
-                                            "repository": {
-                                                "type": "string"
-                                            },
-                                            "image": {
-                                                "type": "string"
-                                            },
-                                            "excluded": {
-                                                "type": "array",
-                                                "items": {
-                                                    "type": "string"
-                                                }
-                                            },
-                                            "retention": {
-                                                "type": "string"
-                                            },
-                                            "source_bytes": {
-                                                "type": "integer"
-                                            },
-                                            "files": {
-                                                "type": "integer"
-                                            },
-                                            "seconds": {
-                                                "type": "integer"
-                                            },
-                                            "memory_mb": {
-                                                "type": "integer"
-                                            },
-                                            "profile": {
-                                                "enum": [
-                                                    "python",
-                                                    "sdk"
-                                                ],
-                                                "type": "string"
-                                            },
-                                            "worker_bytes": {
-                                                "type": "integer"
-                                            },
-                                            "extensions": {
-                                                "type": "array",
-                                                "items": {
-                                                    "type": "object",
-                                                    "title": "Extension",
-                                                    "additionalProperties": false,
-                                                    "properties": {
-                                                        "suffix": {
-                                                            "type": "string"
-                                                        },
-                                                        "language": {
-                                                            "type": "string"
-                                                        }
-                                                    },
-                                                    "required": [
-                                                        "suffix",
-                                                        "language"
-                                                    ]
-                                                }
-                                            }
-                                        },
-                                        "required": [
-                                            "tenant",
-                                            "extension",
-                                            "owner",
-                                            "subject",
-                                            "repository",
-                                            "image"
-                                        ]
-                                    }
-                                },
-                                "version": {
-                                    "enum": [
-                                        1
-                                    ],
-                                    "type": "integer"
-                                }
-                            },
-                            "required": [
-                                "backend",
-                                "tls",
-                                "broker",
-                                "probe",
-                                "protection"
-                            ]
-                        }
-                    ]
-                },
-                "secretEnvironment": {
-                    "type": "object",
-                    "description": "Existing Secret key references keyed by authoritative environment variable name",
-                    "default": {},
-                    "propertyNames": {
-                        "pattern": "^[A-Z_][A-Z0-9_]*$"
-                    },
-                    "additionalProperties": {
-                        "type": "object",
-                        "required": [
-                            "name",
-                            "key"
-                        ],
-                        "additionalProperties": false,
-                        "properties": {
-                            "name": {
-                                "type": "string",
-                                "minLength": 1
-                            },
-                            "key": {
-                                "type": "string",
-                                "minLength": 1
-                            }
-                        }
-                    }
-                },
-                "archiveVolumes": {
-                    "type": "array",
-                    "description": "Existing protected original-Git claims with name, existingClaim, mountPath and readOnly; scoped aliases live in configuration.archives",
-                    "default": [],
-                    "items": {
-                        "type": "object",
-                        "additionalProperties": false,
-                        "required": [
-                            "name",
-                            "existingClaim",
-                            "mountPath",
-                            "readOnly"
-                        ],
-                        "properties": {
-                            "name": {
-                                "type": "string",
-                                "minLength": 1
-                            },
-                            "existingClaim": {
-                                "type": "string",
-                                "minLength": 1
-                            },
-                            "mountPath": {
-                                "type": "string",
-                                "pattern": "^/"
-                            },
-                            "readOnly": {
-                                "type": "boolean"
-                            }
-                        }
-                    }
-                },
-                "secretMounts": {
-                    "type": "array",
-                    "description": "Existing Secret projections with name, secretName, mountPath and explicit items; credentials mount read-only",
-                    "default": [],
-                    "items": {
-                        "type": "object",
-                        "additionalProperties": false,
-                        "required": [
-                            "name",
-                            "secretName",
-                            "mountPath",
-                            "items"
-                        ],
-                        "properties": {
-                            "name": {
-                                "type": "string",
-                                "minLength": 1
-                            },
-                            "secretName": {
-                                "type": "string",
-                                "minLength": 1
-                            },
-                            "mountPath": {
-                                "type": "string",
-                                "pattern": "^/"
-                            },
-                            "items": {
-                                "type": "array",
-                                "minItems": 1,
-                                "items": {
-                                    "type": "object",
-                                    "required": [
-                                        "key",
-                                        "path"
-                                    ],
-                                    "additionalProperties": false,
-                                    "properties": {
-                                        "key": {
-                                            "type": "string",
-                                            "minLength": 1
-                                        },
-                                        "path": {
-                                            "type": "string",
-                                            "minLength": 1
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "terminationGracePeriodSeconds": {
-                    "type": "integer",
-                    "description": "Pod termination budget; must exceed the configured runtime drain timeout",
-                    "default": 45,
-                    "minimum": 1
-                },
-                "workingSizeLimit": {
-                    "type": "string",
-                    "description": "Size limit for the memory-backed runtime working directory",
-                    "default": "256Mi"
-                },
-                "git": {
-                    "type": "object",
-                    "properties": {
-                        "existingClaim": {
-                            "type": "string",
-                            "description": "Existing retained single-writer Git PVC; never created, formatted or removed by the chart",
-                            "default": ""
-                        },
-                        "mountPath": {
-                            "type": "string",
-                            "description": "Mount path matching configuration.backend.path for local Git",
-                            "default": "/var/lib/witful/git"
-                        }
-                    },
-                    "additionalProperties": false,
-                    "required": [
-                        "existingClaim",
-                        "mountPath"
-                    ]
-                },
-                "pdb": {
-                    "type": "object",
-                    "properties": {
-                        "enabled": {
-                            "type": "boolean",
-                            "description": "Create a PodDisruptionBudget for voluntary maintenance",
-                            "default": true
-                        },
-                        "minAvailable": {
-                            "type": "integer",
-                            "description": "Minimum available controller pods; use zero for an explicitly reviewed single-writer profile",
-                            "default": 1,
-                            "minimum": 0
-                        }
-                    },
-                    "additionalProperties": false,
-                    "required": [
-                        "enabled",
-                        "minAvailable"
-                    ]
-                },
-                "networkPolicy": {
-                    "type": "object",
-                    "properties": {
-                        "enabled": {
-                            "type": "boolean",
-                            "description": "Restrict controller traffic to explicit reviewed peer rules",
-                            "default": true
-                        },
-                        "ingress": {
-                            "type": "array",
-                            "description": "Native ingress rules for authenticated clients and monitoring; empty denies traffic",
-                            "default": [],
-                            "items": {
-                                "type": "object"
-                            }
-                        },
-                        "egress": {
-                            "type": "array",
-                            "description": "Native egress rules for DNS, authority, storage and broker; empty denies traffic",
-                            "default": [],
-                            "items": {
-                                "type": "object"
-                            }
-                        }
-                    },
-                    "additionalProperties": false,
-                    "required": [
-                        "enabled",
-                        "ingress",
-                        "egress"
-                    ]
-                },
-                "probes": {
-                    "type": "object",
-                    "properties": {
-                        "startup": {
-                            "type": "object",
-                            "properties": {
-                                "failureThreshold": {
-                                    "type": "integer",
-                                    "description": "Startup attempts before restart",
-                                    "default": 30,
-                                    "minimum": 1
-                                },
-                                "periodSeconds": {
-                                    "type": "integer",
-                                    "description": "Startup probe interval",
-                                    "default": 2,
-                                    "minimum": 1
-                                }
-                            },
-                            "additionalProperties": false,
-                            "required": [
-                                "failureThreshold",
-                                "periodSeconds"
-                            ]
-                        },
-                        "readiness": {
-                            "type": "object",
-                            "properties": {
-                                "failureThreshold": {
-                                    "type": "integer",
-                                    "description": "Failed readiness checks before endpoint withdrawal",
-                                    "default": 3,
-                                    "minimum": 1
-                                },
-                                "periodSeconds": {
-                                    "type": "integer",
-                                    "description": "Readiness probe interval",
-                                    "default": 10,
-                                    "minimum": 1
-                                },
-                                "timeoutSeconds": {
-                                    "type": "integer",
-                                    "description": "Readiness command time budget",
-                                    "default": 6,
-                                    "minimum": 1
-                                }
-                            },
-                            "additionalProperties": false,
-                            "required": [
-                                "failureThreshold",
-                                "periodSeconds",
-                                "timeoutSeconds"
-                            ]
-                        },
-                        "liveness": {
-                            "type": "object",
-                            "properties": {
-                                "failureThreshold": {
-                                    "type": "integer",
-                                    "description": "Local listener failures before restart",
-                                    "default": 3,
-                                    "minimum": 1
-                                },
-                                "periodSeconds": {
-                                    "type": "integer",
-                                    "description": "Liveness probe interval independent of upstream health",
-                                    "default": 10,
-                                    "minimum": 1
-                                }
-                            },
-                            "additionalProperties": false,
-                            "required": [
-                                "failureThreshold",
-                                "periodSeconds"
-                            ]
-                        }
-                    },
-                    "additionalProperties": false,
-                    "required": [
-                        "startup",
-                        "readiness",
-                        "liveness"
-                    ]
-                },
-                "scheduler": {
-                    "type": "object",
-                    "properties": {
-                        "enabled": {
-                            "type": "boolean",
-                            "description": "Deploy bounded per-identity delivery CronJobs using only independently scoped client credentials",
-                            "default": false
-                        },
-                        "schedule": {
-                            "type": "string",
-                            "description": "Kubernetes CronJob schedule; the controller also enforces interval and batch policy",
-                            "default": "* * * * *"
-                        },
-                        "seconds": {
-                            "type": "integer",
-                            "description": "Complete CLI cycle budget in seconds",
-                            "default": 300,
-                            "minimum": 1
-                        },
-                        "activeDeadlineSeconds": {
-                            "type": "integer",
-                            "description": "Pod execution deadline; must exceed the CLI cycle budget",
-                            "default": 330,
-                            "minimum": 1
-                        },
-                        "terminationGracePeriodSeconds": {
-                            "type": "integer",
-                            "description": "Shutdown budget for the bounded in-flight HTTPS request and interruptible backoff",
-                            "default": 35,
-                            "minimum": 1
-                        },
-                        "networkPolicy": {
-                            "type": "object",
-                            "properties": {
-                                "enabled": {
-                                    "type": "boolean",
-                                    "description": "Restrict scheduler ingress and explicit controller/DNS egress",
-                                    "default": true
-                                },
-                                "egress": {
-                                    "type": "array",
-                                    "description": "Approved scheduler-only network egress rules; empty denies traffic",
-                                    "default": [],
-                                    "items": {
-                                        "type": "object"
-                                    }
-                                }
-                            },
-                            "additionalProperties": false,
-                            "required": [
-                                "enabled",
-                                "egress"
-                            ]
-                        },
-                        "startingDeadlineSeconds": {
-                            "type": "integer",
-                            "description": "Maximum late scheduled-start allowance",
-                            "default": 60,
-                            "minimum": 1
-                        },
-                        "successfulJobsHistoryLimit": {
-                            "type": "integer",
-                            "description": "Retained successful scheduling Jobs",
-                            "default": 1,
-                            "minimum": 0
-                        },
-                        "failedJobsHistoryLimit": {
-                            "type": "integer",
-                            "description": "Retained failed scheduling Jobs",
-                            "default": 3,
-                            "minimum": 0
-                        },
-                        "clients": {
-                            "type": "array",
-                            "description": "Identity client Secret references with name, secretName and key; each gets an independent CronJob",
-                            "default": [],
-                            "items": {
-                                "type": "object",
-                                "required": [
-                                    "name",
-                                    "secretName",
-                                    "key"
-                                ],
-                                "additionalProperties": false,
-                                "properties": {
-                                    "name": {
-                                        "type": "string",
-                                        "pattern": "^[a-z0-9]([-a-z0-9]*[a-z0-9])?$"
-                                    },
-                                    "secretName": {
-                                        "type": "string",
-                                        "minLength": 1
-                                    },
-                                    "key": {
-                                        "type": "string",
-                                        "minLength": 1
-                                    }
-                                }
-                            }
-                        },
-                        "secretMounts": {
-                            "type": "array",
-                            "description": "Scheduler-only TLS Secret projections; never inherit controller custody/database credentials",
-                            "default": [],
-                            "items": {
-                                "type": "object",
-                                "additionalProperties": false,
-                                "required": [
-                                    "name",
-                                    "secretName",
-                                    "mountPath",
-                                    "items"
-                                ],
-                                "properties": {
-                                    "name": {
-                                        "type": "string",
-                                        "minLength": 1
-                                    },
-                                    "secretName": {
-                                        "type": "string",
-                                        "minLength": 1
-                                    },
-                                    "mountPath": {
-                                        "type": "string",
-                                        "pattern": "^/"
-                                    },
-                                    "items": {
-                                        "type": "array",
-                                        "minItems": 1,
-                                        "items": {
-                                            "type": "object",
-                                            "required": [
-                                                "key",
-                                                "path"
-                                            ],
-                                            "additionalProperties": false,
-                                            "properties": {
-                                                "key": {
-                                                    "type": "string",
-                                                    "minLength": 1
-                                                },
-                                                "path": {
-                                                    "type": "string",
-                                                    "minLength": 1
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        },
-                        "resources": {
-                            "type": "object",
-                            "properties": {
-                                "requests": {
-                                    "type": "object",
-                                    "properties": {
-                                        "cpu": {
-                                            "type": "string",
-                                            "description": "Requested scheduler CPU",
-                                            "default": "100m"
-                                        },
-                                        "memory": {
-                                            "type": "string",
-                                            "description": "Requested scheduler memory",
-                                            "default": "128Mi"
-                                        }
-                                    }
-                                },
-                                "limits": {
-                                    "type": "object",
-                                    "properties": {
-                                        "cpu": {
-                                            "type": "string",
-                                            "description": "Maximum scheduler CPU",
-                                            "default": "1"
-                                        },
-                                        "memory": {
-                                            "type": "string",
-                                            "description": "Maximum scheduler memory",
-                                            "default": "512Mi"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "additionalProperties": false,
-                    "required": [
-                        "enabled",
-                        "schedule",
-                        "seconds",
-                        "activeDeadlineSeconds",
-                        "terminationGracePeriodSeconds",
-                        "networkPolicy",
-                        "startingDeadlineSeconds",
-                        "successfulJobsHistoryLimit",
-                        "failedJobsHistoryLimit",
-                        "clients",
-                        "secretMounts",
-                        "resources"
-                    ]
-                }
-            },
-            "additionalProperties": false,
-            "required": [
-                "enabled",
-                "replicas",
-                "configuration",
-                "secretEnvironment",
-                "archiveVolumes",
-                "secretMounts",
-                "terminationGracePeriodSeconds",
-                "workingSizeLimit",
-                "git",
-                "pdb",
-                "networkPolicy",
-                "probes",
-                "scheduler"
-            ]
         }
     },
     "allOf": [
@@ -8069,20 +8350,9 @@
     ],
     "additionalProperties": false,
     "required": [
-        "workers",
-        "image",
-        "imagePullSecrets",
-        "source",
-        "database",
-        "job",
-        "resources",
-        "scheduling",
-        "podLabels",
-        "podAnnotations",
-        "podSecurityContext",
-        "containerSecurityContext",
+        "sync",
+        "controller",
         "cloudnative-pg",
-        "postgresql",
-        "controller"
+        "postgresql"
     ]
 }

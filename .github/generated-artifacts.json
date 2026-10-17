@@ -1,0 +1,102 @@
+{
+  "version": 1,
+  "artifacts": [
+    {
+      "output": ".github/CODEOWNERS",
+      "inputs": [
+        ".github/CODEOWNERS"
+      ],
+      "renderer": "codeowners",
+      "reason": "Merge independent literal rules only when all owners and commentary remain unchanged; opaque rules require review."
+    },
+    {
+      "output": "scripts/ci/provider_contracts/data/*.json",
+      "inputs": [
+        "scripts/ci/provider_contracts/refresh.py",
+        "poetry.lock"
+      ],
+      "renderer": "manual",
+      "reason": "Refresh official contracts in a normal review environment; external sources and timestamps are not privileged conflict repair inputs."
+    },
+    {
+      "output": "helm/witful/values.schema.json",
+      "inputs": [
+        "helm/witful/values.yaml",
+        "scripts/chart"
+      ],
+      "renderer": "manual",
+      "reason": "Schema generation imports application models and dependency schemas."
+    },
+    {
+      "output": "helm/witful/README.md",
+      "inputs": [
+        "helm/witful/values.yaml",
+        "scripts/chart"
+      ],
+      "renderer": "manual",
+      "reason": "Generated parameter tables share a file with authored documentation."
+    },
+    {
+      "output": "helm/witful/references/*/README.md",
+      "inputs": [
+        "helm/witful/references",
+        "scripts/chart"
+      ],
+      "renderer": "manual",
+      "reason": "Reference tables share authored operational guidance."
+    },
+    {
+      "output": "helm/witful/references/*/values.schema.json",
+      "inputs": [
+        "helm/witful/references",
+        "scripts/chart"
+      ],
+      "renderer": "manual",
+      "reason": "Generate using the reviewed chart dependencies and current model source."
+    },
+    {
+      "output": "services/compose.yaml",
+      "inputs": [
+        "helm/witful",
+        "services/compose.profile.yaml"
+      ],
+      "renderer": "manual",
+      "reason": "Compose generation consumes application templates; review canonical sources first."
+    },
+    {
+      "output": "README.md",
+      "inputs": [
+        "scripts/documentation/update-contents.py"
+      ],
+      "renderer": "manual",
+      "reason": "Only the contents section is generated; authored prose remains reviewable."
+    },
+    {
+      "output": "docs/assets/*",
+      "inputs": [
+        "scripts/ci/render-views.sh",
+        "pkg/witful"
+      ],
+      "renderer": "manual",
+      "reason": "Synthetic figures and receipts require their source and renderer validation."
+    },
+    {
+      "output": "docs/native/diagrams/*",
+      "inputs": [
+        "scripts/native"
+      ],
+      "renderer": "manual",
+      "reason": "Diagrams bind reviewed sources and receipt hashes."
+    },
+    {
+      "output": "dist/*",
+      "inputs": [
+        "pyproject.toml",
+        "poetry.lock",
+        "scripts/release"
+      ],
+      "renderer": "manual",
+      "reason": "Release artifacts are built and verified from immutable tags, never merged from conflicts."
+    }
+  ]
+}

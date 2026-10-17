@@ -1,7 +1,7 @@
 # Bound CI generation, not the chart's supported worker count.
 input_constraints:
   - charts: [witful]
-    path: $.workers
+    path: $.sync.workers
     schema:
       type: integer
       enum: [1, 2, 3, 17, 257]

@@ -28,6 +28,7 @@ dependencies = [
     "cbor2>=6.1.5,<6.2",
     "PyGithub>=2.10,<2.11",
     "python-gitlab>=8.6,<8.7",
+    "Pygments>=2.21,<2.22",
 ]
 
 [project.urls]
@@ -54,12 +55,14 @@ packages = [{include = "witful", from = "pkg"}]
 include = [
     {path = "pkg/witful/sql/**/*.sql", format = ["sdist", "wheel"]},
     {path = "pkg/witful/collection/resources/*", format = ["sdist", "wheel"]},
+    {path = "pkg/witful/life/resources/*", format = ["sdist", "wheel"]},
     {path = "pkg/witful/reflection/resources/*", format = ["sdist", "wheel"]},
     {path = "pkg/witful/native/resources/*", format = ["sdist", "wheel"]},
 ]
 exclude = ["pkg/witful/**/tests"]
 
 [tool.poetry.group.dev.dependencies]
+markdown-it-py = ">=4.2,<4.3"
 sqlfluff = "4.4.0"
 PyYAML = "6.0.3"
 types-PyYAML = "6.0.12.20260906"
@@ -72,6 +75,7 @@ pytest = "9.1.1"
 pytest-xdist = "3.8.0"
 shellcheck-py = "0.11.0.1"
 shfmt-py = "4.2.0"
+types-Pygments = "2.21.0.20260819"
 types-networkx = "3.6.1.20261006"
 types-jsonschema = ">=4.26,<5"
 opentelemetry-proto = "1.45.1"

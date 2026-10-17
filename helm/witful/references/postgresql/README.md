@@ -32,7 +32,7 @@ submitted. A single fresh Helm install with both enabled is not supported here.
 
 ```bash
 helm upgrade --install witful helm/witful --namespace witful --create-namespace \
-  --set cloudnative-pg.enabled=true,postgresql.enabled=false,job.suspend=true
+  --set cloudnative-pg.enabled=true,postgresql.enabled=false,sync.job.suspend=true
 kubectl wait --for=condition=Established crd/clusters.postgresql.cnpg.io --timeout=120s
 kubectl rollout status deployment/witful-cloudnative-pg --namespace witful --timeout=180s
 ```
@@ -41,15 +41,15 @@ Prepare `witful-postgres` in that namespace as a `kubernetes.io/basic-auth` Secr
 with `username` and `password`; the username must match
 `postgresql.spec.bootstrap.initdb.owner`. Supply it through your secret manager.
 Do not put passwords in chart values or command arguments. Database/owner settings
-apply at first bootstrap. Keep `database.existingSecret` for the separate worker
-connection URI and `source.existingSecret` for the reviewed journal.
+apply at first bootstrap. Keep `sync.database.existingSecret` for the separate worker
+connection URI and `sync.source.existingSecret` for the reviewed journal.
 
 Create the Cluster while keeping synchronization suspended:
 
 ```bash
 helm upgrade witful helm/witful --namespace witful \
   -f helm/witful/references/postgresql/values.yaml \
-  --set cloudnative-pg.enabled=true,job.suspend=true
+  --set cloudnative-pg.enabled=true,sync.job.suspend=true
 kubectl wait --for=condition=Ready cluster/witful-postgres --namespace witful --timeout=600s
 ```
 
@@ -57,15 +57,15 @@ If reusing a separately installed operator, use `helm upgrade --install` and omi
 `cloudnative-pg.enabled=true` instead. Set the worker connection Secret to the
 operator's `witful-postgres-rw` Service. Use the full DNS name covered by the
 server certificate, configure `sslmode=verify-full`, and project the operator's
-`witful-postgres-ca` Secret with `database.caSecret` and `database.caKey=ca.crt`.
+`witful-postgres-ca` Secret with `sync.database.caSecret` and `sync.database.caKey=ca.crt`.
 When the operator generates an application Secret, it also publishes connection
 fields there. This reference supplies an existing credential Secret, so prepare
 the worker URI/TLS settings explicitly through your secret manager.
 
 Finally upgrade with the same operator/Cluster overrides, a reviewed application
-image, source and connection Secrets, and `job.suspend=false`. Workers are not
+image, source and connection Secrets, and `sync.job.suspend=false`. Workers are not
 automatically blocked until the Cluster is ready; the suspended phase makes that
-ordering explicit. `database.namespace` is Witful's data partition, separate from
+ordering explicit. `sync.database.namespace` is Witful's data partition, separate from
 the Kubernetes namespace.
 
 ## Configuration, upgrade and recovery

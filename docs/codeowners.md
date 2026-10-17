@@ -7,7 +7,7 @@ there is no external service or runtime package dependency.
 
 ```bash
 poetry run pre-commit install
-poetry run python -m scripts.codeowners.cli --write
+poetry run python -m scripts.ownership --write
 poetry run pre-commit run --all-files
 poetry run pre-commit run codeowners-tree-push --hook-stage pre-push --all-files
 ```
@@ -48,7 +48,7 @@ or owner eligibility check. It neither changes owners nor grants permissions.
 ## Consolidate a complete subtree
 
 ```bash
-poetry run python -m scripts.codeowners.cli --write --consolidate
+poetry run python -m scripts.ownership --write --consolidate
 ```
 
 This explicit option combines two or more same-owner scopes when they cover every
@@ -77,4 +77,8 @@ and `default_install_hook_types` for installing both commit and push gates.
 The pure compiler receives explicit text and paths. Its tests compare generated
 rule combinations against an independent literal matcher, including future paths,
 check idempotence, preserve opaque boundaries, and exercise the real Git-backed
-CLI without remote services. Run `pytest -n 0 tests/codeowners` for that contract.
+CLI without remote services. Run the compiler and installed-hook contracts together:
+
+```bash
+poetry run pytest -n 0 tests/ci/test_ownership_compiler.py tests/ci/test_ownership_hooks.py
+```

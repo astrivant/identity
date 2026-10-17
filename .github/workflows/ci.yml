@@ -4,6 +4,10 @@ on:
     branches: [main]
     tags: ['v*']
   pull_request:
+  pull_request_target:
+    types: [opened, synchronize, reopened, ready_for_review, edited, closed]
+  schedule:
+    - cron: "23 */6 * * *"
   workflow_dispatch:
 permissions:
   contents: read
@@ -17,29 +21,45 @@ env:
   MPLBACKEND: Agg
   MPLCONFIGDIR: ${{ github.workspace }}/.cache/matplotlib
 jobs:
+  generated-repair:
+    name: Repair generated conflicts
+    if: >-
+      github.event_name == 'pull_request_target'
+      || github.event_name == 'schedule'
+      || (github.event_name == 'push' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch))
+    uses: ./.github/workflows/stage-repair.yml
+    permissions:
+      contents: write
+      pull-requests: read
+
   codegraph:
+    if: github.event_name != 'pull_request_target' && github.event_name != 'schedule'
     name: CodeGraph SDK compatibility
     uses: ./.github/workflows/stage-codegraph.yml
 
   native-physical:
+    if: github.event_name != 'pull_request_target' && github.event_name != 'schedule'
     name: Native physical storage
     uses: ./.github/workflows/stage-native-storage.yml
     with:
       source: ${{ github.sha }}
 
   provider-contracts:
+    if: github.event_name != 'pull_request_target' && github.event_name != 'schedule'
     name: Provider API contracts
     uses: ./.github/workflows/stage-provider-contracts.yml
     with:
       source: ${{ github.sha }}
 
   helm-properties:
+    if: github.event_name != 'pull_request_target' && github.event_name != 'schedule'
     name: Helm properties
     uses: ./.github/workflows/stage-helm-properties.yml
     with:
       source: ${{ github.sha }}
 
   tests:
+    if: github.event_name != 'pull_request_target' && github.event_name != 'schedule'
     name: Python tests
     runs-on: ubuntu-24.04
     timeout-minutes: 15
@@ -84,6 +104,7 @@ jobs:
 
   # Public examples are synthetic and never read a maintainer's collection.
   learning:
+    if: github.event_name != 'pull_request_target' && github.event_name != 'schedule'
     name: Continual learning examples
     runs-on: ubuntu-24.04
     timeout-minutes: 10
@@ -101,6 +122,7 @@ jobs:
           if-no-files-found: error
 
   lint:
+    if: github.event_name != 'pull_request_target' && github.event_name != 'schedule'
     name: Source checks
     runs-on: ubuntu-24.04
     timeout-minutes: 10
@@ -116,8 +138,12 @@ jobs:
           cache-dependency-path: scripts/documentation/package-lock.json
       - run: npm ci --prefix scripts/documentation --ignore-scripts --no-fund
       - run: npm --prefix scripts/documentation test
+      - run: python scripts/ci/repair/plan.py --check
+      - run: python -m scripts.ownership --check
       - run: pre-commit run codeowners-tree-push --hook-stage pre-push --all-files
       - run: pre-commit run codeowners --all-files
+      - run: pre-commit run documentation-source-links --all-files
+      - run: pre-commit run documentation-source-link-contracts --all-files
       - run: pre-commit run documentation-syntax --all-files
       - run: pre-commit run markdown-lint --all-files
       - run: pre-commit run readme-format --all-files
@@ -142,6 +168,7 @@ jobs:
           python -m scripts.native.diagrams --check
 
   privacy:
+    if: github.event_name != 'pull_request_target' && github.event_name != 'schedule'
     name: PII scan
     runs-on: ubuntu-24.04
     timeout-minutes: 10
@@ -153,6 +180,7 @@ jobs:
       - run: witful-pii scan
 
   distributions:
+    if: github.event_name != 'pull_request_target' && github.event_name != 'schedule'
     name: Build distributions
     runs-on: ubuntu-24.04
     timeout-minutes: 10
@@ -177,6 +205,7 @@ jobs:
           retention-days: 14
 
   orchestration:
+    if: github.event_name != 'pull_request_target' && github.event_name != 'schedule'
     # Chart and image validation are independent of Python tests and plot generation.
     runs-on: ubuntu-24.04
     timeout-minutes: 20
@@ -291,10 +320,44 @@ jobs:
             const { main } = await import(`${process.env.GITHUB_WORKSPACE}/scripts/ci/publish-coverage.mjs`);
             await main({ github, context, core });
 
+  generated-updates:
+    name: Propose validated generated updates
+    needs: [quality-gate, provider-contracts]
+    if: >-
+      !cancelled()
+      && needs.quality-gate.result == 'success'
+      && needs.provider-contracts.result == 'success'
+      && github.event_name == 'push'
+      && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: write
+      pull-requests: write
+      actions: write
+    concurrency:
+      group: generated-updates
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      # Reuse the exact tested bytes from this run, never resolve upstream a second time.
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: provider-contracts
+          path: .cache/provider-contracts/
+      - uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        with:
+          script: |
+            const { main } = await import(`${process.env.GITHUB_WORKSPACE}/scripts/ci/publish-contracts.mjs`);
+            await main({ github, context, core });
+
   quality-gate:
     name: Required CI
     # Always evaluate the complete producer set, including skipped and cancelled jobs.
-    if: always()
+    if: always() && github.event_name != 'pull_request_target' && github.event_name != 'schedule'
     needs: [tests, lint, privacy, security, distributions, orchestration, views, learning, provider-contracts, native-physical, codegraph, helm-properties]
     runs-on: ubuntu-24.04
     timeout-minutes: 5
@@ -308,6 +371,7 @@ jobs:
         run: bash scripts/ci/checks/quality-gate.sh
 
   security:
+    if: github.event_name != 'pull_request_target' && github.event_name != 'schedule'
     name: Trivy security scan
     runs-on: ubuntu-24.04
     timeout-minutes: 25
@@ -444,6 +508,7 @@ jobs:
           fi
 
   views:
+    if: github.event_name != 'pull_request_target' && github.event_name != 'schedule'
     name: Render synthetic evidence views
     runs-on: ubuntu-24.04
     timeout-minutes: 10

@@ -129,3 +129,64 @@ def test_workflow_limits_token_to_read_only_freshness_step() -> None:
             assert not {"GH_TOKEN", "GITHUB_TOKEN"}.intersection(step.get("env", {}))
     tests = next(step for step in steps if step.get("run", "").startswith("pytest "))
     assert "tests/provider_contracts" in tests["run"]
+
+
+@pytest.mark.parametrize("changed", [False, True])
+@pytest.mark.parametrize("legacy", [False, True])
+def test_renewal_succeeds_and_does_not_churn_unchanged_pins(tmp_path: Path, monkeypatch: MonkeyPatch, changed: bool, legacy: bool) -> None:
+    """
+    Renew metadata drift without failure while retaining separate per-run freshness evidence.
+
+    Args:
+        tmp_path (Path): Isolated snapshot directory.
+        monkeypatch (MonkeyPatch): Replace external resolution and downloads only.
+        changed (bool): Advance the selected upstream revision while retaining identical schemas.
+        legacy (bool): Normalize an older manifest that retained observation time alongside pins.
+
+    Returns:
+        None: Refresh succeeds, observation binds current bytes, and a second refresh is idempotent.
+    """
+    import hashlib
+    import json
+
+    from provider_contracts import refresh as module
+    from witful.delivery.providers.base import object_value
+
+    baseline = {"github": {"revision": "a" * 40}}
+    if legacy:
+        baseline["github"]["latest_observed_at"] = "earlier-observation"
+    manifest_path = tmp_path / "manifest.json"
+    manifest_path.write_bytes(encoded(baseline))
+    (tmp_path / "github.json").write_bytes(b"snapshot\n")
+    revision = "b" * 40 if changed else "a" * 40
+
+    def fetch(manifest: dict[str, object], overrides: dict[str, str]) -> tuple[dict[str, object], dict[str, bytes]]:
+        """
+        Return a resolved revision with unchanged selected schema bytes.
+
+        Args:
+            manifest (dict[str, object]): Existing reviewed baseline.
+            overrides (dict[str, str]): Once-resolved latest pins.
+
+        Returns:
+            tuple[dict[str, object], dict[str, bytes]]: New immutable manifest and selected snapshot.
+        """
+        assert overrides == {"github": revision}
+        return {"github": {**object_value(manifest["github"]), "revision": revision}}, {"github": b"snapshot\n"}
+
+    monkeypatch.setattr(module, "DATA", tmp_path)
+    monkeypatch.setattr(module, "latest_revisions", lambda: {"github": revision})
+    monkeypatch.setattr(module, "refresh", fetch)
+    observation = tmp_path / "evidence/latest.json"
+    monkeypatch.setattr("sys.argv", ["refresh.py", "--latest", "--observation", str(observation)])
+    assert module.main() == 0
+    renewed = manifest_path.read_bytes()
+    evidence = json.loads(observation.read_text())
+    assert evidence["current"] is True
+    assert evidence["changed"] == (["manifest.json"] if changed or legacy else [])
+    assert evidence["manifest_sha256"] == hashlib.sha256(renewed).hexdigest()
+    assert evidence["revisions"] == {"github": revision}
+    assert (renewed != encoded(baseline)) is (changed or legacy)
+    assert module.main() == 0
+    assert manifest_path.read_bytes() == renewed
+    assert json.loads(observation.read_text())["changed"] == []

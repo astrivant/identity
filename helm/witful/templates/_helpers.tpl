@@ -8,12 +8,12 @@ witful.io/job-revision: {{ .Release.Revision | quote }}
 
 {{/* Refuse conflicting controls instead of silently dropping an operator's scheduling rules. */}}
 {{- define "witful.validatePlacement" -}}
-{{- if and .Values.scheduling.affinity .Values.scheduling.podAntiAffinityPreset -}}
-{{- fail "set scheduling.affinity or scheduling.podAntiAffinityPreset, not both" -}}
+{{- if and .settings.scheduling.affinity .settings.scheduling.podAntiAffinityPreset -}}
+{{- fail (printf "set %s.scheduling.affinity or %s.scheduling.podAntiAffinityPreset, not both" .path .path) -}}
 {{- end -}}
-{{- range $key, $value := .Values.podLabels -}}
-{{- if hasKey (include "witful.workerSelector" $ | fromYaml) $key -}}
-{{- fail (printf "podLabels cannot override reserved label %s" $key) -}}
+{{- range $key, $value := .settings.podLabels -}}
+{{- if hasKey (include "witful.workerSelector" $.root | fromYaml) $key -}}
+{{- fail (printf "%s.podLabels cannot override reserved label %s" $.path $key) -}}
 {{- end -}}
 {{- end -}}
 {{- end -}}

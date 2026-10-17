@@ -49,6 +49,11 @@ def renderer_fingerprint(root: Path) -> tuple[str, ...]:
     for name in sorted(names):
         digest.update(canonical([name, (package / name).read_text()]))
 
+    # Packaged typography and palette are replay inputs too, including helper-only changes.
+    for resource in sorted((package / "life/resources").glob("*")):
+        digest.update(resource.name.encode())
+        digest.update(resource.read_bytes())
+
     entries = [
         "code=" + digest.hexdigest(),
         "lock=" + (hashlib.sha256((root / "poetry.lock").read_bytes()).hexdigest() if (root / "poetry.lock").exists() else "absent"),

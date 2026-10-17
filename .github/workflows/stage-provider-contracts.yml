@@ -21,10 +21,10 @@ jobs:
           ref: ${{ inputs.source }}
           persist-credentials: false
       - uses: ./.github/actions/python
-      - name: Require committed latest contracts before PR or release acceptance
+      - name: Renew upstream contracts before compatibility tests
         env:
           GH_TOKEN: ${{ github.token }}
-        run: python scripts/ci/provider_contracts/refresh.py --check --latest --observation .cache/provider-contracts/latest.json
+        run: python scripts/ci/provider_contracts/refresh.py --latest --observation .cache/provider-contracts/latest.json
       - name: Bind SDK versions and tested API contracts to this source
         env:
           SOURCE_REVISION: ${{ inputs.source }}
