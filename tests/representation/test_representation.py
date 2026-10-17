@@ -11,7 +11,7 @@ from subprocess import CompletedProcess
 from typing import TYPE_CHECKING
 
 import pytest
-from witful.privacy.scanner import scan_text
+from witful.privacy.scanner import scan_svg
 from witful.project import main as initialize
 from witful.representation.github import _api, push
 from witful.representation.models import FIGURES
@@ -50,9 +50,9 @@ def test_render_exports_only_selected_figures(tmp_path: Path, monkeypatch: Monke
             tuple[tuple[int, str], ...]: The real scanner's detected personal-data patterns.
         """
         labels.append(text)
-        return scan_text(text)
+        return scan_svg(text)
 
-    monkeypatch.setattr("witful.representation.rendering.scan_text", inspect_labels)
+    monkeypatch.setattr("witful.representation.rendering.scan_svg", inspect_labels)
     content = render(root, selected)
     data = json.loads(content)
     assert set(data) == {"figures", "version"}
