@@ -141,6 +141,7 @@ jobs:
           persist-credentials: false
       - uses: ./.github/actions/python
       - run: witful-pii scan
+      - run: witful collection check-artifacts --revision HEAD
 
   distributions:
     if: github.event_name != 'pull_request_target' && github.event_name != 'schedule'

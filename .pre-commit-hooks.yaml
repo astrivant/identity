@@ -6,3 +6,21 @@
   pass_filenames: false
   always_run: true
   minimum_pre_commit_version: '4.0.0'
+- id: witful-encrypted-artifacts
+  name: Witful staged artifact encryption
+  description: Authenticate managed collection artifacts from the complete Git index.
+  entry: witful collection check-artifacts --staged
+  language: python
+  pass_filenames: false
+  always_run: true
+  stages: [pre-commit, manual]
+  minimum_pre_commit_version: '4.0.0'
+- id: witful-encrypted-artifacts-push
+  name: Witful outgoing artifact encryption
+  description: Authenticate collection artifacts throughout the selected outgoing commit range.
+  entry: witful collection check-artifacts --pre-push
+  language: python
+  pass_filenames: false
+  always_run: true
+  stages: [pre-push]
+  minimum_pre_commit_version: '4.0.0'
