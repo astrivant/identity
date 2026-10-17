@@ -1,0 +1,1849 @@
+{
+  "inputs": {
+    "renderer/image_provenance/__init__.py": "4f6fbee00f2aaec7b9603b4501711ecad6481df8dea44c2061e59c80aef7fdd6",
+    "renderer/image_provenance/cli.py": "8bf7fd1726fc851d2b1c2f52b262886a7065b39cbe2934a77cc813119a447fc6",
+    "renderer/image_provenance/core.py": "19d15d127c0b30fff8d3c3ff19763375a0acbad3c3145b535d42af742e4e5e3f",
+    "renderer/pr_files/__init__.py": "8ba23c3c18fb2390baa4b588062636cc4c347be53500b388084edc94b81df1e0",
+    "renderer/pr_files/cli.py": "082d92c3c6ae5276fe035cb8de4fa28c993d33ee0e741993b361796d8bfa0525",
+    "renderer/pr_files/descriptions.py": "38f75acbd8a930cc9bdb82a6ba1537dc1bb77550a998924216262dec8dc8636d",
+    "renderer/pr_files/grouping.py": "f32cc09ecbca42a26a978c7e2dfa8aa36353cc2c0ae4c43a03faaaf51f9fc750",
+    "renderer/pr_files/models.py": "1543595d1fac65d569f225d02714c5ab13231753181ade47622a3fb515c97b5d",
+    "renderer/pr_files/plotting.py": "b76c9be9f537b3265d16288526bda395141bf4417687894769e9df08013443de",
+    "renderer/pr_intent/__init__.py": "0cc1ccc65f5e7f158bb61bbb067e64990a4e45763ce03e4747fe04200a09adfc",
+    "renderer/pr_intent/cli.py": "7588b63eb966df5f2507f8bc52bafbe7547b2d143b292dfc0fe95331c2be0d87",
+    "renderer/pr_intent/graph.py": "487f8897e19e1cfc4b6ed9c0041746fc3c7170573bc732c296b03572270dd586",
+    "renderer/pr_intent/plotting.py": "fa1311bca351175a50ee36f850bc6573132812975d8d8b9c24eb8732e5fd4b75",
+    "renderer/pr_intent/source.py": "a2043d3d78a91cd08e3f0c3c4b8398da680c15ca670ea393f417b90441ccf1cd",
+    "renderer/pr_language.py": "f837eab96ca93df61d4973d74a764e2fa59e6d08f76391c697d923c0e6792884",
+    "renderer/pr_presentation.py": "e1502b1ceea631fe8f631e65b55655a4d14613fd8eb2a885b1df44edc0f8982f",
+    "renderer/resources/fonts/EBGaramond-Regular.otf": "d3e1471a4a0f836716bad35326d3c0ab5caddb74ae5c1917f99f8225abf43a7d",
+    "renderer/resources/intent-result.schema.json": "19e00a10d5a159220f5035bd378da53110017ece9e6286aeb2438b858f01f9a4",
+    "renderer/review_paths/core.py": "dae80a01a58b368925ca69bfc9498ba27f68678d1c95d41e366517fd6937df04",
+    "environment/poetry.lock": "175acd055864309923b5f2469f5444e1f1956c98fa26d759163e3feae19fddeb",
+    "data/palette": "df3607dacd40a0c4dbfb4b0053752953f4b40d060401fe4e42a3d842f6a8a15c"
+  },
+  "source": {
+    "target": "35176fbf69acc478428fb7dd0c9d2a6ec1baf4cd",
+    "base": "dbb4795b01821141b8112097133e00094593586f",
+    "head": "28a0a55fe4d573bb8eb74892f3cd990e2bb259e4",
+    "tree": "9aa7f30ba8801d95d8b8a6fda78f871d95006a55",
+    "staged": false,
+    "deltas": [
+      {
+        "before": ".github/generated-artifacts.json",
+        "after": ".github/generated-artifacts.json",
+        "added": 2,
+        "deleted": 2
+      },
+      {
+        "before": "docs/generated-artifacts.md",
+        "after": "docs/generated-artifacts.md",
+        "added": 12,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/README.md",
+        "after": "docs/native/diagrams/README.md",
+        "added": 14,
+        "deleted": 6
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/docs/native-operations.md.json",
+        "after": "docs/native/diagrams/bindings/inputs/docs/native-operations.md.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/docs/native/diagrams/views.json.json",
+        "after": "docs/native/diagrams/bindings/inputs/docs/native/diagrams/views.json.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/helm/witful/references/native/values.yaml.json",
+        "after": "docs/native/diagrams/bindings/inputs/helm/witful/references/native/values.yaml.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/helm/witful/references/projection/values.yaml.json",
+        "after": "docs/native/diagrams/bindings/inputs/helm/witful/references/projection/values.yaml.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/helm/witful/templates/projection-scheduler.yaml.json",
+        "after": "docs/native/diagrams/bindings/inputs/helm/witful/templates/projection-scheduler.yaml.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/helm/witful/values.schema.json.json",
+        "after": "docs/native/diagrams/bindings/inputs/helm/witful/values.schema.json.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/__init__.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/__init__.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/administration.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/administration.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/api/__init__.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/api/__init__.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/api/admission.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/api/admission.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/api/archives.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/api/archives.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/api/builder.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/api/builder.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/api/derivation.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/api/derivation.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/api/maintenance.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/api/maintenance.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/api/projection.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/api/projection.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/api/records.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/api/records.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/api/requests.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/api/requests.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/api/sharing.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/api/sharing.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/application.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/application.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/authority.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/authority.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/backup.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/backup.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/broker.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/broker.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/cache.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/cache.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/cli.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/cli.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/client.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/client.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/codec.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/codec.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/config.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/config.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/context.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/context.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/derivation.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/derivation.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/derivation_models.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/derivation_models.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/domains.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/domains.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/envelope.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/envelope.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/git.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/git.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/gunicorn.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/gunicorn.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/kinds.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/kinds.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/memory.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/memory.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/migration.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/migration.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/models.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/models.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/original_git.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/original_git.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/postgres.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/postgres.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/__init__.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/__init__.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/application.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/application.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/bundle.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/bundle.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/cli.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/cli.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/configuration.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/configuration.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/gateway.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/gateway.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/intents.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/intents.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/models.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/models.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/preparation.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/preparation.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/status.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/status.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/transport.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/transport.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/verification.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/verification.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/worker.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/worker.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/reconciliation.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/reconciliation.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/rotation.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/rotation.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/service.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/service.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/sharing.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/sharing.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/sharing_cli.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/sharing_cli.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/storage.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/storage.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/values.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/values.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/views.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/views.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/wire.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/wire.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/administration/authority.sql.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/administration/authority.sql.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/administration/data.sql.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/administration/data.sql.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/administration/enroll.sql.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/administration/enroll.sql.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/administration/role.sql.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/administration/role.sql.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/advance.sql.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/advance.sql.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/authority-ack.sql.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/authority-ack.sql.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/authority-cutover.sql.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/authority-cutover.sql.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/authority-grant.sql.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/authority-grant.sql.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/authority-lock.sql.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/authority-lock.sql.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/authority-prepare.sql.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/authority-prepare.sql.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/authority-schema.sql.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/authority-schema.sql.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/authority-transition.sql.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/authority-transition.sql.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/commit.sql.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/commit.sql.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/durability.sql.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/durability.sql.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/get.sql.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/get.sql.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/head.sql.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/head.sql.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/history.sql.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/history.sql.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/lock.sql.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/lock.sql.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/locked-head.sql.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/locked-head.sql.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/operation.sql.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/operation.sql.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/outbox.sql.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/outbox.sql.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/put.sql.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/put.sql.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/role.sql.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/role.sql.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/schema.sql.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/schema.sql.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/scope.sql.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/scope.sql.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/standbys.sql.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/standbys.sql.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/synchronous.sql.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/synchronous.sql.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/poetry.lock.json",
+        "after": "docs/native/diagrams/bindings/inputs/poetry.lock.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/scripts/native/bindings.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/scripts/native/bindings.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/scripts/native/diagrams.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/scripts/native/diagrams.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/tests/native/test_derivation.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/tests/native/test_derivation.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/tests/native/test_migration.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/tests/native/test_migration.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/tests/native/test_original_git.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/tests/native/test_original_git.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/tests/native/test_physical.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/tests/native/test_physical.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/outputs/branches-review.svg.json",
+        "after": "docs/native/diagrams/bindings/outputs/branches-review.svg.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/outputs/migration.svg.json",
+        "after": "docs/native/diagrams/bindings/outputs/migration.svg.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/outputs/projection.svg.json",
+        "after": "docs/native/diagrams/bindings/outputs/projection.svg.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/outputs/recovery.svg.json",
+        "after": "docs/native/diagrams/bindings/outputs/recovery.svg.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/outputs/state-trust.svg.json",
+        "after": "docs/native/diagrams/bindings/outputs/state-trust.svg.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/outputs/write-ack.svg.json",
+        "after": "docs/native/diagrams/bindings/outputs/write-ack.svg.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/manifest.json",
+        "after": "docs/native/diagrams/manifest.json",
+        "added": 3,
+        "deleted": 113
+      },
+      {
+        "before": "docs/provider-contracts.md",
+        "after": "docs/provider-contracts.md",
+        "added": 10,
+        "deleted": 4
+      },
+      {
+        "before": "scripts/ci/provider-contracts.test.mjs",
+        "after": "scripts/ci/provider-contracts.test.mjs",
+        "added": 28,
+        "deleted": 4
+      },
+      {
+        "before": "scripts/ci/publish-contracts.mjs",
+        "after": "scripts/ci/publish-contracts.mjs",
+        "added": 17,
+        "deleted": 1
+      },
+      {
+        "before": "scripts/native/bindings.py",
+        "after": "scripts/native/bindings.py",
+        "added": 136,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/native/diagrams.py",
+        "after": "scripts/native/diagrams.py",
+        "added": 14,
+        "deleted": 17
+      },
+      {
+        "before": "tests/native/test_diagram_bindings.py",
+        "after": "tests/native/test_diagram_bindings.py",
+        "added": 176,
+        "deleted": 0
+      }
+    ]
+  },
+  "view": {
+    "nodes": [
+      {
+        "id": "F1",
+        "label": ".github/generated-artifacts.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 4.0,
+        "group": ".github",
+        "context": false
+      },
+      {
+        "id": "F2",
+        "label": "docs/generated-artifacts.md",
+        "kind": "file",
+        "status": "changed",
+        "weight": 12.0,
+        "group": "docs",
+        "context": false
+      },
+      {
+        "id": "F3",
+        "label": "docs/native/diagrams/README.md",
+        "kind": "file",
+        "status": "changed",
+        "weight": 20.0,
+        "group": "docs/native/diagrams",
+        "context": false
+      },
+      {
+        "id": "F4",
+        "label": "docs/native/diagrams/bindings/inputs/docs/native-operations.md.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/docs",
+        "context": false
+      },
+      {
+        "id": "F5",
+        "label": "docs/native/diagrams/bindings/inputs/docs/native/diagrams/views.json.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/docs/native/diagrams",
+        "context": false
+      },
+      {
+        "id": "F6",
+        "label": "docs/native/diagrams/bindings/inputs/helm/witful/references/native/values.yaml.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/helm/witful/references/native",
+        "context": false
+      },
+      {
+        "id": "F7",
+        "label": "docs/native/diagrams/bindings/inputs/helm/witful/references/projection/values.yaml.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/helm/witful/references/projection",
+        "context": false
+      },
+      {
+        "id": "F8",
+        "label": "docs/native/diagrams/bindings/inputs/helm/witful/templates/projection-scheduler.yaml.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/helm/witful/templates",
+        "context": false
+      },
+      {
+        "id": "F9",
+        "label": "docs/native/diagrams/bindings/inputs/helm/witful/values.schema.json.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/helm/witful",
+        "context": false
+      },
+      {
+        "id": "F10",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/native/__init__.py.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/native",
+        "context": false
+      },
+      {
+        "id": "F11",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/native/administration.py.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/native",
+        "context": false
+      },
+      {
+        "id": "F12",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/native/api/__init__.py.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/native/api",
+        "context": false
+      },
+      {
+        "id": "F13",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/native/api/admission.py.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/native/api",
+        "context": false
+      },
+      {
+        "id": "F14",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/native/api/archives.py.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/native/api",
+        "context": false
+      },
+      {
+        "id": "F15",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/native/api/builder.py.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/native/api",
+        "context": false
+      },
+      {
+        "id": "F16",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/native/api/derivation.py.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/native/api",
+        "context": false
+      },
+      {
+        "id": "F17",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/native/api/maintenance.py.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/native/api",
+        "context": false
+      },
+      {
+        "id": "F18",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/native/api/projection.py.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/native/api",
+        "context": false
+      },
+      {
+        "id": "F19",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/native/api/records.py.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/native/api",
+        "context": false
+      },
+      {
+        "id": "F20",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/native/api/requests.py.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/native/api",
+        "context": false
+      },
+      {
+        "id": "F21",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/native/api/sharing.py.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/native/api",
+        "context": false
+      },
+      {
+        "id": "F22",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/native/application.py.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/native",
+        "context": false
+      },
+      {
+        "id": "F23",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/native/authority.py.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/native",
+        "context": false
+      },
+      {
+        "id": "F24",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/native/backup.py.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/native",
+        "context": false
+      },
+      {
+        "id": "F25",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/native/broker.py.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/native",
+        "context": false
+      },
+      {
+        "id": "F26",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/native/cache.py.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/native",
+        "context": false
+      },
+      {
+        "id": "F27",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/native/cli.py.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/native",
+        "context": false
+      },
+      {
+        "id": "F28",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/native/client.py.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/native",
+        "context": false
+      },
+      {
+        "id": "F29",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/native/codec.py.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/native",
+        "context": false
+      },
+      {
+        "id": "F30",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/native/config.py.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/native",
+        "context": false
+      },
+      {
+        "id": "F31",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/native/context.py.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/native",
+        "context": false
+      },
+      {
+        "id": "F32",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/native/derivation.py.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/native",
+        "context": false
+      },
+      {
+        "id": "F33",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/native/derivation_models.py.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/native",
+        "context": false
+      },
+      {
+        "id": "F34",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/native/domains.py.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/native",
+        "context": false
+      },
+      {
+        "id": "F35",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/native/envelope.py.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/native",
+        "context": false
+      },
+      {
+        "id": "F36",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/native/git.py.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/native",
+        "context": false
+      },
+      {
+        "id": "F37",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/native/gunicorn.py.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/native",
+        "context": false
+      },
+      {
+        "id": "F38",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/native/kinds.py.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/native",
+        "context": false
+      },
+      {
+        "id": "F39",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/native/memory.py.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/native",
+        "context": false
+      },
+      {
+        "id": "F40",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/native/migration.py.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/native",
+        "context": false
+      },
+      {
+        "id": "F41",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/native/models.py.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/native",
+        "context": false
+      },
+      {
+        "id": "F42",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/native/original_git.py.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/native",
+        "context": false
+      },
+      {
+        "id": "F43",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/native/postgres.py.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/native",
+        "context": false
+      },
+      {
+        "id": "F44",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/__init__.py.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection",
+        "context": false
+      },
+      {
+        "id": "F45",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/application.py.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection",
+        "context": false
+      },
+      {
+        "id": "F46",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/bundle.py.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection",
+        "context": false
+      },
+      {
+        "id": "F47",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/cli.py.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection",
+        "context": false
+      },
+      {
+        "id": "F48",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/configuration.py.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection",
+        "context": false
+      },
+      {
+        "id": "F49",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/gateway.py.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection",
+        "context": false
+      },
+      {
+        "id": "F50",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/intents.py.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection",
+        "context": false
+      },
+      {
+        "id": "F51",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/models.py.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection",
+        "context": false
+      },
+      {
+        "id": "F52",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/preparation.py.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection",
+        "context": false
+      },
+      {
+        "id": "F53",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/status.py.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection",
+        "context": false
+      },
+      {
+        "id": "F54",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/transport.py.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection",
+        "context": false
+      },
+      {
+        "id": "F55",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/verification.py.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection",
+        "context": false
+      },
+      {
+        "id": "F56",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/worker.py.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection",
+        "context": false
+      },
+      {
+        "id": "F57",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/native/reconciliation.py.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/native",
+        "context": false
+      },
+      {
+        "id": "F58",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/native/rotation.py.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/native",
+        "context": false
+      },
+      {
+        "id": "F59",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/native/service.py.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/native",
+        "context": false
+      },
+      {
+        "id": "F60",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/native/sharing.py.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/native",
+        "context": false
+      },
+      {
+        "id": "F61",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/native/sharing_cli.py.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/native",
+        "context": false
+      },
+      {
+        "id": "F62",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/native/storage.py.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/native",
+        "context": false
+      },
+      {
+        "id": "F63",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/native/values.py.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/native",
+        "context": false
+      },
+      {
+        "id": "F64",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/native/views.py.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/native",
+        "context": false
+      },
+      {
+        "id": "F65",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/native/wire.py.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/native",
+        "context": false
+      },
+      {
+        "id": "F66",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/administration/authority.sql.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/administration",
+        "context": false
+      },
+      {
+        "id": "F67",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/administration/data.sql.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/administration",
+        "context": false
+      },
+      {
+        "id": "F68",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/administration/enroll.sql.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/administration",
+        "context": false
+      },
+      {
+        "id": "F69",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/administration/role.sql.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/administration",
+        "context": false
+      },
+      {
+        "id": "F70",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/advance.sql.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native",
+        "context": false
+      },
+      {
+        "id": "F71",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/authority-ack.sql.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native",
+        "context": false
+      },
+      {
+        "id": "F72",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/authority-cutover.sql.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native",
+        "context": false
+      },
+      {
+        "id": "F73",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/authority-grant.sql.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native",
+        "context": false
+      },
+      {
+        "id": "F74",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/authority-lock.sql.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native",
+        "context": false
+      },
+      {
+        "id": "F75",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/authority-prepare.sql.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native",
+        "context": false
+      },
+      {
+        "id": "F76",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/authority-schema.sql.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native",
+        "context": false
+      },
+      {
+        "id": "F77",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/authority-transition.sql.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native",
+        "context": false
+      },
+      {
+        "id": "F78",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/commit.sql.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native",
+        "context": false
+      },
+      {
+        "id": "F79",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/durability.sql.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native",
+        "context": false
+      },
+      {
+        "id": "F80",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/get.sql.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native",
+        "context": false
+      },
+      {
+        "id": "F81",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/head.sql.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native",
+        "context": false
+      },
+      {
+        "id": "F82",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/history.sql.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native",
+        "context": false
+      },
+      {
+        "id": "F83",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/lock.sql.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native",
+        "context": false
+      },
+      {
+        "id": "F84",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/locked-head.sql.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native",
+        "context": false
+      },
+      {
+        "id": "F85",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/operation.sql.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native",
+        "context": false
+      },
+      {
+        "id": "F86",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/outbox.sql.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native",
+        "context": false
+      },
+      {
+        "id": "F87",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/put.sql.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native",
+        "context": false
+      },
+      {
+        "id": "F88",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/role.sql.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native",
+        "context": false
+      },
+      {
+        "id": "F89",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/schema.sql.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native",
+        "context": false
+      },
+      {
+        "id": "F90",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/scope.sql.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native",
+        "context": false
+      },
+      {
+        "id": "F91",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/standbys.sql.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native",
+        "context": false
+      },
+      {
+        "id": "F92",
+        "label": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/synchronous.sql.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native",
+        "context": false
+      },
+      {
+        "id": "F93",
+        "label": "docs/native/diagrams/bindings/inputs/poetry.lock.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs",
+        "context": false
+      },
+      {
+        "id": "F94",
+        "label": "docs/native/diagrams/bindings/inputs/scripts/native/bindings.py.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/scripts/native",
+        "context": false
+      },
+      {
+        "id": "F95",
+        "label": "docs/native/diagrams/bindings/inputs/scripts/native/diagrams.py.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/scripts/native",
+        "context": false
+      },
+      {
+        "id": "F96",
+        "label": "docs/native/diagrams/bindings/inputs/tests/native/test_derivation.py.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/tests/native",
+        "context": false
+      },
+      {
+        "id": "F97",
+        "label": "docs/native/diagrams/bindings/inputs/tests/native/test_migration.py.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/tests/native",
+        "context": false
+      },
+      {
+        "id": "F98",
+        "label": "docs/native/diagrams/bindings/inputs/tests/native/test_original_git.py.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/tests/native",
+        "context": false
+      },
+      {
+        "id": "F99",
+        "label": "docs/native/diagrams/bindings/inputs/tests/native/test_physical.py.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/inputs/tests/native",
+        "context": false
+      },
+      {
+        "id": "F100",
+        "label": "docs/native/diagrams/bindings/outputs/branches-review.svg.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/outputs",
+        "context": false
+      },
+      {
+        "id": "F101",
+        "label": "docs/native/diagrams/bindings/outputs/migration.svg.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/outputs",
+        "context": false
+      },
+      {
+        "id": "F102",
+        "label": "docs/native/diagrams/bindings/outputs/projection.svg.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/outputs",
+        "context": false
+      },
+      {
+        "id": "F103",
+        "label": "docs/native/diagrams/bindings/outputs/recovery.svg.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/outputs",
+        "context": false
+      },
+      {
+        "id": "F104",
+        "label": "docs/native/diagrams/bindings/outputs/state-trust.svg.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/outputs",
+        "context": false
+      },
+      {
+        "id": "F105",
+        "label": "docs/native/diagrams/bindings/outputs/write-ack.svg.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 6.0,
+        "group": "docs/native/diagrams/bindings/outputs",
+        "context": false
+      },
+      {
+        "id": "F106",
+        "label": "docs/native/diagrams/manifest.json",
+        "kind": "file",
+        "status": "changed",
+        "weight": 116.0,
+        "group": "docs/native/diagrams",
+        "context": false
+      },
+      {
+        "id": "F107",
+        "label": "docs/provider-contracts.md",
+        "kind": "file",
+        "status": "changed",
+        "weight": 14.0,
+        "group": "docs",
+        "context": false
+      },
+      {
+        "id": "F108",
+        "label": "scripts/ci/provider-contracts.test.mjs",
+        "kind": "file",
+        "status": "changed",
+        "weight": 32.0,
+        "group": "scripts/ci",
+        "context": false
+      },
+      {
+        "id": "F109",
+        "label": "scripts/ci/publish-contracts.mjs",
+        "kind": "file",
+        "status": "changed",
+        "weight": 18.0,
+        "group": "scripts/ci",
+        "context": false
+      },
+      {
+        "id": "F110",
+        "label": "scripts/native/bindings.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 136.0,
+        "group": "scripts/native",
+        "context": false
+      },
+      {
+        "id": "F111",
+        "label": "scripts/native/diagrams.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 31.0,
+        "group": "scripts/native",
+        "context": false
+      },
+      {
+        "id": "F112",
+        "label": "tests/native/test_diagram_bindings.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 176.0,
+        "group": "tests/native",
+        "context": false
+      }
+    ],
+    "links": [],
+    "missing": [
+      ".github/generated-artifacts.json",
+      "docs/generated-artifacts.md",
+      "docs/native/diagrams/README.md",
+      "docs/native/diagrams/bindings/inputs/docs/native-operations.md.json",
+      "docs/native/diagrams/bindings/inputs/docs/native/diagrams/views.json.json",
+      "docs/native/diagrams/bindings/inputs/helm/witful/references/native/values.yaml.json",
+      "docs/native/diagrams/bindings/inputs/helm/witful/references/projection/values.yaml.json",
+      "docs/native/diagrams/bindings/inputs/helm/witful/templates/projection-scheduler.yaml.json",
+      "docs/native/diagrams/bindings/inputs/helm/witful/values.schema.json.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/native/__init__.py.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/native/administration.py.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/native/api/__init__.py.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/native/api/admission.py.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/native/api/archives.py.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/native/api/builder.py.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/native/api/derivation.py.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/native/api/maintenance.py.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/native/api/projection.py.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/native/api/records.py.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/native/api/requests.py.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/native/api/sharing.py.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/native/application.py.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/native/authority.py.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/native/backup.py.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/native/broker.py.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/native/cache.py.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/native/cli.py.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/native/client.py.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/native/codec.py.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/native/config.py.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/native/context.py.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/native/derivation.py.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/native/derivation_models.py.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/native/domains.py.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/native/envelope.py.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/native/git.py.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/native/gunicorn.py.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/native/kinds.py.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/native/memory.py.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/native/migration.py.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/native/models.py.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/native/original_git.py.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/native/postgres.py.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/__init__.py.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/application.py.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/bundle.py.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/cli.py.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/configuration.py.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/gateway.py.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/intents.py.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/models.py.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/preparation.py.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/status.py.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/transport.py.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/verification.py.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/worker.py.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/native/reconciliation.py.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/native/rotation.py.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/native/service.py.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/native/sharing.py.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/native/sharing_cli.py.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/native/storage.py.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/native/values.py.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/native/views.py.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/native/wire.py.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/administration/authority.sql.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/administration/data.sql.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/administration/enroll.sql.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/administration/role.sql.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/advance.sql.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/authority-ack.sql.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/authority-cutover.sql.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/authority-grant.sql.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/authority-lock.sql.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/authority-prepare.sql.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/authority-schema.sql.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/authority-transition.sql.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/commit.sql.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/durability.sql.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/get.sql.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/head.sql.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/history.sql.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/lock.sql.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/locked-head.sql.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/operation.sql.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/outbox.sql.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/put.sql.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/role.sql.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/schema.sql.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/scope.sql.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/standbys.sql.json",
+      "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/synchronous.sql.json",
+      "docs/native/diagrams/bindings/inputs/poetry.lock.json",
+      "docs/native/diagrams/bindings/inputs/scripts/native/bindings.py.json",
+      "docs/native/diagrams/bindings/inputs/scripts/native/diagrams.py.json",
+      "docs/native/diagrams/bindings/inputs/tests/native/test_derivation.py.json",
+      "docs/native/diagrams/bindings/inputs/tests/native/test_migration.py.json",
+      "docs/native/diagrams/bindings/inputs/tests/native/test_original_git.py.json",
+      "docs/native/diagrams/bindings/inputs/tests/native/test_physical.py.json",
+      "docs/native/diagrams/bindings/outputs/branches-review.svg.json",
+      "docs/native/diagrams/bindings/outputs/migration.svg.json",
+      "docs/native/diagrams/bindings/outputs/projection.svg.json",
+      "docs/native/diagrams/bindings/outputs/recovery.svg.json",
+      "docs/native/diagrams/bindings/outputs/state-trust.svg.json",
+      "docs/native/diagrams/bindings/outputs/write-ack.svg.json",
+      "docs/native/diagrams/manifest.json",
+      "docs/provider-contracts.md",
+      "scripts/ci/provider-contracts.test.mjs",
+      "scripts/ci/publish-contracts.mjs",
+      "scripts/native/bindings.py",
+      "scripts/native/diagrams.py",
+      "tests/native/test_diagram_bindings.py"
+    ],
+    "state": "unavailable: no local intent export",
+    "graph_revision": "",
+    "input_sha256": "",
+    "omitted_dependencies": 0,
+    "omitted_evidence": 0
+  },
+  "palette_sha256": "df3607dacd40a0c4dbfb4b0053752953f4b40d060401fe4e42a3d842f6a8a15c",
+  "seed": 1729,
+  "renderer": 1,
+  "implementation_sha256": "5cee8556c16a1cc35790bcf8a95cf0f0d059669da2eb7bd210dd10a9241ba9d4",
+  "matplotlib": "3.11.2",
+  "networkx": "3.7",
+  "numpy": "2.5.3",
+  "witful": "0.6.0",
+  "model_calls": 0,
+  "evaluated_at": null,
+  "image_sha256": "bf171d87c130c3e33f9c515195371d14e9675fb8e8a22de84b3d467dd4cb348b"
+}

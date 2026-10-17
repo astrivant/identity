@@ -1,0 +1,706 @@
+{
+  "measurement": {
+    "base": "35176fbf69acc478428fb7dd0c9d2a6ec1baf4cd",
+    "merge_base": "dbb4795b01821141b8112097133e00094593586f",
+    "head": "28a0a55fe4d573bb8eb74892f3cd990e2bb259e4",
+    "classifier": "Pygments 2.21.0",
+    "deltas": [
+      {
+        "before": ".github/generated-artifacts.json",
+        "after": ".github/generated-artifacts.json",
+        "added": 2,
+        "deleted": 2
+      },
+      {
+        "before": "docs/generated-artifacts.md",
+        "after": "docs/generated-artifacts.md",
+        "added": 12,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/README.md",
+        "after": "docs/native/diagrams/README.md",
+        "added": 14,
+        "deleted": 6
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/docs/native-operations.md.json",
+        "after": "docs/native/diagrams/bindings/inputs/docs/native-operations.md.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/docs/native/diagrams/views.json.json",
+        "after": "docs/native/diagrams/bindings/inputs/docs/native/diagrams/views.json.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/helm/witful/references/native/values.yaml.json",
+        "after": "docs/native/diagrams/bindings/inputs/helm/witful/references/native/values.yaml.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/helm/witful/references/projection/values.yaml.json",
+        "after": "docs/native/diagrams/bindings/inputs/helm/witful/references/projection/values.yaml.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/helm/witful/templates/projection-scheduler.yaml.json",
+        "after": "docs/native/diagrams/bindings/inputs/helm/witful/templates/projection-scheduler.yaml.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/helm/witful/values.schema.json.json",
+        "after": "docs/native/diagrams/bindings/inputs/helm/witful/values.schema.json.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/__init__.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/__init__.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/administration.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/administration.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/api/__init__.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/api/__init__.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/api/admission.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/api/admission.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/api/archives.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/api/archives.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/api/builder.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/api/builder.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/api/derivation.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/api/derivation.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/api/maintenance.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/api/maintenance.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/api/projection.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/api/projection.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/api/records.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/api/records.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/api/requests.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/api/requests.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/api/sharing.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/api/sharing.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/application.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/application.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/authority.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/authority.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/backup.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/backup.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/broker.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/broker.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/cache.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/cache.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/cli.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/cli.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/client.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/client.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/codec.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/codec.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/config.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/config.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/context.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/context.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/derivation.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/derivation.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/derivation_models.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/derivation_models.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/domains.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/domains.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/envelope.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/envelope.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/git.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/git.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/gunicorn.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/gunicorn.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/kinds.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/kinds.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/memory.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/memory.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/migration.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/migration.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/models.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/models.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/original_git.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/original_git.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/postgres.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/postgres.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/__init__.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/__init__.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/application.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/application.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/bundle.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/bundle.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/cli.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/cli.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/configuration.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/configuration.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/gateway.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/gateway.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/intents.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/intents.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/models.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/models.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/preparation.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/preparation.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/status.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/status.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/transport.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/transport.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/verification.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/verification.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/worker.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/projection/worker.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/reconciliation.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/reconciliation.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/rotation.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/rotation.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/service.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/service.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/sharing.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/sharing.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/sharing_cli.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/sharing_cli.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/storage.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/storage.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/values.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/values.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/views.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/views.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/native/wire.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/native/wire.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/administration/authority.sql.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/administration/authority.sql.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/administration/data.sql.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/administration/data.sql.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/administration/enroll.sql.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/administration/enroll.sql.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/administration/role.sql.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/administration/role.sql.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/advance.sql.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/advance.sql.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/authority-ack.sql.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/authority-ack.sql.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/authority-cutover.sql.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/authority-cutover.sql.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/authority-grant.sql.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/authority-grant.sql.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/authority-lock.sql.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/authority-lock.sql.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/authority-prepare.sql.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/authority-prepare.sql.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/authority-schema.sql.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/authority-schema.sql.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/authority-transition.sql.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/authority-transition.sql.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/commit.sql.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/commit.sql.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/durability.sql.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/durability.sql.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/get.sql.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/get.sql.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/head.sql.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/head.sql.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/history.sql.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/history.sql.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/lock.sql.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/lock.sql.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/locked-head.sql.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/locked-head.sql.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/operation.sql.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/operation.sql.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/outbox.sql.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/outbox.sql.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/put.sql.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/put.sql.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/role.sql.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/role.sql.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/schema.sql.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/schema.sql.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/scope.sql.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/scope.sql.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/standbys.sql.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/standbys.sql.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/synchronous.sql.json",
+        "after": "docs/native/diagrams/bindings/inputs/pkg/witful/sql/postgres/native/synchronous.sql.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/poetry.lock.json",
+        "after": "docs/native/diagrams/bindings/inputs/poetry.lock.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/scripts/native/bindings.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/scripts/native/bindings.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/scripts/native/diagrams.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/scripts/native/diagrams.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/tests/native/test_derivation.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/tests/native/test_derivation.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/tests/native/test_migration.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/tests/native/test_migration.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/tests/native/test_original_git.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/tests/native/test_original_git.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/tests/native/test_physical.py.json",
+        "after": "docs/native/diagrams/bindings/inputs/tests/native/test_physical.py.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/outputs/branches-review.svg.json",
+        "after": "docs/native/diagrams/bindings/outputs/branches-review.svg.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/outputs/migration.svg.json",
+        "after": "docs/native/diagrams/bindings/outputs/migration.svg.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/outputs/projection.svg.json",
+        "after": "docs/native/diagrams/bindings/outputs/projection.svg.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/outputs/recovery.svg.json",
+        "after": "docs/native/diagrams/bindings/outputs/recovery.svg.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/outputs/state-trust.svg.json",
+        "after": "docs/native/diagrams/bindings/outputs/state-trust.svg.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/bindings/outputs/write-ack.svg.json",
+        "after": "docs/native/diagrams/bindings/outputs/write-ack.svg.json",
+        "added": 6,
+        "deleted": 0
+      },
+      {
+        "before": "docs/native/diagrams/manifest.json",
+        "after": "docs/native/diagrams/manifest.json",
+        "added": 3,
+        "deleted": 113
+      },
+      {
+        "before": "docs/provider-contracts.md",
+        "after": "docs/provider-contracts.md",
+        "added": 10,
+        "deleted": 4
+      },
+      {
+        "before": "scripts/ci/provider-contracts.test.mjs",
+        "after": "scripts/ci/provider-contracts.test.mjs",
+        "added": 28,
+        "deleted": 4
+      },
+      {
+        "before": "scripts/ci/publish-contracts.mjs",
+        "after": "scripts/ci/publish-contracts.mjs",
+        "added": 17,
+        "deleted": 1
+      },
+      {
+        "before": "scripts/native/bindings.py",
+        "after": "scripts/native/bindings.py",
+        "added": 136,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/native/diagrams.py",
+        "after": "scripts/native/diagrams.py",
+        "added": 14,
+        "deleted": 17
+      },
+      {
+        "before": "tests/native/test_diagram_bindings.py",
+        "after": "tests/native/test_diagram_bindings.py",
+        "added": 176,
+        "deleted": 0
+      }
+    ],
+    "shares": [
+      {
+        "language": "JSON",
+        "added": 617,
+        "deleted": 115
+      },
+      {
+        "language": "Python",
+        "added": 326,
+        "deleted": 17
+      },
+      {
+        "language": "JavaScript",
+        "added": 45,
+        "deleted": 5
+      },
+      {
+        "language": "Markdown",
+        "added": 36,
+        "deleted": 10
+      }
+    ]
+  },
+  "palette_sha256": "df3607dacd40a0c4dbfb4b0053752953f4b40d060401fe4e42a3d842f6a8a15c",
+  "matplotlib": "3.11.2"
+}
