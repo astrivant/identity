@@ -1,0 +1,123 @@
+{
+  "measurement": {
+    "base": "5beef96d4fb2a1914469e82f0b84b7b108c707e0",
+    "merge_base": "5beef96d4fb2a1914469e82f0b84b7b108c707e0",
+    "head": "d6d9fbe40e8c3a616db6b750e24ad6514432cd41",
+    "classifier": "Pygments 2.21.0",
+    "deltas": [
+      {
+        "before": ".github/workflows/ci.yml",
+        "after": ".github/workflows/ci.yml",
+        "added": 1,
+        "deleted": 1
+      },
+      {
+        "before": ".pre-commit-config.yaml",
+        "after": ".pre-commit-config.yaml",
+        "added": 2,
+        "deleted": 2
+      },
+      {
+        "before": "docs/codeowners.md",
+        "after": "docs/codeowners.md",
+        "added": 6,
+        "deleted": 6
+      },
+      {
+        "before": "docs/generated-artifacts.md",
+        "after": "docs/generated-artifacts.md",
+        "added": 1,
+        "deleted": 1
+      },
+      {
+        "before": "docs/native/diagrams/bindings/inputs/poetry.lock.json",
+        "after": "docs/native/diagrams/bindings/inputs/poetry.lock.json",
+        "added": 2,
+        "deleted": 2
+      },
+      {
+        "before": "poetry.lock",
+        "after": "poetry.lock",
+        "added": 17,
+        "deleted": 2
+      },
+      {
+        "before": "pyproject.toml",
+        "after": "pyproject.toml",
+        "added": 1,
+        "deleted": 0
+      },
+      {
+        "before": "scripts/ci/repair/NOTICE.md",
+        "after": "scripts/ci/repair/NOTICE.md",
+        "added": 1,
+        "deleted": 1
+      },
+      {
+        "before": "scripts/ownership/__init__.py",
+        "after": "scripts/ownership/__init__.py",
+        "added": 0,
+        "deleted": 5
+      },
+      {
+        "before": "scripts/ownership/__main__.py",
+        "after": "scripts/ownership/__main__.py",
+        "added": 0,
+        "deleted": 9
+      },
+      {
+        "before": "scripts/ownership/cli.py",
+        "after": "scripts/ownership/cli.py",
+        "added": 0,
+        "deleted": 137
+      },
+      {
+        "before": "scripts/ownership/compiler.py",
+        "after": "scripts/ownership/compiler.py",
+        "added": 0,
+        "deleted": 242
+      },
+      {
+        "before": "tests/ci/test_generated_repair_workflow.py",
+        "after": "tests/ci/test_generated_repair_workflow.py",
+        "added": 3,
+        "deleted": 3
+      },
+      {
+        "before": "tests/ci/test_ownership_compiler.py",
+        "after": "tests/ci/test_ownership_compiler.py",
+        "added": 2,
+        "deleted": 2
+      }
+    ],
+    "shares": [
+      {
+        "language": "Python",
+        "added": 5,
+        "deleted": 398
+      },
+      {
+        "language": "TOML",
+        "added": 18,
+        "deleted": 2
+      },
+      {
+        "language": "Markdown",
+        "added": 8,
+        "deleted": 8
+      },
+      {
+        "language": "YAML",
+        "added": 3,
+        "deleted": 3
+      },
+      {
+        "language": "JSON",
+        "added": 2,
+        "deleted": 2
+      }
+    ]
+  },
+  "palette_sha256": "df3607dacd40a0c4dbfb4b0053752953f4b40d060401fe4e42a3d842f6a8a15c",
+  "matplotlib": "3.11.2"
+}
