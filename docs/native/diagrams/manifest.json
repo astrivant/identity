@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "source_commit": "37d8a8e1ab0884c04c9d070dd617c32cda7bb95b",
+  "source_commit": "35176fbf69acc478428fb7dd0c9d2a6ec1baf4cd",
   "verification_date": "2026-10-17",
   "scope": "Implemented synthetic/reference profiles; no production deployment or storage attestation asserted",
   "versions": {
@@ -103,7 +103,7 @@
     "pkg/witful/sql/postgres/native/scope.sql": "e934d2f53b77e5c1627fde7f631c3b895786ef1521e10efa97d1c5cd2462cc76",
     "pkg/witful/sql/postgres/native/standbys.sql": "fef3f7ba8cf97b259ebc5312c89a53812cf0b37ea11686201941b1c7c811d498",
     "pkg/witful/sql/postgres/native/synchronous.sql": "589c1ee419a57b3ed1184a44441ccfba77ce909deebb5b2aee318bb421a144d2",
-    "poetry.lock": "8ba13cff81df9a02e4af65d6726bcc787ccaf281b58a66e704551b244d91c08f",
+    "poetry.lock": "61f8ea80c3989ebba3d5053393528ee4509b48c0103b2e9a4a5cc7de5cc383da",
     "scripts/native/diagrams.py": "2dd81569f81371dca48b561b72a01aa187fb52756e5627868361db5e0a2a1a27",
     "tests/native/test_derivation.py": "af5491648bbe79f5aa80e21fb111d5b5b53352cac6290e34e40f01b020e87bea",
     "tests/native/test_migration.py": "569dd4d62c9c843afe83cbb6794ade72fc33bd65e093b1858ecd326454d5b26f",

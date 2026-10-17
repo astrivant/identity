@@ -303,7 +303,6 @@ description = "Foreign Function Interface for Python calling C code."
 optional = false
 python-versions = ">=3.10"
 groups = ["main", "dev"]
-markers = "platform_python_implementation != \"PyPy\""
 files = [
     {file = "cffi-2.1.1-cp310-cp310-macosx_10_15_x86_64.whl", hash = "sha256:baed1e86cc735622097354b9d1281406caf42ff42a886d29faa8e8d1630333be"},
     {file = "cffi-2.1.1-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:ca82be1a1d406ecfe1d25dc16cb33488e5a16bf4438c9fb590484ea29d92478b"},
@@ -406,6 +405,7 @@ files = [
     {file = "cffi-2.1.1-cp315-cp315t-win_arm64.whl", hash = "sha256:d18e5ac0f2f03f4f518d3e23db0f0cad7faa1da8620e9c09461d443bbf6e6692"},
     {file = "cffi-2.1.1.tar.gz", hash = "sha256:dd31f52ea1086513bb9df30f8fcee9b8918323ae067a3d5b78bc826a000712be"},
 ]
+markers = {main = "platform_python_implementation != \"PyPy\""}
 
 [package.dependencies]
 pycparser = {version = "*", markers = "implementation_name != \"PyPy\""}
@@ -2385,6 +2385,44 @@ files = [
 ]
 
 [[package]]
+name = "pact-python"
+version = "4.1.0"
+description = "Tool for creating and verifying consumer-driven contracts using the Pact framework."
+optional = false
+python-versions = ">=3.11"
+groups = ["dev"]
+files = [
+    {file = "pact_python-4.1.0-py3-none-any.whl", hash = "sha256:c61f44ae3b4caee40994db4c6521b835f3c54cdc4017864c0e2e4de38a03a808"},
+    {file = "pact_python-4.1.0.tar.gz", hash = "sha256:601705baa5b019bd02a7dfc7fd5517f2f677e367d6f040e0f5465c320e1b7e02"},
+]
+
+[package.dependencies]
+pact-python-ffi = ">=0.5.0,<0.6.0"
+typing-extensions = {version = ">=4.0,<5.0", markers = "python_version < \"3.13\""}
+
+[[package]]
+name = "pact-python-ffi"
+version = "0.5.10.0"
+description = "Python bindings for the Pact FFI library"
+optional = false
+python-versions = ">=3.11"
+groups = ["dev"]
+files = [
+    {file = "pact_python_ffi-0.5.10.0-cp311-abi3-macosx_12_0_arm64.whl", hash = "sha256:2932471883f76086ee5d80a274dc1f3c391b07e61366427810a0c181258c4d63"},
+    {file = "pact_python_ffi-0.5.10.0-cp311-abi3-macosx_12_0_x86_64.whl", hash = "sha256:ed11f9aec264c089dcb612757f17157517ecb8988407f354258fbe6534271bd5"},
+    {file = "pact_python_ffi-0.5.10.0-cp311-abi3-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:fdac049d275e70885d8a5f35e0af49b1534c58e3296887dbe165a6a7d649fa9c"},
+    {file = "pact_python_ffi-0.5.10.0-cp311-abi3-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:4e5fce6eab349ace26dfb75e824da85b2e290e5f5d4fdcd0a7885afb21117afa"},
+    {file = "pact_python_ffi-0.5.10.0-cp311-abi3-musllinux_1_2_aarch64.whl", hash = "sha256:f6a29e64a881deabbcc717cff93febef081fc68d52effa7404e549c959168945"},
+    {file = "pact_python_ffi-0.5.10.0-cp311-abi3-musllinux_1_2_x86_64.whl", hash = "sha256:e17269047837f2aeda91e608f8eea848558f737c66374d05a7eb51e4c7207dd0"},
+    {file = "pact_python_ffi-0.5.10.0-cp311-abi3-win_amd64.whl", hash = "sha256:b05df00efb3cda9374b6b37e5d6d9ba72c7e6f6737425ab1b7357931077711a2"},
+    {file = "pact_python_ffi-0.5.10.0-cp311-abi3-win_arm64.whl", hash = "sha256:ef83b32dd58ebdd48a1945082638d54bdae48011ca7a6843e90d8bed3cf564c3"},
+    {file = "pact_python_ffi-0.5.10.0.tar.gz", hash = "sha256:67089c69f9e248b1921b76499bf48c7c67a02a86b71ad33c5eec259da5fcd26c"},
+]
+
+[package.dependencies]
+cffi = ">=2.0,<3.0"
+
+[[package]]
 name = "pathspec"
 version = "1.1.1"
 description = "Utility library for gitignore style pattern matching of file paths."
@@ -2733,11 +2771,11 @@ description = "C parser in Python"
 optional = false
 python-versions = ">=3.10"
 groups = ["main", "dev"]
-markers = "platform_python_implementation != \"PyPy\" and implementation_name != \"PyPy\""
 files = [
     {file = "pycparser-3.11-py3-none-any.whl", hash = "sha256:51d5a8ba2be0bbe440b99d2112604c95bbbc3c2748a64260186c541e1729cd80"},
     {file = "pycparser-3.11.tar.gz", hash = "sha256:d875f09c3507d00e1aba0eecc6dcadc1352f30fff09dc6bff2f1c2935e97c2bc"},
 ]
+markers = {main = "platform_python_implementation != \"PyPy\" and implementation_name != \"PyPy\"", dev = "implementation_name != \"PyPy\""}
 
 [[package]]
 name = "pydantic"
@@ -4110,4 +4148,4 @@ postgres = ["psycopg"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.12,!=3.14.1,<4"
-content-hash = "cff97babb5eed537276a09e12bf8d7c8b87849f20ec32bf80068d569d05a1a9f"
+content-hash = "c44df8cc4ae5a5e04ab75409cf2285ad114e43a2c24478a13db55e4df51eb8cd"

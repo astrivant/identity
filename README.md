@@ -341,6 +341,9 @@ independently and restore with only the recipient's decryption key.
 
 ### Development and releases
 
+[Feature contracts and adaptive tests](docs/feature-contracts.md) explain the Pact boundaries,
+measured test partitioning and CI-generated convergence evidence.
+
 [Contributing](CONTRIBUTING.md) covers local checks, measured test coverage,
 and reproducible tooling. [Release operations](docs/releases.md) describes signed
 artifacts and publication. Detailed package responsibilities live in [Witful's guide](docs/WITFUL.md).

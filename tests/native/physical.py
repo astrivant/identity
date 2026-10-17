@@ -209,8 +209,8 @@ def cluster(working: Path) -> Iterator[Drill]:
     Yields:
         Drill: Ready primary; no real collection, production credentials or host database is modified.
     """
-    workflow = yaml.safe_load((ROOT / ".github/workflows/ci.yml").read_text())
-    image = workflow["jobs"]["tests"]["services"]["postgres"]["image"]
+    workflow = yaml.safe_load((ROOT / ".github/workflows/stage-tests.yml").read_text())
+    image = workflow["jobs"]["worker"]["services"]["postgres"]["image"]
     assert isinstance(image, str) and "@sha256:" in image
     drill = Drill("witful-physical-" + uuid4().hex[:12], image, working)
     docker("network", "create", drill.name)
