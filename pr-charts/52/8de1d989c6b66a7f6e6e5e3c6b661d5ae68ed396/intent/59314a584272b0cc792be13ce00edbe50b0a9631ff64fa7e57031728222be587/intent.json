@@ -1,0 +1,283 @@
+{
+  "inputs": {
+    "renderer/image_provenance/__init__.py": "4f6fbee00f2aaec7b9603b4501711ecad6481df8dea44c2061e59c80aef7fdd6",
+    "renderer/image_provenance/cli.py": "8bf7fd1726fc851d2b1c2f52b262886a7065b39cbe2934a77cc813119a447fc6",
+    "renderer/image_provenance/core.py": "19d15d127c0b30fff8d3c3ff19763375a0acbad3c3145b535d42af742e4e5e3f",
+    "renderer/pr_files/__init__.py": "8ba23c3c18fb2390baa4b588062636cc4c347be53500b388084edc94b81df1e0",
+    "renderer/pr_files/cli.py": "082d92c3c6ae5276fe035cb8de4fa28c993d33ee0e741993b361796d8bfa0525",
+    "renderer/pr_files/descriptions.py": "38f75acbd8a930cc9bdb82a6ba1537dc1bb77550a998924216262dec8dc8636d",
+    "renderer/pr_files/grouping.py": "f32cc09ecbca42a26a978c7e2dfa8aa36353cc2c0ae4c43a03faaaf51f9fc750",
+    "renderer/pr_files/models.py": "1543595d1fac65d569f225d02714c5ab13231753181ade47622a3fb515c97b5d",
+    "renderer/pr_files/plotting.py": "b76c9be9f537b3265d16288526bda395141bf4417687894769e9df08013443de",
+    "renderer/pr_intent/__init__.py": "0cc1ccc65f5e7f158bb61bbb067e64990a4e45763ce03e4747fe04200a09adfc",
+    "renderer/pr_intent/cli.py": "9d6934708b70a2eeaaedbbcd05550741e547e520138bd1520e3fa98f70cc0ef0",
+    "renderer/pr_intent/client.py": "d36bf3d3f596b265040e515030c2735d8442dddee76fe853d267a5027ce518f2",
+    "renderer/pr_intent/graph.py": "487f8897e19e1cfc4b6ed9c0041746fc3c7170573bc732c296b03572270dd586",
+    "renderer/pr_intent/plotting.py": "fa1311bca351175a50ee36f850bc6573132812975d8d8b9c24eb8732e5fd4b75",
+    "renderer/pr_intent/source.py": "a2043d3d78a91cd08e3f0c3c4b8398da680c15ca670ea393f417b90441ccf1cd",
+    "renderer/pr_language.py": "f837eab96ca93df61d4973d74a764e2fa59e6d08f76391c697d923c0e6792884",
+    "renderer/pr_presentation.py": "e1502b1ceea631fe8f631e65b55655a4d14613fd8eb2a885b1df44edc0f8982f",
+    "renderer/resources/fonts/EBGaramond-Regular.otf": "d3e1471a4a0f836716bad35326d3c0ab5caddb74ae5c1917f99f8225abf43a7d",
+    "renderer/resources/intent-result.schema.json": "19e00a10d5a159220f5035bd378da53110017ece9e6286aeb2438b858f01f9a4",
+    "renderer/review_paths/core.py": "dae80a01a58b368925ca69bfc9498ba27f68678d1c95d41e366517fd6937df04",
+    "environment/poetry.lock": "b91e0120da12337d51117c75a3acfb409b8a4203f9a524a58f68192699b9058d",
+    "data/palette": "149d8efaef55c657d889c6507a76ecd624947bca2f37b3fa359841a21f2b5147",
+    "data/intent": "761d68c3bb7c00b7cb4b2f16e47a8e939a42f4678705f4e005666745a40aa1bf"
+  },
+  "source": {
+    "target": "f121fe8a313dd6a70354d9bd4ba3e4821fc19378",
+    "base": "f121fe8a313dd6a70354d9bd4ba3e4821fc19378",
+    "head": "8de1d989c6b66a7f6e6e5e3c6b661d5ae68ed396",
+    "tree": "2eb5ef8722703271882033bddd783ef018939816",
+    "staged": false,
+    "deltas": [
+      {
+        "before": ".github/workflows/ci.yml",
+        "after": ".github/workflows/ci.yml",
+        "added": 1,
+        "deleted": 0
+      },
+      {
+        "before": ".pre-commit-config.yaml",
+        "after": ".pre-commit-config.yaml",
+        "added": 14,
+        "deleted": 0
+      },
+      {
+        "before": ".pre-commit-hooks.yaml",
+        "after": ".pre-commit-hooks.yaml",
+        "added": 18,
+        "deleted": 0
+      },
+      {
+        "before": "SKILL.md",
+        "after": "SKILL.md",
+        "added": 11,
+        "deleted": 0
+      },
+      {
+        "before": "docs/data-protection.md",
+        "after": "docs/data-protection.md",
+        "added": 69,
+        "deleted": 4
+      },
+      {
+        "before": "docs/private-collections.md",
+        "after": "docs/private-collections.md",
+        "added": 19,
+        "deleted": 23
+      },
+      {
+        "before": "pkg/witful/collection/cli.py",
+        "after": "pkg/witful/collection/cli.py",
+        "added": 7,
+        "deleted": 3
+      },
+      {
+        "before": "pkg/witful/collection/gate/__init__.py",
+        "after": "pkg/witful/collection/gate/__init__.py",
+        "added": 5,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/collection/gate/check.py",
+        "after": "pkg/witful/collection/gate/check.py",
+        "added": 131,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/collection/gate/cli.py",
+        "after": "pkg/witful/collection/gate/cli.py",
+        "added": 83,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/collection/gate/git.py",
+        "after": "pkg/witful/collection/gate/git.py",
+        "added": 156,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/commands/collection.py",
+        "after": "pkg/witful/commands/collection.py",
+        "added": 13,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/exceptions.py",
+        "after": "pkg/witful/exceptions.py",
+        "added": 15,
+        "deleted": 1
+      },
+      {
+        "before": "tests/collection/test_artifact_gate.py",
+        "after": "tests/collection/test_artifact_gate.py",
+        "added": 574,
+        "deleted": 0
+      }
+    ]
+  },
+  "view": {
+    "nodes": [
+      {
+        "id": "F1",
+        "label": ".github/workflows/ci.yml",
+        "kind": "file",
+        "status": "changed",
+        "weight": 1.0,
+        "group": ".github/workflows",
+        "context": false
+      },
+      {
+        "id": "F2",
+        "label": ".pre-commit-config.yaml",
+        "kind": "file",
+        "status": "changed",
+        "weight": 14.0,
+        "group": ".",
+        "context": false
+      },
+      {
+        "id": "F3",
+        "label": ".pre-commit-hooks.yaml",
+        "kind": "file",
+        "status": "changed",
+        "weight": 18.0,
+        "group": ".",
+        "context": false
+      },
+      {
+        "id": "F4",
+        "label": "SKILL.md",
+        "kind": "file",
+        "status": "changed",
+        "weight": 11.0,
+        "group": ".",
+        "context": false
+      },
+      {
+        "id": "F5",
+        "label": "docs/data-protection.md",
+        "kind": "file",
+        "status": "changed",
+        "weight": 73.0,
+        "group": "docs",
+        "context": false
+      },
+      {
+        "id": "F6",
+        "label": "docs/private-collections.md",
+        "kind": "file",
+        "status": "changed",
+        "weight": 42.0,
+        "group": "docs",
+        "context": false
+      },
+      {
+        "id": "F7",
+        "label": "pkg/witful/collection/cli.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 10.0,
+        "group": "pkg/witful/collection",
+        "context": false
+      },
+      {
+        "id": "F8",
+        "label": "pkg/witful/collection/gate/__init__.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 5.0,
+        "group": "pkg/witful/collection/gate",
+        "context": false
+      },
+      {
+        "id": "F9",
+        "label": "pkg/witful/collection/gate/check.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 131.0,
+        "group": "pkg/witful/collection/gate",
+        "context": false
+      },
+      {
+        "id": "F10",
+        "label": "pkg/witful/collection/gate/cli.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 83.0,
+        "group": "pkg/witful/collection/gate",
+        "context": false
+      },
+      {
+        "id": "F11",
+        "label": "pkg/witful/collection/gate/git.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 156.0,
+        "group": "pkg/witful/collection/gate",
+        "context": false
+      },
+      {
+        "id": "F12",
+        "label": "pkg/witful/commands/collection.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 13.0,
+        "group": "pkg/witful/commands",
+        "context": false
+      },
+      {
+        "id": "F13",
+        "label": "pkg/witful/exceptions.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 16.0,
+        "group": "pkg/witful",
+        "context": false
+      },
+      {
+        "id": "F14",
+        "label": "tests/collection/test_artifact_gate.py",
+        "kind": "file",
+        "status": "changed",
+        "weight": 574.0,
+        "group": "tests/collection",
+        "context": false
+      }
+    ],
+    "links": [],
+    "missing": [
+      ".github/workflows/ci.yml",
+      ".pre-commit-config.yaml",
+      ".pre-commit-hooks.yaml",
+      "SKILL.md",
+      "docs/data-protection.md",
+      "docs/private-collections.md",
+      "pkg/witful/collection/cli.py",
+      "pkg/witful/collection/gate/__init__.py",
+      "pkg/witful/collection/gate/check.py",
+      "pkg/witful/collection/gate/cli.py",
+      "pkg/witful/collection/gate/git.py",
+      "pkg/witful/commands/collection.py",
+      "pkg/witful/exceptions.py",
+      "tests/collection/test_artifact_gate.py"
+    ],
+    "state": "complete",
+    "graph_revision": "d63fcdecc3f14e074ccea4e8230ff8aeac892b64",
+    "input_sha256": "761d68c3bb7c00b7cb4b2f16e47a8e939a42f4678705f4e005666745a40aa1bf",
+    "omitted_dependencies": 0,
+    "omitted_evidence": 0
+  },
+  "palette_sha256": "149d8efaef55c657d889c6507a76ecd624947bca2f37b3fa359841a21f2b5147",
+  "seed": 1729,
+  "renderer": 1,
+  "implementation_sha256": "89d01525a1a8c8532d4dfa400d5681588130feb11e0c724e1979e2471a99a5fe",
+  "matplotlib": "3.11.2",
+  "networkx": "3.7",
+  "numpy": "2.5.3",
+  "witful": "0.7.0",
+  "model_calls": 0,
+  "evaluated_at": 1792276309,
+  "image_sha256": "f428fcb17047e7befcb277b1ae7fba4e7403ecd78362aaf339787b89f65584ee"
+}
