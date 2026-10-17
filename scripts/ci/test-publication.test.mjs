@@ -1,7 +1,10 @@
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
+import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import path from 'node:path';
 import test from 'node:test';
-import { publishTests, validateTests } from './publish-tests.mjs';
+import { main, publishTests, validateTests } from './publish-tests.mjs';
 
 const source = 'a'.repeat(40);
 const revision = 'b'.repeat(40);
@@ -37,6 +40,67 @@ function fixture({ current = source, verified = true, corrupt = false, retry = f
     async graphql(query, { input }) { writes.push(input); return { createCommitOnBranch: { commit: { oid: revision } } }; },
   };
   return { github, writes };
+}
+
+for (const owner of ['example', 'other']) {
+  test(`workflow entrypoint preserves inherited repository identity: ${owner}`, async (t) => {
+    const directory = await mkdtemp(path.join(tmpdir(), 'witful-test-publication-'));
+    const previous = process.cwd();
+    const attempt = process.env.GITHUB_RUN_ATTEMPT;
+    t.after(async () => {
+      process.chdir(previous);
+      if (attempt === undefined) delete process.env.GITHUB_RUN_ATTEMPT;
+      else process.env.GITHUB_RUN_ATTEMPT = attempt;
+      await rm(directory, { recursive: true, force: true });
+    });
+
+    // Actions Context exposes repo through its prototype, which object spread omits.
+    class ActionContext {
+      get repo() { return { owner, repo: 'project' }; }
+    }
+    const runtime = Object.assign(new ActionContext(), {
+      eventName: 'push', ref: 'refs/heads/main', sha: source, runId: 123,
+    });
+    assert.equal(Object.hasOwn(runtime, 'repo'), false);
+    const root = path.join(directory, '.cache/ci/tests');
+    for (const [name, bytes] of Object.entries(assets)) {
+      const destination = path.join(root, 'publication', name);
+      await mkdir(path.dirname(destination), { recursive: true });
+      await writeFile(destination, bytes);
+    }
+    await writeFile(path.join(root, 'publication.json'), JSON.stringify(receipt));
+    process.chdir(directory);
+    process.env.GITHUB_RUN_ATTEMPT = '1';
+
+    const messages = [];
+    const summary = [];
+    const core = {
+      info(message) { messages.push(JSON.parse(message)); },
+      warning() { assert.fail('A valid proposal must not require a warning'); },
+      summary: {
+        addHeading(value) { summary.push(value); return this; },
+        addRaw(value) { summary.push(value); return this; },
+        async write() { summary.push('written'); },
+      },
+    };
+    const { github, writes } = fixture();
+
+    if (owner === 'example') {
+      await main({ github, context: runtime, core });
+      assert.deepEqual(messages, [{ status: 'proposed', url: 'review', revision }]);
+      assert.deepEqual(summary, ['Test matrix evidence', 'proposed: review', 'written']);
+      assert.equal(writes.find((item) => item.fileChanges).branch.repositoryNameWithOwner, 'example/project');
+      assert.equal(writes.at(-1).owner, owner);
+      assert.equal(writes.at(-1).repo, 'project');
+    } else {
+      // Preserve the cross-repository refusal at the real filesystem/entrypoint boundary.
+      await assert.rejects(main({ github, context: runtime, core }), /Test publication binding mismatch/u);
+      assert.deepEqual(writes, []);
+      assert.deepEqual(messages, []);
+      assert.deepEqual(summary, []);
+    }
+    assert.equal(Object.hasOwn(runtime, 'runAttempt'), false);
+  });
 }
 
 test('only exact main events can publish source/run-bound output', () => {
