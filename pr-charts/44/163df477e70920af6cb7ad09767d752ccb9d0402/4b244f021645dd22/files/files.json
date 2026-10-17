@@ -1,0 +1,435 @@
+{
+  "measurement": {
+    "base": "a4a362e2f887ce13eb939523d2c64464afa8eec6",
+    "merge_base": "a4a362e2f887ce13eb939523d2c64464afa8eec6",
+    "head": "163df477e70920af6cb7ad09767d752ccb9d0402",
+    "classifier": "Pygments 2.21.0",
+    "deltas": [
+      {
+        "before": ".github/CODEOWNERS",
+        "after": ".github/CODEOWNERS",
+        "added": 1,
+        "deleted": 1
+      },
+      {
+        "before": "README.md",
+        "after": "README.md",
+        "added": 2,
+        "deleted": 2
+      },
+      {
+        "before": "SECURITY.md",
+        "after": "SECURITY.md",
+        "added": 2,
+        "deleted": 2
+      },
+      {
+        "before": "SKILL.md",
+        "after": "SKILL.md",
+        "added": 5,
+        "deleted": 5
+      },
+      {
+        "before": "docs/CLI.md",
+        "after": "docs/CLI.md",
+        "added": 1,
+        "deleted": 1
+      },
+      {
+        "before": "docs/WITFUL.md",
+        "after": "docs/WITFUL.md",
+        "added": 2,
+        "deleted": 2
+      },
+      {
+        "before": "docs/awareness.md",
+        "after": "docs/awareness.md",
+        "added": 13,
+        "deleted": 5
+      },
+      {
+        "before": "pkg/witful/awareness/__init__.py",
+        "after": "pkg/witful/awareness/__init__.py",
+        "added": 0,
+        "deleted": 5
+      },
+      {
+        "before": "pkg/witful/cli.py",
+        "after": "pkg/witful/cli.py",
+        "added": 2,
+        "deleted": 2
+      },
+      {
+        "before": "pkg/witful/collection/dashboard.py",
+        "after": "pkg/witful/collection/dashboard.py",
+        "added": 2,
+        "deleted": 2
+      },
+      {
+        "before": "pkg/witful/commands/awareness.py",
+        "after": "pkg/witful/commands/representation.py",
+        "added": 1,
+        "deleted": 1
+      },
+      {
+        "before": "pkg/witful/representation/__init__.py",
+        "after": "pkg/witful/representation/__init__.py",
+        "added": 5,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/awareness/cli.py",
+        "after": "pkg/witful/representation/cli.py",
+        "added": 5,
+        "deleted": 5
+      },
+      {
+        "before": "pkg/witful/awareness/github.py",
+        "after": "pkg/witful/representation/github.py",
+        "added": 1,
+        "deleted": 1
+      },
+      {
+        "before": "pkg/witful/awareness/models.py",
+        "after": "pkg/witful/representation/models.py",
+        "added": 0,
+        "deleted": 0
+      },
+      {
+        "before": "pkg/witful/awareness/rendering.py",
+        "after": "pkg/witful/representation/rendering.py",
+        "added": 1,
+        "deleted": 1
+      },
+      {
+        "before": "pkg/witful/awareness/tests/test_awareness.py",
+        "after": "tests/representation/test_representation.py",
+        "added": 7,
+        "deleted": 7
+      }
+    ],
+    "shares": [
+      {
+        "language": "Python",
+        "added": 24,
+        "deleted": 24
+      },
+      {
+        "language": "Markdown",
+        "added": 25,
+        "deleted": 17
+      },
+      {
+        "language": "Unknown",
+        "added": 1,
+        "deleted": 1
+      }
+    ]
+  },
+  "rows": [
+    {
+      "delta": {
+        "before": "docs/awareness.md",
+        "after": "docs/awareness.md",
+        "added": 13,
+        "deleted": 5
+      },
+      "description": "+13 added / -5 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "pkg/witful/awareness/tests/test_awareness.py",
+        "after": "tests/representation/test_representation.py",
+        "added": 7,
+        "deleted": 7
+      },
+      "description": "+7 added / -7 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "SKILL.md",
+        "after": "SKILL.md",
+        "added": 5,
+        "deleted": 5
+      },
+      "description": "+5 added / -5 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "pkg/witful/awareness/cli.py",
+        "after": "pkg/witful/representation/cli.py",
+        "added": 5,
+        "deleted": 5
+      },
+      "description": "+5 added / -5 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "pkg/witful/awareness/__init__.py",
+        "after": "pkg/witful/awareness/__init__.py",
+        "added": 0,
+        "deleted": 5
+      },
+      "description": "+0 added / -5 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "pkg/witful/representation/__init__.py",
+        "after": "pkg/witful/representation/__init__.py",
+        "added": 5,
+        "deleted": 0
+      },
+      "description": "+5 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "README.md",
+        "after": "README.md",
+        "added": 2,
+        "deleted": 2
+      },
+      "description": "+2 added / -2 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "SECURITY.md",
+        "after": "SECURITY.md",
+        "added": 2,
+        "deleted": 2
+      },
+      "description": "+2 added / -2 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "docs/WITFUL.md",
+        "after": "docs/WITFUL.md",
+        "added": 2,
+        "deleted": 2
+      },
+      "description": "+2 added / -2 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "pkg/witful/cli.py",
+        "after": "pkg/witful/cli.py",
+        "added": 2,
+        "deleted": 2
+      },
+      "description": "+2 added / -2 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "pkg/witful/collection/dashboard.py",
+        "after": "pkg/witful/collection/dashboard.py",
+        "added": 2,
+        "deleted": 2
+      },
+      "description": "+2 added / -2 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": ".github/CODEOWNERS",
+        "after": ".github/CODEOWNERS",
+        "added": 1,
+        "deleted": 1
+      },
+      "description": "+1 added / -1 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "docs/CLI.md",
+        "after": "docs/CLI.md",
+        "added": 1,
+        "deleted": 1
+      },
+      "description": "+1 added / -1 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "pkg/witful/commands/awareness.py",
+        "after": "pkg/witful/commands/representation.py",
+        "added": 1,
+        "deleted": 1
+      },
+      "description": "+1 added / -1 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "pkg/witful/awareness/github.py",
+        "after": "pkg/witful/representation/github.py",
+        "added": 1,
+        "deleted": 1
+      },
+      "description": "+1 added / -1 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "pkg/witful/awareness/rendering.py",
+        "after": "pkg/witful/representation/rendering.py",
+        "added": 1,
+        "deleted": 1
+      },
+      "description": "+1 added / -1 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "pkg/witful/awareness/models.py",
+        "after": "pkg/witful/representation/models.py",
+        "added": 0,
+        "deleted": 0
+      },
+      "description": "+0 added / -0 removed",
+      "kind": "diff"
+    }
+  ],
+  "pages": [
+    {
+      "file": "files-001.png",
+      "paths": [
+        "docs/awareness.md",
+        "docs/WITFUL.md",
+        "docs/CLI.md",
+        "pkg/witful/representation/cli.py",
+        "pkg/witful/representation/__init__.py",
+        "pkg/witful/representation/github.py",
+        "pkg/witful/representation/rendering.py",
+        "pkg/witful/representation/models.py",
+        "tests/representation/test_representation.py",
+        "SKILL.md",
+        "pkg/witful/collection/dashboard.py",
+        "pkg/witful/commands/representation.py",
+        "pkg/witful/awareness/__init__.py",
+        "README.md",
+        "SECURITY.md",
+        "pkg/witful/cli.py",
+        ".github/CODEOWNERS"
+      ],
+      "sha256": "a02aa3015c545d9c49f7b85bd39372098b23f60ae9813cc11f4c0d73b088dd59"
+    }
+  ],
+  "projection": {
+    "version": "directory-partition/1",
+    "max_rows": 10,
+    "height_inches": 4.8,
+    "groups": [
+      {
+        "label": "docs/",
+        "paths": [
+          "docs/awareness.md",
+          "docs/WITFUL.md",
+          "docs/CLI.md"
+        ],
+        "added": 16,
+        "deleted": 8,
+        "binary": 0
+      },
+      {
+        "label": "pkg/witful/representation/",
+        "paths": [
+          "pkg/witful/representation/cli.py",
+          "pkg/witful/representation/__init__.py",
+          "pkg/witful/representation/github.py",
+          "pkg/witful/representation/rendering.py",
+          "pkg/witful/representation/models.py"
+        ],
+        "added": 12,
+        "deleted": 7,
+        "binary": 0
+      },
+      {
+        "label": "tests/",
+        "paths": [
+          "tests/representation/test_representation.py"
+        ],
+        "added": 7,
+        "deleted": 7,
+        "binary": 0
+      },
+      {
+        "label": "SKILL.md",
+        "paths": [
+          "SKILL.md"
+        ],
+        "added": 5,
+        "deleted": 5,
+        "binary": 0
+      },
+      {
+        "label": "pkg/ (other)",
+        "paths": [
+          "pkg/witful/collection/dashboard.py",
+          "pkg/witful/commands/representation.py"
+        ],
+        "added": 3,
+        "deleted": 3,
+        "binary": 0
+      },
+      {
+        "label": "pkg/witful/awareness/",
+        "paths": [
+          "pkg/witful/awareness/__init__.py"
+        ],
+        "added": 0,
+        "deleted": 5,
+        "binary": 0
+      },
+      {
+        "label": "README.md",
+        "paths": [
+          "README.md"
+        ],
+        "added": 2,
+        "deleted": 2,
+        "binary": 0
+      },
+      {
+        "label": "SECURITY.md",
+        "paths": [
+          "SECURITY.md"
+        ],
+        "added": 2,
+        "deleted": 2,
+        "binary": 0
+      },
+      {
+        "label": "pkg/witful/cli.py",
+        "paths": [
+          "pkg/witful/cli.py"
+        ],
+        "added": 2,
+        "deleted": 2,
+        "binary": 0
+      },
+      {
+        "label": ".github/",
+        "paths": [
+          ".github/CODEOWNERS"
+        ],
+        "added": 1,
+        "deleted": 1,
+        "binary": 0
+      }
+    ]
+  },
+  "palette_sha256": "df3607dacd40a0c4dbfb4b0053752953f4b40d060401fe4e42a3d842f6a8a15c",
+  "matplotlib": "3.11.2",
+  "description_inputs": {},
+  "intent_checked_at": null,
+  "model_calls": 0
+}
