@@ -131,6 +131,9 @@ def verify_release(
     release = repository.get_release(tag)
     if release.draft or release.prerelease or resolve_commit(repository, tag) != source:
         raise ValueError("Release is not published from the expected stable source")
+    # Signed bytes and publisher retry rules do not establish the host's asset/tag lock.
+    if release.immutable is not True:
+        raise ValueError("GitHub has not confirmed release immutability")
     artifacts = tuple(sorted((*built.glob("*.whl"), *built.glob("*.tar.gz"))))
     if not any(path.suffix == ".whl" for path in artifacts) or not any(path.name.endswith(".tar.gz") for path in artifacts):
         raise ValueError("Accepted build artifacts are incomplete")

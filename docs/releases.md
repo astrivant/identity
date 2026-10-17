@@ -23,8 +23,27 @@ The pinned Cosign tool signs each final distribution and the SHA256SUMS manifest
 The release attaches distributions, signature bundles, public key, SHA-256
 public-key fingerprint, signed manifest, SOURCE.json build provenance, and the
 signed RELEASE.json contribution inventory.
-The GitHub release remains a draft until PyPI publication succeeds. Already
-published GitHub releases are immutable; publish a new version for new bytes.
+The GitHub release remains a draft until all assets and final notes are attached
+and PyPI publication succeeds. Enable repository release immutability before
+publishing, using an administrator's existing authenticated session:
+
+```bash
+gh api --method PUT repos/OWNER/REPO/immutable-releases
+gh api repos/OWNER/REPO/immutable-releases --jq .enabled
+```
+
+The second command must return `true`. This is repository setup; CI's ordinary
+publishing token needs no administration permission. GitHub locks the assets and
+tag when the draft is published. The terminal verification stage requires the
+release API to report `immutable: true` before notifying contributors.
+
+[GitHub immutability](https://docs.github.com/en/code-security/concepts/supply-chain-security/immutable-releases)
+protects assets and tags; titles and release notes remain editable. The publisher
+refuses automatic rewrites of published notes. Maintainers can make an explicitly
+reviewed prose correction without changing signed attachments. Enabling the
+setting applies to future releases, so it does not retrofit existing releases.
+Publish a new version for new bytes; never recreate a published version to change
+its protection state.
 
 Compare the fingerprint through a trusted channel before verification. A hash
 verifies bytes; a trusted public key establishes the signing identity. The
@@ -50,7 +69,7 @@ Maintainers classify PRs using the first applicable label in this order:
 | `release:security` | Security |
 | `release:deprecated` | Deprecated / Removed |
 | `release:docs` | Documentation / Maintenance |
-| No category label | Other changes |
+| No category label | Bullets directly under What changed |
 
 Write PR titles as concise consumer-facing descriptions. Include upgrade actions
 and migration links in reviewed release details for breaking changes. The
