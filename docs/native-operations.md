@@ -34,6 +34,14 @@ but cannot insert identities or create, modify or revoke grants. Dedicated datab
 ownership matters: these plans revoke public schema creation. Existing deployments
 must review their grants and dependencies before applying a plan.
 
+Each generated plan includes its own `BEGIN` and `COMMIT`. Use the `psql`
+invocation above without `--single-transaction`. A Python operator applying an
+already reviewed plan must use a fresh `psycopg.connect(..., autocommit=True)`
+connection. Autocommit here delegates transaction ownership to the plan; it does
+not make its statements independent commits. On failure, close that connection
+or call `rollback()` before reusing it. Keep ordinary runtime transactions unchanged.
+See [Psycopg transaction management](https://www.psycopg.org/psycopg3/docs/basic/transactions.html).
+
 Generate the closed enrollment input contract with:
 
 ```bash
@@ -50,6 +58,26 @@ identity state; it never resets an epoch, overwrites history or broadens an exis
 grant. Additional grants, revocation and policy changes are reviewed authority
 operator transactions. Revocation must commit before it is considered effective;
 currently admitted work may finish before that commit acquires its grant lock.
+
+### Interpret contract-test database logs
+
+The disposable native contract tests deliberately exercise rejected operations.
+`witful_native_registry_pkey` duplicate-key errors are expected when
+`test_enrollment_is_insert_only_and_runtime_cannot_administer` submits the same
+plan twice, and when competing-enrollment tests race two plans for one scope.
+These tests assert the rejection and verify the retained state. Permission-denied
+and injected rollback errors also exercise failure boundaries. Test administrator
+connections identify themselves through `application_name`; the duplicate probe
+uses `witful-native-test:reject-duplicate-enrollment`. Include `%a` in PostgreSQL's
+`log_line_prefix` when the operator needs that label in text logs.
+
+`there is already a transaction in progress` is not an expected test outcome. It
+means a plan's `BEGIN` was submitted inside an existing transaction. The native
+fixture checks server notices to catch that mistake locally and in CI. A duplicate
+registration outside an intentional negative test remains a real enrollment conflict:
+inspect the existing scope and grant, roll back the failed attempt, and have the
+authority operator review the intended action. Do not replace enrollment with an
+upsert or bypass the unique constraint to make the error disappear.
 
 Provision the separate broker policy with matching trusted client, tenant,
 identity, task, authority and policy bindings. A native grant does not grant broker

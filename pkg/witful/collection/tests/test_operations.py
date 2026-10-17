@@ -27,6 +27,7 @@ if TYPE_CHECKING:
 
 
 _FIGURE_NAMES = {
+    "life",
     "knowledge-usage",
     "knowledge-map",
     "knowledge-hierarchy",
@@ -63,7 +64,7 @@ def test_rendered_figure_contract_without_signing_tools(tmp_path: Path) -> None:
         tmp_path (Path): Synthetic source, output, and archive restoration parent.
 
     Returns:
-        None: All eleven figure families survive the portable private archive round trip.
+        None: All supported figure families survive the portable private archive round trip.
     """
     source, rendered, restored = tmp_path / "source", tmp_path / "rendered", tmp_path / "restored"
     initialize([str(source)])

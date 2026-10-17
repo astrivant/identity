@@ -130,6 +130,11 @@ class Client:
             ):
                 raise NativeError("invalid")
             if operation not in {
+                "intent-draft",
+                "intent-publish",
+                "intent-review",
+                "intent-query",
+                "intent-source",
                 "codegraph-build",
                 "codegraph-query",
                 "codegraph-recover",

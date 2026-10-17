@@ -1,6 +1,6 @@
 ---
 name: witful
-description: Curate a user-owned knowledge collection with typed lessons, observed applications, decision replay, and privacy checks. Use for creating or maintaining a Witful collection, searching sourced lessons, recording actual applications, inspecting publication inputs, or explicitly publishing selected awareness figures.
+description: Curate a user-owned knowledge collection with typed lessons, observed applications, decision replay, and privacy checks. Use for creating or maintaining a Witful collection, searching sourced lessons, recording actual applications, inspecting publication inputs, or explicitly publishing selected professional representation figures.
 ---
 
 # Identity with Witful
@@ -185,17 +185,17 @@ for assistance. Record the complete reviewed batch with `reflection record`; run
 merely because a review is due. Keep personal plans and reviews inside encrypted
 collection transport; public upstream figures use synthetic examples only.
 
-## Publish awareness figures
+## Publish professional representation
 
-For a requested figure export or resume rebuild, read [awareness publication](docs/awareness.md)
+For a requested figure export or resume rebuild, read [professional representation](docs/awareness.md)
 and preserve the user's selection in `knowledge/awareness.json`. Check the installed
 CLI's `awareness --help`; configuration, output paths, and schemas are described in
-[CLI contracts](docs/CLI.md#awareness-publication).
+[CLI contracts](docs/CLI.md#professional-representation).
 
 Use `witful awareness --repo COLLECTION build` to regenerate a local bundle from
 current evidence. Inspect selected plot labels before sharing: PNGs can expose
 project names and relationships even though the bundle omits source journals.
-Awareness generation omits outer titles and subtitles so the receiving document
+Figure generation omits outer titles and subtitles so the receiving document
 owns its headings; retain axis labels and legends. Check the [working-emphasis map](docs/knowledge-map.md)
 for the distinction between a bounded current view and the full retained hierarchy.
 An empty selection publishes nothing. The receiver separately controls its allowed
@@ -333,3 +333,79 @@ with exact-version links. Recover uncertain notification outcomes through the
 reporting receipt and rerun only the reporting job; never republish immutable
 artifacts to repair a comment. Reading this guide does not authorize a release
 or live notification outside the selected pipeline.
+
+## Consult decisions before acting
+
+Set this up for each agent using the existing collection's instructions and
+verified keys. Run `witful life --repo COLLECTION check`, inspect `life --help`,
+and follow the [first-decision setup](https://github.com/astrivant/identity/blob/main/docs/life.md#set-up-an-agents-decision-workflow).
+The journal and replay snapshots travel through the collection's protected
+publication workflow; main CI refreshes the figure. No separate agent service or
+database is required. Do not invent prior decisions for an empty journal.
+
+Before a consequential choice, retrieve relevant Life records with `witful life
+--repo COLLECTION show --concept CONCEPT_ID --limit 10` or an exact `--task` or
+`--key`. Read task, rationale and evidence; use `--history` when revisiting a
+subject. A shared concept is a retrieval hint, not proof that contexts match.
+Current instructions govern. Record choices as engineers make or revise them,
+including explicit user direction. Record the actual choice and documented alternatives;
+reuse the subject key and explicit `supersedes` when changing it. At handoff,
+verify that consequential decisions were recorded or remain explicitly unresolved.
+Consulting, recording and periodic reflection are separate actions. Do not claim
+use merely because records exist, and never invent hidden reasoning or outcomes.
+See [the Life workflow](https://github.com/astrivant/identity/blob/main/docs/life.md).
+
+## Carry code intent between working sessions
+
+Use [intent discovery](docs/intent-graphs.md) on an explicitly enrolled CodeGraph
+with an `intent-query` grant. Start with `witful intent find` and inspect exact
+source, coverage, counterevidence and missing requirements before changing code or
+using a capability. Retain purpose, invariants, design decisions and dependency
+contracts as source-bound assertions; ordinary code needs no repertoire Tool ID.
+The model is language-neutral, within the enrolled CodeGraph's coverage. The draft
+command seeds repertoire candidates and declared documentation dependencies, so it does not automatically capture a
+working session's understanding. Publish explicit candidates and reading receipts;
+verified intent requires an authorized semantic review. Discovery never records
+a use or supplies permission to execute.
+Respect the admitted output pipe and keep responses out of logs and ordinary files.
+
+For a new agent, follow the [setup and session loop](docs/intent-graphs.md#agent-setup-and-session-loop).
+Check installed CLI support, the existing enrollment and scoped grants before using
+the commands. Record supported intent as engineers make or revise decisions, with
+exact source anchors and explicit reading coverage. After a source change, rebuild
+the graph and publish a newly bound candidate; a review of the old generation does
+not transfer automatically. Check for unrecorded decisions and unresolved evidence
+at handoff. Keep general Life decisions separate from repository assertions.
+
+Recheck graph/source generation and current authority on consumption. A changed
+input invalidates dependent review bindings; do not carry them forward based on
+an unchanged commit or a matching name. Use the existing context resolver for
+mandatory teachings and preserve their exact text. `preflight` describes checks;
+it does not run them or authorize publication.
+
+Bind external SDK contracts to exact revisions and remote preconditions to scoped,
+expiring observations. Reuse durable evidence across sessions while rechecking live
+conditions. Cross-project dependency evidence does not authorize importing or
+querying another repository's graph.
+
+## Maintain documentation references
+
+Use [source documentation links](docs/source-links.md) when prose names a type or
+implementation contract. Link to its definition and use compact numbered superscript
+citations for supporting sections. Keep stable `docref:1` breadcrumbs in actual
+single-line source comments, never strings or docstrings. Move the comment with
+its declaration, refresh explicit consumers with the source-link compiler and
+review explanatory prose when a contract changes. Generated links and inferred
+Intent Graph dependencies do not constitute semantic approval.
+Run the focused source-link boundary guard immediately after its linter in local
+hooks and CI; it checks line endings, Markdown suffixes and isolated Git fixtures.
+
+## Repair generated conflicts
+
+Maintain the [generated-artifact inventory](.github/generated-artifacts.json) when
+adding or changing generators. Follow [the repair contract](docs/generated-artifacts.md):
+trusted CI can reconcile declared, bounded outputs only after canonical inputs
+merge cleanly. Never run candidate code with write credentials or choose changed
+ownership policy. Keep ordinary PR checks and review required on every repaired
+head. Run the ownership compiler together with ownership edits, then review and
+stage its output; the pre-push check validates committed HEAD.

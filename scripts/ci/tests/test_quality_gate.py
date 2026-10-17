@@ -105,8 +105,9 @@ def test_gate_matches_workflow_and_branch_policy() -> None:
     gate = jobs["quality-gate"]
     assert sorted(gate["needs"]) == list(REQUIRED)
     assert set(gate["needs"]) == set(jobs["publish"]["needs"])
-    assert all(name in jobs and "if" not in jobs[name] for name in REQUIRED)
-    assert gate["if"] == "always()"
+    guard = "github.event_name != 'pull_request_target' && github.event_name != 'schedule'"
+    assert all(name in jobs and jobs[name]["if"] == guard for name in REQUIRED)
+    assert gate["if"] == "always() && " + guard
     assert workflow["on"]["pull_request"] == ""
     assert "main" in workflow["on"]["push"]["branches"]
     assert gate["steps"][-1]["env"]["NEEDS_JSON"] == "${{ toJSON(needs) }}"

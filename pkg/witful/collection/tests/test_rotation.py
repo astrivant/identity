@@ -223,12 +223,14 @@ def test_deadlines_stop_writes_but_allow_retained_recovery(collection: Path, gen
 
 
 @pytest.mark.parametrize("rotate_keys", [False, True])
+@pytest.mark.parametrize("publish_figures", [False, True])
 def test_pipeline_candidate_is_atomic_verified_and_refuses_changed_bytes(
     collection: Path,
     generations: tuple[Path, Path],
     tmp_path: Path,
     monkeypatch: MonkeyPatch,
     rotate_keys: bool,
+    publish_figures: bool,
 ) -> None:
     """
     Prepare with real cryptography and inspect the sole optimistic publication mutation through a fake host.
@@ -239,6 +241,7 @@ def test_pipeline_candidate_is_atomic_verified_and_refuses_changed_bytes(
         tmp_path (Path): Private candidate root.
         monkeypatch (MonkeyPatch): GitHub visibility, event authorization and API boundary only.
         rotate_keys (bool): Exercise a new generation or refresh the existing active keys.
+        publish_figures (bool): Exercise readable dashboard publication as well as encrypted-only output.
 
     Returns:
         None: One verified API commit owns all paths, and changes after verification never reach the host.
@@ -277,6 +280,8 @@ def test_pipeline_candidate_is_atomic_verified_and_refuses_changed_bytes(
     )
     if rotate_keys:
         env["WITFUL_COLLECTION_NEXT_KEYS"] = json.dumps(as_data(Candidate("example/collection", DEADLINE, read_keys(generations[1]))))
+    config = evolve(load_config(collection), publish_figures=publish_figures)
+    (collection / CONFIG).write_text(json.dumps(as_data(config)))
     output = tmp_path / "prepared"
     current = pipeline.prepare(collection, output, env, TODAY)
     assert (output / "VERIFIED").is_file()
@@ -289,6 +294,8 @@ def test_pipeline_candidate_is_atomic_verified_and_refuses_changed_bytes(
     provenance = json.loads((tmp_path / "pipeline-figures/provenance.json").read_bytes())
     assert provenance["source_ciphertext_sha256"] == hashlib.sha256((current / SOURCE).read_bytes()).hexdigest()
     contents = publication.publication_files(current)
+    assert ("docs/collection/life.svg" in contents) is publish_figures
+    assert ("docs/collection/decision-outcomes.svg" in contents) is publish_figures
     requests: list[dict[str, object]] = []
 
     def host(arguments: list[str], *, data: bytes | None = None, env: dict[str, str] | None = None) -> bytes:

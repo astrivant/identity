@@ -1,4 +1,4 @@
-# Awareness publication
+# Professional representation
 
 Publish selected evidence figures to an existing resumeme repository, then request
 an authenticated rebuild through GitHub's repository dispatch API. Source journals
@@ -6,8 +6,8 @@ remain in the collection. Figures and labels become destination-repository data.
 
 ## Purpose and interpretation
 
-Awareness is an optional professional signature of what you work on and how you
-approach problems. A resume appendix can show the skills and tools you apply,
+Professional representation makes your documented work and approach to problems
+visible to colleagues. A resume appendix can show the skills and tools you apply,
 relationships among concepts, and how documented practice changes across projects.
 The same figures support personal reflection while you work with an agent.
 
@@ -18,8 +18,16 @@ and concise rationales provide evidence for problem-solving approaches. Counts d
 not measure proficiency, and missing observations are not evidence of missing ability.
 This visual signature is separate from the resume's cryptographic release signature.
 
-The collection remains useful without any awareness export. All figures are disabled
+The collection remains useful without any figure export. All figures are disabled
 by default, and enabling one never requires publishing the underlying journals.
+
+## Package and command
+
+The Python implementation lives in `witful.representation`: it renders selected
+figures and publishes them to a professional profile or resume. Internal imports
+use this package instead of `witful.awareness`. The existing `witful awareness`
+command, configuration paths and Resumeme delivery protocol retain their names
+so existing collections and receivers continue to work.
 
 ## Setup
 
@@ -94,7 +102,7 @@ flow. Hiding a figure never deletes earlier public copies or history. Read
 
 ## Presentation
 
-Awareness exports omit outer plot titles and question subtitles during generation.
+Exported figures omit outer plot titles and question subtitles during generation.
 Axis labels, legends, and evidence notes remain; standalone collection figures keep
 their headings. Regenerate an older bundle to apply this behavior. The receiver
 provides its own section headings and figure identifiers. See the

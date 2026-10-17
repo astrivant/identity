@@ -51,3 +51,8 @@ test('reports actual nested Markdown source line', async () => {
   const errors = await checkMarkdown('# Title\n\n> ```math\n> \\unknown\n> ```', 'nested.md');
   assert.match(errors[0], /^nested\.md:3:3: Math:/u);
 });
+
+// Escaped numeric citation labels are ordinary Markdown links, not display math.
+test('accept escaped brackets in a citation link', async () => {
+  assert.deepEqual(await checkMarkdown('<sup>[\\[2\\]](docs/guide.md)</sup>'), []);
+});

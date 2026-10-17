@@ -16,9 +16,9 @@
       "reviews": "/repos/{owner}/{repo}/pulls/{pull_number}/reviews",
       "statuses": "/repos/{owner}/{repo}/commits/{ref}/statuses"
     },
-    "revision": "e652b41dd89649bb46469915d40d3f217954959e",
+    "revision": "8eb34aece21c55830f8029c5da69b3058ae7d8b7",
     "snapshot_sha256": "7e902901bf6f1cc6ad8fc7e768a6b143bfda07389c69d18f44afb6f4593cb620",
-    "source_sha256": "65ca6210f72021d07e4608fc26787c8132d77f8f3a475d8c065f0d7f5f02f6dc",
+    "source_sha256": "3099f2f87e528333e326fcb25a679b9957c471cde23d655d7008e2f1959c350a",
     "url": "https://raw.githubusercontent.com/github/rest-api-description/{revision}/descriptions/api.github.com/api.github.com.json"
   },
   "gitlab": {

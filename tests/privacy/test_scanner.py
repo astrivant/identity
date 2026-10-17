@@ -13,7 +13,7 @@ import pytest
 from witful.collection.models import CONFIG, Config
 from witful.knowledge.contracts import as_data
 from witful.privacy.cli import main
-from witful.privacy.scanner import scan, scan_report, scan_text
+from witful.privacy.scanner import scan, scan_report, scan_svg, scan_text
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -382,3 +382,78 @@ def test_npm_namespace_paths_do_not_hide_real_email_or_deny_terms() -> None:
     assert scan_text("node_modules/person" + "@company.dev/package") == ((1, "email"),)
     assert scan_text("https://person" + "@registry.npmjs.org/package") == ((1, "email"),)
     assert scan_text("https://elsewhere.invalid/" + namespace) == ((1, "email"),)
+
+
+@pytest.mark.parametrize("element", ["text", "title", "desc", "metadata"])
+def test_svg_text_is_scanned_separately_from_glyph_geometry(element: str) -> None:
+    """
+    Keep phone detection in readable text while exempting the real Garamond coordinate regression.
+
+    Args:
+        element (str): SVG element containing a decoded sensitive label.
+
+    Returns:
+        None: Geometry is accepted, while text, comments, attributes and deny terms remain inspected.
+    """
+    coordinates = " ".join(str(value) for value in (1120, 102, 749, 710, 749, 1344))
+    geometry = f'<path d="M 0 0 C {coordinates}"/>'
+    prefix = '<svg xmlns="http://www.w3.org/2000/svg">'
+    assert not scan_svg(prefix + geometry + "</svg>")
+    assert scan_svg(prefix + geometry + "</svg>", ["1120"])[0][1] == "deny-term"
+    phone = "555" + "-010-1234"
+    for payload in (
+        f"<{element}>{phone}</{element}>",
+        f"<!-- {phone} -->",
+        f'<path data-note="{phone}" d="M 0 0"/>',
+        f'<path d="label {phone}"/>',
+        f'<g xmlns:note="{phone}"/>',
+        f"<text>{phone.replace('5', '&#53;')}</text>",
+    ):
+        assert "phone" in {rule for _, rule in scan_svg(prefix + geometry + payload + "</svg>")}
+
+    government_id = "123" + "-45-6789"
+    for payload in (f"<id{government_id}/>", f'<g note{government_id}="value"/>'):
+        assert "government-id" in {rule for _, rule in scan_svg(prefix + payload + "</svg>")}
+
+
+@pytest.mark.parametrize("document", ["<svg", "<not-svg/>", '<!DOCTYPE svg [<!ENTITY secret "value">]><svg/>'])
+def test_svg_scan_rejects_uninspectable_documents(document: str) -> None:
+    """
+    Refuse malformed or entity-bearing figures instead of claiming that publication was checked.
+
+    Args:
+        document (str): Synthetic invalid or unsafe XML input.
+
+    Returns:
+        None: The publication scan fails closed with a bounded diagnostic.
+    """
+    with pytest.raises(ValueError, match="Figure"):
+        scan_svg(document)
+
+
+def test_svg_repository_scan_uses_the_publication_contract(tmp_path: Path) -> None:
+    """
+    Inspect staged SVGs with the same geometry boundary as collection publication.
+
+    Args:
+        tmp_path (Path): Synthetic Git checkout with a generated vector fixture.
+
+    Returns:
+        None: Valid geometry passes, staged labels are detected and malformed XML reports an inspection error.
+    """
+    subprocess.run(["git", "init", "-q", str(tmp_path)], check=True)
+    coordinates = " ".join(str(value) for value in (1120, 102, 749, 710, 749, 1344))
+    safe = f'<svg xmlns="http://www.w3.org/2000/svg"><path d="M 0 0 C {coordinates}"/></svg>'
+    path = tmp_path / "figure.SVG"
+    path.write_text(safe)
+    subprocess.run(["git", "-C", str(tmp_path), "add", path.name], check=True)
+    assert scan_report(tmp_path, staged=True).complete
+    assert not scan(tmp_path, staged=True)
+    phone = "555" + "-010-1234"
+    path.write_text(safe.replace("</svg>", f"<!-- {phone} --></svg>"))
+    subprocess.run(["git", "-C", str(tmp_path), "add", path.name], check=True)
+    path.write_text(safe)
+    assert scan(tmp_path, staged=True)[0].rule == "phone"
+    assert not scan(tmp_path)
+    path.write_text("<svg")
+    assert scan_report(tmp_path).errors[0].reason == "read-error"
