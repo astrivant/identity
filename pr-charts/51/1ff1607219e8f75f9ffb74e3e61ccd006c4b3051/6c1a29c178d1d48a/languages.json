@@ -1,0 +1,54 @@
+{
+  "measurement": {
+    "base": "d63fcdecc3f14e074ccea4e8230ff8aeac892b64",
+    "merge_base": "d63fcdecc3f14e074ccea4e8230ff8aeac892b64",
+    "head": "1ff1607219e8f75f9ffb74e3e61ccd006c4b3051",
+    "classifier": "Pygments 2.21.0",
+    "deltas": [
+      {
+        "before": "docs/releases.md",
+        "after": "docs/releases.md",
+        "added": 22,
+        "deleted": 3
+      },
+      {
+        "before": "scripts/release/feedback.py",
+        "after": "scripts/release/feedback.py",
+        "added": 5,
+        "deleted": 3
+      },
+      {
+        "before": "scripts/release/verification.py",
+        "after": "scripts/release/verification.py",
+        "added": 3,
+        "deleted": 0
+      },
+      {
+        "before": "tests/releases/test_feedback.py",
+        "after": "tests/releases/test_feedback.py",
+        "added": 24,
+        "deleted": 0
+      },
+      {
+        "before": "tests/releases/test_verification.py",
+        "after": "tests/releases/test_verification.py",
+        "added": 10,
+        "deleted": 4
+      }
+    ],
+    "shares": [
+      {
+        "language": "Python",
+        "added": 42,
+        "deleted": 7
+      },
+      {
+        "language": "Markdown",
+        "added": 22,
+        "deleted": 3
+      }
+    ]
+  },
+  "palette_sha256": "df3607dacd40a0c4dbfb4b0053752953f4b40d060401fe4e42a3d842f6a8a15c",
+  "matplotlib": "3.11.2"
+}

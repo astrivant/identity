@@ -1,0 +1,174 @@
+{
+  "measurement": {
+    "base": "d63fcdecc3f14e074ccea4e8230ff8aeac892b64",
+    "merge_base": "d63fcdecc3f14e074ccea4e8230ff8aeac892b64",
+    "head": "1ff1607219e8f75f9ffb74e3e61ccd006c4b3051",
+    "classifier": "Pygments 2.21.0",
+    "deltas": [
+      {
+        "before": "docs/releases.md",
+        "after": "docs/releases.md",
+        "added": 22,
+        "deleted": 3
+      },
+      {
+        "before": "scripts/release/feedback.py",
+        "after": "scripts/release/feedback.py",
+        "added": 5,
+        "deleted": 3
+      },
+      {
+        "before": "scripts/release/verification.py",
+        "after": "scripts/release/verification.py",
+        "added": 3,
+        "deleted": 0
+      },
+      {
+        "before": "tests/releases/test_feedback.py",
+        "after": "tests/releases/test_feedback.py",
+        "added": 24,
+        "deleted": 0
+      },
+      {
+        "before": "tests/releases/test_verification.py",
+        "after": "tests/releases/test_verification.py",
+        "added": 10,
+        "deleted": 4
+      }
+    ],
+    "shares": [
+      {
+        "language": "Python",
+        "added": 42,
+        "deleted": 7
+      },
+      {
+        "language": "Markdown",
+        "added": 22,
+        "deleted": 3
+      }
+    ]
+  },
+  "rows": [
+    {
+      "delta": {
+        "before": "docs/releases.md",
+        "after": "docs/releases.md",
+        "added": 22,
+        "deleted": 3
+      },
+      "description": "+22 added / -3 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "tests/releases/test_feedback.py",
+        "after": "tests/releases/test_feedback.py",
+        "added": 24,
+        "deleted": 0
+      },
+      "description": "+24 added / -0 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "tests/releases/test_verification.py",
+        "after": "tests/releases/test_verification.py",
+        "added": 10,
+        "deleted": 4
+      },
+      "description": "+10 added / -4 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "scripts/release/feedback.py",
+        "after": "scripts/release/feedback.py",
+        "added": 5,
+        "deleted": 3
+      },
+      "description": "+5 added / -3 removed",
+      "kind": "diff"
+    },
+    {
+      "delta": {
+        "before": "scripts/release/verification.py",
+        "after": "scripts/release/verification.py",
+        "added": 3,
+        "deleted": 0
+      },
+      "description": "+3 added / -0 removed",
+      "kind": "diff"
+    }
+  ],
+  "pages": [
+    {
+      "file": "files-001.png",
+      "paths": [
+        "docs/releases.md",
+        "tests/releases/test_feedback.py",
+        "tests/releases/test_verification.py",
+        "scripts/release/feedback.py",
+        "scripts/release/verification.py"
+      ],
+      "sha256": "3ddf92286ff00c7fd5e3d73b428093fa1552b942bb9bf086472b32ac80e0d926"
+    }
+  ],
+  "projection": {
+    "version": "directory-partition/1",
+    "max_rows": 10,
+    "height_inches": 4.8,
+    "groups": [
+      {
+        "label": "docs/releases.md",
+        "paths": [
+          "docs/releases.md"
+        ],
+        "added": 22,
+        "deleted": 3,
+        "binary": 0
+      },
+      {
+        "label": "tests/releases/test_feedback.py",
+        "paths": [
+          "tests/releases/test_feedback.py"
+        ],
+        "added": 24,
+        "deleted": 0,
+        "binary": 0
+      },
+      {
+        "label": "tests/releases/test_verification.py",
+        "paths": [
+          "tests/releases/test_verification.py"
+        ],
+        "added": 10,
+        "deleted": 4,
+        "binary": 0
+      },
+      {
+        "label": "scripts/release/feedback.py",
+        "paths": [
+          "scripts/release/feedback.py"
+        ],
+        "added": 5,
+        "deleted": 3,
+        "binary": 0
+      },
+      {
+        "label": "scripts/release/verification.py",
+        "paths": [
+          "scripts/release/verification.py"
+        ],
+        "added": 3,
+        "deleted": 0,
+        "binary": 0
+      }
+    ]
+  },
+  "palette_sha256": "df3607dacd40a0c4dbfb4b0053752953f4b40d060401fe4e42a3d842f6a8a15c",
+  "matplotlib": "3.11.2",
+  "description_inputs": {},
+  "intent_checked_at": null,
+  "model_calls": 0
+}
