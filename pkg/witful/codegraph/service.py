@@ -76,7 +76,7 @@ class RepositoryGraph:
         self.owner(access)
         registration, frontier = self.native.snapshot(access, action, "*")
         if (
-            any(ref.name != "codegraph" for ref in frontier.refs)
+            any(ref.name not in {"codegraph", "intent"} for ref in frontier.refs)
             or any(item.kind != ROTATION for item in frontier.archives)
             or frontier.outbox
         ):
@@ -138,7 +138,7 @@ class RepositoryGraph:
         if prior is not None:
             self.native.release(access, "codegraph-build", "*", registration, started)
             return prior
-        target = next(iter(frontier.refs), None)
+        target = next((ref for ref in frontier.refs if ref.name == "codegraph"), None)
         if (target.revision if target else None) != expected:
             raise NativeError("conflict")
         if target is not None:
@@ -197,7 +197,10 @@ class RepositoryGraph:
         )
         pointer, encrypted_metadata = self.native.seal(access, record, REVISION, as_data(metadata))
         candidate = Frontier(
-            refs=(Ref("codegraph", record, target.generation + 1 if target else 1),),
+            refs=(
+                Ref("codegraph", record, target.generation + 1 if target else 1),
+                *(ref for ref in frontier.refs if ref.name != "codegraph"),
+            ),
             revisions=(*frontier.revisions, pointer),
             archives=frontier.archives,
         )
@@ -234,7 +237,7 @@ class RepositoryGraph:
 
         started = self.native.monotonic()
         registration, frontier = self.admit(access, "codegraph-query")
-        target = next(iter(frontier.refs), None)
+        target = next((ref for ref in frontier.refs if ref.name == "codegraph"), None)
         if target is None:
             raise NativeError("unavailable")
         metadata = self.native.revision(access, frontier, target.revision)

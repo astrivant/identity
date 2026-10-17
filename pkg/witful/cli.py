@@ -15,6 +15,7 @@ from witful.commands import (
     context,
     delivery,
     instances,
+    intent,
     knowledge,
     life,
     native,
@@ -63,6 +64,7 @@ def build_parser() -> argparse.ArgumentParser:
         Command("completion", "Review completion coverage", completion.configure, "witful.completion.cli"),
         Command("context", "Resolve advisory working context", context.configure, "witful.context.cli"),
         codegraph.command(),
+        intent.command(),
         delivery.command(),
         native.command(),
     ):

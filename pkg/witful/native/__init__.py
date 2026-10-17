@@ -1,5 +1,5 @@
 """
-Provide explicit protected native storage without changing legacy collection authority.
+Provide encrypted native storage with explicit authorization, fencing and recovery.
 """
 
 from __future__ import annotations

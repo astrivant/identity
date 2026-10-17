@@ -69,6 +69,9 @@ class Enrollment:
             "project",
             "codegraph-build",
             "codegraph-query",
+            "intent-write",
+            "intent-query",
+            "intent-review",
         }
         if (
             self.access.epoch != 1

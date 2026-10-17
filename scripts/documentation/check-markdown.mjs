@@ -39,7 +39,7 @@ export async function checkMarkdown(source, filename = '<input>') {
   const diagnostics = [];
   const report = (node, message) => diagnostics.push(`${filename}:${node.position.start.line}:${node.position.start.column}: ${message}`);
 
-  async function visit(node) {
+  async function visit(node, parent = null) {
     const raw = node.position ? source.slice(node.position.start.offset, node.position.end.offset) : '';
     if (node.type === 'code' && ['mermaid', 'math'].includes(node.lang)) {
       const marker = raw.match(/^(`{3,}|~{3,})/u)?.[1];
@@ -78,9 +78,9 @@ export async function checkMarkdown(source, filename = '<input>') {
         && source.slice(0, node.position.start.offset).endsWith('<span>')
         && source.slice(node.position.end.offset).startsWith('</span>');
       if (!literalSpan && unescapedDollar(raw)) report(node, 'Unmatched or ambiguous $ delimiter; escape literal dollars as \\$');
-      if (/(?<!\\)\\[()[\]]/u.test(raw)) report(node, 'Use $...$, $`...`$, $$ blocks, or a math fence for hosted Markdown');
+      if (/(?<!\\)\\[()]/u.test(raw) || (parent?.type !== 'link' && /(?<!\\)\\[[\]]/u.test(raw))) report(node, 'Use $...$, $`...`$, $$ blocks, or a math fence for hosted Markdown');
     }
-    for (const child of node.children ?? []) await visit(child);
+    for (const child of node.children ?? []) await visit(child, node);
   }
 
   // GitHub explicitly supports this literal-dollar form. Mask only its dollar
